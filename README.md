@@ -61,7 +61,7 @@ The simulation framework uses a configuration file that defines the simulation t
 
 
 ## License
-Permission is hereby granted, free of charge, to use and/or copy this software for non-commercial research and education purposes if the authors of this software and their research papers are properly cited. For citation information visit [MomenTUM hompeage](https://www.cms.bgu.tum.de/en/31-forschung/projekte/456-momentum).
+Permission is hereby granted, free of charge, to use and/or copy this software for non-commercial research and education purposes if the authors of this software and their research papers are properly cited. For citation information visit the [MomenTUM hompeage](https://www.cms.bgu.tum.de/en/31-forschung/projekte/456-momentum).
 
 
 However, further rights are not granted.
