@@ -18,7 +18,7 @@ The simulation framework enables our research group to rapidly research, develop
 
 The unique qualities of MomenTUM help to design and execute simulations without writing code and to add new theory implementations without changing the given infrastructure. Thus, MomenTUM is a simulation system that empowers researchers and practitioners by providing a flexible toolbox that adapts to the needs of its users. 
 
-We recommend checking MomenTUM’s [technical report](http://www.cms.bgu.tum.de/publications/reports/2016_Kielar_MomenTUMv2.pdf) or further details on the framework.
+We recommend checking MomenTUM’s [technical report](http://www.cms.bgu.tum.de/publications/reports/2016_Kielar_MomenTUMv2.pdf) for further details on the framework.
 
 
 ## Project structure
