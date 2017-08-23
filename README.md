@@ -100,5 +100,5 @@ Student assistant:
 * Fabian Hirt
 
 ## Contact
-[Mail to Peter Kielar](peter.kielar@tum.de) and visit the homepage of the [Chair of Computational Modeling and Simulation](https://www.cms.bgu.tum.de/en/)
+Mail to [Peter Kielar](peter.kielar@tum.de) and visit the homepage of the [Chair of Computational Modeling and Simulation](https://www.cms.bgu.tum.de/en/).
 
