@@ -75,7 +75,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## Copyright notes
 MomenTUM uses several software libraries. The corresponding licenses can be found in the third-party lib folders. Other libraries will provide their licenses via Maven.
 ## Contributors
-Many researchers and students from the Technical University Munich contributed to the simulation framework:
+Many researchers and students of the Technical University Munich contributed to the simulation framework:
 
 Researcher:
 * Peter M. Kielar
