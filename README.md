@@ -28,11 +28,11 @@ MomenTUM is a modular software system that comprises a set of Maven based projec
 
 * third-party: Some projects are not part of the Maven repository and are stored in the third-party project. Thus, you need to run Maven install on this project.
 
-* utility: The utility project provides a set of mathematical and general functionally that are used in the framework and the implemented models. For example, graph theory, lattice methods, and geometry methods. We use multiple third party libraries in the utility project.
+* utility: The utility project provides a set of mathematical and general functionally that are used in the framework and the implemented models. For example, graph theory, lattice methods, and geometry methods. We use multiple libraries in the utility project.
 
 * data: The data project comprises agent and layout classes as well as the corresponding management and service classes.
 
-* model: The model projects holds all implemented models. Therefore, the project is quite large. You can all non-behavior and behavior models of the framework. For example, pedestrian generator models, graph models, output writers wayfinding models, walking models, etc.
+* model: The model projects holds all implemented models. There are many different models for non-behavior and pedestrian behavior implemented. For example, pedestrian generator models, graph models, output writers, wayfinding models, walking models, etc.
 
 * simulator: The simulator projects is the starting point for conduction simulations. It handles the control of the simulation generically. 
 
