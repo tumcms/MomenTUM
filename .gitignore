@@ -19,11 +19,11 @@ log/
 target/
 
 # Java
-.jar
+*.jar
 
 # JavaFX
-.fxml
-.fxbuild
+*.fxml
+*.fxbuild
 
 ####
 ## Ignore Visual Studio temporary files, build results, and
@@ -36,6 +36,7 @@ target/
 *.user
 *.userosscache
 *.sln.docstates
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -51,4 +52,6 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+
+.vs/
 ####
