@@ -42,8 +42,11 @@ MomenTUM is a modular software system that comprises a set of Maven based projec
 
 * layout-tools: The layout-tools projects provide mechanisms to generate simulation scenarios based on different input data (AutoCAD, Revit, OSM). The C# AutoCAD plugin is here on GitHub. Make sure to get the libraries before starting (see the documentation in the project folder). The other tools are not on GitHub. Please contact us for further details.
 
+* momentum-users: Here, all configuration files that were used in research and are open to the public are stored. We never guarantee that any of this files work with the current version of MomenTUM.
 
 The documentation folder provides some basic information on how to use the framework. However, the documentation is still not complete.
+
+
 ## Getting started 
 1. Clone the git repository to create the code-base.
 
