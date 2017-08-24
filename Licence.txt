@@ -1,5 +1,5 @@
 Welcome to the pedestrian simulation framework MomenTUM. 
-This file belongs to the MomenTUM software of version 2.0.2. 
+This file belongs to the MomenTUM version 2.0.2. 
 
 This software was developed under the lead of Dr. Peter M. Kielar
 at the Chair of Computational Modeling and Simulation Prof. Dr.-Ing. Borrmann
