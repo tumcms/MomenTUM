@@ -40,7 +40,7 @@ MomenTUM is a modular software system that comprises a set of Maven based projec
 
 * package: The simulation framework comprises two different executable projects: the simulator and the visualization. Both can be packaged into a runnable jar by their corresponding package projects.
 
-* layout-tools: The layout-tools projects provide mechanisms to generate simulation scenarios based on different input data (AutoCAD, Revit, OSM). The tools are not on GitHub. Please contact us for further details.
+* layout-tools: The layout-tools projects provide mechanisms to generate simulation scenarios based on different input data (AutoCAD, Revit, OSM). The C# AutoCAD plugin is here on GitHub. Make sure to get the libraries before starting (see the documentation in the project folder). The other tools are not on GitHub. Please contact us for further details.
 
 
 The documentation folder provides some basic information on how to use the framework. However, the documentation is still not complete.
