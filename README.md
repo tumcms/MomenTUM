@@ -2,8 +2,6 @@
 
 The Java software [MomenTUM](https://www.cms.bgu.tum.de/en/31-forschung/projekte/456-momentum) is the agent-based pedestrian simulation framework that was developed under the lead of [Dr. Peter M. Kielar]( https://www.cms.bgu.tum.de/de/team/kielar) at the [Chair of Computational Modeling and Simulation](https://www.cms.bgu.tum.de/en/) at the [Technische Universität München]( https://www.tum.de/en/homepage/). MomenTUM is still under development and a simulation tool for researcher and practitioners in the context of pedestrian dynamics. The current version of MomenTUM is 2.0.2.
 
-The software was developed at the Chair of Computational Modeling and Simulation at Technical University Munich.
-
 <p float="left"> <img src="https://www.cms.bgu.tum.de/images/forschung/MomenTUM/2017_MomenTUMv2_2DVisualisation.png" height="120"> <img src="https://www.cms.bgu.tum.de/images/forschung/MomenTUM/2017_MomenTUMv2_3DVisualisation.png" height="120"> <img src="https://www.cms.bgu.tum.de/images/forschung/MomenTUM/2017_MomenTUMv2_Density.png" height="120"> <img src="https://www.cms.bgu.tum.de/images/forschung/MomenTUM/MomenTUMv2_BTTW_Evacuation.png" height="120"></p>
 
 
