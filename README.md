@@ -99,6 +99,7 @@ Student assistant:
 * Bernd Tornede
 * Quirin Aumann
 * Fabian Hirt
+* Carlos Osorio
 
 ## Contact
 Mail to [Peter Kielar](mailto:peter.kielar@tum.de) and visit the homepage of the [Chair of Computational Modeling and Simulation](https://www.cms.bgu.tum.de/en/).
