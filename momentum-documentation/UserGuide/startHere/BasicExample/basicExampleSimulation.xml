@@ -249,10 +249,10 @@
 		</analysis>
 	</analysisModels>
 	
-	<!-- We print the pedestrian data, xt-density data, occupancy data, the number of leaving pedestrians and the configuration -->
+		<!-- We print the pedestrian data, xt-density data, occupancy data, the number of leaving pedestrians and the configuration -->
 	<outputWriters>
 		<outputWriter id="0" name="pedestrianOutputToFile"> 
-			<property name="call" type="Integer" value="2"/> <!-- Print every 2 * 0.05 = 0.1 seconds -->
+			<property name="call" type="Integer" value="10"/> <!-- Print 10 * 0.05 = 0.5 seconds -->
 			<property name="buffer" type="Integer" value="50"/>
 			<writerTarget targetType="File">
 				<property name="file" type="File" value="./2017_BasicExample_Pedestrian_$LOOP$.csv"/>
@@ -286,7 +286,7 @@
 		</outputWriter>
 		
 		<outputWriter id="2" name="occupancyAnalysisOutput">
-			<property name="call" type="Integer" value="20"/> <!-- Every 1 seconds -->
+			<property name="call" type="Integer" value="20"/> <!-- 1 seconds -->
 			<property name="buffer" type="Integer" value="100"/>
 			<writerTarget targetType="File">
 				<property name="file" type="File" value="./2017_BasicExample_Occupancy_$LOOP$.csv"/>
@@ -338,6 +338,5 @@
                <property name="timeStep" type="Format" value="%d"/>
                <property name="removedCount" type="Format" value="%d"/>
             </writerSource>
-		</outputWriter>
-	</outputWriters>
+	</outputWriter>
 </simulator>
