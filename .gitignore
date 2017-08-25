@@ -5,6 +5,7 @@ target.properties
 .classpath
 .project
 .settings/
+.metadata/
 
 # Intellij
 .idea/
