@@ -41,5 +41,13 @@ Run in eclipse:
 (VisualisationKernel is the entry class)
 
 Load the layout (file -> load layout)
+2017_BasicExample_Layout.xml (located in your simulator execution folder)
+Tick the Show Graph and Show Lattices, optional: press i
+Left butten mouse for drag-drop unidirectional scrolling.
+
 Load the output csv file (file -> load csv data)
+2017_BasicExample_Pedestrian_0.0.csv (located in your simulator execution folder)
+Load the next output csv file (file -> load csv data), optional
+2017_BasicExample_Pedestrian_0.0.csv (located in your simulator execution folder)
+2017_BasicExample_XT_Density_0.0.csv
 Press play
