@@ -10,9 +10,9 @@ Agent-based pedestrian behavior simulators are computational systems that implem
 
 In order to develop a pedestrian simulator, multiple infrastructure and non-behavior concepts have to be implemented. Such components can be reused for the development of new simulation models if the simulator is designed as a modular simulation framework.
 
-For pedestrian dynamics research, the chair of Chair of Computational Modeling and Simulation created a Java-based pedestrian simulation framework. The framework links modern concepts of practical and theoretical computer science with our in-depth background in pedestrian dynamics; thus, it is a perfect platform to implement new but also well-known behavior modeling approaches from the field of pedestrian dynamics.
+For pedestrian dynamics research, the Chair of Computational Modeling and Simulation created a Java-based pedestrian simulation framework. The framework links modern concepts of practical and theoretical computer science with our in-depth background in pedestrian dynamics; thus, it is a perfect platform to implement new but also well-known behavior modeling approaches from the field of pedestrian dynamics.
 
-The simulation framework enables our research group to rapidly research, develop, implement, analyze, and compare pedestrian behavior models. The system is a generic, extensible, and modular approach that integrates a broad range of pedestrian, utility and layout models. MomenTUM provides a flexible execution pipeline to run any number of behavior models in arbitrary combinations. For example, a cellular automata model can be connected to a graph based routing model that is connected to an origin-destination matrix approach.
+The simulation framework enables our research group to rapidly research, develop, implement, analyze, and compare pedestrian behavior models. The system is a generic, extensible, and modular approach that integrates a broad range of pedestrian, utility and layout models. MomenTUM provides a flexible execution pipeline to run any number of behavior models in arbitrary combinations. For example, a cellular automata model can be connected to a graph-based routing model that is connected to an origin-destination matrix approach.
 
 The unique qualities of MomenTUM help to design and execute simulations without writing code and to add new theory implementations without changing the given infrastructure. Thus, MomenTUM is a simulation system that empowers researchers and practitioners by providing a flexible toolbox that adapts to the needs of its users. 
 
@@ -66,9 +66,9 @@ Permission is hereby granted, free of charge, to use and/or copy this software f
 
 
 However, further rights are not granted.
-If you need another license or specific rights, contact us!
+If you want to contribute or need another license, contact us!
 
-The copyright notice Licence.txt  shall be included in all copies or substantial portions of the Software.
+The copyright notice Licence.txt shall be included in all copies or substantial portions of the Software.
 
 ## Copyright notes
 MomenTUM uses several software libraries. The corresponding licenses can be found in the third-party lib folders. Other libraries will provide their licenses via Maven.
