@@ -94,38 +94,6 @@ public class CsvWriterSource extends SingleSetWriterSource {
 	public String readSingleValue(String outputTypeName) {
 		
 		return this.currentCluster.getStringData(this.currentIdentification, outputTypeName);
-		
-//		AnalysisElementSet dataElementSet = new AnalysisElementSet();
-		
-//		for(String pedestrianId : this.getPedestrianIds()) {
-//			
-//			if(!this.currentCluster.isEmpty()) {
-//				
-//				if(AnalysisType.analysisDoubleTypes.contains(dataType)) {
-//				
-//					dataElementSet.addElement(
-//							new AnalysisElement(pedestrianId, 
-//									this.currentCluster.getDoubleData(pedestrianId, dataType), 
-//									timeStep));
-//	
-//				}
-//				else {
-//					
-//					dataElementSet.addElement(
-//							new AnalysisElement(pedestrianId, 
-//									this.currentCluster.getIntegerData(pedestrianId, dataType), 
-//									timeStep));
-//				}
-//			}
-//			else {
-//				
-//				dataElementSet = null;
-//			}
-//		}
-//		
-//		return dataElementSet;
-//		// TODO Auto-generated method stub
-//		return null;
 	}
 
 	@Override
