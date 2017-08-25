@@ -69,7 +69,6 @@ public class DensityEdgeModel extends ShapeModel {
 	/**
 	 * @param customizationController.getCustomizationModel() 
 	 * @param obstacleConfiguration
-	 * @param coreModel
 	 */
 	public DensityEdgeModel(String id, CustomizationController customizationController) {
 		

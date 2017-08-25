@@ -87,6 +87,7 @@ public class LoadLayoutHandler extends LoadHandler {
 					configurationManager.getSimulatorConfiguration().getTimeState().getTimeStepDuration());
 			}
 			else {
+				
 				coreController.getInteractionViewController().getTimeLineModel().setEndTime(
 						configurationManager.getSimulatorConfiguration().getSimEnd());
 					coreController.getInteractionViewController().getTimeLineModel().setTimeStepDuration(

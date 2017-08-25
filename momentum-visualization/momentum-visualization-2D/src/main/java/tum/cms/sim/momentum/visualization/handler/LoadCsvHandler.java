@@ -73,12 +73,17 @@ public class LoadCsvHandler extends LoadHandler {
 	@Override
 	public void load(CoreController coreController, File file)
 			throws Exception {
-		if (coreController.getCoreModel().getCsvLoaded() && coreController.getCoreModel().getLayoutLoaded()) {
-			coreController.resetCoreModel();
-		}
+		
+//		if (coreController.getCoreModel().getCsvLoaded() && coreController.getCoreModel().getLayoutLoaded()) {
+//		
+//			coreController.resetCoreModel();
+//		}
+		
 		if (file instanceof CsvFile) {
+			
 			CsvFile csvFile = new CsvFile(file.getPath());
 			csvFile.setType(((CsvFile) file).getType());
+			
 			try {
 
 				CsvReader dataSetReader = new CsvReader(csvFile.getAbsolutePath(), OutputType.timeStep.name(),
@@ -89,6 +94,7 @@ public class LoadCsvHandler extends LoadHandler {
 						coreController.getInteractionViewController().getTimeLineModel().getEndTime(), 
 						coreController.getInteractionViewController().getTimeLineModel().getTimeStepDuration(),
 						csvFile.getType());
+				
 				simulationOutputReader.setInnerClusterSeparator(csvFile.getType().getIdHeader());
 				simulationOutputReader.readIndex(WriterSourceConfiguration.indexString);
 				
@@ -98,20 +104,25 @@ public class LoadCsvHandler extends LoadHandler {
 				coreController.getSimulationOutputReaderList().add(simulationOutputReader);
 
 				if (!CsvType.isCustomType(csvFile.getType())) {
+					
 					AnimationCalculations.calculateVisualizationOfTimeStep(0d,
 							coreController, simulationOutputReader);
+					
 					coreController.getInteractionViewController().getTimeLineModel()
 							.setTimeStepMultiplicator(simulationOutputReader.getTimeStepDifference());
-				} else {
+				}
+				else {
+					
 					simulationOutputReader.startReadDataSetAsync();
 					coreController.getVisualizationModel().addCustomShapes(csvFile.getType());
 					coreController.getVisualizationController().bindCustomShapes(csvFile.getType());
-
 				}
+				
 				UserPreferenceHandler.putProperty(PropertyType.outputCsvPath, csvFile.getParent());
 				QuickloadHandler.addFile(csvFile);
 				coreController.getCoreModel().setCsvLoaded(true);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 
 				coreController.getCoreModel().setCsvLoaded(false);
 				coreController.getVisualizationModel().clearPedestrians();

@@ -48,6 +48,7 @@ import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.handler.ExitHandler;
 import tum.cms.sim.momentum.visualization.handler.QuickloadHandler;
 import tum.cms.sim.momentum.visualization.handler.UserPreferenceHandler;
+import tum.cms.sim.momentum.visualization.model.CoreModel;
 
 public class VisualizationKernel extends Application {
 	
@@ -57,7 +58,9 @@ public class VisualizationKernel extends Application {
 		// start core view
 		URL uri = this.getClass().getResource("view/CoreView.fxml");
 		ResourceBundle bundle = ResourceBundle.getBundle("tum.cms.sim.momentum.visualization.view.resources");  
-	    Parent p = FXMLLoader.load(uri, bundle);
+		FXMLLoader loader = new FXMLLoader(uri, bundle);
+	    Parent parent = loader.load();
+	    CoreController coreController = loader.getController();
 	    
 	    //load stored properties
 	    UserPreferenceHandler.loadPropertiesFromFile();
@@ -65,7 +68,7 @@ public class VisualizationKernel extends Application {
 
 	    try {
 			
-			Scene scene = new Scene(p);
+			Scene scene = new Scene(parent);
 			
 			primaryStage.setMaximized(true);
 			primaryStage.setScene(scene);
@@ -77,7 +80,7 @@ public class VisualizationKernel extends Application {
 				@Override
 				public void handle(WindowEvent arg0) {
 
-					new ExitHandler().clean();
+					new ExitHandler(coreController).clean();
 				}
 			});
 			

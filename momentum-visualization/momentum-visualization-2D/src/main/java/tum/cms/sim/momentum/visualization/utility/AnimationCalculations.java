@@ -66,7 +66,7 @@ import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
  * loaded data and updating the corresponding models that hold the data for the
  * visualization.
  * 
- * @author Martin Sigl
+ * @author Martin Sigl, Peter Kielar
  *
  */
 public abstract class AnimationCalculations {
@@ -107,7 +107,6 @@ public abstract class AnimationCalculations {
 		CustomizationController customizationController = coreController.getVisualizationController().getCustomizationController();
 		
 		Map<String, ShapeModel> customMap = visualizationModel.getSpecificCustomShapesMap(type);
-		customMap.clear();
 		Map<String, ShapeModel> newCustomMap = new HashMap<String, ShapeModel>();
 
 		if (!dataStep.isEmpty()) {

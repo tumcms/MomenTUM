@@ -83,6 +83,7 @@ public class CoreController implements Initializable {
 	// models
 	@FXML
 	private static CoreModel coreModel = new CoreModel();
+	
 	@FXML
 	private VisualizationModel visualizationModel = null;
 	private DetailController detailController = null;
@@ -127,7 +128,7 @@ public class CoreController implements Initializable {
 		layerConfigurationViewController.bindCoreModel(this);
 		detailViewController.bindCoreModel(this);
 	}
-
+	
 	public void resetCoreModel() throws Exception {
 
 		coreModel.setResolution(1);
@@ -156,15 +157,20 @@ public class CoreController implements Initializable {
 	public void cleanOnExit() {
 
 		try {
+			
 			resetCoreModel();
+			
 			for (SimulationOutputReader simReader : simulationOutputReaderList) {
+				
 				simReader.endReadDataSetAsync();
 			}
 
 			getVisualizationController().getVisibilitiyModel().createForPreferences();
 			getVisualizationController().getSnapshotModel().createForPreferences();
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 

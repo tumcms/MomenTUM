@@ -369,6 +369,7 @@ public class InteractionController implements Initializable {
 		BigDecimal sliderValue = new BigDecimal(continiuousSliderValue);
 		return sliderValue.round(new MathContext(preDigits, RoundingMode.HALF_EVEN)).doubleValue();
 	}
+	
 	public void resetTimeLineModel() throws Exception {
 		
 		try {
@@ -378,6 +379,7 @@ public class InteractionController implements Initializable {
 		} catch (Exception e) {
 			//e.printStackTrace();
 		}
+		coreController.getSimulationOutputReaderList().clear();
 		timeLineModel.isAnimatingProperty().set(false);
 		timeLineModel.playingProperty().set(false);
 		timeLineModel.recordingProperty().set(false);

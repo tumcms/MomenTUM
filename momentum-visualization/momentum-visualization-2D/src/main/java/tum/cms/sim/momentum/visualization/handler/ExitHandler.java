@@ -33,12 +33,20 @@
 package tum.cms.sim.momentum.visualization.handler;
 
 import javafx.application.Platform;
+import tum.cms.sim.momentum.visualization.controller.CoreController;
 
 public class ExitHandler { 
 
+	private CoreController coreController = null;
+	
+	public ExitHandler(CoreController coreController) {
+
+		this.coreController = coreController;
+	}
+
 	public void clean() {
 		
-		// TODO add cleanonexit method from corecontroller
+		this.coreController.cleanOnExit();
     	Platform.exit();
 	}
 }

@@ -233,16 +233,6 @@ private CoreController coreController;
 	@FXML
 	public void onQuit(ActionEvent event) throws Exception {
 
-		coreController.getSimulationOutputReaderList().forEach(
-				reader -> {
-					try {
-						reader.endReadDataSetAsync();
-					}
-					catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
-		
-		new ExitHandler().clean();
+		new ExitHandler(coreController).clean();
 	}
 }
