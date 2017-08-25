@@ -1,11 +1,12 @@
 # MomenTUM
-target.properties
+momentum-visualization-2D.properties
 
 # Eclipse
 .classpath
 .project
 .settings/
 .metadata/
+.recommenders
 
 # Intellij
 .idea/
