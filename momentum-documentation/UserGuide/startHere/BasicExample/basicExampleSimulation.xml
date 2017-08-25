@@ -157,7 +157,7 @@
 			</complexProperty>
 			<complexProperty name="fulfilmentDuration" type="List" valueType="Double">
 			   	<entry index="1" value="60.0"/>
-			    <entry index="2" value="10.0"/>
+			    <entry index="2" value="1.0"/>
 			    <entry index="3" value="1.0"/>
 			</complexProperty>
 		</strategical>
