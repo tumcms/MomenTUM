@@ -23,7 +23,8 @@
 	<!-- We use the link option of the layout scenario to load it. -->
 	<!-- The content of the scenario could have been copy-pasted to into the scenario tag. -->
 	<layouts>
-		<scenario id="0" layoutLink="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleLayout.xml"/>
+		<!-- TODO Warning: update path -->
+		<scenario id="0" layoutLink="Path to basicExampleLayout.xml"/>
 	</layouts>
 	
 	<!-- We need 2 lattices. -->
@@ -146,7 +147,8 @@
 	<strategicalModels>
 		<strategical id="9" name="odMatrx" type="ODMatrix" perceptualModel="0">
 			<complexProperty name="originDestination" type="CsvMatrix" valueType="Double">
-				<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleODMatrix.csv" separator=";"/>
+				<!-- TODO Warning: update path -->
+				<entry file="Path to basicExampleODMatrix.csv" separator=";"/>
 			</complexProperty>
 			<complexProperty name="behaviorType" type="List" valueType="String">
 			    <entry index="1" value="Staying"/>
