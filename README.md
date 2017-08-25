@@ -68,10 +68,12 @@ Permission is hereby granted, free of charge, to use and/or copy this software f
 However, further rights are not granted.
 If you need another license or specific rights, contact us!
 
-The above copyright notice Licence.txt  shall be included in all copies or substantial portions of the Software.
+The copyright notice Licence.txt  shall be included in all copies or substantial portions of the Software.
 
 ## Copyright notes
 MomenTUM uses several software libraries. The corresponding licenses can be found in the third-party lib folders. Other libraries will provide their licenses via Maven.
+
+
 ## Contributors
 Many researchers and students of the Technical University Munich contributed to the simulation framework:
 
