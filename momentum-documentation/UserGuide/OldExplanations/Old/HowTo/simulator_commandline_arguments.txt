@@ -1,0 +1,12 @@
+--config "${workspace_loc}\MomenTumV2Simulator\config\experimentConfiguration\IKOM_Layout_Interest_SIMPAT.xml" 
+Path to xml configuration
+
+--debug 
+Is not important at the moment, 
+
+--local en-EN 
+Language, en-En normal, important for read of config and write of output
+
+--loop 1
+number of simulations which should be executed by this simulator
+for each loop the text $LOOP$ of the config will exchanged by the loop number

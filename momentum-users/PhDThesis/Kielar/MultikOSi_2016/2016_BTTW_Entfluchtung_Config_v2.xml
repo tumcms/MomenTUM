@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="0.9.0" simulationName="2016_BTTW_Entfluchtung_Config_Layout_v1" simEnd="400.0" threads="3" timeStepDuration="0.4">
+
+	<queryModels>
+		<query id="0" name="basicQuery" type="BasicQuery">
+			<property name="navigationDistanceRadius" type="Double" value="0.35"/>
+			<property name="navigationSizePolygon" type="Double" value="0.9"/>
+			<property name="navigationRotationPolygon" type="Double" value="75.0"/>
+		</query>
+	</queryModels>
+
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries"/>
+	</perceptualModels>
+
+	<operationalModels>
+		<operational id="0" name="operational" perceptualModel="0" queryModel="0">
+			<standingReference modelId="0"/>
+			<walkingReference modelId="0"/>
+		</operational>
+	</operationalModels>
+
+	<walkingModels>
+		<walking id="0" name="MoussaidHeuristic" type="MoussaidHeuristic">
+			<property name="angleSteps" type="Integer" value="10"/>
+			<property name="angleDeviation" type="Integer" value="100"/>
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_k" type="Double" value="50.0"/>
+		</walking>
+	</walkingModels>
+	<standingModels>
+		<standing id="0" name="fixedStanding" type="FixedStanding" />
+	</standingModels>
+
+	<tacticalModels>
+		<tactical id="2" name="tactical"  perceptualModel="0" queryModel="0">
+			<participatingReference modelId="0"/>
+			<queuingReference modelId="0"/>
+			<routingReference modelId="0"/>
+			<searchingReference modelId="0"/>
+		</tactical>
+	</tacticalModels>
+
+	<participatingModels>
+		<participating id="0" name="nothing" type="NoParticipating"/>
+	</participatingModels>
+	<queuingModels>
+		<queuing id="0" name="nothing" type="NoQueuing"/>
+	</queuingModels>
+	<routingModels>
+		<routing id="0" name="unifiedRouting" type="UPRM">
+			<!-- The herding properties, only if herding is set to true-->
+			<property name="herding" type="Boolean" value="false"/>
+			<property name="spatialBoundary" type="Double" value="2.0"/>
+			<property name="fastestPath" type="Double" value="0.2"/>
+			<property name="leaderPath" type="Double" value="0.8"/> 
+			<property name="herdingBoundary" type="Double" value="25"/>
+			<property name="lostPerSecond" type="Double" value="-0.0417"/>
+			<complexProperty name="resultMode" type="CsvMatrix" valueType="Double">
+				<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\config\Kielar\MultikOSi_2016\2016_BTTW_UnifiedRouting_Config_v1.csv" separator=";"/>
+			</complexProperty>
+		</routing>
+	</routingModels>
+	<searchingModels>
+		<searching id="0" name="noSearching" type="NoSearching"/>
+	</searchingModels>
+
+	<strategicalModels>
+		<strategical id="3" name="noDecision" type="NoDecision" perceptualModel="0" queryModel="0">
+		</strategical>
+	</strategicalModels>
+
+	<generators>
+		<generator id="0" name="InstantGenerator" type="Instant" scenario="0" origin="0" seed="0">
+			<complexProperty name="startPositions" type="CsvMatrix" valueType="Double">
+				<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\config\Kielar\MultikOSi_2016\2016_BTTW_StartPositions.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+	</generators>
+
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.04"/>
+			<property name="maximalVelocity" type="Double" value="1.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>
+			<property name="groupSize" type="Integer" value="1"/>
+		</pedestrianSeed>
+	</pedestrianSeeds>
+
+	<absorbers>
+		<absorber id="0" name="RegionExitAborber" scenario="0" destination="0" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="1.0"/>
+		</absorber>
+	</absorbers>
+
+	<outputWriters>
+		<outputWriter id="1" name="csvWriter" type="csvSingleWriter">
+			<property name="call" type="Integer" value="5"/>
+			<property name="file" type="File" value="./MultikOSi_2016_BTTW_Entfluchtung_Data_Final.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="targetID"/>
+				<entry index="7" value="groupID"/>
+				<entry index="8" value="leader"/>
+				<entry index="9" value="xNextWalkingTarget"/>
+				<entry index="10" value="yNextWalkingTarget"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="targetID" type="Format" value="%d"/>
+				<property name="groupID" type="Format" value="%d"/>
+				<property name="leader" type="Format" value="-"/>
+				<property name="xNextWalkingTarget" type="Format" value="%.2f"/>
+				<property name="yNextWalkingTarget" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+
+
+	<lattices>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+	</lattices>
+
+	<graphs>
+		<graphModel name="routing" id="0">
+			<graphOperation name="fromConfig" type="FromConfiguration" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+				<property name="precisionSeed" type="Double" value="0.001"/>
+			</graphOperation> 
+		</graphModel>
+	</graphs>
+
+	<lattices>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+	</lattices>
+
+	<layouts>
+		<scenario id="0" layoutLink="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\config\Kielar\MultikOSi_2016\2016_BTTW_Entfluchtung_Layout_v3.xml"/>
+	</layouts>
+</simulator>

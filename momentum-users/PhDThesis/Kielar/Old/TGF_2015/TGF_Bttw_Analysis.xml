@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulator version="MomenTumV2.0.0" simulationName="TGF_UR_BTTW2015_Analysis" simEnd="5000.0" threads="3" timeStepDuration="0.05">
+	<operationalModels/>
+	<tacticalModels/>
+	<strategicalModels/>
+	<perceptualModels/>
+	<queryModels/>
+	<metaModels/>
+	<analysisModels>
+		<analysis name="TurningAngleAnalysis" type="turningAngle" id="0">
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\TGF_Bttw_Calibration_Output.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="PathDistanceAnalysis" type="pathDistance" id="1">
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\TGF_Bttw_Calibration_Output.csv"/>
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels>
+	<generators/>
+	<pedestrianSeeds/>
+	<absorbers/>
+	<outputWriters>
+		<outputWriter id="0" name="turningAngleOutputWriter" type="csvWriter">
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./TGF_UR_Analyis_TurningAngle_Output.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="turningAngle"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="turningAngle" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="pathDistanceeOutputWriter" type="csvWriter">
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./TGF_UR_Analyis_PathDistance_Output.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="pathDistance"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="1"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="pathDistance" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+	<layouts>
+		<scenario layoutLink="./config/Kielar/TGF_2015/TGF_Bttw_Scenario_X.xml" />
+	</layouts>
+</simulator>

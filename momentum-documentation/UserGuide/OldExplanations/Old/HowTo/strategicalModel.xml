@@ -1,0 +1,173 @@
+<strategical id="0" name="noStrategy" type="NoDecision" perceptualModel="0" queryModel="0"/>
+	
+<strategical id="0" name="shortestDestinationDijkstra" type="ShortestDestination" perceptualModel="0" queryModel="0"/>
+	
+<!-- This model can generate tactical task -->
+<strategical id="0" name="strictOrderModel" type="StrictOrder" perceptualModel="0" queryModel="0">
+	<!--  The order the locations have to be visited -->
+	<!--  The values correspond to the area ids -->
+	<complexProperty name="areaOrder" type="List" valueType="Integer"> 
+	    <entry index="0" value="1"/>
+	    <entry index="1" value="2"/>
+	</complexProperty>
+	<!--  The navigation task at the location, the index corresponds to the areaOrder list -->
+	<!-- Perform | Queue -->
+	<complexProperty name="areaTask" type="List" valueType="Integer"> 
+	    <entry index="0" value="Queue"/>
+	    <entry index="1" value="Perform"/>
+	</complexProperty>
+	<!-- Duration a pedestrian has to stay at the location in seconds-->
+	<!-- The index corresponds to the areaOrder list -->
+	<complexProperty name="areaDuration" type="List" valueType="Double"> 
+	    <entry index="0" value="20.0"/>
+	    <entry index="1" value="Infinity"/>
+	</complexProperty>
+</strategical>
+
+<!-- row is origin id, column is destination id -->
+<strategical id="0" name="odMatrx" type="ODMatrix" perceptualModel="0" queryModel="0">
+	<complexProperty name="originDestination" type="Matrix" valueType="Double">
+		<row index="0">
+			<column index="2" value="1.0"/>
+			<column index="3" value="0.0"/>
+		</row>
+		<row index="1">
+			<column index="2" value="0.5"/>
+			<column index="3" value="0.5"/>
+		</row>
+	</complexProperty>
+	<complexProperty name="fulfillmentDuration" type="List" valueType="Double">
+	    <entry index="0" value="10.0"/> <!-- Index is destination / intermediate ID and the value the time in seconds to stay at a location -->
+	    <entry index="1" value="0.0"/>
+	    <entry index="2" value="5.0"/>
+	</complexProperty>
+	<complexProperty name="behaviorType" type="List" valueType="String">
+	    <entry index="0" value="Participating"/> <!-- Index is destination / intermediate ID and behavior Perform or Queue at the location-->
+	    <entry index="1" value="Queuing"/>
+	    <entry index="2" value="Participating"/>
+	</complexProperty>
+</strategical>
+
+<strategical id="0" name="interestFuncion" type="InterestFunction" perceputalModel="0" queryModel="0">
+	<property name="csvSeparator" type="String" value=";"/>
+	<property name="interarrivalDistributions" type="File" value="./interarrivalDistributions.csv"/>
+	<property name="serviceTimeDistributions" type="File" value="./serviceTimeDistributions.csv"/>
+	<!-- Is a csv file 2 cells width, n cells height
+	     location separation by left empty cell and right cell containing id for location
+		 after empty and id cell for the first time slot a double left and double right in seconds
+		 if next left and right are empty the next distribution slot for the location is given next (left value, right perscent)
+		 thus next is double right and left
+		 if only the left slot is empty a new location is given.
+		 
+		 Id1,empty
+		 starttime,endtime
+		 value,percent
+		 value,percent
+		 empty,empty
+		 starttime,endtime
+		 value,percent
+		 value,percent
+		 empty,empty
+		 Id2,empty
+		 starttime,endtime
+		 value,percent
+		 value,percent
+		 empty,empty
+		 starttime,endtime
+		 value,percent
+		 value,percent
+		 empty,empty
+		 
+		 -->
+	<property name="pedestrianNumbers" type="File" value="./pedestrianNumbers.csv"
+	<!-- starttime;endtime 
+	     valueMaxPeds;startPeds
+	     changePeds;locationid
+	     changePeds;locationid
+	     ...
+	     empty;empty
+	     starttime;endtime 
+	     valueMaxPeds;empty
+	     .... -->
+</strategical>
+
+<!-- This model can generate tactical task -->
+<strategical id="0" name="pccModel" type="PedestrianCogntiveControl" perceputalModel="0" queryModel="0">
+
+	<!-- Expected number of pedestrians visits in the simulation -->
+	<property name="sumVisits" type="Integer" value="8430"/>
+	
+	<!-- The internal plan size -->
+	<property name="scheduleSize" type="Integer" value="3"/>
+	
+	<!-- For specific output writer, which group id should be used as output source -->
+	<property name="groupOutputId" type="Integer" value="1"/>
+	
+	<!-- Internal cognitive Clock -->
+	<property name="cognitiveClock" type="Double" value="0.25"/>
+
+	<!-- Describes the distribution of level of layout familiarity of the pedestrian -->
+	<property name="familiarityMinimal" type="Double" value="0.5"/>	
+	<property name="familiarityBinSize" type="Double" value="0.1"/>
+	
+	<complexProperty name="familiarityHistogram" type="List" valueType="Double">
+		<entry index="0" value="0.2"/> 
+		<entry index="1" value="0.2"/>
+		<entry index="2" value="0.2"/>
+		<entry index="3" value="0.2"/> 
+		<entry index="4" value="0.2"/> 
+	</complexProperty>
+	
+	<!-- add here the goals -->
+	<propertyContainer id="0" name="goalA">
+	
+		<!-- Reference to the area id of the layout which is associated to that goal, can be destination or intermediate -->
+		<property name="areaId" type="Integer" value="0"/> 
+		
+		<!-- Describe the preference type of a goal, this can be shared with other goals for substitution effects -->
+		<property name="preferenceId" type="Integer" value="0"/>
+
+		<!-- If the goal can be visited more then once (toilet) or a single time (ticket automata) -->
+		<property name="oneTime" type="Boolean" value="False"/>
+		
+		<!-- Service time is a gamma distribution k * theta is mean -->
+		<property name="serviceTimeGammaK" type="Double" value="1.0"/>
+		<property name="serviceTimeGammaTheta" type="Double" value="1.0"/>
+		
+		<!-- Interarrival time is a poisson where lambda is mean -->
+		<property name="interarrivalTimeLambda" type="Double" value="1.0"/>
+		
+		<!-- Expected number of visitors for this goal over the simulation, important for the preference calculation -->
+		<property name="expectedVisitors" type="Integer" value="10"/> 
+		
+		<!-- the occupancy type describes if crowded places are bad (waiting) or good (Engage) Engage | Waiting -->
+		<property name="motivationalType" type="String" value="Approach"/> <!--  Approach | Avoidance | None -->
+		
+		<!-- the occupancy type describes if crowded places are bad (waiting) or good (Engage) Engage | Waiting -->
+		<property name="occupancyType" type="String" value="Waiting"/> <!--  Engage | Waiting | None -->
+		
+		<!-- preference id that are predecessor goals of this goal -->
+		<complexProperty name="predecessorPreferences" type="List" valueType="Integer">
+	    	<entry index="0" value="10.0"/> 
+	    	<entry index="1" value="0.0"/>
+	   		<entry index="2" value="5.0"/>
+		 </complexProperty>
+		 
+		<!-- Opening hours, in raw 0 are start times and raw 1 are the corresponding end times in minutes.
+		     The times will be translate into simulation time seconds x * 60 -->
+		<complexProperty name="openingHours" type="Matrix" valueType="Integer">
+			<row index="0">
+				<column index="0" value="0"/>
+				<column index="1" value="120"/>
+			</row>
+			<row index="1">
+				<column index="0" value="60"/>
+				<column index="1" value="180"/>
+			</row>
+		</complexProperty>
+	</propertyContainer>
+	
+	<propertyContainer id="1" name="goalB">
+		<!-- ... -->
+	</propertyContainer>
+</strategical>

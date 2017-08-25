@@ -1,0 +1,6 @@
+<outputWriter id="0" name="layoutWriter" call="end" type="configurationWriter">
+		<property name="file" type="File" value="./layout.xml"/>
+		<writerSource name="xml" loop="none">
+			<property name="configurationNode" type="String" value="layoutConfiguration"/>
+		</writerSource>
+</outputWriter>

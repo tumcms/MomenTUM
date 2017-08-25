@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulator version="MomenTumV2.0.0" simulationName="PreBttwRouting" simEnd="300.0" threads="1" timeStepDuration="0.1">
+	<operationalModels>
+			<!-- <operational id="0" name="socialForceModel" call="always" type="SocialForce" perceptualModel="0">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="2.0e3"/>
+			<property name="mass_behaviour_B" type="Double" value="0.08"/>	
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="0.01"/>
+		</operational> -->
+		<operational id="0" name="bonneaud" call="always" type="Bonneaud" perceptualModel="0">
+			<!--<property name="initialAngularVelocity" type="Double" value="0.0"/>-->
+			<property name="STATIC_TARGET_DAMPING" type="Double" value="2.0"/>
+			<property name="STATIC_TARGET_ATTRACT" type="Double" value="0.4"/>
+			<property name="STATIC_TARGET_DISTANCE" type="Double" value="0.1"/>
+			<property name="STATIC_TARGET_ATTRACT_ASSURANCE" type="Double" value="0.5"/>
+			<property name="STATIC_OBSTACLE_DISTANCE" type="Double" value="1.0"/>
+			<property name="STATIC_OBSTACLE_REPULSION" type="Double" value="0.7"/>
+			<property name="STATIC_OBSTACLE_REPULSION_DECAY" type="Double" value="0.3"/>
+			<property name="MOVING_OBSTACLE_DISTANCE" type="Double" value="2.0"/>
+			<property name="MOVING_OBSTACLE_REPULSION" type="Double" value="10.0"/>
+			<property name="MOVING_OBSTACLE_HEADING" type="Double" value="100.0"/>
+			<property name="TAU_SPEED_BEARING" type="Double" value="2.0"/>
+			<property name="TAU_SPEED_DEACCEL" type="Double" value="3.0"/>
+			<property name="TAU_SPEED_PREFER" type="Double" value="2.0"/>
+			<property name="MAX_OBSTACLE_SIZE" type="Double" value="5.0"/>
+		</operational>
+	</operationalModels>
+	<tacticalModels>
+		<tactical id="0" name="noRouting" call="always" type="NoRouting" perceptualModel="0" />
+		 <!-- <tactical id="0" name="dijkstra" call="always" type="Dijkstra" perceptualModel="0">
+			<property name="haloRadius" type="Double" value="2.0"/>
+		</tactical> -->
+	</tacticalModels>
+	<strategicalModels>
+		<strategical id="0" name="noStrategy" call="always" type="NoDecision" perceptualModel="0"/>
+	</strategicalModels>
+	<perceptualModels>
+		<perceptual id="0" name="worldKnowledge" type="WorldKnowledge"/>
+	</perceptualModels>
+	<generators>
+		<generator id="0" name="areaGenerator" call="25" scenario="0" origin="0" seed="0" geometryType="Point" intervalType="StartEnd">
+			<interval type="StartEnd">
+				<property name="startTime" type="Double" value="0"/>
+				<property name="endTime" type="Double" value="Infinity"/>
+			</interval>
+			<property name="maximumPedestrians" type="Integer" value="1"/>		
+			<property name="amountPedestriansEachCall" type="Integer" value="1"/>		
+			<property name="basicHeading" type="Double" value="0"/>
+		</generator>
+		<generator id="1" name="areaGenerator" call="25" scenario="0" origin="2" seed="0" geometryType="Point" intervalType="StartEnd">
+			<interval type="StartEnd">
+				<property name="startTime" type="Double" value="0"/>
+				<property name="endTime" type="Double" value="Infinity"/>
+			</interval>
+			<property name="maximumPedestrians" type="Integer" value="1"/>		
+			<property name="amountPedestriansEachCall" type="Integer" value="1"/>		
+			<property name="basicHeading" type="Double" value="0"/>
+		</generator>
+	</generators>
+	<pedestrianSeeds>
+		<pedestrianSeed id="1" name="basic" type="HistogramDistribution">
+			<property name="binWidthStart" type="Double" value="1.64490142857143"/>	
+			<property name="binWidth" type="Double" value="0.1236"/>	
+			<property name="radiusMeter" type="Double" value="0.5"/>	
+			<complexProperty name="bins" type="List" valueType="Double">
+				<entry index="0" value="0.042857143"/>
+				<entry index="1" value="0.071428571"/>
+				<entry index="2" value="0.228571429"/>
+				<entry index="3" value="0.257142857"/>
+				<entry index="4" value="0.214285714"/>
+				<entry index="5" value="0.114285714"/>
+				<entry index="6" value="0.028571429"/>
+				<entry index="7" value="0.028571429"/>
+				<entry index="8" value="0.014285714"/>
+			</complexProperty>	
+		</pedestrianSeed> 
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.34"/>
+			<property name="maximalVelocity" type="Double" value="2.7"/>
+			<property name="radiusMeter" type="Double" value="0.5"/>		
+		</pedestrianSeed>
+	</pedestrianSeeds>	
+	<absorbers>
+		<absorber id="0" name="goalAbsorber" call="always" scenario="0" destination="1" type="DestinationInstantly"/>
+	</absorbers>
+	<outputWriters>
+		<outputWriter id="0" name="csvWriter" call="5" type="csvWriter">
+			<property name="file" type="File" value="./testOuptut.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="time"/>
+				<entry index="2" value="id"/>
+				<entry index="3" value="x"/>
+				<entry index="4" value="y"/>
+				<entry index="5" value="xHeading"/>
+				<entry index="6" value="yHeading"/>
+				<entry index="7" value="xVelocity"/>
+				<entry index="8" value="yVelocity"/>
+				<entry index="9" value="desiredVelocity"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="time" type="Format" value="%.2f"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.4f"/>
+				<property name="yHeading" type="Format" value="%.4f"/>
+				<property name="xVelocity" type="Format" value="%.4f"/>
+				<property name="yVelocity" type="Format" value="%.4f"/>
+				<property name="desiredVelocity" type="Format" value="%.4f"/>
+			</writerSource>
+		</outputWriter>
+			<outputWriter id="1" name="consoleWriter" call="5" type="consoleWriter">
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="time"/>
+				<entry index="2" value="id"/>
+				<entry index="3" value="x"/>
+				<entry index="4" value="y"/>
+				<entry index="5" value="xHeading"/>
+				<entry index="6" value="yHeading"/>
+				<entry index="7" value="xVelocity"/>
+				<entry index="8" value="yVelocity"/>
+				<entry index="9" value="desiredVelocity"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="time" type="Format" value="%.2f"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.4f"/>
+				<property name="yHeading" type="Format" value="%.4f"/>
+				<property name="xVelocity" type="Format" value="%.4f"/>
+				<property name="yVelocity" type="Format" value="%.4f"/>
+				<property name="desiredVelocity" type="Format" value="%.4f"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="2" name="layoutWriter" call="end" type="configurationWriter">
+			<property name="file" type="File" value="./testLayout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+	</outputWriters>
+	<layouts>
+		<scenario id="0" name="groundPlan" maxX="100.0" maxY="10.0" minX="0.0" minY="0.0">
+			<area id="0" name="origin" type="Origin">
+				<point x="0.0" y="5.0"/>
+				<point x="6.0" y="5.0"/>
+				<point x="6.0" y="10.0"/>
+				<point x="0.0" y="10.0"/>
+			</area>
+			<area id="2" name="origin1" type="Origin">
+				<point x="0.0" y="0.0"/>
+				<point x="6.0" y="0.0"/>
+				<point x="6.0" y="5.0"/>
+				<point x="0.0" y="5.0"/>
+			</area>
+			<area id="1" name="dest" type="Destination">
+				<point x="98.0" y="0.0"/>
+				<point x="100.0" y="0.0"/>
+				<point x="100.0" y="2.0"/>
+				<point x="98.0" y="2.0"/>
+			</area>
+			<obstacle name="spike1" type="Solid">
+				<point x="65.0" y="0.0"/>
+				<point x="75.0" y="0.0"/>
+				<point x="75.0" y="6.5"/>
+			</obstacle>	
+			<obstacle name="spike2" type="Solid">
+				<point x="55.0" y="10.0"/>
+				<point x="45.0" y="10.0"/>
+				<point x="55.0" y="3.5"/>
+			</obstacle>			
+			<obstacle name="outerWallTop" type="Wall">
+				<point x="0.0" y="0.0"/>
+				<point x="100.0" y="0.0"/>
+			</obstacle>
+			<obstacle name="outerWallRight" type="Wall">
+				<point x="100.0" y="0.0"/>
+				<point x="100.0" y="10.0"/>
+			</obstacle>		
+			<obstacle name="outerWallBottom" type="Wall">
+				<point x="100.0" y="10.0"/>
+				<point x="0.0" y="10.0"/>
+			</obstacle>
+			<obstacle name="outerWallLeft" type="Wall">
+				<point x="0.0" y="10.0"/>
+				<point x="0.0" y="0.0"/>
+			</obstacle>
+	        <graph id="0" type="Visibility">
+        		<property name="cornerDistance" type="Double" value="2"/>
+        	</graph>
+		</scenario>
+	</layouts>
+</simulator>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphs>
+	<graphModel name="routing" id="0">
+		<graphOperation id="0" name="fromConfig" type="FromConfiguration" order="0">
+			<property name="graphId" type="Integer" value="0"/>
+			<property name="precisionSeed" type="Double" value="0.1"/>
+		</graphOperation>
+	</graphModel>
+	
+	<graphModel name="routing" id="1">
+		<graphOperation id="0" name="toConfiguration" type="ToConfiguration" order="0">
+			<property name="scenarioId" type="Integer" value="0"/>
+		</graphOperation>
+	</graphModel>
+</graphs>

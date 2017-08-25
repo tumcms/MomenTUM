@@ -1,0 +1,53 @@
+<!-- 
+loop: (optional in a xml configuration)
+updateType: Stepwise, Permutation, different looping typs
+accuracyDigits: Integer, number of digits for even-round of the variables
+
+loopVariable: (if loop exists, at least a single loopVariable is mandatory)
+name: String, substitution variable in the configuraiton, use $TEXT$ in configuration text
+initial: Double (optional), initial values of the variable (start < initial < steps * change)
+start: Double, start value of the variable's range as double
+change: Double, +delta value of the variable as double 
+steps: Integer, number of delta operations, starts with 0.
+-->
+
+<loop updateType="Stepwise" accuracyDigits="2">
+	<loopVariable name="LOOP" start="1.0" change="1.0" steps="3"/> 
+</loop>
+<!-- 
+Result:
+loop Number:(Data for Loop)
+1:(1.0), 2:(2.0), 3:(3.0), 4:(4.0)
+-->
+
+<loop updateType="Stepwise" accuracyDigits="2">
+	<loopVariable name="LOOP" start="1.0" change="1.0" steps="3"/> 
+	<loopVariable name="CC" initial="0.5" start="0.25" change="0.25" steps="4"/> 
+</loop>
+<!-- 
+Result:
+loop Number:(Data for Loop)
+1:(1.0, 0.5), 2:(2.0, 0.75), 3:(3.0, 1.0), 4:(4.0, 1.25)
+-->
+
+<loop updateType="Permutation" accuracyDigits="3">
+	<loopVariable name="LOOP" start="1.0" change="1.0" steps="1"/> 
+	<loopVariable name="CC" start="0.25" change="0.25" steps="1"/> 
+	<loopVariable name="XXN" start="0.5" change="0.5" steps="1"/> 
+</loop>
+<!-- 
+Result:
+1:(1.0, 0.25, 0.5), 2:(2.0,  0.25, 0.5) 3:(1.0, 0.5, 0.5), 4:(2.0,  0.5, 0.5)
+5:(1.0, 0.25, 1.0), 6:(2.0, 0.25, 1.0), 7:(1.0, 0.5, 1.0), 8:(2.0, 0.5, 1.0)
+ -->
+ 
+<loop updateType="Permutation" >
+	<loopVariable name="LOOP" start="1.0" change="1.0" steps="1"/> 
+	<loopVariable name="CC" initial="2.0" start="1.0" change="1.0" steps="1"/> 
+	<loopVariable name="XXN" start="1.0" change="1.0" steps="1"/> 
+</loop>
+<!-- 
+Result:
+1:(1.0, 2.0, 1.0), 2:(2.0, 2.0, 1.0) 3:(1.0, 1.0, 2.0), 4:(2.0, 1.0, 2.0)
+5:(1.0, 2.0, 2.0), 6:(2.0, 2.0, 2.0))
+ -->

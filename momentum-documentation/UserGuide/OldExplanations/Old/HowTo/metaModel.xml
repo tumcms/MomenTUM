@@ -1,0 +1,36 @@
+
+<!-- Bedestrian will use one of many operational models randomly selected -->
+<!-- The list references to the existing model types -->
+
+<meta id="0" name="exlusivOpertional" type="ExlusiveOperational">
+	<complexProperty name="randomForbiddenOperationalsName" type="List" valueType="String">
+		<entry index="0" value="SocialForce"/>
+		<entry index="1" value="StockCellular"/>
+	</complexProperty>
+</meta>
+
+
+<meta id="0" name="transiTum" type="TransiTum">
+	<complexProperty name="microscopicModel" type="List" valueType="String">
+		    <entry index="0" value="NoDecision"/> <!-- index is the model execution order and value the model enum name -->
+		    <entry index="1" value="Kneidl"/>
+		    <entry index="2" value="SocialForce"/> 
+	</complexProperty>
+	<complexProperty name="mesoscopicModel" type="List" valueType="String">
+			<entry index="0" value="NoDecision"/> <!-- index is the model execution order and value the model enum name -->
+		    <entry index="1" value="Kneidl"/>
+		    <entry index="2" value="StockCellular" /> 
+	</complexProperty>
+	<propertyContainer name="MultiscaleArea" id="0"> 
+		<property name="areaType" type="String" value="Microscopic"/>
+		<property name="radius" type="Double" value="2.5"/>
+		<property name="xPosition" type="Double" value="1.5"/>
+		<property name="yPosition" type="Double" value="3.5"/>
+	</propertyContainer>
+	<propertyContainer name="MultiscaleArea" id="1"> 
+		<property name="areaType" type="String" value="Microscopic"/>
+		<property name="radius" type="Double" value="2.5"/>
+		<property name="xPosition" type="Double" value="1.5"/>
+		<property name="yPosition" type="Double" value="3.5"/>
+	</propertyContainer>
+</meta>

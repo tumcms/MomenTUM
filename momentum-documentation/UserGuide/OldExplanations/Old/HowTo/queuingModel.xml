@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<queuing id="0" name="noQueuing" type="NoQueuing"/>
+
+<queuing id="0" name="angularQueuing" type="AngularQueueing" >
+	<!-- The number of trials for finding a position that does not collide and so on  -->
+	<property name="numberOfGambles" type="Integer" value="10"/>
+	 <!-- distance between pedestrian boundaries for the queuing position -->
+	<property name="safetyDistance" type="Double" value="0.1"/>
+	<!-- Angle in degree for finding a position behind the current queue tail -->
+	<property name="queueArc" type="Double" value="90"/>
+	<!-- Distance in meter for finding a position behind the current queue tail -->
+	<property name="queueDistance" type="Double" value="1"/>
+</queuing>

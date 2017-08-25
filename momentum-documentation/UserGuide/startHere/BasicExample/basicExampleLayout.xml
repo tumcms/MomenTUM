@@ -1,0 +1,113 @@
+﻿<!-- This example was created via the AutoCad Plugin and is linked to the exampeSimulation.xml layout scenario. -->
+<simulator version="MomenTumV2.0.0" simulationName="BasicExampleLayout">
+  <layouts>
+    <scenario id="0" name="pedSim" maxX="31" maxY="21.5" minX="0.5" minY="0">
+      <area id="0" name="DoorEntry" type="Origin">
+        <point x="28" y="21" />
+        <point x="30" y="21" />
+        <point x="30" y="21.5" />
+        <point x="28" y="21.5" />
+      </area>
+      <area id="1" name="Waiting" type="Intermediate">
+        <point x="5" y="11" />
+        <point x="27" y="11" />
+        <point x="27" y="16" />
+        <point x="5" y="16" />
+      </area>
+      <area id="2" name="Ticket" type="Intermediate">
+        <point x="2" y="7.5" />
+        <point x="2" y="5.5" />
+        <point x="2.5" y="5.5" />
+        <point x="2.5" y="7.5" />
+        <gatheringLine>
+          <point x="2" y="7.5" />
+          <point x="2" y="5.5" />
+        </gatheringLine>
+        <category name="ticket"/>
+      </area>
+      <area id="3" name="DoorExit" type="Destination">
+        <point x="0.5" y="15" />
+        <point x="0.5" y="13" />
+        <point x="1" y="13" />
+        <point x="1" y="15" />
+        <point x="0.5" y="15" />
+      </area>
+      <obstacle id="0" name="Wall0" type="Wall">
+        <point x="1" y="1" />
+        <point x="31" y="1" />
+      </obstacle>
+      <obstacle id="1" name="Wall1" type="Wall">
+        <point x="31" y="1" />
+        <point x="31" y="21" />
+      </obstacle>
+      <obstacle id="2" name="Wall2" type="Wall">
+        <point x="31" y="21" />
+        <point x="30" y="21" />
+      </obstacle>
+      <obstacle id="3" name="Wall3" type="Wall">
+        <point x="30" y="21" />
+        <point x="30" y="21.5" />
+      </obstacle>
+      <obstacle id="4" name="Wall4" type="Wall">
+        <point x="30" y="21.5" />
+        <point x="28" y="21.5" />
+      </obstacle>
+      <obstacle id="5" name="Wall5" type="Wall">
+        <point x="28" y="21.5" />
+        <point x="28" y="21" />
+      </obstacle>
+      <obstacle id="6" name="Wall6" type="Wall">
+        <point x="28" y="21" />
+        <point x="1" y="21" />
+      </obstacle>
+      <obstacle id="7" name="Wall7" type="Wall">
+        <point x="1" y="21" />
+        <point x="1" y="15" />
+      </obstacle>
+      <obstacle id="8" name="Wall8" type="Wall">
+        <point x="1" y="15" />
+        <point x="0.5" y="15" />
+      </obstacle>
+      <obstacle id="9" name="Wall9" type="Wall">
+        <point x="0.5" y="15" />
+        <point x="0.5" y="13" />
+      </obstacle>
+      <obstacle id="10" name="Wall10" type="Wall">
+        <point x="0.5" y="13" />
+        <point x="1" y="13" />
+      </obstacle>
+      <obstacle id="11" name="Wall11" type="Wall">
+        <point x="1" y="13" />
+        <point x="1" y="7.5" />
+      </obstacle>
+      <obstacle id="12" name="Wall12" type="Wall">
+        <point x="1" y="7.5" />
+        <point x="2" y="7.5" />
+      </obstacle>
+      <obstacle id="13" name="Wall13" type="Wall">
+        <point x="2" y="7.5" />
+        <point x="2" y="5.5" />
+      </obstacle>
+      <obstacle id="14" name="Wall14" type="Wall">
+        <point x="2" y="5.5" />
+        <point x="1" y="5.5" />
+      </obstacle>
+      <obstacle id="15" name="Wall15" type="Wall">
+        <point x="1" y="5.5" />
+        <point x="1" y="1" />
+      </obstacle>
+      <obstacle id="16" name="Solid0" type="Solid">
+        <point x="5" y="4" />
+        <point x="27" y="4" />
+        <point x="27" y="5" />
+        <point x="5" y="5" />
+      </obstacle>
+      <obstacle id="17" name="Solid1" type="Solid">
+        <point x="5" y="16" />
+        <point x="27" y="16" />
+        <point x="27" y="17" />
+        <point x="5" y="17" />
+      </obstacle>
+    </scenario>
+  </layouts>
+</simulator>

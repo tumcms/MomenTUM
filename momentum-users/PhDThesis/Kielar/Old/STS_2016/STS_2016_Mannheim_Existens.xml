@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<simulator version="0.9.0" simulationName="Mannheim_Calibraiton" simEnd="6000.0" threads="3" timeStepDuration="0.05">
+
+	<analysisModels>
+		<analysis name="existensAnalysis" type="existens" id="0">
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data.csv"/>
+				<property name="delimiter" type="String" value=";"/>
+				<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+				<writerSource sourceType="Pedestrian"> 
+					<property name="id" type="Format" value="%d"/>
+					<property name="timeStep" type="Format" value="%d"/>
+				</writerSource>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels>
+
+	<outputWriters>
+			<outputWriter id="2" name="analysisWriter" type="csvMultipleWriter">
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sta_2016_mannheim_existens_data.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="existens"/>
+			</complexProperty>
+			<writerSource name="output" sourceType="Analysis" additionalId="0">
+				<property name="id" type="Format" value="%d"/>
+				<property name="existens" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+
+</simulator>

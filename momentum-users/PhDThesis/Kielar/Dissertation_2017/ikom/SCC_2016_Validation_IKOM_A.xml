@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="0.9.0" simulationName="SCC_2016_Validation_IKOM_Final" simEnd="2200.0" threads="3" timeStepDuration="0.1"> <!-- 2200 -->
+	
+	<analysisModels>
+		<analysis name="occupancyAnalysis" type="occupancy" id="0">
+			<property name="analysisStartPedestrian" type="Integer" value="45"/>
+			<property name="analysisEndTimeFromPedestrian" type="Integer" value="18000"/>
+			<analysisInputSource type="Simulation">
+				<property name="call" type="Integer" value="10"/>
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+				<writerSource sourceType="Pedestrian"> 
+					<property name="timeStep" type="Format" value="%d"/>
+					<property name="id" type="Format" value="%d"/>
+					<property name="targetID" type="Format" value="%d"/>
+					<property name="performedBehavior" type="Format" value="%d"/>
+					<property name="x" type="Format" value="%.2f"/>
+					<property name="y" type="Format" value="%.2f"/>
+				</writerSource>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels>
+
+	<queryModels>
+		<query id="0" name="basicQuery" type="BasicQuery">
+			<property name="goalDistanceRadius" type="Double" value="0.15" />
+			<property name="navigationDistanceRadius" type="Double" value="0.66"/>
+			<property name="navigationSizePolygon" type="Double" value="0.99"/>
+			<property name="navigationRotationPolygon" type="Double" value="75.0"/>
+		</query>
+	</queryModels>
+
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries"/>
+	</perceptualModels>
+
+	<operationalModels>
+		<operational id="0" name="operational" perceptualModel="0" queryModel="0">
+			<standingReference modelId="0"/>
+			<walkingReference modelId="0"/>
+		</operational>
+	</operationalModels>
+
+	<walkingModels>
+        <walking id="0" name="socialForceModel" type="SocialForce">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="29.0"/>
+			<property name="mass_behaviour_B" type="Double" value="0.05"/>	
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="10e-6"/>
+		</walking>
+	</walkingModels>
+	<standingModels>
+		 <standing id="0" name="JohannsonStanding" type="JohannsonStanding">
+			<property name="relaxation_time" type="Double" value="0.5" />
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5" />
+			<property name="physical_interaction_k" type="Double" value="1.2e5" />
+			<property name="panic_degree" type="Double" value="0.4" />
+			<property name="mass_behaviour_A" type="Double" value="29.0" />
+			<property name="mass_behaviour_B" type="Double" value="0.05" />
+			<property name="helbing_Epsilon" type="Double" value="10e-6" />
+			<property name="koester_Epsilon" type="Double" value="10e-6" />
+			<property name="waiting_case" type="Integer" value="1" />
+			<property name="massWaitingPoint" type="Double" value="1.0" />
+		</standing> 
+	</standingModels>
+
+	<tacticalModels>
+		<tactical id="1" name="tactical"  perceptualModel="0" queryModel="0">
+			<participatingReference modelId="0"/>
+			<queuingReference modelId="0"/>
+			<routingReference modelId="0"/>
+			<searchingReference modelId="0"/>
+		</tactical>
+	</tacticalModels>
+
+	<participatingModels>
+		<participating id="0" name="shiftedRandomParticipating" type="ShiftedRandomParticipating">
+			<property name="participateDistance" type="Double" value="2.0"/>
+			<property name="numberOfGambles" type="Integer" value="60"/>
+			<property name="safetyDistance" type="Double" value="0.1"/>
+			<property name="groupPositionRadius" type="Double" value="2.0"/>
+			<complexProperty name="far" type="List" valueType="String">
+				<entry index="0" value="far"/>
+			</complexProperty>
+			<complexProperty name="center" type="List" valueType="String">
+				<entry index="0" value="center"/>
+			</complexProperty>
+		</participating>
+	</participatingModels>
+	<queuingModels>
+		<queuing id="0" name="angularQueuing" type="AngularQueueing" >	
+			<property name="proximityDistance" type="Double" value="1.5"/>
+			<property name="safetyDistance" type="Double" value="0.1"/>
+			<property name="queueArc" type="Double" value="10"/>
+		    <property name="queueDistance" type="Double" value="0.75"/> <!-- 0.91 -->
+			<property name="queuingLag" type="Double" value="1.5"/>
+		</queuing>
+	</queuingModels>
+	<routingModels>
+		<routing id="0" name="dijkstra" type="Dijkstra"/>
+	</routingModels>
+	<searchingModels>
+		<searching id="0" name="noSearching" type="NoSearching"/>
+	</searchingModels>
+
+	<strategicalModels>
+		<strategical id="0" name="csc" type="CognitiveSpatialChoice" perceptualModel="0" queryModel="0">
+		
+			<!-- General Parameters -->
+			<property name="cognitiveClock" type="Double" value="0.5"/>
+			<property name="openingMalus" type="Double" value="600.0"/>
+			
+			<property name="perceptionFunction" type="String" value="Leaky"/>
+			<property name="occupancyFunction" type="String" value="Space"/>
+			<property name="scheduleFunction" type="String" value="Rank"/>
+			<property name="preferenceFunction" type="String" value="Interest"/>
+			<property name="valuationFunction" type="String" value="IntraAttribute"/>
+			
+			<!-- Group Id which should be used for model pedestrian data output -->
+			<!-- <property name="groupOutputTargetId" type="Integer" value="60"/> -->
+ 
+			<!-- Reschedule Parameter -->
+			<!-- <property name="decisionThresholdFactor" type="Double" value="1.5"/>-->
+			<!-- Test Value need to be fitted -->
+			<!-- <property name="eliminateThreshold" type="Double" value="-1.0"/>-->
+			<!-- Test Value need to be fitted -->
+			
+			<!-- Local Knowledge Histogram -->
+			<!-- <property name="familiarityMinimal" type="Double" value="1.0"/>	
+			<property name="familiarityBinSize" type="Double" value="0.0"/>
+			<complexProperty name="familiarityHistogram" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>
+			</complexProperty> -->
+			
+			<!-- Perception Parameter -->
+			<property name="distanceScale" type="Double" value="250.0"/>
+			<property name="leakyIntegrationAlpha" type="Double" value="0.0076"/>
+			<property name="leakyIntegrationK" type="Double" value="0.98"/>
+			<property name="participatingPenalty" type="Double" value="1.25"/>
+			<property name="waitingPenalty" type="Double" value="0.75"/>
+			<!-- Distance to activate specific behavior (queueing..)  -->
+			<property name="proximityDistance" type="Double" value="1.5"/> 
+			
+			<!-- Preference Parameter -->
+			<property name="minimalServiceTime" type="Double" value="1"/>
+			
+			<!-- Number of people in each group, measured, index 0 -> 1 person -->
+			<complexProperty name="groupDistribution" type="List" valueType="Double">
+				<entry index="0" value="0.34"/>  	
+				<entry index="1" value="0.51"/>
+				<entry index="2" value="0.15"/> 
+			</complexProperty>	
+
+			<!-- Schedule Parameter -->
+			<property name="scheduleSizeMean" type="Double" value="4"/>
+			<property name="scheduleSizeVarianz" type="Double" value="2"/>
+			<property name="scheduleTimeMean" type="Double" value="0.5"/>
+			<property name="scheduleTimeVarianz" type="Double" value="0.5"/>
+			
+			<!-- Valuation Parameter -->
+			<property name="intensityChange" type="Double" value="3"/>
+			<property name="rescheduleThreshold" type="Double" value="1.0"/>
+			
+			<propertyContainer id="0" name="1_Application">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="5"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="0"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.96"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="593.23"/>
+				<property name="interarrivalTimeLambda" type="Double" value="120.6429"/> <!-- 729.00  -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="1" name="2_Company">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="6"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="1"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="0.65"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="558.58"/>
+				<property name="interarrivalTimeLambda" type="Double" value="90.6452"/>  <!-- 127.47  -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="2" name="3_Company">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="7"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="2"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.76"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="49.79"/>
+				<property name="interarrivalTimeLambda" type="Double" value="112.69"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>-->
+			<propertyContainer id="3" name="4_Kiosk">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="8"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="3"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.62"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="31.56"/>
+				<property name="interarrivalTimeLambda" type="Double" value="93.29"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="4" name="5_Lecture">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="9"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="4"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.08"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="396.61"/>
+				<property name="interarrivalTimeLambda" type="Double" value="26.2874"/> <!-- 34.14 -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="5" name="A_Left_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="10"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="5"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="2.6618"/> <!-- 3.11 -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="None"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="6" name="B_Right_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="11"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="6"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="2.7697"/>  <!-- 3.34 -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="None"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="7" name="C_Top_Left_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="12"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="7"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="32.7308"/> <!-- 40.31 -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="None"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="8" name="D_Top_Right_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="13"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="8"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="49.8857"/> <!-- 75.68 -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="None"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="9" name="E_Bottom_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="14"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="9"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="18.9804"/> <!-- 25.17 -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="None"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+		</strategical>
+	</strategicalModels>
+
+	<generators>
+		<generator id="0" name="generatorA" type="Distribution" scenario="0" origin="0" seed="0">
+			 <!-- 678  , 1356 -->
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="0"/> 
+			<property name="maximalPedestrians" type="Integer" value="1356"/>
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/> >
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originA_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originA_percentage.csv" separator=";"/> 
+			</complexProperty>
+		</generator>
+		<generator id="1" name="generatorB" type="Distribution" scenario="0" origin="1" seed="1">
+			<!-- 947, 1984 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="180"/> 
+			<property name="maximalPedestrians" type="Integer" value="1984"/>
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/> 
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originB_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originB_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="2" name="generatorC" type="Distribution" scenario="0" origin="2" seed="2">
+			 <!-- 60, 120 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="270"/> 
+			<property name="maximalPedestrians" type="Integer" value="120"/> 
+			<property name="safetyDistance" type="Double" value="0.75"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originC_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originC_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="3" name="generatorD" type="Distribution" scenario="0" origin="3" seed="3">
+			<!-- 29, 58 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="270"/>
+			<property name="maximalPedestrians" type="Integer" value="58"/>  
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originD_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originD_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="4" name="generatorE" type="Distribution" scenario="0" origin="4" seed="4">
+			<!-- 180, 260, 2000 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="90"/>
+			<property name="maximalPedestrians" type="Integer" value="260"/>
+			<property name="safetyDistance" type="Double" value="0.25"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originE_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\originE_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+	</generators>
+
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="A_Left_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.52"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<!--<entry index="0" value="1.0"/>   -->
+				 <entry index="0" value="0.34"/>  	
+				<entry index="1" value="0.51"/>
+				<entry index="2" value="0.16"/> 
+			</complexProperty>		
+		</pedestrianSeed>
+		<pedestrianSeed id="1" name="B_Right_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.5"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<!--	<entry index="0" value="1.0"/>   -->
+				 <entry index="0" value="0.34"/>  	
+				<entry index="1" value="0.51"/>
+				<entry index="2" value="0.16"/> 
+			</complexProperty>	
+		</pedestrianSeed>
+		<pedestrianSeed id="2" name="C_Top_Left_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.5"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<!-- 	<entry index="0" value="1.0"/>   --> 
+				<entry index="0" value="0.34"/>  	
+				<entry index="1" value="0.51"/>
+				<entry index="2" value="0.16"/> 
+			</complexProperty>		
+		</pedestrianSeed>
+		<pedestrianSeed id="3" name="D_Top_Right_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.5"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<!--<entry index="0" value="1.0"/>   -->
+				 <entry index="0" value="0.34"/>  	
+				<entry index="1" value="0.51"/>
+				<entry index="2" value="0.16"/> 
+			</complexProperty>	
+		</pedestrianSeed>
+		<pedestrianSeed id="4" name="E_Bottom_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.5"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+					<!--<entry index="0" value="1.0"/> -->  
+				 <entry index="0" value="0.34"/>  	
+				<entry index="1" value="0.51"/>
+				<entry index="2" value="0.16"/> 
+			</complexProperty>		
+		</pedestrianSeed>
+	</pedestrianSeeds>
+
+	<absorbers>
+		<absorber id="0" name="destinationA" scenario="0" destination="10" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.1"/>
+		</absorber>
+		<absorber id="1" name="destinationB" scenario="0" destination="11" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.1"/>
+		</absorber>
+		<absorber id="2" name="destinationC" scenario="0" destination="12" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.1"/>
+		</absorber>
+		<absorber id="3" name="destinationD" scenario="0" destination="13" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.1"/>
+		</absorber>
+		<absorber id="4" name="destinationE" scenario="0" destination="14" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.1"/>
+		</absorber>
+	</absorbers>
+
+	<outputWriters>
+		<outputWriter id="10" name="csvWriter" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="True"/>
+			<property name="call" type="Integer" value="10"/>
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\IKOM_2012\2017_Test_Diss_Ikom_Visualization.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="1000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="targetID"/>
+				<entry index="7" value="groupID"/>
+				<entry index="8" value="leader"/>
+				<entry index="9" value="behavior"/>
+				<entry index="10" value="motoric"/>
+				<entry index="11" value="seedID"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="groupID" type="Format" value="%d"/>
+				<property name="leader" type="Format" value="%d"/>
+				<property name="behavior" type="Format" value="%s"/>
+				<property name="motoric" type="Format" value="%s"/>
+				<property name="seedID" type="Format" value="%d"/>
+				<property name="targetID" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="0" name="anyalysisOutput" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="False"/>
+			<property name="call" type="Integer" value="5"/>
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Occupancy\Occ_$LOOP$_0.5_0.75_0.75_1.5_5.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="5000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="occupancy"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="occupancy" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter> 
+		<outputWriter id="3" name="outflowA" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="False"/>
+			<property name="call" type="Integer" value="1"/>	
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_OutFlowA\A_$LOOP$_0.5_0.75_0.75_1.5_5.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="10000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="removedCount"/>
+			</complexProperty>
+            <writerSource sourceType="Absorber" additionalId="0">
+               <property name="timeStep" type="Format" value="%d"/>
+               <property name="removedCount" type="Format" value="%d"/>
+            </writerSource>
+		</outputWriter>
+		<outputWriter id="4" name="outflowB" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="False"/>
+			<property name="call" type="Integer" value="1"/>	
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_OutFlowB\B_$LOOP$_0.5_0.75_0.75_1.5_5.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="5000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="removedCount"/>
+			</complexProperty>
+            <writerSource sourceType="Absorber" additionalId="1"> 
+               <property name="timeStep" type="Format" value="%d"/>
+               <property name="removedCount" type="Format" value="%d"/>
+            </writerSource>
+		</outputWriter>
+		<outputWriter id="5" name="outflowC" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="False"/>
+			<property name="call" type="Integer" value="1"/>	
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_OutFlowC\C_$LOOP$_0.5_0.75_0.75_1.5_5.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="5000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="removedCount"/>
+			</complexProperty>
+            <writerSource sourceType="Absorber" additionalId="2"> 
+               <property name="timeStep" type="Format" value="%d"/>
+               <property name="removedCount" type="Format" value="%d"/>
+            </writerSource>
+		</outputWriter>
+		<outputWriter id="6" name="outflowD" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="False"/>
+			<property name="call" type="Integer" value="1"/>	
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_OutFlowD\D_$LOOP$_0.5_0.75_0.75_1.5_5.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="1000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="removedCount"/>
+			</complexProperty>
+            <writerSource sourceType="Absorber" additionalId="3"> 
+               <property name="timeStep" type="Format" value="%d"/>
+               <property name="removedCount" type="Format" value="%d"/>
+            </writerSource>
+		</outputWriter>
+		<outputWriter id="7" name="outflowE" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="False"/>
+			<property name="call" type="Integer" value="1"/>	
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_OutFlowE\E_$LOOP$_0.5_0.75_0.75_1.5_5.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="5000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="removedCount"/>
+			</complexProperty>
+            <writerSource sourceType="Absorber" additionalId="4"> 
+               <property name="timeStep" type="Format" value="%d"/>
+               <property name="removedCount" type="Format" value="%d"/>
+            </writerSource>
+		</outputWriter>
+	</outputWriters>
+	
+	<graphs>
+		<graphModel name="routing" id="0">
+			<graphOperation name="fromConfig" type="FromConfiguration" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+				<property name="precisionSeed" type="Double" value="0.001"/>
+			</graphOperation> 
+		</graphModel>
+	</graphs>  
+
+	<lattices>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+	</lattices>
+	
+	<layouts>
+		<scenario id="0" layoutLink="C:\Users\ga37sib\Desktop\IKOM_2012\IKOM_Input\SCC_2016_Validation_IKOM_Layout.xml"/>
+	</layouts>
+</simulator>

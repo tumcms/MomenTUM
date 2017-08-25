@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<simulator version="MomenTumV2.0.1" simulationName="BTTW_" simEnd="900.0" threads="3" timeStepDuration="0.05">
+
+	<outputWriters>
+		<outputWriter id="1" name="layoutWriter" type="configurationWriter">
+			<property name="file" type="File" value="./KneidlModel_Layout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+	</outputWriters>
+	
+	<graphs>
+		<graphModel name="routing" id="0">
+		<!-- Creates a vertex in the center of each origin, destination and intermediate area -->
+		<graphOperation id="0" name="seeds" type="VertexCreateSeedBased" order="0"/>
+		
+		<!-- Creates vertices at the edges of obstacles and additional vertices along the boundaries of the obstacles -->
+		<!-- parameter cornerDistance: new vertices are created at geometry corners in a distance of cornerDistance
+ 			 parameter segmentSegregation: new vertices are created along the borders of the geometry in a distance of segmentSegregation -->
+		<graphOperation id="1" name="seeds" type="VertexCreateAtCornersEnriched" order="1">
+			<property name="cornerDistance" type="Double" value="1"/>
+			<property name="segmentSegregation" type="Double" value="10"/>
+		</graphOperation>
+		
+		<!-- Removes vertices based on their visibility to each other -->
+		<!-- parameter mergeDistance: vertices with a distance less than mergeDistance will be merged -->
+		<graphOperation id="2" name="simple" type="VertexRemoveVisibilityBased" order="2">
+			<property name="mergeDistance" type="Double" value="30"/>
+			<property name="visibilityTolerance" type="Double" value="0.25"/>
+		</graphOperation>
+		
+		<!-- Adds edges between all vertices of the graph which are visible to each other and are not yet connected to a vertex lying in a given angle from the outgoing vertex -->
+		<!-- parameter maxInteration: maximal number of iterations to be performed by the algorithm
+ 			 parameter maxAlpha: edges are created with a maximum angle of maxAlpha between them -->
+		<graphOperation id="3" name="visibility" type="EdgeCreateVisibilityAngleBasedReduced" order="3">
+			<property name="maxAlpha" type="Double" value="30"/>
+			<property name="maxIteration" type="Integer" value="1"/>
+			<property name="visibilityTolerance" type="Double" value="0.25"/>
+		</graphOperation>
+
+		<!-- Removes all edges and vertices which are not reachable from the specified known seeds -->
+		<graphOperation id="4" name="removeDispensible" type="EdgeRemoveUnreachable" order="4"/>
+		</graphModel>
+				
+	</graphs>
+	
+	 <layouts>
+    	<scenario id="0" name="OperationalModels_Scenario" maxX="100.0" maxY="30.0" minX="0.0" minY="0.0">
+			<area id="0" name="origin" type="Origin">
+				<point x="0.0" y="0.0"/>
+				<point x="6.0" y="0.0"/>
+				<point x="6.0" y="30.0"/>
+				<point x="0.0" y="30.0"/>
+			</area>
+			<area id="1" name="dest" type="Destination">
+				<point x="98.0" y="0.0"/>
+				<point x="100.0" y="0.0"/>
+				<point x="100.0" y="30.0"/>
+				<point x="98.0" y="30.0"/>
+			</area>		
+			<obstacle name="outerWallTop" type="Wall">
+				<point x="0.0" y="0.0"/>
+				<point x="100.0" y="0.0"/>
+			</obstacle>			
+			<obstacle name="outerWallRight" type="Wall">
+				<point x="100.0" y="0.0"/>
+				<point x="100.0" y="30.0"/>
+			</obstacle>		
+			<obstacle name="outerWallBottom" type="Wall">
+				<point x="100.0" y="30.0"/>
+				<point x="0.0" y="30.0"/>
+			</obstacle>		
+			<obstacle name="outerWallLeft" type="Wall">
+				<point x="0.0" y="30.0"/>
+				<point x="0.0" y="0.0"/>
+			</obstacle>
+			<obstacle name="spike1" type="Solid">
+				<point x="65.0" y="0.0"/>
+				<point x="75.0" y="0.0"/>
+				<point x="75.0" y="10.0"/>
+			</obstacle>	
+			<obstacle name="spike2" type="Solid">
+				<point x="55.0" y="20.0"/>
+				<point x="45.0" y="5.0"/>
+				<point x="55.0" y="5.0"/>
+			</obstacle>	
+			<obstacle name="spike3" type="Solid">
+				<point x="65.0" y="25.0"/>
+				<point x="75.0" y="20.0"/>
+				<point x="75.0" y="25.0"/>
+			</obstacle>	
+			<obstacle name="spike4" type="Solid">
+				<point x="55.0" y="30.0"/>
+				<point x="45.0" y="30.0"/>
+				<point x="55.0" y="25.0"/>
+			</obstacle>	
+			<!--<obstacle name="blockWall" type="Wall">
+				<point x="80" y="0"/>
+				<point x="80" y="30"/>
+			</obstacle>-->
+			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout"  cellEdgeSize="0.46"/>
+	        <!--<graph id="0" type="empty">
+        		<property name="cornerDistance" type="Double" value="2"/>
+        	</graph>-->
+		</scenario>
+  </layouts>
+
+</simulator>

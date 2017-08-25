@@ -1,0 +1,22 @@
+Help: Which libraries do you need?
+
+Because of licenses topics you have to get the following AutoCAD libraries yourself and put them into the folder:
+momentum-tools\momentum-layout-tools\momentum-layout-tools-autocad\inc
+Check out the AutoCAD page 
+http://usa.autodesk.com/adsk/servlet/index?id=18162650&siteID=123112
+and get the ObjectARX libraries
+http://usa.autodesk.com/adsk/servlet/index?siteID=123112&id=773204
+You need the following libraries (in the inc folder)
+AcCoreMgd.dll
+AcCui.dll
+AcDbMgd.dll
+acdbmgdbrep.dll
+AcDx.dll
+AcMgd.dll
+AcMr.dll
+AcSeamless.dll
+AcTcMgd.dll
+AcWindows.dll
+AdWindows.dll
+The project should address theses files via relative references; thus, the plugin should work.
+We tested the plugin with AutoCad 2018

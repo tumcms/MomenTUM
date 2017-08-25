@@ -1,0 +1,74 @@
+
+<tactical id="0" name="noRouting" type="NoRouting" perceptualModel="0" queryModel="0" gatheringModel="0"/>
+
+<tactical id="0" name="dijkstra" type="Dijkstra" perceptualModel="0" queryModel="0" gatheringModel="0"/>
+
+<tactical id="0" name="kneidl" type="Kneidl" perceptualModel="0" queryModel="0" gatheringModel="0">
+	<property name="navigationFastestEuklid" type="Double" value="0.25"/>
+	<property name="navigationBeelineHeuristic" type="Double" value="0.25"/>
+	<property name="navigationGreedyBeelineHeuristic" type="Double" value="0.25"/>
+	<property name="navigationStraightAndLongLegs" type="Double" value="0.25"/>
+</tactical>
+
+<tactical id="0" name="unifiedRouting" type="UPRM" perceptualModel="0" queryModel="0" gatheringModel="0"/>>
+	<property name="autoCalibrationMode" type="Boolean" value="true"/>
+	<property name="autoCalibrationDiscretisiation" type="Integer" value="100"/> 
+</tactical>
+
+<!-- The system can (by code) load result types, use calibration first and change the UnifiedTypeExtractor types values
+	 This was used for TGF 2015 Kielar -->
+<tactical id="0" name="unifiedRouting" type="UPRM" perceptualModel="0" queryModel="0" gatheringModel="0"/>>
+	<property name="resultMode" type="Boolean" value="true"/>
+</tactical>
+
+<tactical id="0" name="unifiedRouting" type="UPRM" perceptualModel="0" queryModel="0" gatheringModel="0"/>>
+
+	<!-- always optional -->
+	<property name="herding" type="Double" value="0.5"/> <!-- 0 is no herding, 1 is strong herding -->
+	<property name="herdingBoundary" type="Double" value="30"/> <!-- number of pedestrian for herding activation on a edge -->
+	
+	<!--  
+	optional, important! the Generator need to create the correct amount of pedestrian
+	and store the navigation routing vertices in the in a cvs output writer to use that data
+	in an analysis
+	autoCalibrationDiscretisiation 10 is 0.0 - 1.0 in 0.1 steps
+	autoCalibrationDiscretisiation 100 is 0.00 - 1.0 in 0.01 steps 
+	-->	
+	
+	<property name="autoCalibrationMode" type="Boolean" value="false"/> 
+	<property name="autoCalibrationDiscretisiation" type="Integer" value="0.01"/> 
+	
+	<!--  or the follwing -->
+	<!-- Check the TypeExtrector class, this is hardcoded after calibration -->
+	
+	<property name="resultMode" type="Boolean" value="true"/>
+	
+	<!-- or the following -->
+	
+	<property name="landmarkRouting" type="Boolean" value="false" /> <!-- not used, deprecated -->
+
+	<property name="probability" type="Boolean" value="false"/> <!-- the numbers down are probabilities or stocks -->
+	<property name="I" type="Double" value="0.0914"/> <!-- FP -->
+	<property name="II" type="Double" value="0.1025"/> <!-- BH -->
+	<property name="IIV" type="Double" value="0.091"/> <!-- FP & BH -->
+	<property name="IV" type="Double" value="0.1115"/> <!-- SALL -->
+	<property name="V" type="Double" value="0.1067"/>  <!-- GBH -->
+	<property name="VI" type="Double" value="0.1118"/> <!-- SALL & GBH -->
+	<property name="VII" type="Double" value="0.1055"/> <!-- SALL & BH -->
+	<property name="IIX" type="Double" value="0.0899"/> <!-- SALL & FP -->
+	<property name="IX" type="Double" value="0.0998"/> <!-- SALL & GBH & FP -->
+	<property name="X" type="Double" value="0.09"/> <!-- GBH & FP & BH -->  
+	
+	<!-- or the following -->
+	<!-- familiarity based behavior, hence the higher the value of familiarity the more FB / BH is -->
+	<!-- is the routing behavior. The list is a probability list and similar to the previous mode -->
+	<!-- This list is not validated jet! -->
+	<complexProperty name="familiarityHistogram" type="List" valueType="Double">
+		<entry index="0" value="0.03125"/> <!-- use SALL & GBH -->
+		<entry index="1" value="0.0625"/> <!-- use SALL & FBH & FP -->
+		<entry index="2" value="0.125"/> <!-- use SALL & BH -->
+		<entry index="3" value="0.25"/> <!-- use FP & BH -->
+		<entry index="4" value="0.5"/>  <!-- use FP -->
+	</complexProperty>
+	
+</tactical>

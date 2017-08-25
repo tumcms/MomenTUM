@@ -1,0 +1,3969 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="0.9.0" simulationName="2016_BTTW_Config_Layout_v1" simEnd="21600.0" threads="1" timeStepDuration="0.1">
+
+	<!-- <executionOrder>
+			<executionBlock id="1" orderNumber="1" timeStepMultiplicator="1">
+			<complexProperty name="models" type="List" valueType="Integer">
+				<entry index="0" value="3"/>
+			    <entry index="1" value="2"/>
+			    <entry index="2" value="1"/> 
+			 </complexProperty>
+		</executionBlock>
+		<executionBlock id="0" orderNumber="2" timeStepMultiplicator="4">
+			<complexProperty name="models" type="List" valueType="Integer">
+			    <entry index="0" value="3"/> 
+			    <entry index="1" value="2"/>
+			    <entry index="2" value="0"/> 
+			 </complexProperty>
+			 <blockManipulator metaId="0" multiplicator="1"/>>		 
+		</executionBlock>
+	</executionOrder>
+	
+	<metaModels>
+		<meta id="0" name="transiTum" type="TransiTum">
+			<complexProperty name="microscopicModel" type="List" valueType="Integer">
+				    <entry index="0" value="3"/>
+				    <entry index="1" value="2"/>
+				    <entry index="2" value="1"/> 
+			</complexProperty>
+			<complexProperty name="mesoscopicModel" type="List" valueType="Integer">
+					<entry index="0" value="3"/> 
+				    <entry index="1" value="2"/>
+				    <entry index="2" value="0" /> 
+			</complexProperty>
+			<propertyContainer name="ConfigurationData" id="0">
+				<property name="mesoscopicTimeStepMultiplikator" type="Integer" value="4"/>
+				<property name="microscopicTimeStepMultiplikator" type="Integer" value="1"/>
+				<property name="maximalVelocity" type="Double" value="2.12"/>
+				<property name="transitionAreaFactor" type="Double" value="15"/>
+				<property name="scenarioLatticeId" type="Integer" value="0"/>
+				<property name="collisionDetectionLatticeId" type="Integer" value="0"/>
+			</propertyContainer>
+			<propertyContainer name="MultiscaleArea" id="1"> 
+				<property name="areaType" type="String" value="Microscopic"/>
+				<property name="radius" type="Double" value="26.3"/>
+				<property name="xPosition" type="Double" value="380.5"/>
+				<property name="yPosition" type="Double" value="-158.5"/>
+			</propertyContainer>
+			<propertyContainer name="MultiscaleArea" id="2"> 
+				<property name="areaType" type="String" value="Microscopic"/>
+				<property name="radius" type="Double" value="13.5"/>
+				<property name="xPosition" type="Double" value="344.5"/>
+				<property name="yPosition" type="Double" value="-107.7"/>
+			</propertyContainer>
+		</meta>
+	</metaModels> -->
+	
+	<analysisModels>
+		<analysis name="occupancyAnalysis" type="occupancy" id="0">
+			<analysisInputSource type="Simulation">
+				<property name="call" type="Integer" value="10"/>
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+				<writerSource sourceType="Pedestrian"> 
+					<property name="timeStep" type="Format" value="%d"/>
+					<property name="id" type="Format" value="%d"/>
+					<property name="targetID" type="Format" value="%d"/>
+					<property name="performedBehavior" type="Format" value="%d"/>
+				</writerSource>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels>
+
+	<queryModels>
+		<query id="0" name="basicQuery" type="BasicQuery">
+			<property name="goalDistanceRadius" type="Double" value="0.21" /> 
+			<property name="navigationDistanceRadius" type="Double" value="0.99"/>
+			<property name="navigationSizePolygon" type="Double" value="0.70"/>
+			<property name="navigationRotationPolygon" type="Double" value="75.0"/>
+		</query>
+	</queryModels>
+
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries"/>
+	</perceptualModels>
+
+	<operationalModels>
+		<!--<operational id="0" name="operational" perceptualModel="0" queryModel="0">
+			<standingReference modelId="0"/>
+			<walkingReference modelId="0"/>
+		</operational> -->
+		<operational id="1" name="operational" perceptualModel="0" queryModel="0">
+			<standingReference modelId="0"/>
+			<walkingReference modelId="1"/>
+		</operational>
+	</operationalModels>
+
+	<walkingModels>
+		<!--<walking id="0" name="stock" type="StockCellular">
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<property name="timeStepMultiplicator" type="Integer" value="4"/>
+		</walking> -->
+		<!--<walking id="0" name="dynamicFloorfield" type="DynamicFloorfield">
+             <property name="scenarioLatticeId" type="Integer" value="0"/>
+             <property name="timeStepMultiplicator" type="Integer" value="4"/>
+        </walking>-->
+         <!-- angleDeviation % angleSteps = 0-->
+		<!--<walking id="1" name="MoussaidHeuristic" type="MoussaidHeuristic">
+			<property name="angleSteps" type="Integer" value="10"/>
+			<property name="angleDeviation" type="Integer" value="100"/>
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_k" type="Double" value="50.0"/>
+		</walking>-->
+		<walking id="1" name="socialForceModel" type="SocialForce">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="26.67"/>
+			<property name="mass_behaviour_B" type="Double" value="0.06"/>	
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="10e-6"/>
+		</walking>
+	</walkingModels>
+	<standingModels>
+		<standing id="0" name="fixedStanding" type="FixedStanding" />
+	</standingModels>
+
+	<tacticalModels>
+		<tactical id="2" name="tactical"  perceptualModel="0" queryModel="0">
+			<participatingReference modelId="0"/>
+			<queuingReference modelId="0"/>
+			<routingReference modelId="0"/>
+			<searchingReference modelId="0"/>
+		</tactical>
+	</tacticalModels>
+
+	<participatingModels>
+		<participating id="0" name="shiftedRandomParticipating" type="ShiftedRandomParticipating">
+			<property name="participateDistance" type="Double" value="2.0"/>
+			<property name="numberOfGambles" type="Integer" value="60"/>
+			<property name="safetyDistance" type="Double" value="0.50"/>
+			<property name="groupPositionRadius" type="Double" value="2.0"/>
+			<!-- use category="" in area for this, use in -->
+			<complexProperty name="close" type="List" valueType="String">
+				<entry index="0" value="dancing"/> 
+				<entry index="1" value="ground"/>
+			</complexProperty>
+			<!-- Everywhere is: shower -->
+		</participating>
+	</participatingModels>
+	<queuingModels>
+		<queuing id="0" name="angularQueuing" type="AngularQueueing" >
+			<property name="proximityDistance" type="Double" value="2.5"/>
+			<property name="safetyDistance" type="Double" value="0.35"/>
+			<property name="queueArc" type="Double" value="10"/>
+			<property name="queueDistance" type="Double" value="0.94"/> <!-- 0.91 -->
+			<property name="initalDistance" type="Double" value="2.0"/>
+			<property name="queuingLag" type="Double" value="3.0"/>
+			<!-- use category="" in area for this, use initial distance between head and next ped-->
+			<complexProperty name="useIntial" type="List" valueType="String">
+				<entry index="0" value="wc"/>  
+				<entry index="1" value="single"/> 
+			</complexProperty>
+			<!-- use category="" in area for this, describes if pedestrian should wait closer to themselves
+			in a queue, if not the will search a position closer to the queue ender to the next -->
+			<complexProperty name="closeToSelf" type="List" valueType="String">
+				<entry index="0" value="entrance"/>  
+			</complexProperty>
+		</queuing>
+	</queuingModels>
+	<routingModels>
+		<routing id="0" name="unifiedRouting" type="UPRM">
+			<!-- The herding properties, only if herding is set to true-->
+			<property name="herding" type="Boolean" value="True"/>
+			<property name="spatialBoundary" type="Double" value="2.0"/>
+			<property name="fastestPath" type="Double" value="1.0"/>
+			<property name="leaderPath" type="Double" value="0.0"/> 
+			<property name="randomMode" type="Boolean" value="True"/>
+			<complexProperty name="resultMode" type="CsvMatrix" valueType="Double">
+				<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\config\Kielar\MultikOSi_2016\2016_BTTW_UnifiedRouting_Config_v1.csv" separator=";"/>
+			</complexProperty>
+		</routing>
+	</routingModels>
+	<searchingModels>
+		<searching id="0" name="noSearching" type="NoSearching"/>
+	</searchingModels>
+
+	<strategicalModels>
+		<strategical id="3" name="csc" type="CognitiveSpatialChoice" perceptualModel="0" queryModel="0">
+
+			<!-- General Parameters-->
+			<!-- Duration between strategic behavior -->
+			<property name="cognitiveClock" type="Double" value="0.75"/>
+			<!-- For start/end time , time where opening hours start -->
+			<property name="openingMalus" type="Double" value="500.0"/>
+
+			<!-- Model choice parameter, best options currently -->
+			<property name="perceptionFunction" type="String" value="Leaky"/>
+			<property name="occupancyFunction" type="String" value="Space"/>
+			<property name="scheduleFunction" type="String" value="Rank"/>
+			<property name="preferenceFunction" type="String" value="Interest"/>
+			<property name="valuationFunction" type="String" value="IntraAttribute"/>
+
+			<!-- Group Id which should be used for model pedestrian data output -->
+			<!-- <property name="groupOutputTargetId" type="Integer" value="60"/> -->
+
+			<!-- Perception Parameter -->
+			<property name="distanceScale" type="Double" value="500.0"/>
+			<property name="leakyIntegrationAlpha" type="Double" value="0.0076"/>
+			<property name="leakyIntegrationK" type="Double" value="0.98"/>
+			<property name="participatingPenalty" type="Double" value="0.6"/>
+			<property name="waitingPenalty" type="Double" value="2.0"/>
+			<!-- Distance to activate specific behavior (queueing..)  -->
+			<property name="proximityDistance" type="Double" value="2.0"/> 
+
+			<!-- Preference Parameter -->
+			<property name="minimalServiceTime" type="Double" value="2.0"/>
+
+			<!-- Number of people in each group, measured, index 0 -> 1 person -->
+			<complexProperty name="groupDistribution" type="List" valueType="Double">
+				<entry index="0" value="0.0638"/>  	
+				<entry index="1" value="0.3617"/>
+				<entry index="2" value="0.1277"/> 
+				<entry index="3" value="0.1915"/>
+				<entry index="4" value="0.1277"/>
+				<entry index="5" value="0.0851"/>
+				<entry index="6" value="0.0426"/>
+			</complexProperty>	
+
+			<!-- Schedule Parameter -->
+			<!-- <property name="scheduleSizeMean" type="Double" value="4"/>
+			<property name="scheduleSizeVarianz" type="Double" value="2"/>
+			<property name="scheduleTimeMean" type="Double" value="0.5"/>
+			<property name="scheduleTimeVarianz" type="Double" value="0.5"/>-->
+
+			<!-- Valuation Parameter -->
+			<property name="intensityChange" type="Double" value="3.0"/>
+						
+			<!-- Reschedule Parameter -->
+			<property name="rescheduleThreshold" type="Double" value="0.25"/>
+
+			<propertyContainer id="0" name="Entrance">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="78"/> 
+					<entry index="1" value="79"/> 
+					<entry index="2" value="80"/> 
+					<entry index="3" value="81"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="0"/>
+				<property name="oneTime" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.2153"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="5.5556"/> <!-- - 35 because of security -->
+				<property name="interarrivalTimeLambda" type="Double" value="0.5"/> <!-- Maximal, first goal to visit -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="23"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="1" name="Coffee">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="82"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="1"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.4364"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="28.4857"/>
+				<property name="interarrivalTimeLambda" type="Double" value="38.8947"/> 
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="2" name="Joes Pub">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="83"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="2"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.1088"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="14.0347"/>
+				<property name="interarrivalTimeLambda" type="Double" value="41.7857"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="3" name="Frittes">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="84"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="3"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.193"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="46.2841"/>
+				<property name="interarrivalTimeLambda" type="Double" value="48.4375"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="4" name="Makeup">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="85"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="4"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="16.7382"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="15.7125"/>
+				<property name="interarrivalTimeLambda" type="Double" value="89.4286"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="5" name="Shower">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="90"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="5"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="4.5657"/> <!-- very short, personal impression 1:0.5:5 -->
+				<property name="serviceTimeGammaTheta" type="Double" value="0.6571"/> <!-- very short, personal impression 1:0.5:5 -->
+				<property name="interarrivalTimeLambda" type="Double" value="49.4286"/> <!-- assumption similar to makeup -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="6" name="RegionExit">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="129"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="6"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="143.2252"/> <!-- 23.2252 -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="None"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="7" name="Mini Stage">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="46"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="7"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="singlePlace" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.5023"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="31.1713"/>
+				<property name="interarrivalTimeLambda" type="Double" value="21.75"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="8" name="Cheese">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="44"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="8"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="6.4268"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="6.3212"/>
+				<property name="interarrivalTimeLambda" type="Double" value="18.5833"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="9" name="Wood Stage">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="43"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="9"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.7534"/> <!-- assumption 240:10:500 seconds -->  
+				<property name="serviceTimeGammaTheta" type="Double" value="74.5991"/> <!-- assumption 240:10:500 seconds -->  
+				<property name="interarrivalTimeLambda" type="Double" value="9.6356"/>  <!-- assumption similar to tent wc -->  
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="10" name="Cigarettes">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="42"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="10"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.3092"/> <!-- Assumption, similar to food (fast) hexenwerk. -->
+				<property name="serviceTimeGammaTheta" type="Double" value="39.5654"/> <!-- Assumption, similar to cocktail bar -->
+				<property name="interarrivalTimeLambda" type="Double" value="29.4286"/>  <!-- Assumption, similar to makeup -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="11" name="Bar Bottom">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="36"/>
+					<entry index="1" value="37"/>
+					<entry index="2" value="38"/>
+					<entry index="3" value="39"/>
+					<entry index="4" value="40"/>
+					<entry index="5" value="41"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="11"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.654"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="11.5435"/>
+				<property name="interarrivalTimeLambda" type="Double" value="6.2366"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="12" name="Bar Right">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="32"/>
+					<entry index="1" value="33"/>
+					<entry index="2" value="34"/>
+					<entry index="3" value="35"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="12"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.9789"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="20.8632"/>
+				<property name="interarrivalTimeLambda" type="Double" value="7.5133"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="13" name="Bar Left">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="26"/>
+					<entry index="1" value="27"/>
+					<entry index="2" value="28"/>
+					<entry index="3" value="29"/>
+					<entry index="4" value="30"/>
+					<entry index="5" value="31"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="13"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.441"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="24.4278"/>
+				<property name="interarrivalTimeLambda" type="Double" value="8.4493"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+
+			<propertyContainer id="14" name="Bar Cocktail">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="25"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="14"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.5226"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="18.285"/>
+				<property name="interarrivalTimeLambda" type="Double" value="44.6038"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+
+			<propertyContainer id="15" name="Tent Stage">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="24"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="15"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.7534"/> <!-- assumption 240:10:500 seconds -->  
+				<property name="serviceTimeGammaTheta" type="Double" value="74.5991"/> <!-- assumption 240:10:500 seconds -->  
+				<property name="interarrivalTimeLambda" type="Double" value="9.6356"/>  <!-- assumption similar to tent wc -->  
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="16" name="Information">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="22"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="16"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.2895"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="24.2857"/>
+				<property name="interarrivalTimeLambda" type="Double" value="71.0"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+
+			<propertyContainer id="17" name="Okra">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="13"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="17"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.194"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="41.5182"/>
+				<property name="interarrivalTimeLambda" type="Double" value="44.1111"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="18" name="Hexenwerk">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="12"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="18"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.3092"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="19.5654"/>
+				<property name="interarrivalTimeLambda" type="Double" value="88.9"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+
+			<propertyContainer id="19" name="Main Stage">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="5"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="19"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.7534"/> <!-- assumption 240:10:500 seconds -->  
+				<property name="serviceTimeGammaTheta" type="Double" value="74.5991"/> <!-- assumption 240:10:500 seconds -->  
+				<property name="interarrivalTimeLambda" type="Double" value="7.6356"/>  <!-- assumption similar to tent wc -->  
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="20" name="WC Tent">
+				<complexProperty name="areaIds" type="CsvList" valueType="Integer">
+					<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\config\Kielar\MultikOSi_2016\2016_BTTW_WC_Tent_Ids.csv" separator=";"/>
+				</complexProperty>	
+				<property name="preferenceId" type="Integer" value="20"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="singlePlace" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.8461"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="19.292"/>
+				<property name="interarrivalTimeLambda" type="Double" value="9.6356"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>		
+
+			<propertyContainer id="21" name="WC Main">
+				<complexProperty name="areaIds" type="CsvList" valueType="Integer">
+					<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\config\Kielar\MultikOSi_2016\2016_BTTW_WC_Main_Ids.csv" separator=";"/>
+				</complexProperty>	
+				<property name="preferenceId" type="Integer" value="21"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="singlePlace" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.8461"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="19.292"/>
+				<property name="interarrivalTimeLambda" type="Double" value="5.6286"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+
+			<propertyContainer id="22" name="Chill Out">
+				<complexProperty name="areaIds" type="CsvList" valueType="Integer">
+					<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\config\Kielar\MultikOSi_2016\2016_BTTW_Chill_Out_Ids.csv" separator=";"/>
+				</complexProperty>	
+				<property name="preferenceId" type="Integer" value="22"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="16.7382"/> <!-- assumption similar to makeup -->  
+				<property name="serviceTimeGammaTheta" type="Double" value="15.7125"/> <!-- assumption similar to makeup -->  
+				<property name="interarrivalTimeLambda" type="Double" value="9.6356"/> <!-- assumption similar to tent wc -->   
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+			
+			<propertyContainer id="23" name="Security">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="130"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="23"/>
+				<property name="oneTime" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.2153"/>  <!-- assumption similar to entrance -->
+				<property name="serviceTimeGammaTheta" type="Double" value="2.5556"/> <!-- assumption similar to entrance - 15 -->
+				<property name="interarrivalTimeLambda" type="Double" value="0.5"/> <!-- assumption similar to entrance -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+		</strategical>
+	</strategicalModels>
+
+	<!-- TODO, wenn die simulation läuft, inflow einfügen -->
+	<generators>
+			<generator id="0" name="RegionEntranceGenerator" type="Plan" scenario="0" origin="0" seed="0">
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="1000"/>
+			<property name="safetyDistance" type="Double" value="2.0"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0"/>
+				<entry index="1" value="600"/>  
+				<entry index="2" value="851"/>
+				<entry index="3" value="1200"/> 
+				<entry index="4" value="1451"/>
+				<entry index="5" value="1800"/> 
+				<entry index="6" value="2051"/> 
+				<entry index="7" value="2400"/>
+				<entry index="8" value="2651"/>
+				<entry index="9" value="3000"/> 
+				<entry index="10" value="3251"/> 
+				<entry index="11" value="3600"/>
+				<!-- 60 Min -->
+				<entry index="12" value="3851"/>
+				<entry index="13" value="4200"/>
+				<entry index="14" value="4451"/>
+				<entry index="15" value="4800"/>
+				<entry index="16" value="5051"/>
+				<entry index="17" value="5400"/>
+				<entry index="18" value="5651"/>
+				<entry index="19" value="6000"/>
+				<entry index="20" value="6251"/>
+				<entry index="21" value="6600"/>
+				<entry index="22" value="6851"/>
+				<entry index="23" value="7200"/>
+				<!-- 120 Min -->
+				<entry index="24" value="7451"/>
+				<entry index="25" value="7800"/>
+				<entry index="26" value="8051"/>
+				<entry index="27" value="8400"/>
+				<entry index="28" value="8651"/>
+				<entry index="29" value="9000"/>
+				<entry index="30" value="9251"/>
+				<entry index="31" value="9600"/>
+				<entry index="32" value="9851"/>
+				<entry index="33" value="10200"/>
+				<entry index="34" value="10451"/>
+				<entry index="35" value="10800"/>
+				<!-- 180 Min -->
+				<entry index="36" value="11051"/>
+				<entry index="37" value="11200"/>
+				<!-- 190 Min -->
+				<entry index="38" value="11451"/>
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<entry index="0" value="0.00"/>
+				<entry index="1" value="0.05"/>	
+				<entry index="2" value="0.00"/>
+				<entry index="3" value="0.05"/>
+				<entry index="4" value="0.00"/>
+				<entry index="5" value="0.05"/>
+				<entry index="6" value="0.00"/>
+				<entry index="7" value="0.05"/>
+				<entry index="8" value="0.00"/>
+				<entry index="9" value="0.05"/>
+				<entry index="10" value="0.00"/>
+				<entry index="11" value="0.05"/>
+				<entry index="12" value="0.00"/>
+				<entry index="13" value="0.05"/>
+				<entry index="14" value="0.00"/>
+				<entry index="15" value="0.05"/>
+				<entry index="16" value="0.00"/>
+				<entry index="17" value="0.05"/>
+				<entry index="18" value="0.00"/>
+				<entry index="19" value="0.05"/>
+				<!-- 50 % -->
+				<entry index="20" value="0.00"/>
+				<entry index="21" value="0.05"/>
+				<entry index="22" value="0.00"/>
+				<entry index="23" value="0.05"/>
+				<entry index="24" value="0.00"/>
+				<entry index="25" value="0.05"/>
+				<entry index="26" value="0.00"/>
+				<entry index="27" value="0.05"/>
+				<entry index="28" value="0.00"/>
+				<entry index="29" value="0.05"/>
+				<entry index="30" value="0.00"/>
+				<entry index="31" value="0.05"/>
+				<entry index="32" value="0.00"/>
+				<entry index="33" value="0.05"/>
+				<entry index="34" value="0.00"/>
+				<entry index="35" value="0.05"/>
+				<entry index="36" value="0.00"/>
+				<entry index="37" value="0.05"/>
+				<entry index="38" value="0.00"/>
+				<entry index="19" value="0.05"/>
+				<!-- 10 % -->
+				<entry index="20" value="0.0"/>
+			</complexProperty>
+		</generator>
+	</generators>
+
+	<!-- TODO, wenn die simulation läuft, gruppen einfügen -->
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.04"/>
+			<property name="maximalVelocity" type="Double" value="1.7"/>
+			<property name="groupSize" type="Integer" value="1"/>
+		</pedestrianSeed> 
+		<!-- <pedestrianSeed id="0" name="Force_Group_Seed" type="ForceGroup">
+			<property name="desiredVelocity" type="Double" value="1.04"/>
+			<property name="maximalVelocity" type="Double" value="1.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<complexProperty name="groupSize" type="CsvList" valueType="Integer">
+				<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\config\Kielar\MultikOSi_2016\2106_BTTW_Group_Sizes.csv" separator=";"/> 
+			</complexProperty>
+		</pedestrianSeed>-->
+	</pedestrianSeeds>
+
+	<absorbers>
+		<absorber id="0" name="RegionExitAborber" scenario="0" destination="129" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="1.0"/>
+		</absorber>
+	</absorbers>
+
+	<outputWriters>
+		<outputWriter id="0" name="anyalysisOutput" type="csvSingleWriter">
+			<property name="call" type="Integer" value="10"/>
+			<property name="file" type="File" value="./MultikOSi_2016_BTTW_Occupancy_Final.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="5000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="occupancy"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="occupancy" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter> 
+		<outputWriter id="1" name="csvWriter" type="csvSingleWriter">
+			<property name="call" type="Integer" value="5"/>
+			<property name="file" type="File" value="./MultikOSi_2016_BTTW_Data_Final.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="targetID"/>
+				<entry index="7" value="groupID"/>
+				<entry index="8" value="leader"/>
+				<entry index="9" value="bodyRadius"/>
+
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="targetID" type="Format" value="%d"/>
+				<property name="groupID" type="Format" value="%d"/>
+				<property name="leader" type="Format" value="-"/>
+				<property name="bodyRadius" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="2" name="layoutOutput" type="configurationWriter">
+			<property name="file" type="File" value="./MultikOSi_2016_BTTW_Layout_Final.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+	</outputWriters>
+
+	<graphs>
+		<graphModel name="routing" id="0">
+			<graphOperation id="0" name="raw" type="RawGraph" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+			</graphOperation> 
+			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased" order="1"/>
+			<graphOperation id="2" name="corners" type="VertexCreateAtCorners" order="2"> 
+				<property name="cornerDistance" type="Double" value="0.7"/> 
+			</graphOperation> 	
+			<graphOperation id="3" name="vertices" type="VertexCreateVoronoiBased" order="3">
+				<property name="cellEdgeSize" type="Double" value="2.0"/>
+			</graphOperation>
+			<graphOperation id="4" name="visibility" type="EdgeCreateVisibilityAngleBased" order="4"> 
+				<property name="alpha" type="Double" value="23"/> 
+				<property name="visibilityTolerance" type="Double" value="0.2"/>
+			</graphOperation> 	
+			<graphOperation id="6" name="removeDispensible" type="EdgeRemoveUnreachable" order="6"/>	
+			<graphOperation id="7" name="toConfiguration" type="ToConfiguration" order="7">
+				<property name="scenarioId" type="Integer" value="0"/>
+			</graphOperation>
+		</graphModel>
+		<!-- <graphModel name="routing" id="0">
+			<graphOperation name="fromConfig" type="FromConfiguration" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+				<property name="precisionSeed" type="Double" value="0.001"/>
+			</graphOperation> 
+		</graphModel> -->
+	</graphs>
+
+	<lattices>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+	</lattices>
+
+	<layouts>
+		<scenario id="0" name="2016_BTTW_Layout_v1" maxX="470.0977" maxY="0" minX="251.3855" minY="-185.5553">
+	<area id="0" name="Region_Entrance" type="Origin">
+        <point x="259.0485" y="-151.8824"/>
+        <point x="261.92805875420873" y="-152.47727272727272"/>
+        <point x="265.05305875420873" y="-146.64393939393938"/>
+        <point x="261.9383" y="-145.9772"/>
+      </area>
+      <area id="1" name="Chill_Out_Wood_1" type="Intermediate">
+        <point x="337.4215" y="-141.0858"/>
+        <point x="336.3057" y="-146.7786"/>
+        <point x="340.602" y="-148.0092"/>
+        <point x="341.7297" y="-141.8732"/>
+      </area>
+      <area id="2" name="WC_Main_1" category="wc" type="Intermediate">
+        <point x="390.292" y="-160.7901"/>
+        <point x="389.6555" y="-161.5661"/>
+        <point x="390.4783" y="-162.2955"/>
+        <point x="391.1719" y="-161.4423"/>
+        <point x="390.292" y="-160.7901"/>
+        <gatheringLine>
+          <point x="390.292" y="-160.7901"/>
+          <point x="389.6555" y="-161.5661"/>
+        </gatheringLine>
+      </area>
+      <area id="3" name="Chill_Out_Stage_6" category="ground" type="Intermediate">
+        <point x="463.9341" y="-153.7087"/>
+        <point x="470.0977" y="-145.0401"/>
+        <point x="469.8231" y="-142.1817"/>
+        <point x="462.716" y="-152.2498"/>
+        <gatheringLine>
+          <point x="457.9919" y="-156.8243"/>
+          <point x="463.9341" y="-153.7087"/>
+        </gatheringLine>
+      </area>
+      <area id="4" name="Chill_Out_Stage_7" category="ground" type="Intermediate">
+        <point x="441.4275" y="-115.2127"/>
+        <point x="467.7776" y="-119.9363"/>
+        <point x="467.4227" y="-117.1946"/>
+        <point x="441.9297" y="-112.1797"/>
+        <gatheringLine>
+          <point x="441.9297" y="-112.1797"/>
+          <point x="467.4227" y="-117.1946"/>
+        </gatheringLine>
+      </area>
+      <area id="5" name="Main_Stage" category="dancing" type="Intermediate">
+        <point x="443.579" y="-119.327"/>
+        <point x="418.9511" y="-121.3702"/>
+        <point x="418.4922" y="-137.7305"/>
+        <point x="442.0694" y="-150.3524"/>
+        <point x="459.1811" y="-150.4166"/>
+        <point x="469.8231" y="-142.1817"/>
+        <point x="467.8319" y="-121.4548"/>
+        <point x="456.1681" y="-120.3221"/>
+        <point x="443.579" y="-119.327"/>
+        <gatheringLine>
+          <point x="467.8319" y="-121.4548"/>
+          <point x="469.8231" y="-142.1817"/>
+        </gatheringLine>
+      </area>
+      <area id="6" name="Chill_Out_Sitting_1" type="Intermediate">
+        <point x="387.5106" y="-97.0476"/>
+        <point x="389.3006" y="-95.488"/>
+        <point x="388.2822" y="-94.3192"/>
+        <point x="386.4923" y="-95.8788"/>
+      </area>
+      <area id="7" name="Chill_Out_Stage_5" category="ground" type="Intermediate">
+        <point x="462.716" y="-152.2498"/>
+        <point x="457.5052" y="-154.588"/>
+        <point x="457.9919" y="-156.8243"/>
+        <point x="458.2509" y="-156.7682"/>
+        <point x="463.9341" y="-153.7087"/>
+        <gatheringLine>
+          <point x="446.8054" y="-159.2456"/>
+          <point x="457.9919" y="-156.8243"/>
+        </gatheringLine>
+      </area>
+      <area id="8" name="Chill_Out_Stage_3" category="ground" type="Intermediate">
+        <point x="413.1136" y="-160.1814"/>
+        <point x="413.7958" y="-156.3387"/>
+        <point x="412.5715" y="-156.1672"/>
+        <point x="411.7849" y="-160.068"/>
+        <gatheringLine>
+          <point x="413.7958" y="-156.3387"/>
+          <point x="413.1136" y="-160.1814"/>
+        </gatheringLine>
+      </area>
+      <area id="9" name="Chill_Out_Stage_1" type="Intermediate">
+        <point x="410.1856" y="-132.6727"/>
+        <point x="413.1152" y="-134.27"/>
+        <point x="417.4547" y="-131.7339"/>
+        <point x="418.1903" y="-124.5567"/>
+        <point x="414.3671" y="-122.5683"/>
+      </area>
+      <area id="10" name="Chill_Out_Stage_4" category="ground" type="Intermediate">
+        <point x="446.8054" y="-159.2456"/>
+        <point x="457.9919" y="-156.8243"/>
+        <point x="457.5052" y="-154.588"/>
+        <point x="444.5962" y="-156.4593"/>
+        <gatheringLine>
+          <point x="446.8054" y="-159.2456"/>
+          <point x="457.9919" y="-156.8243"/>
+        </gatheringLine>
+      </area>
+      <area id="11" name="Chill_Out_Sitting_6" type="Intermediate">
+        <point x="378.3081" y="-121.953"/>
+        <point x="380.6822" y="-121.953"/>
+        <point x="380.6822" y="-120.4028"/>
+        <point x="378.3081" y="-120.4028"/>
+      </area>
+      <area id="12" name="Food_Hexenwerk" type="Intermediate">
+        <point x="388.7154" y="-99.1741"/>
+        <point x="389.2201" y="-99.7289"/>
+        <point x="389.7749" y="-99.2242"/>
+        <point x="389.2702" y="-98.6694"/>
+        <gatheringLine>
+          <point x="389.2702" y="-98.6694"/>
+          <point x="389.7749" y="-99.2242"/>
+        </gatheringLine>
+      </area>
+      <area id="13" name="Food_Okra" type="Intermediate">
+        <point x="393.8196" y="-105.0128"/>
+        <point x="394.0865" y="-105.7137"/>
+        <point x="394.7874" y="-105.4468"/>
+        <point x="394.5205" y="-104.7459"/>
+        <gatheringLine>
+          <point x="394.5205" y="-104.7459"/>
+          <point x="394.7874" y="-105.4468"/>
+        </gatheringLine>
+      </area>
+      <area id="14" name="Chill_Out_Center_1" type="Intermediate">
+        <point x="362.0452" y="-126.514"/>
+        <point x="362.467" y="-129.9552"/>
+        <point x="364.027" y="-131.7797"/>
+        <point x="365.5093" y="-133.0361"/>
+        <point x="368.9895" y="-133.0361"/>
+        <point x="371.1163" y="-131.973"/>
+        <point x="372.0831" y="-128.5902"/>
+        <point x="372.0831" y="-127.3337"/>
+        <point x="370.3429" y="-125.1751"/>
+        <point x="367.1077" y="-123.9453"/>
+        <point x="363.8725" y="-125.0302"/>
+      </area>
+      <area id="15" name="Chill_Out_Center_2" category="ground" type="Intermediate">
+        <point x="357.7397" y="-137.1115"/>
+        <point x="363.3543" y="-141.3584"/>
+        <point x="364.3452" y="-140.1335"/>
+        <point x="358.7351" y="-135.7283"/>
+        <gatheringLine>
+          <point x="358.7351" y="-135.7283"/>
+          <point x="364.3452" y="-140.1335"/>
+        </gatheringLine>
+      </area>
+      <area id="16" name="Chill_Out_Wood_2" type="Intermediate">
+        <point x="347.6763" y="-148.3789"/>
+        <point x="348.8476" y="-146.6132"/>
+        <point x="348.8572" y="-143.9987"/>
+        <point x="347.4728" y="-144.9904"/>
+      </area>
+      <area id="17" name="Chill_Out_Wood_3" category="ground" type="Intermediate">
+        <point x="348.8476" y="-145.4686"/>
+        <point x="355.0937" y="-145.6657"/>
+        <point x="355.0085" y="-143.9778"/>
+        <point x="348.8572" y="-143.9987"/>
+        <point x="348.8476" y="-145.4686"/>
+        <gatheringLine>
+          <point x="348.8518" y="-145.4687"/>
+          <point x="355.0937" y="-145.6657"/>
+        </gatheringLine>
+      </area>
+      <area id="18" name="Chill_Out_Wood_4" category="ground" type="Intermediate">
+        <point x="355.5801" y="-150.587"/>
+        <point x="347.921" y="-152.4544"/>
+        <point x="348.1549" y="-153.4563"/>
+        <point x="355.8139" y="-151.5888"/>
+        <gatheringLine>
+          <point x="347.921" y="-152.4544"/>
+          <point x="355.5801" y="-150.587"/>
+        </gatheringLine>
+      </area>
+      <area id="19" name="Chill_Out_Wood_5" type="Intermediate">
+        <point x="348.2394" y="-158.9917"/>
+        <point x="354.9057" y="-158.9917"/>
+        <point x="354.9057" y="-157.0244"/>
+        <point x="348.2394" y="-157.0244"/>
+      </area>
+      <area id="20" name="Chill_Out_Stage_2" category="ground" type="Intermediate">
+        <point x="402.893" y="-155.8128"/>
+        <point x="402.7063" y="-159.293"/>
+        <point x="403.9448" y="-159.3987"/>
+        <point x="404.2678" y="-155.8771"/>
+        <point x="402.893" y="-155.8128"/>
+        <gatheringLine>
+          <point x="402.893" y="-155.8128"/>
+          <point x="402.7063" y="-159.293"/>
+        </gatheringLine>
+      </area>
+      <area id="21" name="Chill_Out_Stage_3" category="ground" type="Intermediate">
+        <point x="402.6588" y="-160.178"/>
+        <point x="412.9559" y="-161.0697"/>
+        <point x="413.1136" y="-160.1814"/>
+        <point x="402.7063" y="-159.293"/>
+        <gatheringLine>
+          <point x="412.9559" y="-161.0697"/>
+          <point x="402.6588" y="-160.178"/>
+        </gatheringLine>
+      </area>
+      <area id="22" name="Information" type="Intermediate">
+        <point x="377.3232" y="-140.8483"/>
+        <point x="378.0732" y="-140.8483"/>
+        <point x="378.0732" y="-140.0983"/>
+        <point x="377.3232" y="-140.0983"/>
+        <gatheringLine>
+          <point x="377.3232" y="-140.0983"/>
+          <point x="378.0732" y="-140.0983"/>
+        </gatheringLine>
+      </area>
+      <area id="23" name="Chill_Out_Sitting_9" type="Intermediate">
+        <point x="378.5019" y="-139.2024"/>
+        <point x="380.6888" y="-139.2024"/>
+        <point x="380.6888" y="-135.9375"/>
+        <point x="378.5019" y="-135.9375"/>
+      </area>
+      <area id="24" name="Tent_Stage" type="Intermediate">
+        <point x="369.2974" y="-100.1249"/>
+        <point x="367.1408" y="-104.5828"/>
+        <point x="369.7059" y="-107.7719"/>
+        <point x="374.4641" y="-106.7214"/>
+        <point x="381.3409" y="-101.5941"/>
+        <point x="383.6106" y="-96.9029"/>
+        <point x="381.0717" y="-93.7063"/>
+        <point x="376.1685" y="-94.7038"/>
+      </area>
+      <area id="25" name="Bar_Cocktail" type="Intermediate">
+        <point x="436.9588" y="-115.1181"/>
+        <point x="437.6954" y="-115.2591"/>
+        <point x="437.8364" y="-114.5225"/>
+        <point x="437.0998" y="-114.3815"/>
+        <gatheringLine>
+          <point x="437.0998" y="-114.3815"/>
+          <point x="437.8364" y="-114.5225"/>
+        </gatheringLine>
+      </area>
+      <area id="26" name="Bar_Left_6" type="Intermediate">
+        <point x="395.0892" y="-120.7543"/>
+        <point x="394.3392" y="-120.7543"/>
+        <point x="394.3392" y="-121.5043"/>
+        <point x="395.0892" y="-121.5043"/>
+        <gatheringLine>
+          <point x="395.0892" y="-120.7543"/>
+          <point x="395.0892" y="-121.5043"/>
+        </gatheringLine>
+      </area>
+      <area id="27" name="Bar_Left_5" type="Intermediate">
+        <point x="394.3392" y="-123.2543"/>
+        <point x="395.0892" y="-123.2543"/>
+        <point x="395.0892" y="-122.5043"/>
+        <point x="394.3392" y="-122.5043"/>
+        <gatheringLine>
+          <point x="395.0892" y="-122.5043"/>
+          <point x="395.0892" y="-123.2543"/>
+        </gatheringLine>
+      </area>
+      <area id="28" name="Bar_Left_4" type="Intermediate">
+        <point x="394.3392" y="-125.5411"/>
+        <point x="395.0892" y="-125.5411"/>
+        <point x="395.0892" y="-124.7911"/>
+        <point x="394.3392" y="-124.7911"/>
+        <gatheringLine>
+          <point x="395.0892" y="-124.7911"/>
+          <point x="395.0892" y="-125.5411"/>
+        </gatheringLine>
+      </area>
+      <area id="29" name="Bar_Left_3" type="Intermediate">
+        <point x="394.3392" y="-127.2911"/>
+        <point x="395.0892" y="-127.2911"/>
+        <point x="395.0892" y="-126.5411"/>
+        <point x="394.3392" y="-126.5411"/>
+        <gatheringLine>
+          <point x="395.0892" y="-126.5411"/>
+          <point x="395.0892" y="-127.2911"/>
+        </gatheringLine>
+      </area>
+      <area id="30" name="Bar_Left_2" type="Intermediate">
+        <point x="395.8392" y="-128.7911"/>
+        <point x="396.5892" y="-128.7911"/>
+        <point x="396.5892" y="-128.0411"/>
+        <point x="395.8392" y="-128.0411"/>
+        <gatheringLine>
+          <point x="395.8392" y="-128.0411"/>
+          <point x="396.5892" y="-128.0411"/>
+        </gatheringLine>
+      </area>
+      <area id="31" name="Bar_Left_1" type="Intermediate">
+        <point x="395.8392" y="-120.0043"/>
+        <point x="396.5892" y="-120.0043"/>
+        <point x="396.5892" y="-119.2543"/>
+        <point x="395.8392" y="-119.2543"/>
+        <gatheringLine>
+          <point x="395.8392" y="-120.0043"/>
+          <point x="396.5892" y="-120.0043"/>
+        </gatheringLine>
+      </area>
+      <area id="32" name="Bar_Right_1" type="Intermediate">
+        <point x="406.4378" y="-131.1021"/>
+        <point x="406.7212" y="-130.4077"/>
+        <point x="406.0267" y="-130.1243"/>
+        <point x="405.7434" y="-130.8188"/>
+        <gatheringLine>
+          <point x="406.0267" y="-130.1243"/>
+          <point x="406.7212" y="-130.4077"/>
+        </gatheringLine>
+      </area>
+      <area id="33" name="Bar_Right_2" type="Intermediate">
+        <point x="411.1537" y="-122.6937"/>
+        <point x="411.3194" y="-121.9622"/>
+        <point x="410.5879" y="-121.7966"/>
+        <point x="410.4222" y="-122.528"/>
+        <gatheringLine>
+          <point x="410.5879" y="-121.7966"/>
+          <point x="410.4222" y="-122.528"/>
+        </gatheringLine>
+      </area>
+      <area id="34" name="Bar_Right_3" type="Intermediate">
+        <point x="409.9956" y="-127.3054"/>
+        <point x="409.8131" y="-128.0329"/>
+        <point x="410.5406" y="-128.2154"/>
+        <point x="410.7231" y="-127.4879"/>
+        <gatheringLine>
+          <point x="409.9956" y="-127.3054"/>
+          <point x="409.8131" y="-128.0329"/>
+        </gatheringLine>
+      </area>
+      <area id="35" name="Bar_Right_4" type="Intermediate">
+        <point x="410.7263" y="-124.3977"/>
+        <point x="410.5438" y="-125.1251"/>
+        <point x="411.2712" y="-125.3076"/>
+        <point x="411.4538" y="-124.5802"/>
+        <gatheringLine>
+          <point x="410.5438" y="-125.1251"/>
+          <point x="410.7263" y="-124.3977"/>
+        </gatheringLine>
+      </area>
+      <area id="36" name="Bar_Bottom_1" type="Intermediate">
+        <point x="422.2502" y="-146.7749"/>
+        <point x="422.2502" y="-147.525"/>
+        <point x="423.0002" y="-147.525"/>
+        <point x="423.0002" y="-146.7749"/>
+        <gatheringLine>
+          <point x="422.2502" y="-147.525"/>
+          <point x="423.0002" y="-147.525"/>
+        </gatheringLine>
+      </area>
+      <area id="37" name="Bar_Bottom_2" type="Intermediate">
+        <point x="425.2502" y="-146.7749"/>
+        <point x="425.2502" y="-147.525"/>
+        <point x="426.0002" y="-147.525"/>
+        <point x="426.0002" y="-146.7749"/>
+        <gatheringLine>
+          <point x="425.2502" y="-147.525"/>
+          <point x="426.0002" y="-147.525"/>
+        </gatheringLine>
+      </area>
+      <area id="38" name="Bar_Bottom_3" type="Intermediate">
+        <point x="428.0002" y="-146.7749"/>
+        <point x="428.0002" y="-147.525"/>
+        <point x="428.7502" y="-147.525"/>
+        <point x="428.7502" y="-146.7749"/>
+        <gatheringLine>
+          <point x="428.0002" y="-147.525"/>
+          <point x="428.7502" y="-147.525"/>
+        </gatheringLine>
+      </area>
+      <area id="39" name="Bar_Bottom_4" type="Intermediate">
+        <point x="430.7502" y="-146.7749"/>
+        <point x="430.7502" y="-147.525"/>
+        <point x="431.5002" y="-147.525"/>
+        <point x="431.5002" y="-146.7749"/>
+        <gatheringLine>
+          <point x="430.7502" y="-147.525"/>
+          <point x="431.5002" y="-147.525"/>
+        </gatheringLine>
+      </area>
+      <area id="40" name="Bar_Bottom_5" type="Intermediate">
+        <point x="432.2502" y="-148.2749"/>
+        <point x="432.2502" y="-149.025"/>
+        <point x="433.0002" y="-149.025"/>
+        <point x="433.0002" y="-148.2749"/>
+        <gatheringLine>
+          <point x="432.2502" y="-148.2749"/>
+          <point x="432.2502" y="-149.025"/>
+        </gatheringLine>
+      </area>
+      <area id="41" name="Bar_Bottom_6" type="Intermediate">
+        <point x="432.2502" y="-150.775"/>
+        <point x="432.2502" y="-151.525"/>
+        <point x="433.0002" y="-151.525"/>
+        <point x="433.0002" y="-150.775"/>
+        <gatheringLine>
+          <point x="432.2502" y="-150.775"/>
+          <point x="432.2502" y="-151.525"/>
+        </gatheringLine>
+      </area>
+      <area id="42" name="Bar_Cigarettes" type="Intermediate">
+        <point x="420.6762" y="-148.275"/>
+        <point x="420.6762" y="-149.025"/>
+        <point x="421.4262" y="-149.025"/>
+        <point x="421.4262" y="-148.275"/>
+        <gatheringLine>
+          <point x="421.4262" y="-148.275"/>
+          <point x="421.4262" y="-149.025"/>
+        </gatheringLine>
+      </area>
+      <area id="43" name="Wood_Stage" category="dancing" type="Intermediate">
+        <point x="339.2663" y="-155.2768"/>
+        <point x="347.4928" y="-157.2338"/>
+        <point x="347.921" y="-152.4544"/>
+        <point x="347.4728" y="-144.9904"/>
+        <point x="344.0895" y="-141.7186"/>
+        <point x="343.3101" y="-141.7186"/>
+        <point x="341.7297" y="-141.8732"/>
+        <point x="339.2663" y="-155.2768"/>
+        <gatheringLine>
+          <point x="339.2663" y="-155.2768"/>
+          <point x="347.4928" y="-157.2338"/>
+        </gatheringLine>
+      </area>
+      <area id="44" name="Food_Cheese" type="Intermediate">
+        <point x="378.9601" y="-116.2844"/>
+        <point x="379.1521" y="-117.0094"/>
+        <point x="379.8771" y="-116.8174"/>
+        <point x="379.6851" y="-116.0924"/>
+        <gatheringLine>
+          <point x="379.1521" y="-117.0094"/>
+          <point x="379.8771" y="-116.8174"/>
+        </gatheringLine>
+      </area>
+      <area id="45" name="Chill_Out_Sitting_8" type="Intermediate">
+        <point x="379.5733" y="-132.1882"/>
+        <point x="379.6707" y="-134.4585"/>
+        <point x="382.662" y="-134.3293"/>
+        <point x="382.662" y="-131.9713"/>
+        <point x="379.5733" y="-132.1882"/>
+      </area>
+      <area id="46" name="Mini_Stage" category="single" type="Intermediate">
+        <point x="375.9933" y="-136.0141"/>
+        <point x="377.0596" y="-136.0141"/>
+        <point x="377.0596" y="-133.0624"/>
+        <point x="375.9933" y="-133.0624"/>
+        <gatheringLine>
+          <point x="375.9933" y="-133.0624"/>
+          <point x="376.0006" y="-136.0141"/>
+        </gatheringLine>
+      </area>
+      <area id="47" name="WC_Main_2" category="wc" type="Intermediate">
+        <point x="394.8389" y="-154.6911"/>
+        <point x="394.2891" y="-155.6306"/>
+        <point x="395.3308" y="-156.1592"/>
+        <point x="395.8678" y="-155.2315"/>
+        <point x="394.8389" y="-154.6911"/>
+        <gatheringLine>
+          <point x="395.8678" y="-155.2315"/>
+          <point x="395.3308" y="-156.1592"/>
+        </gatheringLine>
+      </area>
+      <area id="48" name="WC_Main_3" category="wc" type="Intermediate">
+        <point x="394.2891" y="-155.6306"/>
+        <point x="393.7093" y="-156.54"/>
+        <point x="394.7457" y="-157.1048"/>
+        <point x="395.3308" y="-156.1592"/>
+        <point x="394.2891" y="-155.6306"/>
+        <gatheringLine>
+          <point x="394.7457" y="-157.1048"/>
+          <point x="394.1225" y="-158.0436"/>
+        </gatheringLine>
+      </area>
+      <area id="49" name="WC_Main_4" category="wc" type="Intermediate">
+        <point x="393.1195" y="-157.5095"/>
+        <point x="394.1225" y="-158.0436"/>
+        <point x="394.7457" y="-157.1048"/>
+        <point x="393.7093" y="-156.54"/>
+        <point x="393.1195" y="-157.5095"/>
+        <gatheringLine>
+          <point x="394.7457" y="-157.1048"/>
+          <point x="394.1225" y="-158.0436"/>
+        </gatheringLine>
+      </area>
+      <area id="50" name="WC_Main_5" category="wc" type="Intermediate">
+        <point x="391.9917" y="-157.0043"/>
+        <point x="391.4974" y="-157.9225"/>
+        <point x="392.5497" y="-158.4489"/>
+        <point x="393.1195" y="-157.5095"/>
+        <point x="391.9917" y="-157.0043"/>
+        <gatheringLine>
+          <point x="391.4974" y="-157.9225"/>
+          <point x="392.5497" y="-158.4489"/>
+        </gatheringLine>
+      </area>
+      <area id="51" name="WC_Main_6" category="wc" type="Intermediate">
+        <point x="399.91" y="-159.4268"/>
+        <point x="399.5659" y="-160.4877"/>
+        <point x="400.8002" y="-160.7494"/>
+        <point x="400.9986" y="-159.7375"/>
+        <point x="399.91" y="-159.4268"/>
+        <gatheringLine>
+          <point x="400.1811" y="-158.3423"/>
+          <point x="399.91" y="-159.4268"/>
+        </gatheringLine>
+      </area>
+      <area id="52" name="WC_Main_7" category="wc" type="Intermediate">
+        <point x="400.1811" y="-158.3423"/>
+        <point x="399.91" y="-159.4268"/>
+        <point x="400.9986" y="-159.7375"/>
+        <point x="401.2964" y="-158.6041"/>
+        <gatheringLine>
+          <point x="400.4222" y="-157.3362"/>
+          <point x="400.1811" y="-158.3423"/>
+        </gatheringLine>
+      </area>
+      <area id="53" name="WC_Main_8" category="wc" type="Intermediate">
+        <point x="400.4222" y="-157.3362"/>
+        <point x="400.1811" y="-158.3423"/>
+        <point x="401.2964" y="-158.6041"/>
+        <point x="401.4694" y="-157.4899"/>
+        <point x="400.4222" y="-157.3362"/>
+        <gatheringLine>
+          <point x="400.4222" y="-157.3362"/>
+          <point x="400.1811" y="-158.3423"/>
+        </gatheringLine>
+      </area>
+      <area id="54" name="WC_Main_9" category="wc" type="Intermediate">
+        <point x="399.5983" y="-155.5263"/>
+        <point x="399.3307" y="-156.5903"/>
+        <point x="400.3457" y="-156.8636"/>
+        <point x="400.613" y="-155.8462"/>
+        <point x="399.5983" y="-155.5263"/>
+        <gatheringLine>
+          <point x="400.1003" y="-157.9491"/>
+          <point x="400.3457" y="-156.8636"/>
+        </gatheringLine>
+      </area>
+      <area id="55" name="WC_Main_10" category="wc" type="Intermediate">
+        <point x="399.3307" y="-156.5903"/>
+        <point x="399.0785" y="-157.7095"/>
+        <point x="400.1003" y="-157.9491"/>
+        <point x="400.3457" y="-156.8636"/>
+        <point x="399.3307" y="-156.5903"/>
+        <gatheringLine>
+          <point x="399.7226" y="-159.0158"/>
+          <point x="400.1003" y="-157.9491"/>
+        </gatheringLine>
+      </area>
+      <area id="56" name="WC_Main_11" category="wc" type="Intermediate">
+        <point x="399.0785" y="-157.7095"/>
+        <point x="398.7599" y="-158.6266"/>
+        <point x="399.7226" y="-159.0158"/>
+        <point x="400.1003" y="-157.9491"/>
+        <point x="399.0785" y="-157.7095"/>
+        <gatheringLine>
+          <point x="399.2505" y="-160.007"/>
+          <point x="399.7226" y="-159.0158"/>
+        </gatheringLine>
+      </area>
+      <area id="57" name="WC_Main_12" category="wc" type="Intermediate">
+        <point x="398.3254" y="-159.5822"/>
+        <point x="399.2505" y="-160.007"/>
+        <point x="399.7226" y="-159.0158"/>
+        <point x="398.7599" y="-158.6266"/>
+        <point x="398.3254" y="-159.5822"/>
+        <gatheringLine>
+          <point x="399.2505" y="-160.007"/>
+          <point x="399.7226" y="-159.0158"/>
+        </gatheringLine>
+      </area>
+      <area id="58" name="WC_Main_13" category="wc" type="Intermediate">
+        <point x="398.2096" y="-159.7753"/>
+        <point x="397.6194" y="-160.5589"/>
+        <point x="398.464" y="-161.1557"/>
+        <point x="399.0851" y="-160.3543"/>
+        <point x="398.2096" y="-159.7753"/>
+        <gatheringLine>
+          <point x="398.464" y="-161.1557"/>
+          <point x="399.0851" y="-160.3543"/>
+        </gatheringLine>
+      </area>
+      <area id="59" name="WC_Main_14" category="wc" type="Intermediate">
+        <point x="396.583" y="-161.3839"/>
+        <point x="397.164" y="-162.1043"/>
+        <point x="398.0749" y="-161.3834"/>
+        <point x="397.3824" y="-160.5544"/>
+        <point x="396.583" y="-161.3839"/>
+        <gatheringLine>
+          <point x="396.4334" y="-162.8348"/>
+          <point x="397.164" y="-162.1043"/>
+        </gatheringLine>
+      </area>
+      <area id="60" name="WC_Main_15" category="wc" type="Intermediate">
+        <point x="395.632" y="-162.2334"/>
+        <point x="396.4334" y="-162.8348"/>
+        <point x="397.164" y="-162.1043"/>
+        <point x="396.583" y="-161.3839"/>
+        <point x="395.632" y="-162.2334"/>
+        <gatheringLine>
+          <point x="396.4334" y="-162.8348"/>
+          <point x="397.164" y="-162.1043"/>
+        </gatheringLine>
+      </area>
+      <area id="61" name="WC_Main_16" category="wc" type="Intermediate">
+        <point x="394.7006" y="-163.1491"/>
+        <point x="395.3444" y="-163.9235"/>
+        <point x="396.1982" y="-163.07"/>
+        <point x="395.632" y="-162.2334"/>
+        <point x="394.7006" y="-163.1491"/>
+        <gatheringLine>
+          <point x="394.4697" y="-164.6778"/>
+          <point x="395.3444" y="-163.9235"/>
+        </gatheringLine>
+      </area>
+      <area id="62" name="WC_Main_17" category="wc" type="Intermediate">
+        <point x="393.8313" y="-163.9716"/>
+        <point x="394.4697" y="-164.6778"/>
+        <point x="395.3444" y="-163.9235"/>
+        <point x="394.7006" y="-163.1491"/>
+        <point x="393.8313" y="-163.9716"/>
+        <gatheringLine>
+          <point x="393.6547" y="-165.3666"/>
+          <point x="394.4697" y="-164.6778"/>
+        </gatheringLine>
+      </area>
+      <area id="63" name="WC_Main_18" category="wc" type="Intermediate">
+        <point x="393.0396" y="-164.639"/>
+        <point x="393.6547" y="-165.3666"/>
+        <point x="394.4697" y="-164.6778"/>
+        <point x="393.8313" y="-163.9716"/>
+        <point x="393.0396" y="-164.639"/>
+        <gatheringLine>
+          <point x="392.8202" y="-166.1038"/>
+          <point x="393.6547" y="-165.3666"/>
+        </gatheringLine>
+      </area>
+      <area id="64" name="WC_Main_19" category="wc" type="Intermediate">
+        <point x="392.0517" y="-165.3001"/>
+        <point x="392.8202" y="-166.1038"/>
+        <point x="393.6547" y="-165.3666"/>
+        <point x="393.0396" y="-164.639"/>
+        <point x="392.0517" y="-165.3001"/>
+        <gatheringLine>
+          <point x="392.8202" y="-166.1038"/>
+          <point x="393.6547" y="-165.3666"/>
+        </gatheringLine>
+      </area>
+      <area id="65" name="WC_Main_20" category="wc" type="Intermediate">
+        <point x="390.9905" y="-165.058"/>
+        <point x="390.5963" y="-165.9501"/>
+        <point x="391.6927" y="-166.4643"/>
+        <point x="392.0517" y="-165.3001"/>
+        <point x="390.9905" y="-165.058"/>
+        <gatheringLine>
+          <point x="389.461" y="-165.4069"/>
+          <point x="390.5963" y="-165.9501"/>
+        </gatheringLine>
+      </area>
+      <area id="66" name="WC_Main_21" category="wc" type="Intermediate">
+        <point x="390.0281" y="-164.5614"/>
+        <point x="389.461" y="-165.4069"/>
+        <point x="390.5963" y="-165.9501"/>
+        <point x="390.9905" y="-165.058"/>
+        <point x="390.0281" y="-164.5614"/>
+        <gatheringLine>
+          <point x="388.4325" y="-164.7084"/>
+          <point x="389.461" y="-165.4069"/>
+        </gatheringLine>
+      </area>
+      <area id="67" name="WC_Main_22" category="wc" type="Intermediate">
+        <point x="389.1311" y="-163.9517"/>
+        <point x="388.4325" y="-164.7084"/>
+        <point x="389.461" y="-165.4069"/>
+        <point x="390.0281" y="-164.5614"/>
+        <point x="389.1311" y="-163.9517"/>
+        <gatheringLine>
+          <point x="388.4325" y="-164.7084"/>
+          <point x="389.461" y="-165.4069"/>
+        </gatheringLine>
+      </area>
+      <area id="68" name="WC_Main_23" category="wc" type="Intermediate">
+        <point x="388.957" y="-162.4041"/>
+        <point x="388.274" y="-163.3043"/>
+        <point x="389.1311" y="-163.9517"/>
+        <point x="389.7797" y="-163.056"/>
+        <point x="388.957" y="-162.4041"/>
+        <gatheringLine>
+          <point x="388.9638" y="-162.4095"/>
+          <point x="388.274" y="-163.3043"/>
+        </gatheringLine>
+      </area>
+      <area id="69" name="WC_Main_24" category="wc" type="Intermediate">
+        <point x="389.6555" y="-161.5661"/>
+        <point x="388.957" y="-162.4041"/>
+        <point x="389.7797" y="-163.056"/>
+        <point x="390.4783" y="-162.2955"/>
+        <point x="389.6555" y="-161.5661"/>
+        <gatheringLine>
+          <point x="390.292" y="-160.7901"/>
+          <point x="389.6555" y="-161.5661"/>
+        </gatheringLine>
+      </area>
+      <area id="70" name="WC_Main_25" category="wc" type="Intermediate">
+        <point x="391.0061" y="-159.8899"/>
+        <point x="390.292" y="-160.7901"/>
+        <point x="391.1923" y="-161.4574"/>
+        <point x="391.8598" y="-160.5728"/>
+        <point x="391.0061" y="-159.8899"/>
+        <gatheringLine>
+          <point x="391.7512" y="-159.0674"/>
+          <point x="391.0061" y="-159.8899"/>
+        </gatheringLine>
+      </area>
+      <area id="71" name="WC_Main_26" category="wc" type="Intermediate">
+        <point x="391.7512" y="-159.0674"/>
+        <point x="391.0061" y="-159.8899"/>
+        <point x="391.8598" y="-160.5728"/>
+        <point x="392.5584" y="-159.7813"/>
+        <point x="391.7512" y="-159.0674"/>
+        <gatheringLine>
+          <point x="391.7512" y="-159.0674"/>
+          <point x="391.0061" y="-159.8899"/>
+        </gatheringLine>
+      </area>
+      <area id="72" name="WC_Main_27" category="wc" type="Intermediate">
+        <point x="393.5934" y="-159.0082"/>
+        <point x="393.0241" y="-159.8899"/>
+        <point x="393.9555" y="-160.4486"/>
+        <point x="394.4831" y="-159.5016"/>
+        <point x="393.5934" y="-159.0082"/>
+        <gatheringLine>
+          <point x="394.1225" y="-158.0436"/>
+          <point x="393.5934" y="-159.0082"/>
+        </gatheringLine>
+      </area>
+      <area id="73" name="WC_Main_28" category="wc" type="Intermediate">
+        <point x="394.1225" y="-158.0436"/>
+        <point x="393.5934" y="-159.0082"/>
+        <point x="394.4831" y="-159.5016"/>
+        <point x="395.0877" y="-158.5852"/>
+        <point x="394.1225" y="-158.0436"/>
+        <gatheringLine>
+          <point x="394.7457" y="-157.1048"/>
+          <point x="394.1225" y="-158.0436"/>
+        </gatheringLine>
+      </area>
+      <area id="74" name="WC_Main_29" category="wc" type="Intermediate">
+        <point x="394.7457" y="-157.1048"/>
+        <point x="394.1225" y="-158.0436"/>
+        <point x="395.0877" y="-158.5852"/>
+        <point x="395.702" y="-157.626"/>
+        <point x="394.7457" y="-157.1048"/>
+        <gatheringLine>
+          <point x="394.7457" y="-157.1048"/>
+          <point x="394.1225" y="-158.0436"/>
+        </gatheringLine>
+      </area>
+      <area id="75" name="WC_Main_30" category="wc" type="Intermediate">
+        <point x="395.3308" y="-156.1592"/>
+        <point x="394.7457" y="-157.1048"/>
+        <point x="395.702" y="-157.6103"/>
+        <point x="396.3164" y="-156.7719"/>
+        <point x="395.3308" y="-156.1592"/>
+        <gatheringLine>
+          <point x="395.8678" y="-155.2315"/>
+          <point x="395.3308" y="-156.1592"/>
+        </gatheringLine>
+      </area>
+      <area id="76" name="WC_Main_31" category="wc" type="Intermediate">
+        <point x="395.8678" y="-155.2315"/>
+        <point x="395.3308" y="-156.1592"/>
+        <point x="396.3164" y="-156.7719"/>
+        <point x="396.8527" y="-155.8457"/>
+        <point x="395.8678" y="-155.2315"/>
+        <gatheringLine>
+          <point x="395.8678" y="-155.2315"/>
+          <point x="395.3308" y="-156.1592"/>
+        </gatheringLine>
+      </area>
+      <area id="77" name="WC_Main_32" category="wc" type="Intermediate">
+        <point x="396.0912" y="-153.9709"/>
+        <point x="395.577" y="-155.0501"/>
+        <point x="396.8527" y="-155.8457"/>
+        <point x="397.5407" y="-154.7405"/>
+        <point x="396.0912" y="-153.9709"/>
+        <gatheringLine>
+          <point x="396.0912" y="-153.9709"/>
+          <point x="395.5661" y="-155.073"/>
+        </gatheringLine>
+      </area>
+      <area id="78" name="Entrance_1" category="entrance" type="Intermediate">
+        <point x="368.8032" y="-157.0417"/>
+        <point x="368.8907" y="-156.2968"/>
+        <point x="368.1458" y="-156.2093"/>
+        <point x="368.0583" y="-156.9542"/>
+        <gatheringLine>
+          <point x="368.1458" y="-156.2093"/>
+          <point x="368.8907" y="-156.2968"/>
+        </gatheringLine>
+      </area>
+      <area id="79" name="Entrance_2" category="entrance" type="Intermediate">
+        <point x="371.5105" y="-157.4678"/>
+        <point x="371.5971" y="-156.7228"/>
+        <point x="370.8521" y="-156.6363"/>
+        <point x="370.7655" y="-157.3813"/>
+        <gatheringLine>
+          <point x="370.8549" y="-156.6366"/>
+          <point x="371.5971" y="-156.7228"/>
+        </gatheringLine>
+      </area>
+      <area id="80" name="Entrance_3" category="entrance" type="Intermediate">
+        <point x="367.4569" y="-157.3534"/>
+        <point x="367.5673" y="-156.6115"/>
+        <point x="366.8255" y="-156.5011"/>
+        <point x="366.7151" y="-157.2429"/>
+        <gatheringLine>
+          <point x="366.8255" y="-156.5011"/>
+          <point x="367.5673" y="-156.6115"/>
+        </gatheringLine>
+      </area>
+      <area id="81" name="Entrance_4" category="entrance" type="Intermediate">
+        <point x="364.8156" y="-156.8153"/>
+        <point x="364.926" y="-156.0735"/>
+        <point x="364.1842" y="-155.9631"/>
+        <point x="364.0738" y="-156.7049"/>
+        <gatheringLine>
+          <point x="364.1842" y="-155.9631"/>
+          <point x="364.926" y="-156.0735"/>
+        </gatheringLine>
+      </area>
+      <area id="82" name="Crazy_Beans_Coffee" type="Intermediate">
+        <point x="358.1922" y="-149.1446"/>
+        <point x="357.4632" y="-148.9682"/>
+        <point x="357.2868" y="-149.6971"/>
+        <point x="358.0158" y="-149.8735"/>
+        <gatheringLine>
+          <point x="357.4632" y="-148.9682"/>
+          <point x="357.2868" y="-149.6971"/>
+        </gatheringLine>
+      </area>
+      <area id="83" name="Joes_Pub" type="Intermediate">
+        <point x="339.8988" y="-136.3845"/>
+        <point x="339.1504" y="-136.3353"/>
+        <point x="339.1012" y="-137.0836"/>
+        <point x="339.8496" y="-137.1329"/>
+        <gatheringLine>
+          <point x="339.1504" y="-136.3353"/>
+          <point x="339.1012" y="-137.0836"/>
+        </gatheringLine>
+      </area>
+      <area id="84" name="Food_Frittes" type="Intermediate">
+        <point x="383.0825" y="-123.5053"/>
+        <point x="383.0825" y="-124.2554"/>
+        <point x="383.8325" y="-124.2554"/>
+        <point x="383.8325" y="-123.5053"/>
+        <gatheringLine>
+          <point x="383.0825" y="-123.5053"/>
+          <point x="383.8325" y="-123.5053"/>
+        </gatheringLine>
+      </area>
+      <area id="85" name="Makeup" type="Intermediate">
+        <point x="397.0087" y="-114.0777"/>
+        <point x="397.0087" y="-114.8277"/>
+        <point x="397.7587" y="-114.8277"/>
+        <point x="397.7587" y="-114.0777"/>
+        <gatheringLine>
+          <point x="397.0087" y="-114.8277"/>
+          <point x="397.7587" y="-114.8277"/>
+        </gatheringLine>
+      </area>
+      <area id="86" name="Chill_Out_Sitting_4" type="Intermediate">
+        <point x="392.2911" y="-118.292"/>
+        <point x="394.8109" y="-118.292"/>
+        <point x="394.8109" y="-110.7073"/>
+        <point x="392.2911" y="-110.7073"/>
+      </area>
+      <area id="87" name="Chill_Out_Sitting_5" type="Intermediate">
+        <point x="395.7158" y="-109.64"/>
+        <point x="398.0899" y="-109.64"/>
+        <point x="398.0899" y="-108.0898"/>
+        <point x="395.7158" y="-108.0898"/>
+      </area>
+      <area id="88" name="Chill_Out_Sitting_3" type="Intermediate">
+        <point x="388.5075" y="-106.0751"/>
+        <point x="389.996" y="-108.8499"/>
+        <point x="392.06" y="-107.843"/>
+        <point x="390.551" y="-105.0409"/>
+        <point x="388.5075" y="-106.0751"/>
+      </area>
+      <area id="89" name="Chill_Out_Sitting_2" type="Intermediate">
+        <point x="384.0673" y="-107.1598"/>
+        <point x="386.2117" y="-111.4228"/>
+        <point x="388.2805" y="-110.4138"/>
+        <point x="385.9847" y="-106.1256"/>
+        <point x="384.0673" y="-107.1598"/>
+      </area>
+      <area id="90" name="Open_Air_Shower" type="Intermediate">
+        <point x="364.9654" y="-82.3422"/>
+        <point x="368.5393" y="-82.3422"/>
+        <point x="368.5393" y="-78.8019"/>
+        <point x="364.9654" y="-78.8019"/>
+      </area>
+      <area id="91" name="Chill_Out_Sitting_10" type="Intermediate">
+        <point x="357.0081" y="-110.0375"/>
+        <point x="364.2707" y="-109.8183"/>
+        <point x="360.5085" y="-104.3251"/>
+      </area>
+      <area id="92" name="WC_Tent_20" type="Intermediate">
+        <point x="348.9315" y="-107.2601"/>
+        <point x="347.8544" y="-107.0769"/>
+        <point x="347.6657" y="-108.1648"/>
+        <point x="348.7457" y="-108.3368"/>
+        <gatheringLine>
+          <point x="348.9315" y="-107.2601"/>
+          <point x="348.7457" y="-108.3368"/>
+        </gatheringLine>
+      </area>
+      <area id="93" name="WC_Tent_21" type="Intermediate">
+        <point x="348.7457" y="-108.3368"/>
+        <point x="347.6657" y="-108.1648"/>
+        <point x="347.4711" y="-109.237"/>
+        <point x="348.5533" y="-109.4191"/>
+        <gatheringLine>
+          <point x="348.9315" y="-107.2601"/>
+          <point x="348.7457" y="-108.3368"/>
+        </gatheringLine>
+      </area>
+      <area id="94" name="WC_Tent_22" type="Intermediate">
+        <point x="348.5533" y="-109.4191"/>
+        <point x="347.4711" y="-109.237"/>
+        <point x="347.2822" y="-110.3265"/>
+        <point x="348.3673" y="-110.5072"/>
+        <gatheringLine>
+          <point x="348.5533" y="-109.4191"/>
+          <point x="348.3673" y="-110.5072"/>
+        </gatheringLine>
+      </area>
+      <area id="95" name="WC_Tent_23" type="Intermediate">
+        <point x="348.3673" y="-110.5072"/>
+        <point x="347.2822" y="-110.3265"/>
+        <point x="347.0933" y="-111.4043"/>
+        <point x="348.1816" y="-111.593"/>
+        <gatheringLine>
+          <point x="348.5533" y="-109.4191"/>
+          <point x="348.3673" y="-110.5072"/>
+        </gatheringLine>
+      </area>
+      <area id="96" name="WC_Tent_24" type="Intermediate">
+        <point x="348.1816" y="-111.593"/>
+        <point x="347.0933" y="-111.4043"/>
+        <point x="346.9156" y="-112.4941"/>
+        <point x="347.9965" y="-112.6763"/>
+        <gatheringLine>
+          <point x="348.1816" y="-111.593"/>
+          <point x="347.9965" y="-112.6763"/>
+        </gatheringLine>
+      </area>
+      <area id="97" name="WC_Tent_25" type="Intermediate">
+        <point x="347.9965" y="-112.6763"/>
+        <point x="346.9111" y="-112.4967"/>
+        <point x="346.7276" y="-113.581"/>
+        <point x="347.8047" y="-113.7641"/>
+        <gatheringLine>
+          <point x="348.1816" y="-111.593"/>
+          <point x="347.9965" y="-112.6763"/>
+        </gatheringLine>
+      </area>
+      <area id="98" name="WC_Tent_26" type="Intermediate">
+        <point x="347.8047" y="-113.7641"/>
+        <point x="346.7276" y="-113.581"/>
+        <point x="346.5388" y="-114.6689"/>
+        <point x="347.6188" y="-114.8409"/>
+        <gatheringLine>
+          <point x="347.8103" y="-113.7651"/>
+          <point x="347.6188" y="-114.8409"/>
+        </gatheringLine>
+      </area>
+      <area id="99" name="WC_Tent_27" type="Intermediate">
+        <point x="347.6188" y="-114.8409"/>
+        <point x="346.5388" y="-114.6689"/>
+        <point x="346.3443" y="-115.7411"/>
+        <point x="347.4326" y="-115.9242"/>
+        <gatheringLine>
+          <point x="347.8103" y="-113.7651"/>
+          <point x="347.6188" y="-114.8409"/>
+        </gatheringLine>
+      </area>
+      <area id="100" name="WC_Tent_28" type="Intermediate">
+        <point x="347.4326" y="-115.9242"/>
+        <point x="346.3443" y="-115.7411"/>
+        <point x="346.1553" y="-116.8305"/>
+        <point x="347.2547" y="-117.0137"/>
+        <gatheringLine>
+          <point x="347.4326" y="-115.9242"/>
+          <point x="347.2547" y="-117.0137"/>
+        </gatheringLine>
+      </area>
+      <area id="101" name="WC_Tent_29" type="Intermediate">
+        <point x="347.2547" y="-117.0137"/>
+        <point x="346.1553" y="-116.8305"/>
+        <point x="345.9665" y="-117.9084"/>
+        <point x="347.0548" y="-118.0971"/>
+        <gatheringLine>
+          <point x="347.4326" y="-115.9242"/>
+          <point x="347.2547" y="-117.0137"/>
+        </gatheringLine>
+      </area>
+      <area id="102" name="WC_Tent_30" type="Intermediate">
+        <point x="347.0548" y="-118.0971"/>
+        <point x="345.9665" y="-117.9084"/>
+        <point x="345.7887" y="-118.9982"/>
+        <point x="346.8696" y="-119.1803"/>
+        <gatheringLine>
+          <point x="347.2547" y="-117.0137"/>
+          <point x="347.0548" y="-118.0971"/>
+        </gatheringLine>
+      </area>
+      <area id="103" name="WC_Tent_31" type="Intermediate">
+        <point x="350.4816" y="-98.8288"/>
+        <point x="349.3962" y="-98.6492"/>
+        <point x="349.2127" y="-99.7335"/>
+        <point x="350.2898" y="-99.9167"/>
+        <gatheringLine>
+          <point x="350.4816" y="-98.8288"/>
+          <point x="350.2898" y="-99.9167"/>
+        </gatheringLine>
+      </area>
+      <area id="104" name="WC_Tent_32" type="Intermediate">
+        <point x="350.2898" y="-99.9167"/>
+        <point x="349.2127" y="-99.7335"/>
+        <point x="349.0239" y="-100.8214"/>
+        <point x="350.1039" y="-100.9934"/>
+        <gatheringLine>
+          <point x="350.4816" y="-98.8288"/>
+          <point x="350.2898" y="-99.9167"/>
+        </gatheringLine>
+      </area>
+      <area id="105" name="WC_Tent_33" type="Intermediate">
+        <point x="350.1039" y="-100.9934"/>
+        <point x="349.0239" y="-100.8214"/>
+        <point x="348.8294" y="-101.8936"/>
+        <point x="349.9177" y="-102.0767"/>
+        <gatheringLine>
+          <point x="350.1039" y="-100.9934"/>
+          <point x="349.917" y="-102.0766"/>
+        </gatheringLine>
+      </area>
+      <area id="106" name="WC_Tent_34" type="Intermediate">
+        <point x="349.9177" y="-102.0767"/>
+        <point x="348.8294" y="-101.8936"/>
+        <point x="348.6405" y="-102.983"/>
+        <point x="349.7399" y="-103.1662"/>
+        <gatheringLine>
+          <point x="349.9177" y="-102.0767"/>
+          <point x="349.7304" y="-103.1646"/>
+        </gatheringLine>
+      </area>
+      <area id="107" name="WC_Tent_35" type="Intermediate">
+        <point x="349.7399" y="-103.1662"/>
+        <point x="348.6405" y="-102.983"/>
+        <point x="348.4516" y="-104.0609"/>
+        <point x="349.5399" y="-104.2496"/>
+        <gatheringLine>
+          <point x="349.7399" y="-103.1662"/>
+          <point x="349.5399" y="-104.2496"/>
+        </gatheringLine>
+      </area>
+      <area id="108" name="WC_Tent_36" type="Intermediate">
+        <point x="349.5399" y="-104.2496"/>
+        <point x="348.4516" y="-104.0609"/>
+        <point x="348.2738" y="-105.1507"/>
+        <point x="349.3547" y="-105.3328"/>
+        <gatheringLine>
+          <point x="349.7399" y="-103.1662"/>
+          <point x="349.5399" y="-104.2496"/>
+        </gatheringLine>
+      </area>
+      <area id="109" name="WC_Tent_37" type="Intermediate">
+        <point x="346.4801" y="-102.4381"/>
+        <point x="345.4058" y="-102.2411"/>
+        <point x="345.2173" y="-103.329"/>
+        <point x="346.2935" y="-103.5214"/>
+        <gatheringLine>
+          <point x="345.0246" y="-104.409"/>
+          <point x="345.2173" y="-103.329"/>
+        </gatheringLine>
+      </area>
+      <area id="110" name="WC_Tent_1" category="wc" type="Intermediate">
+        <point x="347.4319" y="-97.0262"/>
+        <point x="346.3519" y="-96.836"/>
+        <point x="346.1592" y="-97.916"/>
+        <point x="347.2405" y="-98.1082"/>
+        <gatheringLine>
+          <point x="346.1794" y="-97.9196"/>
+          <point x="346.3519" y="-96.836"/>
+        </gatheringLine>
+      </area>
+      <area id="111" name="WC_Tent_2" category="wc" type="Intermediate">
+        <point x="347.2405" y="-98.1082"/>
+        <point x="346.1592" y="-97.916"/>
+        <point x="345.9735" y="-98.9958"/>
+        <point x="347.0509" y="-99.1884"/>
+      </area>
+      <area id="112" name="WC_Tent_3" category="wc" type="Intermediate">
+        <point x="347.0509" y="-99.1884"/>
+        <point x="345.9735" y="-98.9958"/>
+        <point x="345.7877" y="-100.0759"/>
+        <point x="346.8611" y="-100.2685"/>
+      </area>
+      <area id="113" name="WC_Tent_4" category="wc" type="Intermediate">
+        <point x="346.8679" y="-100.2697"/>
+        <point x="345.7945" y="-100.0771"/>
+        <point x="345.6009" y="-101.1624"/>
+        <point x="346.6759" y="-101.3525"/>
+        <gatheringLine>
+          <point x="345.6009" y="-101.1624"/>
+          <point x="345.7945" y="-100.0771"/>
+        </gatheringLine>
+      </area>
+      <area id="114" name="WC_Tent_5" category="wc" type="Intermediate">
+        <point x="346.6691" y="-101.3513"/>
+        <point x="345.5941" y="-101.1612"/>
+        <point x="345.4058" y="-102.2411"/>
+        <point x="346.4801" y="-102.4381"/>
+        <gatheringLine>
+          <point x="345.415" y="-102.2428"/>
+          <point x="345.5941" y="-101.1612"/>
+        </gatheringLine>
+      </area>
+      <area id="115" name="WC_Tent_6" category="wc" type="Intermediate">
+        <point x="346.2974" y="-103.5192"/>
+        <point x="345.2173" y="-103.329"/>
+        <point x="345.0246" y="-104.409"/>
+        <point x="346.1059" y="-104.6012"/>
+        <gatheringLine>
+          <point x="345.0246" y="-104.409"/>
+          <point x="345.2173" y="-103.329"/>
+        </gatheringLine>
+      </area>
+      <area id="116" name="WC_Tent_7" category="wc" type="Intermediate">
+        <point x="346.1059" y="-104.6012"/>
+        <point x="345.0246" y="-104.409"/>
+        <point x="344.8389" y="-105.4888"/>
+        <point x="345.9163" y="-105.6814"/>
+        <gatheringLine>
+          <point x="345.0246" y="-104.409"/>
+          <point x="345.2173" y="-103.329"/>
+        </gatheringLine>
+      </area>
+      <area id="117" name="WC_Tent_8" category="wc" type="Intermediate">
+        <point x="345.9163" y="-105.6814"/>
+        <point x="344.8389" y="-105.4888"/>
+        <point x="344.6532" y="-106.5689"/>
+        <point x="345.7265" y="-106.7615"/>
+        <gatheringLine>
+          <point x="344.8389" y="-105.4888"/>
+          <point x="345.0381" y="-104.4113"/>
+        </gatheringLine>
+      </area>
+      <area id="118" name="WC_Tent_9" category="wc" type="Intermediate">
+        <point x="345.7265" y="-106.7615"/>
+        <point x="344.6532" y="-106.5689"/>
+        <point x="344.4595" y="-107.6542"/>
+        <point x="345.5346" y="-107.8443"/>
+        <gatheringLine>
+          <point x="344.4595" y="-107.6542"/>
+          <point x="344.6532" y="-106.5689"/>
+        </gatheringLine>
+      </area>
+      <area id="119" name="WC_Tent_10" category="wc" type="Intermediate">
+        <point x="345.5346" y="-107.8443"/>
+        <point x="344.4595" y="-107.6542"/>
+        <point x="344.2712" y="-108.7341"/>
+        <point x="345.3456" y="-108.9311"/>
+        <gatheringLine>
+          <point x="344.2712" y="-108.7341"/>
+          <point x="344.4595" y="-107.6542"/>
+        </gatheringLine>
+      </area>
+      <area id="120" name="WC_Tent_11" category="wc" type="Intermediate">
+        <point x="345.3456" y="-108.9311"/>
+        <point x="344.2712" y="-108.7341"/>
+        <point x="344.0828" y="-109.822"/>
+        <point x="345.159" y="-110.0144"/>
+        <gatheringLine>
+          <point x="344.0828" y="-109.822"/>
+          <point x="344.2712" y="-108.7341"/>
+        </gatheringLine>
+      </area>
+      <area id="121" name="WC_Tent_12" category="wc" type="Intermediate">
+        <point x="345.159" y="-110.0144"/>
+        <point x="344.0828" y="-109.822"/>
+        <point x="343.8944" y="-110.9043"/>
+        <point x="344.9632" y="-111.0949"/>
+        <gatheringLine>
+          <point x="343.8944" y="-110.9043"/>
+          <point x="344.0828" y="-109.822"/>
+        </gatheringLine>
+      </area>
+      <area id="122" name="WC_Tent_13" category="wc" type="Intermediate">
+        <point x="344.9632" y="-111.0949"/>
+        <point x="343.8944" y="-110.9043"/>
+        <point x="343.7034" y="-111.987"/>
+        <point x="344.7758" y="-112.1818"/>
+        <gatheringLine>
+          <point x="343.8628" y="-111.0832"/>
+          <point x="343.8944" y="-110.9043"/>
+        </gatheringLine>
+      </area>
+      <area id="123" name="WC_Tent_14" category="wc" type="Intermediate">
+        <point x="344.7758" y="-112.1818"/>
+        <point x="343.7034" y="-111.987"/>
+        <point x="343.5176" y="-113.0723"/>
+        <point x="344.5885" y="-113.2644"/>
+        <gatheringLine>
+          <point x="343.3292" y="-114.1576"/>
+          <point x="343.5176" y="-113.0723"/>
+        </gatheringLine>
+      </area>
+      <area id="124" name="WC_Tent_15" category="wc" type="Intermediate">
+        <point x="344.5885" y="-113.2644"/>
+        <point x="343.5176" y="-113.0723"/>
+        <point x="343.3292" y="-114.1576"/>
+        <point x="344.4055" y="-114.345"/>
+        <gatheringLine>
+          <point x="343.3292" y="-114.1576"/>
+          <point x="343.5176" y="-113.0723"/>
+        </gatheringLine>
+      </area>
+      <area id="125" name="WC_Tent_16" category="wc" type="Intermediate">
+        <point x="344.4055" y="-114.345"/>
+        <point x="343.3292" y="-114.1576"/>
+        <point x="343.1409" y="-115.2406"/>
+        <point x="344.2139" y="-115.427"/>
+        <gatheringLine>
+          <point x="343.3292" y="-114.1576"/>
+          <point x="343.5176" y="-113.0723"/>
+        </gatheringLine>
+      </area>
+      <area id="126" name="WC_Tent_17" category="wc" type="Intermediate">
+        <point x="344.2139" y="-115.427"/>
+        <point x="343.1409" y="-115.2406"/>
+        <point x="342.9498" y="-116.3237"/>
+        <point x="344.0223" y="-116.5139"/>
+        <gatheringLine>
+          <point x="342.9498" y="-116.3237"/>
+          <point x="343.1409" y="-115.2406"/>
+        </gatheringLine>
+      </area>
+      <area id="127" name="WC_Tent_18" category="wc" type="Intermediate">
+        <point x="344.0223" y="-116.5139"/>
+        <point x="342.9498" y="-116.3237"/>
+        <point x="342.7629" y="-117.4079"/>
+        <point x="343.8393" y="-117.5987"/>
+        <gatheringLine>
+          <point x="342.9498" y="-116.3237"/>
+          <point x="343.1409" y="-115.2406"/>
+        </gatheringLine>
+      </area>
+      <area id="128" name="WC_Tent_19" category="wc" type="Intermediate">
+        <point x="343.8393" y="-117.5987"/>
+        <point x="342.7629" y="-117.4079"/>
+        <point x="342.5674" y="-118.5018"/>
+        <point x="343.6668" y="-118.6913"/>
+        <gatheringLine>
+          <point x="342.5674" y="-118.5018"/>
+          <point x="342.7629" y="-117.4079"/>
+        </gatheringLine>
+      </area>
+      <area id="129" name="Region_Exit" type="Destination">
+        <point x="265.05305875420873" y="-146.64393939393938"/>
+        <point x="261.92805875420873" y="-152.47727272727272"/>
+        <point x="264.9016" y="-153.3114"/>
+        <point x="268.751" y="-147.2948"/>
+      </area>
+      <area id="130" name="Security" category="entrance" type="Intermediate">
+          <point x="363.44790002405006" y="-160.35891225176934"/>
+        <point x="363.63308520923516" y="-161.79409743695453"/>
+        <point x="364.5590111351612" y="-161.74780114065823"/>
+        <point x="364.74419632034636" y="-160.31261595547306"/>
+        <gatheringLine>
+          <point x="364.74419632034636" y="-160.31261595547306"/>
+          <point x="364.5590111351612" y="-161.74780114065823"/>
+        </gatheringLine>
+      </area>
+      <obstacle id="0" name="Wall0" type="Wall">
+        <point x="399.5983" y="-155.5263"/>
+        <point x="400.613" y="-155.8462"/>
+      </obstacle>
+      <obstacle id="1" name="Wall1" type="Wall">
+        <point x="400.613" y="-155.8462"/>
+        <point x="400.3457" y="-156.8636"/>
+      </obstacle>
+      <obstacle id="2" name="Wall2" type="Wall">
+        <point x="400.3457" y="-156.8636"/>
+        <point x="400.1003" y="-157.9491"/>
+      </obstacle>
+      <obstacle id="3" name="Wall3" type="Wall">
+        <point x="400.1003" y="-157.9491"/>
+        <point x="399.7226" y="-159.0158"/>
+      </obstacle>
+      <obstacle id="4" name="Wall4" type="Wall">
+        <point x="399.7226" y="-159.0158"/>
+        <point x="399.2505" y="-160.007"/>
+      </obstacle>
+      <obstacle id="5" name="Wall5" type="Wall">
+        <point x="399.2505" y="-160.007"/>
+        <point x="399.0851" y="-160.3543"/>
+      </obstacle>
+      <obstacle id="6" name="Wall6" type="Wall">
+        <point x="399.0851" y="-160.3543"/>
+        <point x="398.464" y="-161.1557"/>
+      </obstacle>
+      <obstacle id="7" name="Wall7" type="Wall">
+        <point x="398.464" y="-161.1557"/>
+        <point x="398.0749" y="-161.3834"/>
+      </obstacle>
+      <obstacle id="8" name="Wall8" type="Wall">
+        <point x="398.0749" y="-161.3834"/>
+        <point x="397.164" y="-162.1043"/>
+      </obstacle>
+      <obstacle id="9" name="Wall9" type="Wall">
+        <point x="397.164" y="-162.1043"/>
+        <point x="396.4334" y="-162.8348"/>
+      </obstacle>
+      <obstacle id="10" name="Wall10" type="Wall">
+        <point x="396.4334" y="-162.8348"/>
+        <point x="395.632" y="-162.2334"/>
+      </obstacle>
+      <obstacle id="11" name="Wall11" type="Wall">
+        <point x="395.632" y="-162.2334"/>
+        <point x="396.1982" y="-163.07"/>
+      </obstacle>
+      <obstacle id="12" name="Wall12" type="Wall">
+        <point x="396.1982" y="-163.07"/>
+        <point x="395.3444" y="-163.9235"/>
+      </obstacle>
+      <obstacle id="13" name="Wall13" type="Wall">
+        <point x="395.3444" y="-163.9235"/>
+        <point x="394.4697" y="-164.6778"/>
+      </obstacle>
+      <obstacle id="14" name="Wall14" type="Wall">
+        <point x="394.4697" y="-164.6778"/>
+        <point x="393.6547" y="-165.3666"/>
+      </obstacle>
+      <obstacle id="15" name="Wall15" type="Wall">
+        <point x="393.6547" y="-165.3666"/>
+        <point x="392.8202" y="-166.1038"/>
+      </obstacle>
+      <obstacle id="16" name="Wall16" type="Wall">
+        <point x="392.8202" y="-166.1038"/>
+        <point x="392.0517" y="-165.3001"/>
+      </obstacle>
+      <obstacle id="17" name="Wall17" type="Wall">
+        <point x="392.0517" y="-165.3001"/>
+        <point x="391.6927" y="-166.4643"/>
+      </obstacle>
+      <obstacle id="18" name="Wall18" type="Wall">
+        <point x="391.6927" y="-166.4643"/>
+        <point x="390.5963" y="-165.9501"/>
+      </obstacle>
+      <obstacle id="19" name="Wall19" type="Wall">
+        <point x="390.5963" y="-165.9501"/>
+        <point x="389.461" y="-165.4069"/>
+      </obstacle>
+      <obstacle id="20" name="Wall20" type="Wall">
+        <point x="389.461" y="-165.4069"/>
+        <point x="388.4325" y="-164.7084"/>
+      </obstacle>
+      <obstacle id="21" name="Wall21" type="Wall">
+        <point x="388.4325" y="-164.7084"/>
+        <point x="389.1311" y="-163.9517"/>
+      </obstacle>
+      <obstacle id="22" name="Wall22" type="Wall">
+        <point x="389.1311" y="-163.9517"/>
+        <point x="388.274" y="-163.3043"/>
+      </obstacle>
+      <obstacle id="23" name="Wall23" type="Wall">
+        <point x="388.274" y="-163.3043"/>
+        <point x="388.957" y="-162.4041"/>
+      </obstacle>
+      <obstacle id="24" name="Wall24" type="Wall">
+        <point x="388.957" y="-162.4041"/>
+        <point x="389.6555" y="-161.5661"/>
+      </obstacle>
+      <obstacle id="25" name="Wall25" type="Wall">
+        <point x="389.6555" y="-161.5661"/>
+        <point x="390.292" y="-160.7901"/>
+      </obstacle>
+      <obstacle id="26" name="Wall26" type="Wall">
+        <point x="390.292" y="-160.7901"/>
+        <point x="391.0061" y="-159.8899"/>
+      </obstacle>
+      <obstacle id="27" name="Wall27" type="Wall">
+        <point x="391.0061" y="-159.8899"/>
+        <point x="391.7512" y="-159.0674"/>
+      </obstacle>
+      <obstacle id="28" name="Wall28" type="Wall">
+        <point x="391.7512" y="-159.0674"/>
+        <point x="392.5584" y="-159.7813"/>
+      </obstacle>
+      <obstacle id="29" name="Wall29" type="Wall">
+        <point x="392.5584" y="-159.7813"/>
+        <point x="393.0241" y="-159.8899"/>
+      </obstacle>
+      <obstacle id="30" name="Wall30" type="Wall">
+        <point x="393.0241" y="-159.8899"/>
+        <point x="393.9555" y="-160.4486"/>
+      </obstacle>
+      <obstacle id="31" name="Wall31" type="Wall">
+        <point x="346.3519" y="-96.836"/>
+        <point x="346.1592" y="-97.916"/>
+      </obstacle>
+      <obstacle id="32" name="Wall32" type="Wall">
+        <point x="346.1592" y="-97.916"/>
+        <point x="345.9735" y="-98.9958"/>
+      </obstacle>
+      <obstacle id="33" name="Wall33" type="Wall">
+        <point x="345.9735" y="-98.9958"/>
+        <point x="345.7877" y="-100.0759"/>
+      </obstacle>
+      <obstacle id="34" name="Wall34" type="Wall">
+        <point x="345.7877" y="-100.0759"/>
+        <point x="345.6009" y="-101.1624"/>
+      </obstacle>
+      <obstacle id="35" name="Wall35" type="Wall">
+        <point x="345.6009" y="-101.1624"/>
+        <point x="345.4058" y="-102.2967"/>
+      </obstacle>
+      <obstacle id="36" name="Wall36" type="Wall">
+        <point x="345.4058" y="-102.2967"/>
+        <point x="345.2173" y="-103.329"/>
+      </obstacle>
+      <obstacle id="37" name="Wall37" type="Wall">
+        <point x="345.2173" y="-103.329"/>
+        <point x="346.2974" y="-103.5192"/>
+      </obstacle>
+      <obstacle id="38" name="Wall38" type="Wall">
+        <point x="346.2974" y="-103.5192"/>
+        <point x="345.2173" y="-103.329"/>
+      </obstacle>
+      <obstacle id="39" name="Wall39" type="Wall">
+        <point x="345.2173" y="-103.329"/>
+        <point x="345.0246" y="-104.409"/>
+      </obstacle>
+      <obstacle id="40" name="Wall40" type="Wall">
+        <point x="345.0246" y="-104.409"/>
+        <point x="344.8389" y="-105.4888"/>
+      </obstacle>
+      <obstacle id="41" name="Wall41" type="Wall">
+        <point x="344.8389" y="-105.4888"/>
+        <point x="344.6532" y="-106.5689"/>
+      </obstacle>
+      <obstacle id="42" name="Wall42" type="Wall">
+        <point x="344.6532" y="-106.5689"/>
+        <point x="344.4595" y="-107.6542"/>
+      </obstacle>
+      <obstacle id="43" name="Wall43" type="Wall">
+        <point x="344.4595" y="-107.6542"/>
+        <point x="344.2712" y="-108.7341"/>
+      </obstacle>
+      <obstacle id="44" name="Wall44" type="Wall">
+        <point x="344.2712" y="-108.7341"/>
+        <point x="344.0828" y="-109.822"/>
+      </obstacle>
+      <obstacle id="45" name="Wall45" type="Wall">
+        <point x="344.0828" y="-109.822"/>
+        <point x="343.8944" y="-110.9043"/>
+      </obstacle>
+      <obstacle id="46" name="Wall46" type="Wall">
+        <point x="343.8944" y="-110.9043"/>
+        <point x="343.7034" y="-111.987"/>
+      </obstacle>
+      <obstacle id="47" name="Wall47" type="Wall">
+        <point x="343.7034" y="-111.987"/>
+        <point x="343.5176" y="-113.0723"/>
+      </obstacle>
+      <obstacle id="48" name="Wall48" type="Wall">
+        <point x="343.5176" y="-113.0723"/>
+        <point x="343.3292" y="-114.1576"/>
+      </obstacle>
+      <obstacle id="49" name="Wall49" type="Wall">
+        <point x="343.3292" y="-114.1576"/>
+        <point x="343.1409" y="-115.2406"/>
+      </obstacle>
+      <obstacle id="50" name="Wall50" type="Wall">
+        <point x="343.1409" y="-115.2406"/>
+        <point x="342.9497" y="-116.3237"/>
+      </obstacle>
+      <obstacle id="51" name="Wall51" type="Wall">
+        <point x="342.9497" y="-116.3237"/>
+        <point x="342.7629" y="-117.4079"/>
+      </obstacle>
+      <obstacle id="52" name="Wall52" type="Wall">
+        <point x="342.7629" y="-117.4079"/>
+        <point x="342.5674" y="-118.5018"/>
+      </obstacle>
+      <obstacle id="53" name="Wall53" type="Wall">
+        <point x="342.5674" y="-118.5018"/>
+        <point x="343.6668" y="-118.6913"/>
+      </obstacle>
+      <obstacle id="54" name="Wall54" type="Wall">
+        <point x="377.3232" y="-140.0983"/>
+        <point x="376.7403" y="-139.3436"/>
+      </obstacle>
+      <obstacle id="55" name="Wall55" type="Wall">
+        <point x="376.7403" y="-139.3436"/>
+        <point x="376.6857" y="-136.0141"/>
+      </obstacle>
+      <obstacle id="56" name="Wall56" type="Wall">
+        <point x="376.6857" y="-136.0141"/>
+        <point x="376.0007" y="-136.0186"/>
+      </obstacle>
+      <obstacle id="57" name="Wall57" type="Wall">
+        <point x="376.0007" y="-136.0186"/>
+        <point x="375.9933" y="-133.0624"/>
+      </obstacle>
+      <obstacle id="58" name="Wall58" type="Wall">
+        <point x="375.9933" y="-133.0624"/>
+        <point x="376.4624" y="-133.062"/>
+      </obstacle>
+      <obstacle id="59" name="Wall59" type="Wall">
+        <point x="376.4624" y="-133.062"/>
+        <point x="375.9827" y="-130.331"/>
+      </obstacle>
+      <obstacle id="60" name="Wall60" type="Wall">
+        <point x="375.9827" y="-130.331"/>
+        <point x="375.2119" y="-127.1187"/>
+      </obstacle>
+      <obstacle id="61" name="Wall61" type="Wall">
+        <point x="375.2119" y="-127.1187"/>
+        <point x="375.1714" y="-125.825"/>
+      </obstacle>
+      <obstacle id="62" name="Wall62" type="Wall">
+        <point x="375.1714" y="-125.825"/>
+        <point x="376.044" y="-122.8223"/>
+      </obstacle>
+      <obstacle id="63" name="Wall63" type="Wall">
+        <point x="376.044" y="-122.8223"/>
+        <point x="376.1051" y="-121.4337"/>
+      </obstacle>
+      <obstacle id="64" name="Wall64" type="Wall">
+        <point x="376.1051" y="-121.4337"/>
+        <point x="375.1538" y="-119.1129"/>
+      </obstacle>
+      <obstacle id="65" name="Wall65" type="Wall">
+        <point x="375.1538" y="-119.1129"/>
+        <point x="372.9576" y="-117.3147"/>
+      </obstacle>
+      <obstacle id="66" name="Wall66" type="Wall">
+        <point x="372.9576" y="-117.3147"/>
+        <point x="369.9969" y="-115.1136"/>
+      </obstacle>
+      <obstacle id="67" name="Wall67" type="Wall">
+        <point x="369.9969" y="-115.1136"/>
+        <point x="369.6018" y="-120.8258"/>
+      </obstacle>
+      <obstacle id="68" name="Wall68" type="Wall">
+        <point x="369.6018" y="-120.8258"/>
+        <point x="370.3429" y="-122.5333"/>
+      </obstacle>
+      <obstacle id="69" name="Wall69" type="Wall">
+        <point x="370.3429" y="-122.5333"/>
+        <point x="370.3429" y="-125.1751"/>
+      </obstacle>
+      <obstacle id="70" name="Wall70" type="Wall">
+        <point x="370.3429" y="-125.1751"/>
+        <point x="372.0831" y="-127.3337"/>
+      </obstacle>
+      <obstacle id="71" name="Wall71" type="Wall">
+        <point x="372.0831" y="-127.3337"/>
+        <point x="372.0831" y="-128.5902"/>
+      </obstacle>
+      <obstacle id="72" name="Wall72" type="Wall">
+        <point x="372.0831" y="-128.5902"/>
+        <point x="371.1163" y="-131.973"/>
+      </obstacle>
+      <obstacle id="73" name="Wall73" type="Wall">
+        <point x="371.1163" y="-131.973"/>
+        <point x="368.9895" y="-133.0361"/>
+      </obstacle>
+      <obstacle id="74" name="Wall74" type="Wall">
+        <point x="368.9895" y="-133.0361"/>
+        <point x="365.5093" y="-133.0361"/>
+      </obstacle>
+      <obstacle id="75" name="Wall75" type="Wall">
+        <point x="365.5093" y="-133.0361"/>
+        <point x="364.027" y="-131.7797"/>
+      </obstacle>
+      <obstacle id="76" name="Wall76" type="Wall">
+        <point x="364.027" y="-131.7797"/>
+        <point x="360.7079" y="-131.1998"/>
+      </obstacle>
+      <obstacle id="77" name="Wall77" type="Wall">
+        <point x="360.7079" y="-131.1998"/>
+        <point x="357.9689" y="-131.5864"/>
+      </obstacle>
+      <obstacle id="78" name="Wall78" type="Wall">
+        <point x="357.9689" y="-131.5864"/>
+        <point x="355.9387" y="-132.6495"/>
+      </obstacle>
+      <obstacle id="79" name="Wall79" type="Wall">
+        <point x="355.9387" y="-132.6495"/>
+        <point x="357.9689" y="-131.5864"/>
+      </obstacle>
+      <obstacle id="80" name="Wall80" type="Wall">
+        <point x="357.9689" y="-131.5864"/>
+        <point x="360.7079" y="-131.1998"/>
+      </obstacle>
+      <obstacle id="81" name="Wall81" type="Wall">
+        <point x="360.7079" y="-131.1998"/>
+        <point x="364.027" y="-131.7797"/>
+      </obstacle>
+      <obstacle id="82" name="Wall82" type="Wall">
+        <point x="364.027" y="-131.7797"/>
+        <point x="365.5093" y="-133.0361"/>
+      </obstacle>
+      <obstacle id="83" name="Wall83" type="Wall">
+        <point x="365.5093" y="-133.0361"/>
+        <point x="368.9895" y="-133.0361"/>
+      </obstacle>
+      <obstacle id="84" name="Wall84" type="Wall">
+        <point x="368.9895" y="-133.0361"/>
+        <point x="371.1163" y="-131.973"/>
+      </obstacle>
+      <obstacle id="85" name="Wall85" type="Wall">
+        <point x="371.1163" y="-131.973"/>
+        <point x="372.0831" y="-128.5902"/>
+      </obstacle>
+      <obstacle id="86" name="Wall86" type="Wall">
+        <point x="372.0831" y="-128.5902"/>
+        <point x="372.0831" y="-127.3337"/>
+      </obstacle>
+      <obstacle id="87" name="Wall87" type="Wall">
+        <point x="372.0831" y="-127.3337"/>
+        <point x="370.3429" y="-125.1751"/>
+      </obstacle>
+      <obstacle id="88" name="Wall88" type="Wall">
+        <point x="370.3429" y="-125.1751"/>
+        <point x="370.3429" y="-122.5333"/>
+      </obstacle>
+      <obstacle id="89" name="Wall89" type="Wall">
+        <point x="370.3429" y="-122.5333"/>
+        <point x="369.6018" y="-120.8258"/>
+      </obstacle>
+      <obstacle id="90" name="Wall90" type="Wall">
+        <point x="369.6018" y="-120.8258"/>
+        <point x="369.9969" y="-115.1136"/>
+      </obstacle>
+      <obstacle id="91" name="Wall91" type="Wall">
+        <point x="369.9969" y="-115.1136"/>
+        <point x="372.9576" y="-117.3147"/>
+      </obstacle>
+      <obstacle id="92" name="Wall92" type="Wall">
+        <point x="372.9576" y="-117.3147"/>
+        <point x="375.1538" y="-119.1129"/>
+      </obstacle>
+      <obstacle id="93" name="Wall93" type="Wall">
+        <point x="375.1538" y="-119.1129"/>
+        <point x="376.1051" y="-121.4337"/>
+      </obstacle>
+      <obstacle id="94" name="Wall94" type="Wall">
+        <point x="376.1051" y="-121.4337"/>
+        <point x="376.044" y="-122.8223"/>
+      </obstacle>
+      <obstacle id="95" name="Wall95" type="Wall">
+        <point x="376.044" y="-122.8223"/>
+        <point x="375.1714" y="-125.825"/>
+      </obstacle>
+      <obstacle id="96" name="Wall96" type="Wall">
+        <point x="375.1714" y="-125.825"/>
+        <point x="375.2119" y="-127.1187"/>
+      </obstacle>
+      <obstacle id="97" name="Wall97" type="Wall">
+        <point x="375.2119" y="-127.1187"/>
+        <point x="375.9827" y="-130.331"/>
+      </obstacle>
+      <obstacle id="98" name="Wall98" type="Wall">
+        <point x="375.9827" y="-130.331"/>
+        <point x="376.4624" y="-133.062"/>
+      </obstacle>
+      <obstacle id="99" name="Wall99" type="Wall">
+        <point x="376.4624" y="-133.062"/>
+        <point x="375.9933" y="-133.0624"/>
+      </obstacle>
+      <obstacle id="100" name="Wall100" type="Wall">
+        <point x="375.9933" y="-133.0624"/>
+        <point x="376.0007" y="-136.0186"/>
+      </obstacle>
+      <obstacle id="101" name="Wall101" type="Wall">
+        <point x="376.0007" y="-136.0186"/>
+        <point x="376.6857" y="-136.0141"/>
+      </obstacle>
+      <obstacle id="102" name="Wall102" type="Wall">
+        <point x="376.6857" y="-136.0141"/>
+        <point x="377.0596" y="-136.0141"/>
+      </obstacle>
+      <obstacle id="103" name="Wall103" type="Wall">
+        <point x="326.9022" y="-139.4701"/>
+        <point x="294.7825" y="-134.1978"/>
+      </obstacle>
+      <obstacle id="104" name="Wall104" type="Wall">
+        <point x="294.7825" y="-134.1978"/>
+        <point x="265.9308" y="-128.6201"/>
+      </obstacle>
+      <obstacle id="105" name="Wall105" type="Wall">
+        <point x="265.9308" y="-128.6201"/>
+        <point x="255.7968" y="-138.3943"/>
+      </obstacle>
+      <obstacle id="106" name="Wall106" type="Wall">
+        <point x="255.7968" y="-138.3943"/>
+        <point x="251.3855" y="-147.0957"/>
+      </obstacle>
+      <obstacle id="107" name="Wall107" type="Wall">
+        <point x="251.3855" y="-147.0957"/>
+        <point x="259.0485" y="-151.8824"/>
+      </obstacle>
+      <obstacle id="108" name="Wall108" type="Wall">
+        <point x="259.0485" y="-151.8824"/>
+        <point x="264.9016" y="-153.3114"/>
+      </obstacle>
+      <obstacle id="109" name="Wall109" type="Wall">
+        <point x="264.9016" y="-153.3114"/>
+        <point x="316.53" y="-162.9078"/>
+      </obstacle>
+      <obstacle id="110" name="Wall110" type="Wall">
+        <point x="316.53" y="-162.9078"/>
+        <point x="315.5298" y="-178.5559"/>
+      </obstacle>
+      <obstacle id="111" name="Wall111" type="Wall">
+        <point x="315.5298" y="-178.5559"/>
+        <point x="368.9266" y="-185.5553"/>
+      </obstacle>
+      <obstacle id="112" name="Wall112" type="Wall">
+        <point x="368.9266" y="-185.5553"/>
+        <point x="393.6366" y="-185.119"/>
+      </obstacle>
+      <obstacle id="113" name="Wall113" type="Wall">
+        <point x="393.6366" y="-185.119"/>
+        <point x="405.0733" y="-183.5127"/>
+      </obstacle>
+      <obstacle id="114" name="Wall114" type="Wall">
+        <point x="405.0733" y="-183.5127"/>
+        <point x="391.3644" y="-167.5408"/>
+      </obstacle>
+      <obstacle id="115" name="Wall115" type="Wall">
+        <point x="391.3644" y="-167.5408"/>
+        <point x="386.1866" y="-163.5559"/>
+      </obstacle>
+      <obstacle id="116" name="Wall116" type="Wall">
+        <point x="386.1866" y="-163.5559"/>
+        <point x="381.8787" y="-161.0907"/>
+      </obstacle>
+      <obstacle id="117" name="Wall117" type="Wall">
+        <point x="391.6932" y="-156.7325"/>
+        <point x="391.9917" y="-157.0043"/>
+      </obstacle>
+      <obstacle id="118" name="Wall118" type="Wall">
+        <point x="391.9917" y="-157.0043"/>
+        <point x="391.4974" y="-157.9225"/>
+      </obstacle>
+      <obstacle id="119" name="Wall119" type="Wall">
+        <point x="391.4974" y="-157.9225"/>
+        <point x="392.5497" y="-158.4489"/>
+      </obstacle>
+      <obstacle id="120" name="Wall120" type="Wall">
+        <point x="392.5497" y="-158.4489"/>
+        <point x="393.1195" y="-157.5095"/>
+      </obstacle>
+      <obstacle id="121" name="Wall121" type="Wall">
+        <point x="393.1195" y="-157.5095"/>
+        <point x="394.1225" y="-158.0436"/>
+      </obstacle>
+      <obstacle id="122" name="Wall122" type="Wall">
+        <point x="394.1225" y="-158.0436"/>
+        <point x="395.0877" y="-158.5852"/>
+      </obstacle>
+      <obstacle id="123" name="Wall123" type="Wall">
+        <point x="393.7093" y="-156.54"/>
+        <point x="394.7457" y="-157.1048"/>
+      </obstacle>
+      <obstacle id="124" name="Wall124" type="Wall">
+        <point x="394.7457" y="-157.1048"/>
+        <point x="395.702" y="-157.6103"/>
+      </obstacle>
+      <obstacle id="125" name="Wall125" type="Wall">
+        <point x="394.2891" y="-155.6306"/>
+        <point x="395.3308" y="-156.1592"/>
+      </obstacle>
+      <obstacle id="126" name="Wall126" type="Wall">
+        <point x="395.3308" y="-156.1592"/>
+        <point x="396.3164" y="-156.7719"/>
+      </obstacle>
+      <obstacle id="127" name="Wall127" type="Wall">
+        <point x="399.2505" y="-160.007"/>
+        <point x="398.3254" y="-159.5822"/>
+      </obstacle>
+      <obstacle id="128" name="Wall128" type="Wall">
+        <point x="398.3254" y="-159.5822"/>
+        <point x="398.2096" y="-159.7753"/>
+      </obstacle>
+      <obstacle id="129" name="Wall129" type="Wall">
+        <point x="398.2096" y="-159.7753"/>
+        <point x="399.0851" y="-160.3543"/>
+      </obstacle>
+      <obstacle id="130" name="Wall130" type="Wall">
+        <point x="400.4222" y="-157.3362"/>
+        <point x="400.3457" y="-156.8636"/>
+      </obstacle>
+      <obstacle id="131" name="Wall131" type="Wall">
+        <point x="400.3457" y="-156.8636"/>
+        <point x="399.3307" y="-156.5903"/>
+      </obstacle>
+      <obstacle id="132" name="Wall132" type="Wall">
+        <point x="347.9965" y="-112.6763"/>
+        <point x="348.1816" y="-111.593"/>
+      </obstacle>
+      <obstacle id="133" name="Wall133" type="Wall">
+        <point x="348.1816" y="-111.593"/>
+        <point x="348.3673" y="-110.5072"/>
+      </obstacle>
+      <obstacle id="134" name="Wall134" type="Wall">
+        <point x="348.3673" y="-110.5072"/>
+        <point x="348.5533" y="-109.4191"/>
+      </obstacle>
+      <obstacle id="135" name="Wall135" type="Wall">
+        <point x="348.5533" y="-109.4191"/>
+        <point x="348.7457" y="-108.3368"/>
+      </obstacle>
+      <obstacle id="136" name="Wall136" type="Wall">
+        <point x="348.7457" y="-108.3368"/>
+        <point x="348.9315" y="-107.2601"/>
+      </obstacle>
+      <obstacle id="137" name="Wall137" type="Wall">
+        <point x="348.9315" y="-107.2601"/>
+        <point x="347.8544" y="-107.0769"/>
+      </obstacle>
+      <obstacle id="138" name="Wall138" type="Wall">
+        <point x="345.2173" y="-103.329"/>
+        <point x="346.2974" y="-103.5192"/>
+      </obstacle>
+      <obstacle id="139" name="Wall139" type="Wall">
+        <point x="346.2974" y="-103.5192"/>
+        <point x="345.2173" y="-103.329"/>
+      </obstacle>
+      <obstacle id="140" name="Wall140" type="Wall">
+        <point x="265.9308" y="-128.6201"/>
+        <point x="294.7825" y="-134.1978"/>
+      </obstacle>
+      <obstacle id="141" name="Wall141" type="Wall">
+        <point x="294.7825" y="-134.1978"/>
+        <point x="326.9022" y="-139.4701"/>
+      </obstacle>
+      <obstacle id="142" name="Wall142" type="Wall">
+        <point x="326.9022" y="-139.4701"/>
+        <point x="328.2379" y="-131.9083"/>
+      </obstacle>
+      <obstacle id="143" name="Wall143" type="Wall">
+        <point x="328.2379" y="-131.9083"/>
+        <point x="333.2117" y="-126.2167"/>
+      </obstacle>
+      <obstacle id="144" name="Wall144" type="Wall">
+        <point x="333.2117" y="-126.2167"/>
+        <point x="340.8287" y="-123.7035"/>
+      </obstacle>
+      <obstacle id="145" name="Wall145" type="Wall">
+        <point x="380.2452" y="-140.2594"/>
+        <point x="378.8647" y="-139.8453"/>
+      </obstacle>
+      <obstacle id="146" name="Wall146" type="Wall">
+        <point x="378.8647" y="-139.8453"/>
+        <point x="377.3232" y="-140.0983"/>
+      </obstacle>
+      <obstacle id="147" name="Wall147" type="Wall">
+        <point x="377.3232" y="-140.0983"/>
+        <point x="376.2073" y="-140.9379"/>
+      </obstacle>
+      <obstacle id="148" name="Wall148" type="Wall">
+        <point x="376.2073" y="-140.9379"/>
+        <point x="375.5861" y="-142.1916"/>
+      </obstacle>
+      <obstacle id="149" name="Wall149" type="Wall">
+        <point x="375.5861" y="-142.1916"/>
+        <point x="375.6091" y="-143.6753"/>
+      </obstacle>
+      <obstacle id="150" name="Wall150" type="Wall">
+        <point x="375.6091" y="-143.6753"/>
+        <point x="376.0232" y="-144.6069"/>
+      </obstacle>
+      <obstacle id="151" name="Wall151" type="Wall">
+        <point x="344.8015" y="-161.6978"/>
+        <point x="344.7889" y="-158.7217"/>
+      </obstacle>
+      <obstacle id="152" name="Wall152" type="Wall">
+        <point x="344.7889" y="-158.7217"/>
+        <point x="341.8906" y="-158.0386"/>
+      </obstacle>
+      <obstacle id="153" name="Wall153" type="Wall">
+        <point x="341.8906" y="-158.0386"/>
+        <point x="341.2347" y="-156.4675"/>
+      </obstacle>
+      <obstacle id="154" name="Wall154" type="Wall">
+        <point x="341.2347" y="-156.4675"/>
+        <point x="340.8995" y="-155.6645"/>
+      </obstacle>
+      <obstacle id="155" name="Wall155" type="Wall">
+        <point x="340.8995" y="-155.6645"/>
+        <point x="339.2663" y="-155.2768"/>
+      </obstacle>
+      <obstacle id="156" name="Wall156" type="Wall">
+        <point x="339.2663" y="-155.2768"/>
+        <point x="340.602" y="-148.0092"/>
+      </obstacle>
+      <obstacle id="157" name="Wall157" type="Wall">
+        <point x="340.602" y="-148.0092"/>
+        <point x="336.3057" y="-146.7786"/>
+      </obstacle>
+      <obstacle id="158" name="Wall158" type="Wall">
+        <point x="375.6091" y="-143.6753"/>
+        <point x="374.5237" y="-143.8313"/>
+      </obstacle>
+      <obstacle id="159" name="Wall159" type="Wall">
+        <point x="374.5237" y="-143.8313"/>
+        <point x="372.4807" y="-143.8313"/>
+      </obstacle>
+      <obstacle id="160" name="Wall160" type="Wall">
+        <point x="372.4807" y="-143.8313"/>
+        <point x="370.1849" y="-142.6099"/>
+      </obstacle>
+      <obstacle id="161" name="Wall161" type="Wall">
+        <point x="370.1849" y="-142.6099"/>
+        <point x="368.3792" y="-142.4577"/>
+      </obstacle>
+      <obstacle id="162" name="Wall162" type="Wall">
+        <point x="368.3792" y="-142.4577"/>
+        <point x="366.2092" y="-141.5972"/>
+      </obstacle>
+      <obstacle id="163" name="Wall163" type="Wall">
+        <point x="366.2092" y="-141.5972"/>
+        <point x="358.7351" y="-135.7283"/>
+      </obstacle>
+      <obstacle id="164" name="Wall164" type="Wall">
+        <point x="358.7351" y="-135.7283"/>
+        <point x="355.9387" y="-132.6495"/>
+      </obstacle>
+      <obstacle id="165" name="Wall165" type="Wall">
+        <point x="355.9387" y="-132.6495"/>
+        <point x="357.9689" y="-131.5864"/>
+      </obstacle>
+      <obstacle id="166" name="Wall166" type="Wall">
+        <point x="357.9689" y="-131.5864"/>
+        <point x="360.7079" y="-131.1998"/>
+      </obstacle>
+      <obstacle id="167" name="Wall167" type="Wall">
+        <point x="360.7079" y="-131.1998"/>
+        <point x="364.027" y="-131.7797"/>
+      </obstacle>
+      <obstacle id="168" name="Wall168" type="Wall">
+        <point x="364.027" y="-131.7797"/>
+        <point x="365.5093" y="-133.0361"/>
+      </obstacle>
+      <obstacle id="169" name="Wall169" type="Wall">
+        <point x="365.5093" y="-133.0361"/>
+        <point x="368.9895" y="-133.0361"/>
+      </obstacle>
+      <obstacle id="170" name="Wall170" type="Wall">
+        <point x="368.9895" y="-133.0361"/>
+        <point x="371.1163" y="-131.973"/>
+      </obstacle>
+      <obstacle id="171" name="Wall171" type="Wall">
+        <point x="371.1163" y="-131.973"/>
+        <point x="372.0831" y="-128.5902"/>
+      </obstacle>
+      <obstacle id="172" name="Wall172" type="Wall">
+        <point x="372.0831" y="-128.5902"/>
+        <point x="372.0831" y="-127.3337"/>
+      </obstacle>
+      <obstacle id="173" name="Wall173" type="Wall">
+        <point x="372.0831" y="-127.3337"/>
+        <point x="370.3429" y="-125.1751"/>
+      </obstacle>
+      <obstacle id="174" name="Wall174" type="Wall">
+        <point x="370.3429" y="-125.1751"/>
+        <point x="370.3429" y="-122.5333"/>
+      </obstacle>
+      <obstacle id="175" name="Wall175" type="Wall">
+        <point x="370.3429" y="-122.5333"/>
+        <point x="369.6018" y="-120.8258"/>
+      </obstacle>
+      <obstacle id="176" name="Wall176" type="Wall">
+        <point x="369.6018" y="-120.8258"/>
+        <point x="369.9969" y="-115.1136"/>
+      </obstacle>
+      <obstacle id="177" name="Wall177" type="Wall">
+        <point x="369.9969" y="-115.1136"/>
+        <point x="372.9576" y="-117.3147"/>
+      </obstacle>
+      <obstacle id="178" name="Wall178" type="Wall">
+        <point x="372.9576" y="-117.3147"/>
+        <point x="375.1538" y="-119.1129"/>
+      </obstacle>
+      <obstacle id="179" name="Wall179" type="Wall">
+        <point x="375.1538" y="-119.1129"/>
+        <point x="376.1051" y="-121.4337"/>
+      </obstacle>
+      <obstacle id="180" name="Wall180" type="Wall">
+        <point x="376.1051" y="-121.4337"/>
+        <point x="376.044" y="-122.8223"/>
+      </obstacle>
+      <obstacle id="181" name="Wall181" type="Wall">
+        <point x="376.044" y="-122.8223"/>
+        <point x="375.1714" y="-125.825"/>
+      </obstacle>
+      <obstacle id="182" name="Wall182" type="Wall">
+        <point x="375.1714" y="-125.825"/>
+        <point x="375.2119" y="-127.1187"/>
+      </obstacle>
+      <obstacle id="183" name="Wall183" type="Wall">
+        <point x="375.2119" y="-127.1187"/>
+        <point x="375.9827" y="-130.331"/>
+      </obstacle>
+      <obstacle id="184" name="Wall184" type="Wall">
+        <point x="375.9827" y="-130.331"/>
+        <point x="376.4624" y="-133.062"/>
+      </obstacle>
+      <obstacle id="185" name="Wall185" type="Wall">
+        <point x="376.4624" y="-133.062"/>
+        <point x="375.9933" y="-133.0624"/>
+      </obstacle>
+      <obstacle id="186" name="Wall186" type="Wall">
+        <point x="375.9933" y="-133.0624"/>
+        <point x="376.0007" y="-136.0186"/>
+      </obstacle>
+      <obstacle id="187" name="Wall187" type="Wall">
+        <point x="376.0007" y="-136.0186"/>
+        <point x="376.6857" y="-136.0141"/>
+      </obstacle>
+      <obstacle id="188" name="Wall188" type="Wall">
+        <point x="392.1559" y="-98.7749"/>
+        <point x="393.9511" y="-98.5771"/>
+      </obstacle>
+      <obstacle id="189" name="Wall189" type="Wall">
+        <point x="393.9511" y="-98.5771"/>
+        <point x="395.3517" y="-100.0785"/>
+      </obstacle>
+      <obstacle id="190" name="Wall190" type="Wall">
+        <point x="395.3517" y="-100.0785"/>
+        <point x="397.1102" y="-101.9637"/>
+      </obstacle>
+      <obstacle id="191" name="Wall191" type="Wall">
+        <point x="397.1102" y="-101.9637"/>
+        <point x="398.3415" y="-105.2326"/>
+      </obstacle>
+      <obstacle id="192" name="Wall192" type="Wall">
+        <point x="398.3415" y="-105.2326"/>
+        <point x="398.9322" y="-107.2767"/>
+      </obstacle>
+      <obstacle id="193" name="Wall193" type="Wall">
+        <point x="398.9322" y="-107.2767"/>
+        <point x="398.3512" y="-108.3659"/>
+      </obstacle>
+      <obstacle id="194" name="Wall194" type="Wall">
+        <point x="398.3512" y="-108.3659"/>
+        <point x="397.9643" y="-119.7776"/>
+      </obstacle>
+      <obstacle id="195" name="Wall195" type="Wall">
+        <point x="397.9643" y="-119.7776"/>
+        <point x="398.9263" y="-129.2282"/>
+      </obstacle>
+      <obstacle id="196" name="Wall196" type="Wall">
+        <point x="398.9263" y="-129.2282"/>
+        <point x="405.1008" y="-129.7466"/>
+      </obstacle>
+      <obstacle id="197" name="Wall197" type="Wall">
+        <point x="405.1008" y="-129.7466"/>
+        <point x="405.0462" y="-128.2734"/>
+      </obstacle>
+      <obstacle id="198" name="Wall198" type="Wall">
+        <point x="405.0462" y="-128.2734"/>
+        <point x="406.8969" y="-121.3521"/>
+      </obstacle>
+      <obstacle id="199" name="Wall199" type="Wall">
+        <point x="406.8969" y="-121.3521"/>
+        <point x="418.9511" y="-121.3702"/>
+      </obstacle>
+      <obstacle id="200" name="Wall200" type="Wall">
+        <point x="418.9511" y="-121.3702"/>
+        <point x="421.3706" y="-108.028"/>
+      </obstacle>
+      <obstacle id="201" name="Wall201" type="Wall">
+        <point x="421.3706" y="-108.028"/>
+        <point x="428.0933" y="-107.907"/>
+      </obstacle>
+      <obstacle id="202" name="Wall202" type="Wall">
+        <point x="428.0933" y="-107.907"/>
+        <point x="432.2894" y="-109.2222"/>
+      </obstacle>
+      <obstacle id="203" name="Wall203" type="Wall">
+        <point x="432.2894" y="-109.2222"/>
+        <point x="434.1688" y="-110.6662"/>
+      </obstacle>
+      <obstacle id="204" name="Wall204" type="Wall">
+        <point x="434.1688" y="-110.6662"/>
+        <point x="441.9297" y="-112.1797"/>
+      </obstacle>
+      <obstacle id="205" name="Wall205" type="Wall">
+        <point x="441.9297" y="-112.1797"/>
+        <point x="467.4227" y="-117.1946"/>
+      </obstacle>
+      <obstacle id="206" name="Wall206" type="Wall">
+        <point x="467.4227" y="-117.1946"/>
+        <point x="470.0977" y="-145.0401"/>
+      </obstacle>
+      <obstacle id="207" name="Wall207" type="Wall">
+        <point x="470.0977" y="-145.0401"/>
+        <point x="463.9341" y="-153.7087"/>
+      </obstacle>
+      <obstacle id="208" name="Wall208" type="Wall">
+        <point x="463.9341" y="-153.7087"/>
+        <point x="458.2509" y="-156.7682"/>
+      </obstacle>
+      <obstacle id="209" name="Wall209" type="Wall">
+        <point x="458.2509" y="-156.7682"/>
+        <point x="446.8054" y="-159.2456"/>
+      </obstacle>
+      <obstacle id="210" name="Wall210" type="Wall">
+        <point x="446.8054" y="-159.2456"/>
+        <point x="442.0694" y="-153.2723"/>
+      </obstacle>
+      <obstacle id="211" name="Wall211" type="Wall">
+        <point x="442.0694" y="-153.2723"/>
+        <point x="432.2037" y="-152.3465"/>
+      </obstacle>
+      <obstacle id="212" name="Wall212" type="Wall">
+        <point x="432.2037" y="-152.3465"/>
+        <point x="421.1249" y="-151.8115"/>
+      </obstacle>
+      <obstacle id="213" name="Wall213" type="Wall">
+        <point x="421.1249" y="-151.8115"/>
+        <point x="413.7958" y="-156.3387"/>
+      </obstacle>
+      <obstacle id="214" name="Wall214" type="Wall">
+        <point x="413.7958" y="-156.3387"/>
+        <point x="412.9559" y="-161.0697"/>
+      </obstacle>
+      <obstacle id="215" name="Wall215" type="Wall">
+        <point x="412.9559" y="-161.0697"/>
+        <point x="402.6588" y="-160.178"/>
+      </obstacle>
+      <obstacle id="216" name="Wall216" type="Wall">
+        <point x="402.6588" y="-160.178"/>
+        <point x="402.893" y="-155.8128"/>
+      </obstacle>
+      <obstacle id="217" name="Wall217" type="Wall">
+        <point x="402.893" y="-155.8128"/>
+        <point x="400.7303" y="-153.4113"/>
+      </obstacle>
+      <obstacle id="218" name="Wall218" type="Wall">
+        <point x="364.0329" y="-153.2496"/>
+        <point x="363.3199" y="-157.1517"/>
+      </obstacle>
+      <obstacle id="219" name="Wall219" type="Wall">
+        <point x="363.3199" y="-157.1517"/>
+        <point x="363.3704" y="-160.2704"/>
+      </obstacle>
+      <obstacle id="220" name="Wall220" type="Wall">
+        <point x="363.3704" y="-160.2704"/>
+        <point x="358.2897" y="-160.7557"/>
+      </obstacle>
+      <obstacle id="221" name="Wall221" type="Wall">
+        <point x="358.2897" y="-160.7557"/>
+        <point x="352.8857" y="-161.5329"/>
+      </obstacle>
+      <obstacle id="222" name="Wall222" type="Wall">
+        <point x="352.8857" y="-161.5329"/>
+        <point x="344.8015" y="-161.6978"/>
+      </obstacle>
+      <obstacle id="223" name="Wall223" type="Wall">
+        <point x="344.8015" y="-161.6978"/>
+        <point x="333.7425" y="-159.8552"/>
+      </obstacle>
+      <obstacle id="224" name="Wall224" type="Wall">
+        <point x="333.7425" y="-159.8552"/>
+        <point x="346.7013" y="-93.7429"/>
+      </obstacle>
+      <obstacle id="225" name="Wall225" type="Wall">
+        <point x="346.7013" y="-93.7429"/>
+        <point x="353.2827" y="-93.5731"/>
+      </obstacle>
+      <obstacle id="226" name="Wall226" type="Wall">
+        <point x="353.2827" y="-93.5731"/>
+        <point x="361.0697" y="-90.2085"/>
+      </obstacle>
+      <obstacle id="227" name="Wall227" type="Wall">
+        <point x="361.0697" y="-90.2085"/>
+        <point x="363.7173" y="-83.7337"/>
+      </obstacle>
+      <obstacle id="228" name="Wall228" type="Wall">
+        <point x="363.7173" y="-83.7337"/>
+        <point x="363.9135" y="-78.6547"/>
+      </obstacle>
+      <obstacle id="229" name="Wall229" type="Wall">
+        <point x="363.9135" y="-78.6547"/>
+        <point x="363.1351" y="-74.4151"/>
+      </obstacle>
+      <obstacle id="230" name="Wall230" type="Wall">
+        <point x="363.1351" y="-74.4151"/>
+        <point x="361.2719" y="-69.6145"/>
+      </obstacle>
+      <obstacle id="231" name="Wall231" type="Wall">
+        <point x="361.2719" y="-69.6145"/>
+        <point x="365.1943" y="-68.9217"/>
+      </obstacle>
+      <obstacle id="232" name="Wall232" type="Wall">
+        <point x="365.1943" y="-68.9217"/>
+        <point x="373.701" y="-74.6251"/>
+      </obstacle>
+      <obstacle id="233" name="Wall233" type="Wall">
+        <point x="373.701" y="-74.6251"/>
+        <point x="393.1903" y="-89.2831"/>
+      </obstacle>
+      <obstacle id="234" name="Wall234" type="Wall">
+        <point x="393.1903" y="-89.2831"/>
+        <point x="395.1991" y="-91.8307"/>
+      </obstacle>
+      <obstacle id="235" name="Wall235" type="Wall">
+        <point x="395.1991" y="-91.8307"/>
+        <point x="390.0154" y="-96.4633"/>
+      </obstacle>
+      <obstacle id="236" name="Wall236" type="Wall">
+        <point x="390.0154" y="-96.4633"/>
+        <point x="391.9975" y="-98.5771"/>
+      </obstacle>
+      <obstacle id="237" name="Wall237" type="Wall">
+        <point x="358.2911" y="-162.6297"/>
+        <point x="369.9329" y="-161.3903"/>
+      </obstacle>
+      <obstacle id="238" name="Wall238" type="Wall">
+        <point x="369.9329" y="-161.3903"/>
+        <point x="371.1405" y="-159.1248"/>
+      </obstacle>
+      <obstacle id="239" name="Wall239" type="Wall">
+        <point x="371.1405" y="-159.1248"/>
+        <point x="374.5931" y="-159.3737"/>
+      </obstacle>
+      <obstacle id="240" name="Wall240" type="Wall">
+        <point x="441.0467" y="-117.2518"/>
+        <point x="438.0985" y="-116.6973"/>
+      </obstacle>
+      <obstacle id="241" name="Wall241" type="Wall">
+        <point x="433.2429" y="-115.6586"/>
+        <point x="436.1846" y="-116.2469"/>
+      </obstacle>
+      <obstacle id="242" name="Wall242" type="Wall">
+        <point x="397.5407" y="-154.7405"/>
+        <point x="396.0912" y="-153.9709"/>
+      </obstacle>
+      <obstacle id="243" name="Wall243" type="Wall">
+        <point x="396.0912" y="-153.9709"/>
+        <point x="395.5661" y="-155.073"/>
+      </obstacle>
+      <obstacle id="244" name="Wall244" type="Wall">
+        <point x="394.8389" y="-154.6911"/>
+        <point x="395.8678" y="-155.2315"/>
+      </obstacle>
+      <obstacle id="245" name="Wall245" type="Wall">
+        <point x="393.5934" y="-159.0082"/>
+        <point x="394.4831" y="-159.5016"/>
+      </obstacle>
+      <obstacle id="246" name="Wall246" type="Wall">
+        <point x="393.0241" y="-159.8899"/>
+        <point x="393.5934" y="-159.0082"/>
+      </obstacle>
+      <obstacle id="247" name="Wall247" type="Wall">
+        <point x="393.5934" y="-159.0082"/>
+        <point x="394.1225" y="-158.0436"/>
+      </obstacle>
+      <obstacle id="248" name="Wall248" type="Wall">
+        <point x="394.1225" y="-158.0436"/>
+        <point x="394.7457" y="-157.1048"/>
+      </obstacle>
+      <obstacle id="249" name="Wall249" type="Wall">
+        <point x="394.7457" y="-157.1048"/>
+        <point x="395.3308" y="-156.1592"/>
+      </obstacle>
+      <obstacle id="250" name="Wall250" type="Wall">
+        <point x="395.3308" y="-156.1592"/>
+        <point x="395.8678" y="-155.2315"/>
+      </obstacle>
+      <obstacle id="251" name="Wall251" type="Wall">
+        <point x="395.8678" y="-155.2315"/>
+        <point x="396.8527" y="-155.8457"/>
+      </obstacle>
+      <obstacle id="252" name="Wall252" type="Wall">
+        <point x="395.3444" y="-163.9235"/>
+        <point x="394.7006" y="-163.1491"/>
+      </obstacle>
+      <obstacle id="253" name="Wall253" type="Wall">
+        <point x="394.4697" y="-164.6778"/>
+        <point x="393.8313" y="-163.9716"/>
+      </obstacle>
+      <obstacle id="254" name="Wall254" type="Wall">
+        <point x="393.6547" y="-165.3666"/>
+        <point x="393.0396" y="-164.639"/>
+      </obstacle>
+      <obstacle id="255" name="Wall255" type="Wall">
+        <point x="390.5963" y="-165.9501"/>
+        <point x="390.9905" y="-165.058"/>
+      </obstacle>
+      <obstacle id="256" name="Wall256" type="Wall">
+        <point x="389.461" y="-165.4069"/>
+        <point x="390.0281" y="-164.5614"/>
+      </obstacle>
+      <obstacle id="257" name="Wall257" type="Wall">
+        <point x="388.957" y="-162.4041"/>
+        <point x="389.7797" y="-163.056"/>
+      </obstacle>
+      <obstacle id="258" name="Wall258" type="Wall">
+        <point x="389.6555" y="-161.5661"/>
+        <point x="390.4783" y="-162.2955"/>
+      </obstacle>
+      <obstacle id="259" name="Wall259" type="Wall">
+        <point x="390.292" y="-160.7901"/>
+        <point x="391.1923" y="-161.4574"/>
+      </obstacle>
+      <obstacle id="260" name="Wall260" type="Wall">
+        <point x="391.0061" y="-159.8899"/>
+        <point x="391.8598" y="-160.5728"/>
+      </obstacle>
+      <obstacle id="261" name="Wall261" type="Wall">
+        <point x="397.164" y="-162.1043"/>
+        <point x="396.583" y="-161.3839"/>
+      </obstacle>
+      <obstacle id="262" name="Wall262" type="Wall">
+        <point x="398.464" y="-161.1557"/>
+        <point x="397.6194" y="-160.5589"/>
+      </obstacle>
+      <obstacle id="263" name="Wall263" type="Wall">
+        <point x="397.6194" y="-160.5589"/>
+        <point x="397.3824" y="-160.5544"/>
+      </obstacle>
+      <obstacle id="264" name="Wall264" type="Wall">
+        <point x="397.3824" y="-160.5544"/>
+        <point x="398.0749" y="-161.3834"/>
+      </obstacle>
+      <obstacle id="265" name="Wall265" type="Wall">
+        <point x="399.7226" y="-159.0158"/>
+        <point x="398.7599" y="-158.6266"/>
+      </obstacle>
+      <obstacle id="266" name="Wall266" type="Wall">
+        <point x="400.1003" y="-157.9491"/>
+        <point x="399.0785" y="-157.7095"/>
+      </obstacle>
+      <obstacle id="267" name="Wall267" type="Wall">
+        <point x="399.91" y="-159.4268"/>
+        <point x="400.9986" y="-159.7375"/>
+      </obstacle>
+      <obstacle id="268" name="Wall268" type="Wall">
+        <point x="400.1811" y="-158.3423"/>
+        <point x="401.2964" y="-158.6041"/>
+      </obstacle>
+      <obstacle id="269" name="Wall269" type="Wall">
+        <point x="402.6588" y="-160.178"/>
+        <point x="402.0176" y="-161.0537"/>
+      </obstacle>
+      <obstacle id="270" name="Wall270" type="Wall">
+        <point x="402.0176" y="-161.0537"/>
+        <point x="400.8002" y="-160.7494"/>
+      </obstacle>
+      <obstacle id="271" name="Wall271" type="Wall">
+        <point x="400.8002" y="-160.7494"/>
+        <point x="399.5659" y="-160.4877"/>
+      </obstacle>
+      <obstacle id="272" name="Wall272" type="Wall">
+        <point x="399.5659" y="-160.4877"/>
+        <point x="399.91" y="-159.4268"/>
+      </obstacle>
+      <obstacle id="273" name="Wall273" type="Wall">
+        <point x="399.91" y="-159.4268"/>
+        <point x="400.1811" y="-158.3423"/>
+      </obstacle>
+      <obstacle id="274" name="Wall274" type="Wall">
+        <point x="400.1811" y="-158.3423"/>
+        <point x="400.4222" y="-157.3362"/>
+      </obstacle>
+      <obstacle id="275" name="Wall275" type="Wall">
+        <point x="400.4222" y="-157.3362"/>
+        <point x="401.4694" y="-157.4899"/>
+      </obstacle>
+      <obstacle id="276" name="Wall276" type="Wall">
+        <point x="347.6188" y="-114.8409"/>
+        <point x="346.5388" y="-114.6689"/>
+      </obstacle>
+      <obstacle id="277" name="Wall277" type="Wall">
+        <point x="348.1816" y="-111.593"/>
+        <point x="347.0933" y="-111.4043"/>
+      </obstacle>
+      <obstacle id="278" name="Wall278" type="Wall">
+        <point x="348.7457" y="-108.3368"/>
+        <point x="347.6657" y="-108.1648"/>
+      </obstacle>
+      <obstacle id="279" name="Wall279" type="Wall">
+        <point x="347.4711" y="-109.237"/>
+        <point x="348.5533" y="-109.4191"/>
+      </obstacle>
+      <obstacle id="280" name="Wall280" type="Wall">
+        <point x="347.2822" y="-110.3265"/>
+        <point x="348.3673" y="-110.5072"/>
+      </obstacle>
+      <obstacle id="281" name="Wall281" type="Wall">
+        <point x="346.7276" y="-113.581"/>
+        <point x="347.8047" y="-113.7641"/>
+      </obstacle>
+      <obstacle id="282" name="Wall282" type="Wall">
+        <point x="346.3443" y="-115.7411"/>
+        <point x="347.4326" y="-115.9242"/>
+      </obstacle>
+      <obstacle id="283" name="Wall283" type="Wall">
+        <point x="346.1553" y="-116.8305"/>
+        <point x="347.2547" y="-117.0137"/>
+      </obstacle>
+      <obstacle id="284" name="Wall284" type="Wall">
+        <point x="345.9665" y="-117.9084"/>
+        <point x="347.0548" y="-118.0971"/>
+      </obstacle>
+      <obstacle id="285" name="Wall285" type="Wall">
+        <point x="346.9111" y="-112.4967"/>
+        <point x="347.9965" y="-112.6763"/>
+      </obstacle>
+      <obstacle id="286" name="Wall286" type="Wall">
+        <point x="347.9965" y="-112.6763"/>
+        <point x="347.8047" y="-113.7641"/>
+      </obstacle>
+      <obstacle id="287" name="Wall287" type="Wall">
+        <point x="347.8047" y="-113.7641"/>
+        <point x="347.6188" y="-114.8409"/>
+      </obstacle>
+      <obstacle id="288" name="Wall288" type="Wall">
+        <point x="347.6188" y="-114.8409"/>
+        <point x="347.4326" y="-115.9242"/>
+      </obstacle>
+      <obstacle id="289" name="Wall289" type="Wall">
+        <point x="347.4326" y="-115.9242"/>
+        <point x="347.2547" y="-117.0137"/>
+      </obstacle>
+      <obstacle id="290" name="Wall290" type="Wall">
+        <point x="347.2547" y="-117.0137"/>
+        <point x="347.0548" y="-118.0971"/>
+      </obstacle>
+      <obstacle id="291" name="Wall291" type="Wall">
+        <point x="347.0548" y="-118.0971"/>
+        <point x="346.8696" y="-119.1803"/>
+      </obstacle>
+      <obstacle id="292" name="Wall292" type="Wall">
+        <point x="346.8696" y="-119.1803"/>
+        <point x="345.7887" y="-118.9982"/>
+      </obstacle>
+      <obstacle id="293" name="Wall293" type="Wall">
+        <point x="350.1039" y="-100.9934"/>
+        <point x="349.0239" y="-100.8214"/>
+      </obstacle>
+      <obstacle id="294" name="Wall294" type="Wall">
+        <point x="342.7629" y="-117.4079"/>
+        <point x="343.8393" y="-117.5987"/>
+      </obstacle>
+      <obstacle id="295" name="Wall295" type="Wall">
+        <point x="342.9498" y="-116.3237"/>
+        <point x="344.0223" y="-116.5139"/>
+      </obstacle>
+      <obstacle id="296" name="Wall296" type="Wall">
+        <point x="343.1409" y="-115.2406"/>
+        <point x="344.2139" y="-115.427"/>
+      </obstacle>
+      <obstacle id="297" name="Wall297" type="Wall">
+        <point x="343.3292" y="-114.1576"/>
+        <point x="344.4055" y="-114.345"/>
+      </obstacle>
+      <obstacle id="298" name="Wall298" type="Wall">
+        <point x="349.2127" y="-99.7335"/>
+        <point x="350.2898" y="-99.9167"/>
+      </obstacle>
+      <obstacle id="299" name="Wall299" type="Wall">
+        <point x="348.8294" y="-101.8936"/>
+        <point x="349.9177" y="-102.0767"/>
+      </obstacle>
+      <obstacle id="300" name="Wall300" type="Wall">
+        <point x="348.6405" y="-102.983"/>
+        <point x="349.7399" y="-103.1662"/>
+      </obstacle>
+      <obstacle id="301" name="Wall301" type="Wall">
+        <point x="348.4516" y="-104.0609"/>
+        <point x="349.5399" y="-104.2496"/>
+      </obstacle>
+      <obstacle id="302" name="Wall302" type="Wall">
+        <point x="349.3962" y="-98.6492"/>
+        <point x="350.4816" y="-98.8288"/>
+      </obstacle>
+      <obstacle id="303" name="Wall303" type="Wall">
+        <point x="350.4816" y="-98.8288"/>
+        <point x="349.3547" y="-105.3328"/>
+      </obstacle>
+      <obstacle id="304" name="Wall304" type="Wall">
+        <point x="349.3547" y="-105.3328"/>
+        <point x="348.2738" y="-105.1507"/>
+      </obstacle>
+      <obstacle id="305" name="Wall305" type="Wall">
+        <point x="346.3519" y="-96.836"/>
+        <point x="347.4319" y="-97.0262"/>
+      </obstacle>
+      <obstacle id="306" name="Wall306" type="Wall">
+        <point x="346.1592" y="-97.916"/>
+        <point x="347.2405" y="-98.1082"/>
+      </obstacle>
+      <obstacle id="307" name="Wall307" type="Wall">
+        <point x="345.9735" y="-98.9958"/>
+        <point x="347.0509" y="-99.1884"/>
+      </obstacle>
+      <obstacle id="308" name="Wall308" type="Wall">
+        <point x="345.7945" y="-100.0771"/>
+        <point x="346.8679" y="-100.2697"/>
+      </obstacle>
+      <obstacle id="309" name="Wall309" type="Wall">
+        <point x="345.6009" y="-101.1624"/>
+        <point x="346.6759" y="-101.3525"/>
+      </obstacle>
+      <obstacle id="310" name="Wall310" type="Wall">
+        <point x="345.4058" y="-102.2411"/>
+        <point x="346.4801" y="-102.4381"/>
+      </obstacle>
+      <obstacle id="311" name="Wall311" type="Wall">
+        <point x="345.0246" y="-104.409"/>
+        <point x="346.1059" y="-104.6012"/>
+      </obstacle>
+      <obstacle id="312" name="Wall312" type="Wall">
+        <point x="344.8389" y="-105.4888"/>
+        <point x="345.9163" y="-105.6814"/>
+      </obstacle>
+      <obstacle id="313" name="Wall313" type="Wall">
+        <point x="344.6532" y="-106.5689"/>
+        <point x="345.7265" y="-106.7615"/>
+      </obstacle>
+      <obstacle id="314" name="Wall314" type="Wall">
+        <point x="344.4595" y="-107.6542"/>
+        <point x="345.5346" y="-107.8443"/>
+      </obstacle>
+      <obstacle id="315" name="Wall315" type="Wall">
+        <point x="344.2712" y="-108.7341"/>
+        <point x="345.3456" y="-108.9311"/>
+      </obstacle>
+      <obstacle id="316" name="Wall316" type="Wall">
+        <point x="344.0828" y="-109.822"/>
+        <point x="345.159" y="-110.0144"/>
+      </obstacle>
+      <obstacle id="317" name="Wall317" type="Wall">
+        <point x="343.8944" y="-110.9043"/>
+        <point x="344.9632" y="-111.0949"/>
+      </obstacle>
+      <obstacle id="318" name="Wall318" type="Wall">
+        <point x="343.7034" y="-111.987"/>
+        <point x="344.7758" y="-112.1818"/>
+      </obstacle>
+      <obstacle id="319" name="Wall319" type="Wall">
+        <point x="343.5176" y="-113.0723"/>
+        <point x="344.5885" y="-113.2644"/>
+      </obstacle>
+      <obstacle id="320" name="Wall320" type="Wall">
+        <point x="376.4624" y="-133.062"/>
+        <point x="377.0923" y="-133.0624"/>
+      </obstacle>
+      <obstacle id="321" name="Wall321" type="Wall">
+        <point x="369.4425" y="-159.2184"/>
+        <point x="369.7713" y="-157.2092"/>
+      </obstacle>
+      <obstacle id="322" name="Wall322" type="Wall">
+        <point x="365.2478" y="-159.6224"/>
+        <point x="365.6775" y="-157.0093"/>
+      </obstacle>
+      <obstacle id="323" name="Wall323" type="Wall">
+        <point x="368.0208" y="-155.0389"/>
+        <point x="367.3642" y="-159.3348"/>
+      </obstacle>
+      <obstacle id="324" name="Wall324" type="Wall">
+        <point x="372.2517" y="-154.364"/>
+        <point x="371.6811" y="-159.1637"/>
+      </obstacle>
+      <obstacle id="325" name="Wall325" type="Wall">
+        <point x="381.5107" y="-141.8811"/>
+        <point x="381.6717" y="-143.4798"/>
+      </obstacle>
+      <obstacle id="326" name="Wall326" type="Wall">
+        <point x="381.6717" y="-143.4798"/>
+        <point x="380.9234" y="-144.9771"/>
+      </obstacle>
+      <obstacle id="327" name="Wall327" type="Wall">
+        <point x="380.9234" y="-144.9771"/>
+        <point x="379.8535" y="-145.7362"/>
+      </obstacle>
+      <obstacle id="328" name="Wall328" type="Wall">
+        <point x="379.8535" y="-145.7362"/>
+        <point x="378.1509" y="-145.9547"/>
+      </obstacle>
+      <obstacle id="329" name="Wall329" type="Wall">
+        <point x="355.0937" y="-145.6657"/>
+        <point x="356.3429" y="-147.8621"/>
+      </obstacle>
+      <obstacle id="330" name="Wall330" type="Wall">
+        <point x="356.3429" y="-147.8621"/>
+        <point x="355.8044" y="-150.5323"/>
+      </obstacle>
+      <obstacle id="331" name="Wall331" type="Wall">
+        <point x="355.8044" y="-150.5323"/>
+        <point x="353.3706" y="-151.1137"/>
+      </obstacle>
+      <obstacle id="332" name="Wall332" type="Wall">
+        <point x="353.3706" y="-151.1137"/>
+        <point x="347.921" y="-152.4544"/>
+      </obstacle>
+      <obstacle id="333" name="Wall333" type="Wall">
+        <point x="347.921" y="-152.4544"/>
+        <point x="347.6763" y="-148.3789"/>
+      </obstacle>
+      <obstacle id="334" name="Wall334" type="Wall">
+        <point x="347.6763" y="-148.3789"/>
+        <point x="348.8476" y="-146.6132"/>
+      </obstacle>
+      <obstacle id="335" name="Wall335" type="Wall">
+        <point x="348.8476" y="-146.6132"/>
+        <point x="348.8476" y="-145.4686"/>
+      </obstacle>
+      <obstacle id="336" name="Wall336" type="Wall">
+        <point x="348.8476" y="-145.4686"/>
+        <point x="355.0937" y="-145.6657"/>
+      </obstacle>
+      <obstacle id="337" name="Wall336" type="Wall">
+        <point x="354.7363" y="-130.7899"/>
+        <point x="353.5987" y="-128.5964"/>
+      </obstacle>
+      <obstacle id="338" name="Wall337" type="Wall">
+        <point x="353.5987" y="-128.5964"/>
+        <point x="353.4794" y="-124.2807"/>
+      </obstacle>
+      <obstacle id="339" name="Wall338" type="Wall">
+        <point x="353.4794" y="-124.2807"/>
+        <point x="357.4995" y="-117.4862"/>
+      </obstacle>
+      <obstacle id="340" name="Wall339" type="Wall">
+        <point x="357.4995" y="-117.4862"/>
+        <point x="360.6582" y="-114.1368"/>
+      </obstacle>
+      <obstacle id="341" name="Wall340" type="Wall">
+        <point x="360.6582" y="-114.1368"/>
+        <point x="364.1403" y="-112.1863"/>
+      </obstacle>
+      <obstacle id="342" name="Wall341" type="Wall">
+        <point x="364.1403" y="-112.1863"/>
+        <point x="366.2461" y="-112.1863"/>
+      </obstacle>
+      <obstacle id="343" name="Wall342" type="Wall">
+        <point x="366.2461" y="-112.1863"/>
+        <point x="368.4795" y="-113.6218"/>
+      </obstacle>
+      <obstacle id="344" name="Wall343" type="Wall">
+        <point x="368.4795" y="-113.6218"/>
+        <point x="368.2607" y="-120.3445"/>
+      </obstacle>
+      <obstacle id="345" name="Wall344" type="Wall">
+        <point x="368.2607" y="-120.3445"/>
+        <point x="367.5591" y="-121.3966"/>
+      </obstacle>
+      <obstacle id="346" name="Wall345" type="Wall">
+        <point x="367.5591" y="-121.3966"/>
+        <point x="365.3918" y="-123.075"/>
+      </obstacle>
+      <obstacle id="347" name="Wall346" type="Wall">
+        <point x="365.3918" y="-123.075"/>
+        <point x="364.3144" y="-123.4883"/>
+      </obstacle>
+      <obstacle id="348" name="Wall347" type="Wall">
+        <point x="364.3144" y="-123.4883"/>
+        <point x="363.8725" y="-125.0302"/>
+      </obstacle>
+      <obstacle id="349" name="Wall348" type="Wall">
+        <point x="363.8725" y="-125.0302"/>
+        <point x="359.29" y="-128.7513"/>
+      </obstacle>
+      <obstacle id="350" name="Wall349" type="Wall">
+        <point x="359.29" y="-128.7513"/>
+        <point x="354.7363" y="-130.7899"/>
+      </obstacle>
+      <obstacle id="351" name="Wall350" type="Wall">
+        <point x="386.1866" y="-163.5559"/>
+        <point x="391.007" y="-158.467"/>
+      </obstacle>
+      <obstacle id="352" name="Wall351" type="Wall">
+        <point x="391.007" y="-158.467"/>
+        <point x="393.4692" y="-152.2433"/>
+      </obstacle>
+      <obstacle id="353" name="Wall352" type="Wall">
+        <point x="393.4692" y="-152.2433"/>
+        <point x="397.6847" y="-152.4065"/>
+      </obstacle>
+      <obstacle id="355" name="Solid1" type="Solid">
+        <point x="445.4362" y="-128.9142"/>
+        <point x="444.5136" y="-130.2355"/>
+        <point x="444.3141" y="-131.5068"/>
+      </obstacle>
+      <obstacle id="356" name="Solid2" type="Solid">
+        <point x="444.3141" y="-131.5068"/>
+        <point x="444.6632" y="-133.177"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="357" name="Solid3" type="Solid">
+        <point x="444.6632" y="-133.177"/>
+        <point x="445.6855" y="-134.4733"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="358" name="Solid4" type="Solid">
+        <point x="445.6855" y="-134.4733"/>
+        <point x="447.6304" y="-134.9719"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="359" name="Solid5" type="Solid">
+        <point x="447.6304" y="-134.9719"/>
+        <point x="449.3259" y="-134.6478"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="360" name="Solid6" type="Solid">
+        <point x="449.3259" y="-134.6478"/>
+        <point x="450.4978" y="-133.875"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="361" name="Solid7" type="Solid">
+        <point x="450.4978" y="-133.875"/>
+        <point x="451.1959" y="-132.504"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="362" name="Solid8" type="Solid">
+        <point x="451.1959" y="-132.504"/>
+        <point x="451.2957" y="-131.108"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="363" name="Solid9" type="Solid">
+        <point x="451.2957" y="-131.108"/>
+        <point x="450.797" y="-129.6372"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="364" name="Solid10" type="Solid">
+        <point x="405.0462" y="-128.2734"/>
+        <point x="405.1008" y="-129.7466"/>
+        <point x="406.8102" y="-121.6758"/>
+      </obstacle>
+      <obstacle id="365" name="Solid11" type="Solid">
+        <point x="405.1008" y="-129.7466"/>
+        <point x="407.953" y="-130.9098"/>
+        <point x="406.8102" y="-121.6758"/>
+      </obstacle>
+      <obstacle id="366" name="Solid12" type="Solid">
+        <point x="450.797" y="-129.6372"/>
+        <point x="449.8994" y="-128.64"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="367" name="Solid13" type="Solid">
+        <point x="449.8994" y="-128.64"/>
+        <point x="448.4282" y="-128.0667"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="369" name="Solid15" type="Solid">
+        <point x="390.0154" y="-96.4633"/>
+        <point x="390.6715" y="-100.2098"/>
+        <point x="392.1559" y="-98.7749"/>
+      </obstacle>
+      <obstacle id="371" name="Solid17" type="Solid">
+        <point x="340.8995" y="-155.6645"/>
+        <point x="341.8906" y="-158.0386"/>
+        <point x="344.7889" y="-158.7217"/>
+      </obstacle>
+      <obstacle id="373" name="Solid19" type="Solid">
+        <point x="371.1051" y="-154.5516"/>
+        <point x="369.1554" y="-154.2875"/>
+        <point x="368.8032" y="-157.0417"/>
+      </obstacle>
+      <obstacle id="375" name="Solid21" type="Solid">
+        <point x="367.105" y="-154.4132"/>
+        <point x="365.2181" y="-154.1114"/>
+        <point x="366.7151" y="-157.2429"/>
+      </obstacle>
+      <obstacle id="376" name="Solid22" type="Solid">
+        <point x="367.105" y="-154.4132"/>
+        <point x="365.2181" y="-154.1114"/>
+        <point x="366.7151" y="-157.2429"/>
+      </obstacle>
+      <obstacle id="377" name="Solid23" type="Solid">
+        <point x="407.953" y="-130.9098"/>
+        <point x="409.4592" y="-129.4475"/>
+        <point x="406.8102" y="-121.6758"/>
+      </obstacle>
+      <obstacle id="378" name="Solid24" type="Solid">
+        <point x="433.6859" y="-113.7233"/>
+        <point x="441.4275" y="-115.2127"/>
+        <point x="434.1688" y="-110.6662"/>
+      </obstacle>
+      <obstacle id="379" name="Solid25" type="Solid">
+        <point x="441.4275" y="-115.2127"/>
+        <point x="441.9297" y="-112.1797"/>
+        <point x="434.1688" y="-110.6662"/>
+      </obstacle>
+      <obstacle id="380" name="Solid26" type="Solid">
+        <point x="421.4262" y="-153.4607"/>
+        <point x="432.2502" y="-153.4607"/>
+        <point x="421.4262" y="-147.525"/>
+      </obstacle>
+      <obstacle id="381" name="Solid27" type="Solid">
+        <point x="432.2502" y="-153.4607"/>
+        <point x="432.2502" y="-147.525"/>
+        <point x="421.4262" y="-147.525"/>
+      </obstacle>
+      <obstacle id="382" name="Solid28" type="Solid">
+        <point x="376.5205" y="-128.7564"/>
+        <point x="383.0825" y="-128.7564"/>
+        <point x="376.5205" y="-122.7553"/>
+      </obstacle>
+      <obstacle id="383" name="Solid29" type="Solid">
+        <point x="383.0825" y="-128.7564"/>
+        <point x="383.0825" y="-122.7553"/>
+        <point x="376.5205" y="-122.7553"/>
+      </obstacle>
+      <obstacle id="384" name="Solid30" type="Solid">
+        <point x="376.0485" y="-120.46"/>
+        <point x="379.7967" y="-119.4432"/>
+        <point x="375.0199" y="-116.5762"/>
+      </obstacle>
+      <obstacle id="385" name="Solid31" type="Solid">
+        <point x="379.7967" y="-119.4432"/>
+        <point x="378.7681" y="-115.5594"/>
+        <point x="375.0199" y="-116.5762"/>
+      </obstacle>
+      <obstacle id="386" name="Solid32" type="Solid">
+        <point x="371.8202" y="-115.5446"/>
+        <point x="372.6422" y="-114.8644"/>
+        <point x="371.2219" y="-114.7927"/>
+      </obstacle>
+      <obstacle id="387" name="Solid33" type="Solid">
+        <point x="372.6422" y="-114.8644"/>
+        <point x="372.044" y="-114.1126"/>
+        <point x="371.2219" y="-114.7927"/>
+      </obstacle>
+      <obstacle id="388" name="Solid34" type="Solid">
+        <point x="355.8044" y="-150.5323"/>
+        <point x="357.0253" y="-150.7776"/>
+        <point x="356.3429" y="-147.8621"/>
+      </obstacle>
+      <obstacle id="389" name="Solid35" type="Solid">
+        <point x="357.0253" y="-150.7776"/>
+        <point x="357.6396" y="-148.2392"/>
+        <point x="356.3429" y="-147.8621"/>
+      </obstacle>
+      <obstacle id="390" name="Solid36" type="Solid">
+        <point x="347.3835" y="-158.4401"/>
+        <point x="348.2394" y="-158.4401"/>
+        <point x="347.3835" y="-157.716"/>
+      </obstacle>
+      <obstacle id="391" name="Solid37" type="Solid">
+        <point x="348.2394" y="-158.4401"/>
+        <point x="348.2394" y="-157.716"/>
+        <point x="347.3835" y="-157.716"/>
+      </obstacle>
+      <obstacle id="392" name="Solid38" type="Solid">
+        <point x="354.9057" y="-158.1768"/>
+        <point x="355.6957" y="-158.1768"/>
+        <point x="354.9057" y="-157.4198"/>
+      </obstacle>
+      <obstacle id="393" name="Solid39" type="Solid">
+        <point x="355.6957" y="-158.1768"/>
+        <point x="355.6957" y="-157.4198"/>
+        <point x="354.9057" y="-157.4198"/>
+      </obstacle>
+      <obstacle id="394" name="Solid40" type="Solid">
+        <point x="335.6557" y="-138.9883"/>
+        <point x="338.9616" y="-139.2058"/>
+        <point x="335.894" y="-135.3662"/>
+      </obstacle>
+      <obstacle id="395" name="Solid41" type="Solid">
+        <point x="338.9616" y="-139.2058"/>
+        <point x="339.1999" y="-135.5836"/>
+        <point x="335.894" y="-135.3662"/>
+      </obstacle>
+      <obstacle id="396" name="Solid42" type="Solid">
+        <point x="343.3101" y="-141.7186"/>
+        <point x="344.0895" y="-141.7186"/>
+        <point x="343.3101" y="-140.9394"/>
+      </obstacle>
+      <obstacle id="397" name="Solid43" type="Solid">
+        <point x="344.0895" y="-141.7186"/>
+        <point x="344.0895" y="-140.9394"/>
+        <point x="343.3101" y="-140.9394"/>
+      </obstacle>
+      <obstacle id="398" name="Solid44" type="Solid">
+        <point x="342.1555" y="-135.9468"/>
+        <point x="343.0215" y="-135.9468"/>
+        <point x="342.1555" y="-135.1676"/>
+      </obstacle>
+      <obstacle id="399" name="Solid45" type="Solid">
+        <point x="343.0215" y="-135.9468"/>
+        <point x="343.0215" y="-135.1676"/>
+        <point x="342.1555" y="-135.1676"/>
+      </obstacle>
+      <obstacle id="400" name="Solid46" type="Solid">
+        <point x="395.0892" y="-128.0411"/>
+        <point x="402.066" y="-128.0411"/>
+        <point x="395.0892" y="-120.0043"/>
+      </obstacle>
+      <obstacle id="401" name="Solid47" type="Solid">
+        <point x="402.066" y="-128.0411"/>
+        <point x="402.066" y="-120.0043"/>
+        <point x="395.0892" y="-120.0043"/>
+      </obstacle>
+      <obstacle id="402" name="Solid48" type="Solid">
+        <point x="409.4592" y="-129.4475"/>
+        <point x="411.1522" y="-122.7003"/>
+        <point x="406.8102" y="-121.6758"/>
+      </obstacle>
+      <obstacle id="403" name="Solid49" type="Solid">
+        <point x="365.2181" y="-154.1114"/>
+        <point x="364.8156" y="-156.8153"/>
+        <point x="366.7151" y="-157.2429"/>
+      </obstacle>
+      <obstacle id="404" name="Solid50" type="Solid">
+        <point x="368.8032" y="-157.0417"/>
+        <point x="370.7655" y="-157.3813"/>
+        <point x="371.1051" y="-154.5516"/>
+      </obstacle>
+      <obstacle id="405" name="Solid51" type="Solid">
+        <point x="344.7889" y="-158.7217"/>
+        <point x="345.378" y="-156.7442"/>
+        <point x="340.8995" y="-155.6645"/>
+      </obstacle>
+      <obstacle id="406" name="Solid52" type="Solid">
+        <point x="301.841" y="-150.4831"/>
+        <point x="302.9241" y="-150.4831"/>
+        <point x="301.841" y="-149.3228"/>
+      </obstacle>
+      <obstacle id="407" name="Solid53" type="Solid">
+        <point x="302.9241" y="-150.4831"/>
+        <point x="302.9241" y="-149.3228"/>
+        <point x="301.841" y="-149.3228"/>
+      </obstacle>
+      <obstacle id="408" name="Solid54" type="Solid">
+        <point x="306.5605" y="-150.7152"/>
+        <point x="307.6437" y="-150.7152"/>
+        <point x="306.5605" y="-149.5548"/>
+      </obstacle>
+      <obstacle id="409" name="Solid55" type="Solid">
+        <point x="307.6437" y="-150.7152"/>
+        <point x="307.6437" y="-149.5548"/>
+        <point x="306.5605" y="-149.5548"/>
+      </obstacle>
+      <obstacle id="410" name="Solid56" type="Solid">
+        <point x="311.4736" y="-151.4887"/>
+        <point x="312.5567" y="-151.4887"/>
+        <point x="311.4736" y="-150.3284"/>
+      </obstacle>
+      <obstacle id="411" name="Solid57" type="Solid">
+        <point x="312.5567" y="-151.4887"/>
+        <point x="312.5567" y="-150.3284"/>
+        <point x="311.4736" y="-150.3284"/>
+      </obstacle>
+      <obstacle id="412" name="Solid58" type="Solid">
+        <point x="316.6574" y="-152.1849"/>
+        <point x="317.7405" y="-152.1849"/>
+        <point x="316.6574" y="-151.0246"/>
+      </obstacle>
+      <obstacle id="413" name="Solid59" type="Solid">
+        <point x="317.7405" y="-152.1849"/>
+        <point x="317.7405" y="-151.0246"/>
+        <point x="316.6574" y="-151.0246"/>
+      </obstacle>
+      <obstacle id="414" name="Solid60" type="Solid">
+        <point x="296.7345" y="-149.6322"/>
+        <point x="297.8177" y="-149.6322"/>
+        <point x="296.7345" y="-148.4719"/>
+      </obstacle>
+      <obstacle id="415" name="Solid61" type="Solid">
+        <point x="297.8177" y="-149.6322"/>
+        <point x="297.8177" y="-148.4719"/>
+        <point x="296.7345" y="-148.4719"/>
+      </obstacle>
+      <obstacle id="416" name="Solid62" type="Solid">
+        <point x="393.9866" y="-103.3441"/>
+        <point x="398.3415" y="-105.2326"/>
+        <point x="397.1102" y="-101.9637"/>
+      </obstacle>
+      <obstacle id="417" name="Solid63" type="Solid">
+        <point x="393.9866" y="-103.3441"/>
+        <point x="395.2631" y="-106.6961"/>
+        <point x="398.3415" y="-105.2326"/>
+      </obstacle>
+      <obstacle id="418" name="Solid64" type="Solid">
+        <point x="390.0154" y="-96.4633"/>
+        <point x="388.5973" y="-97.9297"/>
+        <point x="390.6715" y="-100.2098"/>
+      </obstacle>
+      <obstacle id="419" name="Solid65" type="Solid">
+        <point x="364.6703" y="-78.8019"/>
+        <point x="364.9654" y="-78.8019"/>
+        <point x="364.6703" y="-78.4904"/>
+      </obstacle>
+      <obstacle id="420" name="Solid66" type="Solid">
+        <point x="364.9654" y="-78.8019"/>
+        <point x="364.9654" y="-78.4904"/>
+        <point x="364.6703" y="-78.4904"/>
+      </obstacle>
+      <obstacle id="421" name="Solid67" type="Solid">
+        <point x="368.5065" y="-78.7363"/>
+        <point x="368.8016" y="-78.7363"/>
+        <point x="368.5065" y="-78.4249"/>
+      </obstacle>
+      <obstacle id="422" name="Solid68" type="Solid">
+        <point x="368.8016" y="-78.7363"/>
+        <point x="368.8016" y="-78.4249"/>
+        <point x="368.5065" y="-78.4249"/>
+      </obstacle>
+      <obstacle id="423" name="Solid69" type="Solid">
+        <point x="364.6539" y="-82.6209"/>
+        <point x="364.949" y="-82.6209"/>
+        <point x="364.6539" y="-82.3095"/>
+      </obstacle>
+      <obstacle id="424" name="Solid70" type="Solid">
+        <point x="364.949" y="-82.6209"/>
+        <point x="364.949" y="-82.3095"/>
+        <point x="364.6539" y="-82.3095"/>
+      </obstacle>
+      <obstacle id="425" name="Solid71" type="Solid">
+        <point x="368.5393" y="-82.6537"/>
+        <point x="368.8344" y="-82.6537"/>
+        <point x="368.5393" y="-82.3422"/>
+      </obstacle>
+      <obstacle id="426" name="Solid72" type="Solid">
+        <point x="368.8344" y="-82.6537"/>
+        <point x="368.8344" y="-82.3422"/>
+        <point x="368.5393" y="-82.3422"/>
+      </obstacle>
+      <obstacle id="427" name="Solid73" type="Solid">
+        <point x="397.7587" y="-116.4025"/>
+        <point x="398.0787" y="-116.4025"/>
+        <point x="397.7587" y="-111.8277"/>
+      </obstacle>
+      <obstacle id="428" name="Solid74" type="Solid">
+        <point x="398.0787" y="-116.4025"/>
+        <point x="398.2338" y="-111.8277"/>
+        <point x="397.7587" y="-111.8277"/>
+      </obstacle>
+      <obstacle id="429" name="Solid75" type="Solid">
+        <point x="448.4282" y="-128.0667"/>
+        <point x="446.7577" y="-128.1913"/>
+        <point x="445.4362" y="-128.9142"/>
+      </obstacle>
+      <obstacle id="430" name="Solid76" type="Solid">
+        <point x="385.1066" y="-98.7864"/>
+        <point x="383.6106" y="-96.9029"/>
+        <point x="381.3409" y="-101.5941"/>
+      </obstacle>
+      <obstacle id="431" name="Solid77" type="Solid">
+        <point x="370.9615" y="-109.3329"/>
+        <point x="374.4641" y="-106.7214"/>
+        <point x="369.7059" y="-107.7719"/>
+      </obstacle>
+      <obstacle id="432" name="Solid78" type="Solid">
+        <point x="376.1685" y="-94.7038"/>
+        <point x="381.0717" y="-93.7063"/>
+        <point x="379.6699" y="-91.9414"/>
+      </obstacle>
+      <obstacle id="433" name="Solid79" type="Solid">
+        <point x="365.7844" y="-102.8965"/>
+        <point x="367.1408" y="-104.5828"/>
+        <point x="369.2974" y="-100.1249"/>
+      </obstacle>
+      <obstacle id="434" name="Wall434" type="OneWayWall">
+         <point x="363.52801666666664" y="-158.89583333333334"/>
+        <point x="371.75718333333333" y="-158.16666666666669"/>
+        <direction x="367.54884999999996" y="-157.75"/>
+      </obstacle>
+      <lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+    </scenario>
+  </layouts>
+</simulator>

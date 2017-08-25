@@ -1,0 +1,130 @@
+/*******************************************************************************
+ * Welcome to the pedestrian simulation framework MomenTUM. 
+ * This file belongs to the MomenTUM version 2.0.2.
+ * 
+ * This software was developed under the lead of Dr. Peter M. Kielar at the
+ * Chair of Computational Modeling and Simulation at the Technical University Munich.
+ * 
+ * All rights reserved. Copyright (C) 2017.
+ * 
+ * Contact: peter.kielar@tum.de, https://www.cms.bgu.tum.de/en/
+ * 
+ * Permission is hereby granted, free of charge, to use and/or copy this software
+ * for non-commercial research and education purposes if the authors of this
+ * software and their research papers are properly cited.
+ * For citation information visit:
+ * https://www.cms.bgu.tum.de/en/31-forschung/projekte/456-momentum
+ * 
+ * However, further rights are not granted.
+ * If you need another license or specific rights, contact us!
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
+ 
+package tum.cms.sim.momentum.visualization.view
+ 
+import javafx.scene.control.*
+import javafx.scene.layout.*
+import tum.cms.sim.momentum.visualization.view.*
+import tum.cms.sim.momentum.visualization.controller.CoreController
+import tum.cms.sim.momentum.visualization.model.*
+import javafx.scene.control.TitledPane
+import javafx.scene.control.Separator
+import javafx.scene.layout.ColumnConstraints
+import javafx.scene.layout.RowConstraints
+import javafx.scene.canvas.Canvas
+import javafx.scene.layout.AnchorPane
+import tum.cms.sim.momentum.visualization.view.userControl.ExtendedCanvas
+import javafx.scene.layout.Background
+import javafx.scene.text.Text
+
+component CoreView
+controlledby CoreController
+resourcefile "resources.properties" {
+	
+	define CoreModel id coreModel
+	
+	AnchorPane id framePane {
+		children : [			
+			GridPane id frameGrid {	
+				columnConstraints : [
+				
+					ColumnConstraints {
+						minWidth : rstring "core.grid.left.minWidth"
+					},
+					ColumnConstraints { 
+						minWidth : rstring "core.grid.middle.minWidth"
+					},
+					ColumnConstraints { 
+						minWidth : rstring "core.grid.right.minWidth"
+					}
+				],
+ 				rowConstraints : [				
+					RowConstraints { 
+						vgrow : "NEVER"
+					},
+					RowConstraints { 
+						fillHeight : true,
+						vgrow : "ALWAYS"
+					}
+				],
+				static bottomAnchor : 0.0,
+				static topAnchor : 0.0,
+				static leftAnchor : 0.0,
+				static rightAnchor : 0.0,
+				
+				children : [ 
+					include MenuBarView as menuBarView {
+						
+						static hgrow : "NEVER",
+						static columnIndex : 0,
+						static columnSpan : 1, 
+						static rowIndex : 0
+					},
+					include InteractionView as interactionView {
+				
+						static hgrow : "ALWAYS",
+						static columnIndex : 1, 
+						static columnSpan : 2,
+						static rowIndex : 0
+					},
+					include DetailView as detailView {
+					
+						static hgrow : "NEVER",
+						static columnIndex : 0, 
+						static columnSpan : 1,
+						static rowIndex : 1,
+						static rowSpan : 2
+					},
+					include PlaybackView as playbackView {
+						
+						static hgrow : "ALWAYS",
+						static columnIndex : 1, 
+						static rowIndex : 1,
+						static rowSpan : 2
+					},
+					include LayerConfigurationView as layerConfigurationView {
+
+						static columnIndex : 2, 
+						static rowIndex : 1,
+						static rowSpan : 1
+					},
+					include LoadedFilesView as loadedFilesView {
+						static columnIndex : 2,
+						static rowIndex : 2,
+						static rowSpan : 1
+					}
+				]
+			}
+		]
+	}
+}

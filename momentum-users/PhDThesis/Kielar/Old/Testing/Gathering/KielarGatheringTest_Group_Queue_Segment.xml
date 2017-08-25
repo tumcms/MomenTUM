@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<simulator version="MomenTumV2.0.0" simulationName="BTTW_" simEnd="900.0" threads="3" timeStepDuration="0.05">
+	<operationalModels>
+		<operational id="0" name="socialForceModel" type="SocialForce" perceptualModel="0" queryModel="0">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="26.67"/>
+			<property name="mass_behaviour_B" type="Double" value="0.02"/>	
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="10e-6"/>
+		</operational> 
+	</operationalModels>
+	<queryModels>
+		<query id="0" name="basicQuery" type="BasicQuery">
+			<property name="positionJitter" type="Double" value="0.025"/>
+			<property name="gatheringDistance" type="Double" value="0.15"/>
+			<property name="navigationVisitingNorm" type="Double" value="0.75"/>
+			<property name="navigationVisitingRotation" type="Double" value="75.0"/>
+			<property name="findGroupRadius" type="Double" value="10.0"/>
+		</query>
+	</queryModels>
+	<gatheringModels> 
+		<gathering id="0" name="KielarGatheringModel" type="KielarGathering" queryModel="0">
+			<property name="gatheringSafetyDistance" type="Double" value="0.1"/> <!-- distance between pedestrian boundaries for gathering points -->
+			<property name="gatherGroupRadius" type="Double" value="5.0"/> <!-- Distance to group members at gathering location -->
+			<complexProperty name="gatheringCrowding" type="List" valueType="String"> <!--  index is intermediate or destination id value Everywhere | Far | Close -->
+			    <entry index="1" value="Everywhere"/>
+			    <entry index="2" value="Everywhere"/>
+			</complexProperty> 
+			<!-- Percentage of occupancy for a location to switch to herding behavior max is 0.25-->
+			<property name="herdingThreshold" type="Double" value="0.2"/> 
+			<!-- Percentage of occupancy for a location to switch to individual behavior again (random filling) -->
+			<property name="chaoticThreshold" type="Double" value="0.5"/> 
+			<!-- Arc in degree for positioning a queuing pedestrian behind in the queue -->
+			<property name="queueArc" type="Double" value="90.0"/> 
+			<!-- Distance to the next pedestrian in a queue -->
+			<property name="queueDistance" type="Double" value="1.0"/> 
+			<!-- Rotation to find the fix-point to look at (heading) for a perform area, 60 seems optimal (triangle)-->
+			<property name="attractorRotation" type="Double" value="60.0"/> 
+			<!-- Each pedestrian creates an rectangle for others to crowed to for perform areas this is width to fix-point -->
+			<property name="gatheringRectangleWidth" type="Double" value="1.0"/> 
+			<!-- Each pedestrian creates an rectangle for others to crowed to for perform areas this is height to fix-point -->
+			<property name="gatheringRectangleHeight" type="Double" value="1.0"/> 
+		</gathering>
+	</gatheringModels>
+	<tacticalModels>
+		<tactical id="0" name="noRouting" type="NoRouting" perceptualModel="0" queryModel="0" gatheringModel="0"/>
+	</tacticalModels>
+	<strategicalModels>
+		<strategical id="0" name="strictOrderModel" type="StrictOrder" perceptualModel="0" queryModel="0">
+			<!--  The order the locations have to be visited -->
+			<!--  The values correspond to the area ids -->
+			<complexProperty name="areaOrder" type="List" valueType="Integer"> 
+			    <entry index="0" value="1"/>
+			    <entry index="1" value="2"/>
+			</complexProperty>
+			<!--  The navigation task at the location, the index corresponds to the areaOrder list -->
+			<!-- Perform | Queue -->
+			<!-- None is for absorber areas -->
+			<complexProperty name="areaTask" type="List" valueType="String"> 
+			    <entry index="0" value="Queue"/>
+			    <entry index="1" value="Perform"/>
+			</complexProperty>
+			<!-- Duration a pedestrian has to stay at the location in seconds-->
+			<!-- The index corresponds to the areaOrder list -->
+			<complexProperty name="areaDuration" type="List" valueType="Double"> 
+			    <entry index="0" value="50.0"/>
+			    <entry index="1" value="Infinity"/>
+			</complexProperty>
+		</strategical>
+	</strategicalModels>
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+			<property name="Discretisation" type="Double" value="0.5"/>
+		</perceptual>
+	</perceptualModels>
+	<absorbers>
+		<absorber id="0" name="default" scenario="0" destination="2" type="DestinationInstantly"/>
+	</absorbers>
+	<generators>
+		<generator id="0" name="generator" scenario="0" origin="0" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="2"/> 
+			<property name="safetyDistance" type="Double" value="1.0"/>
+			<geometry geometryType="Lattice" fillingType="Random" />
+			<property name="scenarioLatticeId" type="Integer" value="0"/> 
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0"/> 
+				<entry index="1" value="20.0"/> 
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double"> 
+				<entry index="0" value="1.0"/> 
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+	</generators>
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="seedPreBTTW2014" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="1.34"/>			
+			<property name="velocityBinWidth" type="Double" value="0.0"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double">
+				<entry index="0" value="1.0"/> 
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="2"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<entry index="0" value="0.37"/> 
+				<entry index="1" value="0.46"/>  
+				<entry index="2" value="0.11"/>
+				<entry index="3" value="0.06"/>
+				<!-- Peters -->
+			</complexProperty>		
+		</pedestrianSeed>
+	</pedestrianSeeds>
+	<outputWriters>
+		<outputWriter id="0" name="csvWriter" type="csvWriter">
+			<property name="call" type="Integer" value="3"/>
+			<property name="file" type="File" value="./KielarGatheringTest_Queue_Segment.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="layoutWriter" type="configurationWriter">
+			<property name="file" type="File" value="./KielarGatheringTest_Queue_Segment.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+	</outputWriters>
+	 <layouts>
+		<scenario id="0" name="groundPlan" maxX="51.0" maxY="31.0" minX="-1.0" minY="-1.0">
+			<area id="0" name="origin" type="Origin">
+				<point x="1.0" y="1.0"/>
+				<point x="3.0" y="1.0"/>
+				<point x="3.0" y="29.0"/>
+				<point x="1.0" y="29.0"/>
+			</area>
+			<area id="1" name="intermedaite" type="Intermediate">
+				<point x="49.0" y="10.0"/>
+				<point x="50.0" y="10.0"/>
+				<point x="50.0" y="20.0"/>
+				<point x="49.0" y="20.0"/>
+				<gatheringLine>
+					<point x="50.0" y="10.0"/>
+					<point x="50.0" y="20.0"/>
+				</gatheringLine>
+			</area>		
+			<area id="2" name="destination" type="Destination">
+				<point x="40.0" y="0.0"/>
+				<point x="50.0" y="0.0"/>
+				<point x="50.0" y="1.5"/>
+				<point x="40.0" y="1.5"/>
+				<gatheringLine>
+					<point x="40.0" y="0.0"/>
+					<point x="50.0" y="0.0"/>
+				</gatheringLine>
+			</area>		
+			<obstacle name="outerWallTop" type="Wall">
+				<point x="0.0" y="0.0"/>
+				<point x="50.0" y="0.0"/>
+			</obstacle>			
+			<obstacle name="outerWallRight" type="Wall">
+				<point x="50.0" y="0.0"/>
+				<point x="50.0" y="30.0"/>
+			</obstacle>		
+			<obstacle name="outerWallBottom" type="Wall">
+				<point x="50.0" y="30.0"/>
+				<point x="0.0" y="30.0"/>
+			</obstacle>		
+			<obstacle name="outerWallLeft" type="Wall">
+				<point x="0.0" y="30.0"/>
+				<point x="0.0" y="0.0"/>
+			</obstacle>
+			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout"  cellEdgeSize="0.46"/>
+	        <graph id="0" type="Visibility">
+        		<property name="cornerDistance" type="Double" value="2"/>
+        	</graph>
+		</scenario>
+  </layouts>
+</simulator>

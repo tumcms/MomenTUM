@@ -1,0 +1,110 @@
+<!-- The origin-destination matrix model (OD-Matrix) provides a tool to model strategic behavior based on Markov-Chains  -->
+
+<!-- In general the model selects the next location to visit (for a pedestrian) based on a probability matrix. -->
+<!-- Furthermore, the model allows to define the behavior at different location and the duration of the interaction. -->
+
+<!-- All behavior models have a unique id, a name and a reference to a perceptual model. -->
+<!-- The type is ODMatrix. -->
+<strategical id="0" name="odMatrx" type="ODMatrix" perceptualModel="0">
+
+	<!-- The model provides origin-destination relations in a CSV file, which stores the dependencies in a matrix.  -->
+	
+	<!-- The originDestination complexProperty provides a method to reference a CSV file that stores the OD-Matrix.  -->
+	<complexProperty name="originDestination" type="CsvMatrix" valueType="Double">
+		<!-- Entry holds a file and a separator property. -->
+		<!-- The file points to the full-path of the csv file. -->
+		<!-- The separator describe the characters that separates the data in the file. -->
+		<!-- A newline is automatically the indicator of the next set of values. -->
+		<entry file="..\odMatrix.csv" separator=";"/>
+		<!-- Here is a example of a file with ; separator: -->
+		<!-- The first row indicate the ids of destinations of the OD-Matrix. -->
+		<!-- The first column indicates the ids of the origins of the OD-Matrix. -->
+		<!-- The sum of all other values in a row has to be one (probability from-to). -->
+		<!-- 2 and 3 are origin, 0 and 2 are intermediate areas, and 4 and 5 are destination. -->
+		<!--  ;   0;   1;    4;    5 -->
+		<!-- 2; 0.1; 0.6; 0.05; 0.15 -->
+		<!-- 3; 0.3; 0.3;  0.4;    0 -->
+		<!-- 0;   0; 0.5; 0.25; 0.25 -->
+		<!-- 1;   0;   0;  0.9;  0.1 -->
+		
+		<!-- In case the CsvMatrix based approach is used, it is possible provide a OD-Matrix that is valid for a period of time. -->
+		<!-- This is done by adjusting the context of the file: -->
+		<!-- The first row indicate the ids of destinations of the OD-Matrix. -->
+		<!-- The first column indicates the ids of the origins of the OD-Matrix. -->
+		<!-- The first element of the first row and column defines the start second. -->
+		<!-- Form this second of the simulation time this matrix is valid. -->
+		<!-- The sum of all other values in a row has to be one (probability from-to). -->
+		<!-- 2 and 3 are origin, 0 and 2 are intermediate areas, and 4 and 5 are destination. -->
+		<!-- Behind the first matrix, add an empty line and add more matrices with later start times. 
+			 0;   0;   1;    4;    5 
+			 2; 0.1; 0.6; 0.05; 0.15 
+			 3; 0.3; 0.3;  0.4;    0 
+			 0;   0; 0.5; 0.25; 0.25 
+			 1;   0;   0;  0.9;  0.1 
+			 ; % empty line with separator indicates next time slot
+			 5;   0;   1;    4;    5 
+			 2; 0.1; 0.6; 0.05; 0.15 
+			 3; 0.3; 0.3;  0.4;    0 
+			 0;   0; 0.5; 0.25; 0.25 
+			 1;   0;   0;  0.9;  0.1 -->
+		<!-- empty line and further matrices -->
+	</complexProperty>
+
+	<!-- The fulfilmentDuration complex property sets the duration of each activity at different locations. -->
+	<!-- This is optional and can be removed if no interaction duration is needed. -->
+	<complexProperty name="fulfilmentDuration" type="List" valueType="Double">
+		<!-- Each entry index references an area (e.g. intermediate area 1). -->
+		<!-- Each entry value is the duration of performing an activity at the area in seconds. -->
+	    <entry index="1" value="60.0"/>
+	    <entry index="2" value="240.0"/>
+	    <entry index="3" value="180.0"/>
+	    <entry index="4" value="90.0"/>
+	    <entry index="5" value="2.0"/>
+	    <entry index="6" value="2.0"/>
+	    <entry index="7" value="2.0"/>
+	</complexProperty>
+	
+	<!-- The fulfilmentDuration complex property exchanged with a probability based service time defintion. -->
+	<!-- Thus, as alternative to the fulfilmentDuration use the serviceTimeDistribution. -->
+	<!-- The  serviceTimeDistribution is a CsvMatrix that holds a discrete distribution -->
+	<complexProperty name="serviceTimeDistribution" type="CsvMatrix" valueType="Double">
+		<!-- Entry holds a file and a separator property. -->
+		<!-- The file points to the full-path of the csv file. -->
+		<!-- The separator describe the characters that separates the data in the file. -->
+		<entry file="..\serviceTimeDistributions.csv" separator=";"/>
+		<!-- Here is a example of a file with ; separator:
+			   5; % this is the id of the area
+			 405; 0.5 % first value is the waiting duration, second value is probability
+			1920; 0.5
+			; % empty line with separator indicates next area and distribution
+			   6;
+			   5; 0.076923077
+			  35; 0.307692308
+			 130; 0.076923077
+			 195; 0.076923077
+			 280; 0.076923077
+			 480; 0.153846154
+			 565; 0.076923077
+			 740; 0.076923077
+			1690; 0.076923077 -->
+	</complexProperty>
+	
+	<!-- The third variation to model service times / fulfilment duration is to define a value for all locations. -->
+	<!-- This is done with the fulfilmentOverallDuration property. -->
+	<!-- Set 0 in order to remove durations completely, set Double.MAX_VALUE to set infinit fulfillment duration, or another value. -->
+	<property name="fulfilmentOverallDuration" type="Double" value="1.0"/>
+	
+	<!-- The behaviorType complexProperty helps to sets the kind of behavior that is expected at a area. -->
+	<!-- This is optional and can be removed if the interaction is always "staying". -->
+	<complexProperty name="behaviorType" type="List" valueType="String">
+		<!-- Each entry index references an area (e.g. intermediate area 1). -->
+		<!-- Each entry value defines the behavior Perform or Queue at the location. -->
+	    <entry index="1" value="Staying"/>
+	    <entry index="2" value="Queuing"/>
+	    <entry index="3" value="Queuing"/>
+	    <entry index="4" value="Staying"/>
+	    <entry index="5" value="Staying"/>
+	    <entry index="6" value="Staying"/>
+	    <entry index="7" value="Staying"/>
+	</complexProperty>
+</strategical>

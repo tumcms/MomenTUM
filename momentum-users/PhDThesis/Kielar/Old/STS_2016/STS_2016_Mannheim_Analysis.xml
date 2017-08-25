@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulator version="0.9.0" simulationName="sta_2016_Mannheim_Analysis" simEnd="10000.0" threads="3" timeStepDuration="0.5">
+	<analysisModels>
+		<analysis name="lineCrossingLLL" type="lineCrossing" id="0">
+			<property name="dataSet" type="String" value="0"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="179.0"/> <!-- L1 -->
+				<entry index="1" value="163.0"/> <!-- L2 -->
+				<entry index="2" value="162.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="145.0"/> <!-- L1 -->
+				<entry index="1" value="190.0"/> <!-- L2 -->
+				<entry index="2" value="301.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="205.0"/> <!-- L1 -->
+				<entry index="1" value="176.0"/> <!-- L2 -->
+				<entry index="2" value="180.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="131.0"/> <!-- L1 -->
+				<entry index="1" value="208.0"/> <!-- L2 -->
+				<entry index="2" value="321.0"/> <!-- L3 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data_validation.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="lineCrossingLLR" type="lineCrossing" id="1">
+			<property name="dataSet" type="String" value="1"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="179.0"/> <!-- L1 -->
+				<entry index="1" value="163.0"/> <!-- L2 -->
+				<entry index="2" value="209.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="145.0"/> <!-- L1 -->
+				<entry index="1" value="190.0"/> <!-- L2 -->
+				<entry index="2" value="334.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="205.0"/> <!-- L1 -->
+				<entry index="1" value="176.0"/> <!-- L2 -->
+				<entry index="2" value="232.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="131.0"/> <!-- L1 -->
+				<entry index="1" value="208.0"/> <!-- L2 -->
+				<entry index="2" value="318.0"/> <!-- R3 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data_validation.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="lineCrossingLRL" type="lineCrossing" id="2">
+			<property name="dataSet" type="String" value="2"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="179.0"/> <!-- L1 -->
+				<entry index="1" value="221.0"/> <!-- R2 -->
+				<entry index="2" value="162.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="145.0"/> <!-- L1 -->
+				<entry index="1" value="224.0"/> <!-- R2 -->
+				<entry index="2" value="301.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="205.0"/> <!-- L1 -->
+				<entry index="1" value="242.0"/> <!-- R2 -->
+				<entry index="2" value="180.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="131.0"/> <!-- L1 -->
+				<entry index="1" value="211.0"/> <!-- R2 -->
+				<entry index="2" value="321.0"/> <!-- L3 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data_validation.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="lineCrossingLRR" type="lineCrossing" id="3">
+			<property name="dataSet" type="String" value="3"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="179.0"/> <!-- L1 -->
+				<entry index="1" value="221.0"/> <!-- R2 -->
+				<entry index="2" value="209.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="145.0"/> <!-- L1 -->
+				<entry index="1" value="224.0"/> <!-- R2 -->
+				<entry index="2" value="334.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="205.0"/> <!-- L1 -->
+				<entry index="1" value="242.0"/> <!-- R2 -->
+				<entry index="2" value="232.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="131.0"/> <!-- L1 -->
+				<entry index="1" value="211.0"/> <!-- R2 -->
+				<entry index="2" value="318.0"/> <!-- R3 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data_validation.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="lineCrossingRLL" type="lineCrossing" id="4">
+			<property name="dataSet" type="String" value="4"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="246.0"/> <!-- R1 -->
+				<entry index="1" value="163.0"/> <!-- L2 -->
+				<entry index="2" value="162.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="135.0"/> <!-- R1 -->
+				<entry index="1" value="190.0"/> <!-- L2 -->
+				<entry index="2" value="301.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="262.0"/> <!-- R1 -->
+				<entry index="1" value="176.0"/> <!-- L2 -->
+				<entry index="2" value="180.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="158.0"/> <!-- R1 -->
+				<entry index="1" value="208.0"/> <!-- L2 -->
+				<entry index="2" value="321.0"/> <!-- L3 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data_validation.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="lineCrossingRRL" type="lineCrossing" id="5">
+			<property name="dataSet" type="String" value="5"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="246.0"/> <!-- R1 -->
+				<entry index="1" value="221.0"/> <!-- R2 -->
+				<entry index="2" value="162.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="135.0"/> <!-- R1 -->
+				<entry index="1" value="224.0"/> <!-- R2 -->
+				<entry index="2" value="301.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="262.0"/> <!-- R1 -->
+				<entry index="1" value="242.0"/> <!-- R2 -->
+				<entry index="2" value="180.0"/> <!-- L3 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="158.0"/> <!-- R1 -->
+				<entry index="1" value="211.0"/> <!-- R2 -->
+				<entry index="2" value="321.0"/> <!-- L3 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data_validation.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="lineCrossingRLR" type="lineCrossing" id="6">
+			<property name="dataSet" type="String" value="6"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="246.0"/> <!-- R1 -->
+				<entry index="1" value="163.0"/> <!-- L2 -->
+				<entry index="2" value="209.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="135.0"/> <!-- R1 -->
+				<entry index="1" value="190.0"/> <!-- L2 -->
+				<entry index="2" value="334.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="262.0"/> <!-- R1 -->
+				<entry index="1" value="176.0"/> <!-- L2 -->
+				<entry index="2" value="232.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="158.0"/> <!-- R1 -->
+				<entry index="1" value="208.0"/> <!-- L2 -->
+				<entry index="2" value="318.0"/> <!-- R3 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data_validation.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="lineCrossingRRR" type="lineCrossing" id="7">
+			<property name="dataSet" type="String" value="7"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="246.0"/> <!-- R1 -->
+				<entry index="1" value="221.0"/> <!-- R2 -->
+				<entry index="2" value="209.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="135.0"/> <!-- R1 -->
+				<entry index="1" value="224.0"/> <!-- R2 -->
+				<entry index="2" value="334.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="262.0"/> <!-- R1 -->
+				<entry index="1" value="242.0"/> <!-- R2 -->
+				<entry index="2" value="232.0"/> <!-- R3 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="158.0"/> <!-- R1 -->
+				<entry index="1" value="211.0"/> <!-- R2 -->
+				<entry index="2" value="318.0"/> <!-- R3 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data_validation.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels>
+	
+	<outputWriters>
+		<outputWriter id="0" name="lineCrossingLLL" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_line_LLL.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="lineCrossingLLR" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_line_LLR.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="1"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="2" name="lineCrossingLRL" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_line_LRL.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="2"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="3" name="lineCrossingLRR" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_line_LRR.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="3"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="4" name="lineCrossingRLL" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_line_RLL.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="4"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="5" name="lineCrossingRRL" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_line_RRL.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="5"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="6" name="lineCrossingRLR" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_line_RLR.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="6"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="7" name="lineCrossingRRR" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_line_RRR.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="7"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+</simulator>

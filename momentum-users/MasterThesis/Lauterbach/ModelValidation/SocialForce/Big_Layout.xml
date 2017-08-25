@@ -1,0 +1,329 @@
+﻿<!-- This example was created via the AutoCad Plugin and is linked to the exampeSimulation.xml layout scenario. -->
+<simulator version="MomenTumV2.0.0" simulationName="BasicExampleLayout">
+	<layouts>
+    <scenario id="0" name="pedSim" maxX="923.8725" maxY="382.7004" minX="0" minY="0">
+      <graph id="0" name="1" type="Raw">
+        <vertex name="0" id="0">
+          <center x="442.1313" y="235.6918" />
+        </vertex>
+        <vertex name="1" id="1">
+          <center x="510.1579" y="150.1447" />
+        </vertex>
+        <vertex name="2" id="2">
+          <center x="265.5679" y="331.1685" />
+        </vertex>
+        <vertex name="3" id="3">
+          <center x="341.2379" y="365.5401" />
+        </vertex>
+        <vertex name="4" id="4">
+          <center x="444.4243" y="369.3592" />
+        </vertex>
+        <vertex name="5" id="5">
+          <center x="478.0554" y="235.6918" />
+        </vertex>
+        <vertex name="6" id="6">
+          <center x="559.8402" y="246.3852" />
+        </vertex>
+        <vertex name="7" id="7">
+          <center x="647.7397" y="246.3852" />
+        </vertex>
+        <vertex name="8" id="8">
+          <center x="604.9365" y="344.9171" />
+        </vertex>
+        <vertex name="9" id="9">
+          <center x="721.1167" y="371.6506" />
+        </vertex>
+        <vertex name="10" id="10">
+          <center x="813.6023" y="362.4848" />
+        </vertex>
+        <vertex name="11" id="11">
+          <center x="813.6023" y="318.9475" />
+        </vertex>
+        <vertex name="12" id="12">
+          <center x="146.3303" y="168.4762" />
+        </vertex>
+        <vertex name="13" id="13">
+          <center x="179.1971" y="85.9844" />
+        </vertex>
+        <vertex name="14" id="14">
+          <center x="286.2052" y="59.2509" />
+        </vertex>
+        <vertex name="15" id="15">
+          <center x="318.3076" y="59.2509" />
+        </vertex>
+        <vertex name="16" id="16">
+          <center x="47.73" y="318.9475" />
+        </vertex>
+        <vertex name="17" id="17">
+          <center x="150.152" y="208.9583" />
+        </vertex>
+        <vertex name="18" id="18">
+          <center x="260.2175" y="251.7319" />
+        </vertex>
+        <vertex name="19" id="19">
+          <center x="412.3219" y="180.6972" />
+        </vertex>
+        <vertex name="20" id="20">
+          <center x="531.5595" y="70.7081" />
+        </vertex>
+        <vertex name="21" id="21">
+          <center x="687.4856" y="165.421" />
+        </vertex>
+        <vertex name="22" id="22">
+          <center x="711.9446" y="231.1089" />
+        </vertex>
+        <vertex name="23" id="23">
+          <center x="862.5203" y="279.2292" />
+        </vertex>
+        <vertex name="24" id="24">
+          <center x="870.1637" y="98.2054" />
+        </vertex>
+        <vertex name="25" id="25">
+          <center x="747.8687" y="109.6626" />
+        </vertex>
+        <vertex name="26" id="26">
+          <center x="647.7397" y="242.5661" />
+        </vertex>
+        <vertex name="27" id="27">
+          <center x="562.8976" y="369.3592" />
+        </vertex>
+        <vertex name="28" id="28">
+          <center x="444.4243" y="235.6918" />
+        </vertex>
+        <vertex name="29" id="29">
+          <center x="46.2013" y="12.6583" />
+        </vertex>
+        <vertex name="30" id="30">
+          <center x="16.3919" y="108.135" />
+        </vertex>
+        <vertex name="31" id="31">
+          <center x="30.9144" y="201.3202" />
+        </vertex>
+        <vertex name="32" id="32">
+          <center x="346.5883" y="150.1447" />
+        </vertex>
+        <vertex name="33" id="33">
+          <center x="556.0185" y="20.2964" />
+        </vertex>
+        <vertex name="34" id="34">
+          <center x="638.5676" y="9.603" />
+        </vertex>
+        <vertex name="35" id="35">
+          <center x="786.8502" y="9.603" />
+        </vertex>
+        <vertex name="36" id="36">
+          <center x="885.4506" y="73.7634" />
+        </vertex>
+        <edge idLeft="0" idRight="1" />
+        <edge idLeft="2" idRight="3" />
+        <edge idLeft="3" idRight="4" />
+        <edge idLeft="5" idRight="6" />
+        <edge idLeft="6" idRight="7" />
+        <edge idLeft="8" idRight="9" />
+        <edge idLeft="9" idRight="10" />
+        <edge idLeft="10" idRight="11" />
+        <edge idLeft="12" idRight="13" />
+        <edge idLeft="13" idRight="14" />
+        <edge idLeft="14" idRight="15" />
+        <edge idLeft="16" idRight="17" />
+        <edge idLeft="17" idRight="18" />
+        <edge idLeft="18" idRight="19" />
+        <edge idLeft="19" idRight="20" />
+        <edge idLeft="20" idRight="21" />
+        <edge idLeft="21" idRight="22" />
+        <edge idLeft="22" idRight="11" />
+        <edge idLeft="11" idRight="23" />
+        <edge idLeft="23" idRight="24" />
+        <edge idLeft="24" idRight="25" />
+        <edge idLeft="25" idRight="26" />
+        <edge idLeft="26" idRight="8" />
+        <edge idLeft="8" idRight="27" />
+        <edge idLeft="27" idRight="4" />
+        <edge idLeft="4" idRight="28" />
+        <edge idLeft="28" idRight="15" />
+        <edge idLeft="15" idRight="29" />
+        <edge idLeft="29" idRight="30" />
+        <edge idLeft="30" idRight="31" />
+        <edge idLeft="31" idRight="12" />
+        <edge idLeft="12" idRight="2" />
+        <edge idLeft="2" idRight="32" />
+        <edge idLeft="32" idRight="1" />
+        <edge idLeft="1" idRight="33" />
+        <edge idLeft="33" idRight="34" />
+        <edge idLeft="34" idRight="35" />
+        <edge idLeft="35" idRight="36" />
+        <edge idLeft="36" idRight="25" />
+      </graph>
+      <area id="0" name="Origin0" type="Origin">
+        <point x="870" y="48" />
+        <point x="920" y="48" />
+        <point x="920" y="98" />
+        <point x="870" y="98" />
+      </area>
+      <area id="1" name="Origin1" type="Origin">
+        <point x="286" y="9" />
+        <point x="326" y="9" />
+        <point x="326" y="59" />
+        <point x="286" y="59" />
+      </area>
+      <area id="2" name="Origin2" type="Origin">
+        <point x="14" y="12" />
+        <point x="66" y="12" />
+        <point x="66" y="62" />
+        <point x="14" y="62" />
+      </area>
+      <area id="3" name="Origin3" type="Origin">
+        <point x="15" y="318" />
+        <point x="65" y="318" />
+        <point x="65" y="368" />
+        <point x="15" y="368" />
+      </area>
+      <area id="4" name="Destination0" type="Destination">
+        <point x="265.5679" y="331.1685" />
+        <point x="301.4921" y="331.1685" />
+        <point x="301.4921" y="374.7058" />
+        <point x="265.5679" y="374.7058" />
+      </area>
+      <area id="5" name="Destination1" type="Destination">
+        <point x="30.9144" y="201.3202" />
+        <point x="66.8386" y="201.3202" />
+        <point x="66.8386" y="244.8576" />
+        <point x="30.9144" y="244.8576" />
+      </area>
+      <area id="6" name="Destination2" type="Destination">
+        <point x="442.1313" y="192.1544" />
+        <point x="478.0554" y="192.1544" />
+        <point x="478.0554" y="235.6918" />
+        <point x="442.1313" y="235.6918" />
+      </area>
+      <area id="7" name="Destination3" type="Destination">
+        <point x="862.5203" y="235.6918" />
+        <point x="898.4444" y="235.6918" />
+        <point x="898.4444" y="279.2292" />
+        <point x="862.5203" y="279.2292" />
+      </area>
+      <area id="8" name="Destination4" type="Destination">
+        <point x="813.6023" y="318.9475" />
+        <point x="849.5264" y="318.9475" />
+        <point x="849.5264" y="362.4848" />
+        <point x="813.6023" y="362.4848" />
+      </area>
+      <obstacle id="0" name="Wall0" type="Wall">
+        <point x="0" y="382.7004" />
+        <point x="923.8725" y="382.7004" />
+      </obstacle>
+      <obstacle id="1" name="Wall1" type="Wall">
+        <point x="923.8725" y="382.7004" />
+        <point x="923.8725" y="0" />
+      </obstacle>
+      <obstacle id="2" name="Wall2" type="Wall">
+        <point x="923.8725" y="0" />
+        <point x="0" y="0" />
+      </obstacle>
+      <obstacle id="3" name="Wall3" type="Wall">
+        <point x="0" y="0" />
+        <point x="0" y="382.7004" />
+      </obstacle>
+      <obstacle id="4" name="Solid0" type="Solid">
+        <point x="151.4737" y="97.0158" />
+        <point x="131.3194" y="134.1725" />
+        <point x="90.7944" y="146.195" />
+        <point x="53.6378" y="126.0407" />
+        <point x="41.6152" y="85.5157" />
+        <point x="61.7695" y="48.359" />
+        <point x="102.2945" y="36.3365" />
+        <point x="139.4512" y="56.4908" />
+      </obstacle>
+      <obstacle id="5" name="Solid1" type="Solid">
+        <point x="831.7395" y="192.4925" />
+        <point x="811.5852" y="229.6492" />
+        <point x="771.0602" y="241.6717" />
+        <point x="733.9035" y="221.5174" />
+        <point x="721.881" y="180.9924" />
+        <point x="742.0353" y="143.8357" />
+        <point x="782.5603" y="131.8132" />
+        <point x="819.717" y="151.9675" />
+      </obstacle>
+      <obstacle id="6" name="Solid2" type="Solid">
+        <point x="758.3625" y="309.3559" />
+        <point x="738.2082" y="346.5126" />
+        <point x="697.6833" y="358.5351" />
+        <point x="660.5266" y="338.3808" />
+        <point x="648.504" y="297.8558" />
+        <point x="668.6583" y="260.6991" />
+        <point x="709.1833" y="248.6766" />
+        <point x="746.34" y="268.8309" />
+      </obstacle>
+      <obstacle id="7" name="Solid3" type="Solid">
+        <point x="726.2601" y="79.4481" />
+        <point x="706.1058" y="116.6048" />
+        <point x="665.5808" y="128.6273" />
+        <point x="628.4241" y="108.473" />
+        <point x="616.4016" y="67.948" />
+        <point x="636.5559" y="30.7913" />
+        <point x="677.0809" y="18.7688" />
+        <point x="714.2376" y="38.9231" />
+      </obstacle>
+      <obstacle id="8" name="Solid4" type="Solid">
+        <point x="586.3852" y="313.175" />
+        <point x="566.2309" y="350.3317" />
+        <point x="525.7059" y="362.3542" />
+        <point x="488.5493" y="342.1999" />
+        <point x="476.5267" y="301.6749" />
+        <point x="496.681" y="264.5182" />
+        <point x="537.206" y="252.4957" />
+        <point x="574.3627" y="272.65" />
+      </obstacle>
+      <obstacle id="9" name="Solid5" type="Solid">
+        <point x="645.2397" y="191.7287" />
+        <point x="625.0854" y="228.8854" />
+        <point x="584.5604" y="240.9079" />
+        <point x="547.4037" y="220.7536" />
+        <point x="535.3812" y="180.2286" />
+        <point x="555.5355" y="143.0719" />
+        <point x="596.0605" y="131.0494" />
+        <point x="633.2172" y="151.2037" />
+      </obstacle>
+      <obstacle id="10" name="Solid6" type="Solid">
+        <point x="425.8731" y="299.4264" />
+        <point x="405.7188" y="336.583" />
+        <point x="365.1938" y="348.6056" />
+        <point x="328.0371" y="328.4513" />
+        <point x="316.0146" y="287.9263" />
+        <point x="336.1689" y="250.7696" />
+        <point x="376.6939" y="238.7471" />
+        <point x="413.8506" y="258.9014" />
+      </obstacle>
+      <obstacle id="11" name="Solid7" type="Solid">
+        <point x="464.8546" y="71.0461" />
+        <point x="444.7003" y="108.2028" />
+        <point x="404.1753" y="120.2254" />
+        <point x="367.0186" y="100.0711" />
+        <point x="354.9961" y="59.5461" />
+        <point x="375.1504" y="22.3894" />
+        <point x="415.6754" y="10.3669" />
+        <point x="452.8321" y="30.5212" />
+      </obstacle>
+      <obstacle id="12" name="Solid8" type="Solid">
+        <point x="307.3998" y="156.5932" />
+        <point x="287.2455" y="193.7499" />
+        <point x="246.7205" y="205.7725" />
+        <point x="209.5638" y="185.6182" />
+        <point x="197.5413" y="145.0932" />
+        <point x="217.6956" y="107.9365" />
+        <point x="258.2206" y="95.914" />
+        <point x="295.3773" y="116.0683" />
+      </obstacle>
+      <obstacle id="13" name="Solid9" type="Solid">
+        <point x="206.61" y="326.989" />
+        <point x="186.4557" y="364.1456" />
+        <point x="145.9307" y="376.1682" />
+        <point x="108.774" y="356.0139" />
+        <point x="96.7515" y="315.4889" />
+        <point x="116.9058" y="278.3322" />
+        <point x="157.4308" y="266.3097" />
+        <point x="194.5875" y="286.464" />
+      </obstacle>
+    </scenario>
+  </layouts>
+</simulator>

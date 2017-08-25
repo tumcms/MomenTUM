@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="0.0.0" simulationName="generators" simEnd="0" threads="0" timeStepDuration="0">
+
+<generators>
+<generator id="1" name="generatoroooo" type="Plan" scenario="0" origin="1" seed="0">
+	<property name="startTime" type="Double" value="0"/> <!-- in seconds -->
+	<property name="endTime" type="Double" value="Infinity"/> <!-- in seconds -->
+	<property name="basicHeading" type="Double" value="0"/> <!-- 0 till 359 in degree -->
+	<property name="maximalPedestrians" type="Integer" value="3"/>  <!-- 0 till n in pedestrians -->
+	<property name="safetyDistance" type="Double" value="1.5"/> <!-- 0 till n in meter to pedestrians' radius -->
+	<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- ID of the ScenarioLattice-->
+	<geometry geometryType="Lattice" fillingType="Random"/> <!-- Random | Complete -->
+	<complexProperty name="interval" type="List" valueType="Double"> <!-- list of time slices for generation -->
+		<entry index="0" value="0"/>  <!-- start time of the first slice -->
+		<entry index="1" value="60"/> <!-- start time of the second slice -->
+		<entry index="2" value="120"/>
+	</complexProperty>		
+	<complexProperty name="percentage" type="List" valueType="Double"> <!-- list of percentage of pedestrians to generator for the slices (sum = 1)-->
+		<entry index="0" value="0.1"/> <!-- percentage of maximal pedestrians to generate in first the slice time -->
+		<entry index="1" value="0.0"/> <!-- percentage of maximal pedestrians to generate in second the slice time -->
+		<entry index="2" value="0.9"/>
+	</complexProperty>
+</generator>
+
+	<!-- Alternative for geometry -->
+	<geometry geometryType="Point"/>  <!-- Is always Complete -->
+
+
+<generator id="0" name="generator" type="Distribution" scenario="0" origin="1" seed="0">
+	<property name="startTime" type="Double" value="0"/> <!-- in seconds -->
+	<property name="endTime" type="Double" value="Infinity"/> <!-- in seconds -->
+	<property name="basicHeading" type="Double" value="0"/> <!-- 0 till 359 in degree -->
+	<property name="maximalPedestrians" type="Integer" value="3"/>  <!-- 0 till n in pedestrians -->
+	<property name="safetyDistance" type="Double" value="1.5"/> <!-- 0 till n in meter to pedestrians' radius -->
+	<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- mandatory reference to a scenario lattice, is independent of the geometryType -->
+	<geometry geometryType="Lattice" fillingType="Random"/> <!-- Random | Complete -->
+	<complexProperty name="timeGap" type="CsvList" valueType="Double">
+		<entry file="./pedestrainPercentages.csv" separator=";"/> <!-- values which are drawn out of a generation distribution -->
+		<!-- all values are presented as value;value; .. value end of file -->
+	</complexProperty>	
+	<complexProperty name="percentage" type="CsvList" valueType="Double"> <!--precentage for generation time gap-->
+		<entry file="./pedestrainPercentages.csv" separator=";"/> <!-- percentage referring to index = 0 of time gap-->
+	</complexProperty>
+</generator>
+
+<generator id="1" name="generator" type="Stock" scenario="0" origin="1" seed="0">
+	<property name="startTime" type="Double" value="0"/> <!-- in seconds -->
+	<property name="endTime" type="Double" value="Infinity"/> <!-- in seconds -->
+	<property name="basicHeading" type="Double" value="0"/> <!-- 0 till 359 in degree -->
+	<property name="maximalPedestrians" type="Integer" value="3"/>  <!-- 0 till n in pedestrians -->
+	<property name="safetyDistance" type="Double" value="1.5"/> <!-- 0 till n in meter to pedestrians' radius -->
+	<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- ID of the ScenarioLattice-->
+	<geometry geometryType="Lattice" fillingType="Random"/> <!-- Random | Complete -->
+	<complexProperty name="timePoint" type="List" valueType="Double"> 
+		<!-- list of time points in seconds to generate -->
+		<!--  can be a value;value;...;value list by -->
+		<!-- <entry file="./timePointFile.csv" separator=";"/> -->
+		<entry index="0" value="0.0"/>  <!-- start time of the first slice -->
+		<entry index="1" value="60.0"/> <!-- start time of the second slice -->
+		<entry index="2" value="120.0"/>
+	</complexProperty>		
+	<complexProperty name="stock" type="List" valueType="Integer">
+		 <!-- list of number of pedestrians to generator for the corresponding time point -->
+		 <!-- CsvList type of time points in seconds to generate -->
+		<!--  can be a value;value;...;value list by -->
+		<!-- <entry file="./stockFile.csv" separator=";"/> -->
+		<entry index="0" value="1"/> <!-- percentage of maximal pedestrians to generate in first the slice time -->
+		<entry index="1" value="1"/> <!-- percentage of maximal pedestrians to generate in second the slice time -->
+		<entry index="2" value="9"/>
+	</complexProperty>
+</generator>
+
+<!-- Can be used to reference to multiple origins, all origin are of the subType type and use the same properties.
+The origins list references to the origin id of the scenario layout -->
+<generator id="0" name="underground_exit" scenario="0" seed="0" type="Multiple">
+			<property name="subType" type="String" value="Plan"/>
+			<complexProperty name="origins" type="List" valueType="Integer">
+				<entry index="0" value="0"/>
+				<entry index="1" value="1"/>
+				<entry index="2" value="2"/>
+				<entry index="3" value="3"/>
+				<entry index="4" value="4"/>
+				<entry index="5" value="5"/>
+				<entry index="6" value="6"/>
+				<entry index="7" value="7"/>
+				<entry index="8" value="8"/>
+				<entry index="9" value="9"/>
+				<entry index="10" value="10"/>
+				<entry index="11" value="11"/>
+				<entry index="12" value="12"/>
+				<entry index="13" value="13"/>
+				<entry index="14" value="14"/>
+				<entry index="15" value="15"/>
+				<entry index="16" value="16"/>
+				<entry index="17" value="17"/>
+			</complexProperty>
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="270"/>
+			<property name="maximalPedestrians" type="Integer" value="150"/>
+			<property name="safetyDistance" type="Double" value="1.0"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="interval" type="List" valueType="Double">
+				<!-- list of time slices for generation -->
+				<entry index="0" value="0"/>
+				<entry index="1" value="50"/>  
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<!-- list of percentage of pedestrians to generator for the slices (sum = 1)-->
+				<entry index="0" value="1.0"/>
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+
+</generators>
+</simulator>

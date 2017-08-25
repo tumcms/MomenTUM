@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphs>
+	<graphModel name="routing" id="0">
+		<graphOperation name="removeOneWay" type="EdgeRemoveOneWay" order="0"/>
+		<!-- Add OneWayWall to the configurations of the layout (single segment 2 points) and direction -->
+		<!-- All two way edges (start to end and end to start) well be cut if the end is not on the -->
+		<!-- same side as the direction point thus, the can walk from start (left to right) but not -->
+		<!-- simple: if pedestrian is on the direction point's side, he CANNOT pass!-->
+	</graphModel>
+</graphs>

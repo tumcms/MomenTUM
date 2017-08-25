@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulator version="0.9.0" simulationName="ta_2016_bttw_Analysis" simEnd="10000.0" threads="3" timeStepDuration="0.5">
+	
+	<analysisModels>
+		<analysis name="TurningAngleAnalysis" type="turningAngle" id="0">
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_output_data.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels>
+	
+	<outputWriters>
+		<outputWriter id="0" name="turningAngleOutputWriter" type="csvMultipleWriter">
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sta_2016_mannheim_turning_angle_output.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="navigationId"/>
+				<entry index="3" value="turningAngle"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="navigationId" type="Format" value="%d"/>
+				<property name="turningAngle" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+		<graphs>
+		<graphModel name="routing" id="0">
+			<graphOperation name="fromConfig" type="FromConfiguration" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+				<property name="precisionSeed" type="Double" value="0.05"/>
+			</graphOperation>
+		</graphModel>
+	</graphs>
+	  <layouts>
+		<scenario id="0" layoutLink="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\sta_2016_mannheim_layout.xml"/> />
+	</layouts>
+</simulator>

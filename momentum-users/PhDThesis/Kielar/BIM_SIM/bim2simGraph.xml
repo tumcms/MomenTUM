@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="0.9.0" simulationName="bim2simGraph">
+
+	<outputWriters>
+		<outputWriter id="0" name="layoutOutput" type="configurationWriter">
+			<property name="file" type="File" value="C:\Users\OUTPUT.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+	</outputWriters>
+	
+	<graphs>
+		<graphModel name="routing" id="0">
+			<graphOperation id="0" name="raw" type="RawGraph" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+			</graphOperation> 
+			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased" />
+			<graphOperation id="2" name="corners" type="VertexCreateAtCorners"> 
+				<property name="cornerDistance" type="Double" value="0.5"/>  <!-- Distanz zum ECKEN von Hindernissen -->
+			</graphOperation> 	
+			<graphOperation id="3" name="remove" type="VertexRemoveSimple">
+				<property name="mergeDistance" type="Double" value="0.55"/>
+				<property name="visibilityTolerance" type="Double" value="0.1"/>
+			</graphOperation>
+			<!-- <graphOperation id="4" name="visibility" type="EdgeCreateVisibilityAngleBased"> 
+				<property name="alpha" type="Double" value="25"/> 
+				<property name="visibilityTolerance" type="Double" value="0.2"/>
+			</graphOperation> -->
+			<graphOperation id="4" name="removeDispensible" type="EdgeRemoveUnreachable"/>
+			<graphOperation id="5" name="toConfiguration" type="ToConfiguration">
+				<property name="scenarioId" type="Integer" value="0"/>
+			</graphOperation>
+		</graphModel>
+	</graphs>
+	
+	
+	<layouts>
+		<scenario id="0" layoutLink="C:\Users\INPUT.xml"/>
+	</layouts>
+</simulator>

@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="MomenTumV2.0.1" simulationName="SCC_2016_Validation_IKOM" simEnd="4000.0" threads="3" timeStepDuration="0.05">
+
+	<analysisModels>
+		<analysis name="occupancyAnalysis" type="occupancy" id="0">
+			<analysisInputSource type="Simulation">
+				<property name="call" type="Integer" value="20"/>
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<!-- 60000 -->
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+				<writerSource sourceType="Pedestrian"> 
+					<property name="timeStep" type="Format" value="%d"/>
+					<property name="id" type="Format" value="%d"/>
+					<property name="targetID" type="Format" value="%d"/>
+					<property name="performedBehavior" type="Format" value="%d"/>
+				</writerSource>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels>
+
+	<queryModels>
+		<query id="0" name="basicQuery" type="BasicQuery">
+			<property name="navigationDistanceRadius" type="Double" value="0.35"/>
+			<property name="navigationSizePolygon" type="Double" value="0.9"/>
+			<property name="navigationRotationPolygon" type="Double" value="75.0"/>
+		</query>
+	</queryModels>
+
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries"/>
+	</perceptualModels>
+
+	<operationalModels>
+		<operational id="0" name="operational" perceptualModel="0" queryModel="0">
+			<standingReference modelId="0"/>
+			<walkingReference modelId="0"/>
+		</operational>
+	</operationalModels>
+
+	<walkingModels>
+		<walking id="0" name="MoussaidHeuristic" type="MoussaidHeuristic">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="26.67"/>
+			<property name="mass_behaviour_B" type="Double" value="0.06"/>	
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="10e-6"/>
+		</walking>
+	</walkingModels>
+	<standingModels>
+		<standing id="0" name="fixedStanding" type="FixedStanding" />
+	</standingModels>
+
+	<tacticalModels>
+		<tactical id="1" name="tactical"  perceptualModel="0" queryModel="0">
+			<participatingReference modelId="0"/>
+			<queuingReference modelId="0"/>
+			<routingReference modelId="0"/>
+			<searchingReference modelId="0"/>
+		</tactical>
+	</tacticalModels>
+
+	<participatingModels>
+		<participating id="0" name="shiftedRandomParticipating" type="ShiftedRandomParticipating">
+			<property name="participateDistance" type="Double" value = "0.5"/>
+			<property name="numberOfGambles" type="Integer" value="60"/>
+			<property name="safetyDistance" type="Double" value="0.6"/>
+			<property name="groupPositionRadius" type="Double" value="2.0"/>
+			<complexProperty name="gatheringCrowding" type="List" valueType="String">
+
+				<entry index="6" value="Everywhere"/>
+				<!-- 2 Company -->
+				<entry index="7" value="Everywhere"/>
+				<!-- 3 Company -->
+				<entry index="9" value="Far"/>
+				<!-- 5 Lecture -->
+				
+				<entry index="10" value="Everywhere"/> 
+				<!-- A Left Out -->
+				<entry index="11" value="Everywhere"/> 
+				<!-- B Right Out -->
+				<entry index="12" value="Everywhere"/> 
+				<!-- C Left Top Out -->
+				<entry index="13" value="Everywhere"/> 
+				<!-- D Right Top Out -->
+				<entry index="14" value="Everywhere"/> 
+				<!-- E Bottom Out -->
+
+			</complexProperty>
+		</participating>
+	</participatingModels>
+	<queuingModels>
+		<queuing id="0" name="angularQueuing" type="AngularQueueing" >
+			<property name="safetyDistance" type="Double" value="0.6"/>
+			<property name="queueArc" type="Double" value="10"/>
+			<property name="queueDistance" type="Double" value="0.7"/>
+			<property name="queuingLag" type="Double" value="1.0"/>
+		</queuing>
+	</queuingModels>
+	<routingModels>
+		<routing id="0" name="dijkstra" type="Dijkstra"/>
+	</routingModels>
+	<searchingModels>
+		<searching id="0" name="noSearching" type="NoSearching"/>
+	</searchingModels>
+
+	<strategicalModels>
+		<strategical id="0" name="csc" type="CognitiveSpatialChoice" perceptualModel="0" queryModel="0">
+
+			<!-- General Parameters -->
+			<property name="cognitiveClock" type="Double" value="0.25"/>
+			<property name="perceptionFunction" type="String" value="Leaky"/>
+			<property name="occupancyFunction" type="String" value="Space"/>
+			<property name="rescheduleFunction" type="String" value="None"/><!-- DecisionFieldTheory"/>-->
+			<property name="scheduleFunction" type="String" value="ConvexHull"/>
+			<property name="preferenceFunction" type="String" value="Interest"/>
+			<property name="valuationFunction" type="String" value="Linear"/>
+			
+			<!-- Group Id which should be used for model pedestrian data output -->
+			<property name="groupOutputTargetId" type="Integer" value="60"/>
+ 
+			<!-- Reschedule Parameter -->
+			<property name="decisionThresholdFactor" type="Double" value="1.5"/>
+			<!-- Test Value need to be fitted -->
+			<property name="eliminateThreshold" type="Double" value="-1.0"/>
+			<!-- Test Value need to be fitted -->
+
+			<!-- Perception Parameter -->
+			<property name="leakyIntegrationAlpha" type="Double" value="0.0076"/>
+			<property name="leakyIntegrationK" type="Double" value="0.98"/>
+			<property name="queuingOccupancyPenalty" type="Double" value="1.2"/>
+			<!-- Radius * 2 = 0.5 meter + minimal personal distance 1.2 meter, should be density dependent -->
+			<property name="distanceScale" type="Double" value="250.0"/>
+			<!-- Space of the outer environment e.g. building, festival, which norms the distance frame -->
+
+			<!-- Preference Parameter -->
+			<property name="minimalServiceTime" type="Double" value="1"/>
+			<!-- Test Value in seconds -->
+			
+			<!-- Operation Parameter -->
+			<property name="proximityDistance" type="Double" value="1.5"/>
+			<!-- Test Value in meter -->
+
+			<!-- Schedule Parameter -->
+			<property name="nearestNeighborThreshold" type="Double" value="1.5"/>
+			<!-- Test Value in meter -->
+			<property name="scheduleSizeMean" type="Double" value="7"/>
+			<!-- Test value -->
+			<property name="scheduleSizeVarianz" type="Double" value="1"/>
+			<!-- Test value -->
+			<property name="scheduleTimeMean" type="Double" value="0.5"/>
+			<!-- Test value -->
+			<property name="scheduleTimeVarianz" type="Double" value="0.5"/>
+			<!-- Test value for each visible goal -->
+
+			<!-- Valuation Parameter -->
+			<property name="valenceThreshold" type="Double" value="0.2"/>
+			<!-- Test value for each visible goal -->
+			<property name="interestShare" type="Double" value="0.25"/>
+			<!-- Test value -->
+			<!-- Local Knowledge Histogram -->
+			<!-- <property name="familiarityMinimal" type="Double" value="1.0"/>	
+			<property name="familiarityBinSize" type="Double" value="0.0"/>
+			<complexProperty name="familiarityHistogram" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>
+			</complexProperty> -->
+
+			<propertyContainer id="0" name="1_Application">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="5"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="0"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.96"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="593.23"/>
+				<property name="interarrivalTimeLambda" type="Double" value="729000.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="1" name="2_Company">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="6"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="1"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="0.65"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="558.58"/>
+				<property name="interarrivalTimeLambda" type="Double" value="127470.0"/> 
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="2" name="3_Company">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="7"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="2"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.76"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="49.79"/>
+				<property name="interarrivalTimeLambda" type="Double" value="112690.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="3" name="4_Kiosk">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="8"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="3"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.62"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="31.56"/>
+				<property name="interarrivalTimeLambda" type="Double" value="93290.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="4" name="5_Lecture">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="9"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="4"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.08"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="396.61"/>
+				<property name="interarrivalTimeLambda" type="Double" value="34140.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="5" name="A_Left_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="10"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="5"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="3110.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="6" name="B_Right_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="11"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="6"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="3340.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="7" name="C_Top_Left_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="12"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="7"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="40310.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="8" name="D_Top_Right_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="13"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="8"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="75680.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="9" name="E_Bottom_Out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="14"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="9"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="25170.0"/>
+				<!-- Miliseconds -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+		</strategical>
+	</strategicalModels>
+
+	<generators>
+		<generator id="0" name="generatorA" type="Distribution" scenario="0" origin="0" seed="0">
+			<!-- 678  , 1356-->
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="270"/> 
+			<property name="maximalPedestrians" type="Integer" value="1356"/>
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/> >
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originA_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originA_percentage.csv" separator=";"/> 
+			</complexProperty>
+		</generator>
+		<generator id="1" name="generatorB" type="Distribution" scenario="0" origin="1" seed="1">
+			<!-- 947, 1984 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="90"/> 
+			<property name="maximalPedestrians" type="Integer" value="1984"/>
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/> 
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originB_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originB_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="2" name="generatorC" type="Distribution" scenario="0" origin="2" seed="2">
+			<!-- 60, 120 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="0"/> 
+			<property name="maximalPedestrians" type="Integer" value="120"/> 
+			<property name="safetyDistance" type="Double" value="0.75"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originC_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originC_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="3" name="generatorD" type="Distribution" scenario="0" origin="3" seed="3">
+			<!-- 29, 58-->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="58"/>  
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originD_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originD_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="4" name="generatorE" type="Distribution" scenario="0" origin="4" seed="4">
+			<!-- 180, 260 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="3"/> 
+			<property name="basicHeading" type="Double" value="360"/>
+			<property name="maximalPedestrians" type="Integer" value="260"/>
+			<!-- 2000 -->
+			<property name="safetyDistance" type="Double" value="0.25"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originE_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\ikom_validation_input\originE_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+	</generators>
+
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="A_Left_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.52"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>  
+			</complexProperty>		
+		</pedestrianSeed>
+		<pedestrianSeed id="1" name="B_Right_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.5"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>  	
+			</complexProperty>	
+		</pedestrianSeed>
+		<pedestrianSeed id="2" name="C_Top_Left_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.5"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>  
+			</complexProperty>		
+		</pedestrianSeed>
+		<pedestrianSeed id="3" name="D_Top_Right_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.5"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>  
+			</complexProperty>	
+		</pedestrianSeed>
+		<pedestrianSeed id="4" name="E_Bottom_In" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="minimalVelocity" type="Double" value="0.5"/>			
+			<property name="velocityBinWidth" type="Double" value="0.2"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> 
+				<entry index="0" value="0.04"/> 
+				<entry index="1" value="0.12"/>
+				<entry index="2" value="0.34"/>
+				<entry index="3" value="0.37"/>
+				<entry index="4" value="0.07"/>
+				<entry index="5" value="0.06"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>  
+			</complexProperty>		
+		</pedestrianSeed>
+	</pedestrianSeeds>
+
+	<absorbers>
+		<absorber id="0" name="destinationA" scenario="0" destination="10" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.5"/>
+		</absorber>
+		<absorber id="1" name="destinationB" scenario="0" destination="11" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.5"/>
+		</absorber>
+		<absorber id="2" name="destinationC" scenario="0" destination="12" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.5"/>
+		</absorber>
+		<absorber id="3" name="destinationD" scenario="0" destination="13" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.5"/>
+		</absorber>
+		<absorber id="4" name="destinationE" scenario="0" destination="14" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.5"/>
+		</absorber>
+	</absorbers>
+
+	<outputWriters>
+		<outputWriter id="0" name="pedestrianOutput" type="csvSingleWriter">
+			<property name="call" type="Integer" value="5"/>
+			<property name="file" type="File" value="./SCC_2016_Validation_IKOM_Output_V_$LOOP$.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="5000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="targetID"/>
+				<entry index="7" value="groupID"/>
+				<entry index="8" value="leader"/>
+				<entry index="9" value="xNextWalkingTarget"/>
+				<entry index="10" value="yNextWalkingTarget"/>
+				<entry index="11" value="behavior"/>
+				<entry index="12" value="motoric"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="targetID" type="Format" value="%d"/>
+				<property name="groupID" type="Format" value="%d"/>
+				<property name="leader" type="Format" value="-"/>
+				<property name="xNextWalkingTarget" type="Format" value="%.2f"/>
+				<property name="yNextWalkingTarget" type="Format" value="%.2f"/>
+				<property name="behavior" type="Format" value="%d"/>
+				<property name="motoric" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="layoutOutput" type="configurationWriter">
+			<property name="file" type="File" value="./SCC_2016_Validation_IKOM_Layout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+		<outputWriter id="2" name="modelWriter" type="csvDynamicWriter">
+			<property name="call" type="Integer" value="10"/>
+			<property name="file" type="File" value="./SCC_2016_Model_IKOM_Output_V_$LOOP$.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="5000"/>
+			<property name="dynamicSize" type="Integer" value="10"/>
+			<!-- because 11 goals in strategic model -->
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="Distance"/> 
+				<entry index="3" value="Occupancy"/> 
+				<entry index="4" value="Preference"/> 
+				<entry index="5" value="Actualization"/> 
+				<entry index="6" value="Availability"/> 
+				<entry index="7" value="Implementation"/>
+				<entry index="8" value="Schedule"/> 
+			</complexProperty>
+			<complexProperty name="dynamic" type="List" valueType="Boolean">
+				<entry index="0" value="False"/>
+				<entry index="1" value="False"/>
+				<entry index="2" value="True"/>
+				<entry index="3" value="True"/>
+				<entry index="4" value="True"/> 
+				<entry index="5" value="True"/> 
+				<entry index="6" value="True"/> 
+				<entry index="7" value="False"/>
+				<entry index="8" value="False"/>
+			</complexProperty>
+			<writerSource name="pccOutput" sourceType="CSC" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="Distance" type="Format" value="%.3f"/>
+				<property name="Occupancy" type="Format" value="%.3f"/>
+				<property name="Preference" type="Format" value="%.3f"/>
+				<property name="Actualization" type="Format" value="%s"/>
+				<property name="Availability" type="Format" value="%s"/>
+				<property name="Implementation" type="Format" value="%s"/>
+				<property name="Schedule" type="Format" value="%s"/>
+			</writerSource>
+		</outputWriter>	
+		<outputWriter id="3" name="anyalysisOutput" type="csvSingleWriter">
+			<property name="call" type="Integer" value="20"/>
+			<property name="file" type="File" value="./SCC_2016_Validation_IKOM_Occupancy_V_$LOOP$.csv"/>
+			<property name="delimiter" type="String" value=","/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="occupancy"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="occupancy" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+	
+	<graphModels>
+		<graphModel id="0" name="seeds" type="VertexCreateSeedBased" order="0"/>
+		<graphModel id="1" name="vertices" type="VertexCreateVoronoiBased" order="1">
+			<property name="cellEdgeSize" type="Double" value="3.44"/>
+		</graphModel>
+		<graphModel id="2" name="simple" type="VertexRemoveSimple" order="2">
+			<property name="precision" type="Double" value="2.44"/>
+		</graphModel>
+		<graphModel id="3" name="visibility" type="EdgeCreateVisibilityConnect" order="3"/>
+		<graphModel id="4" name="MST" type="EdgeRemoveMST" order="4"/>
+		<graphModel id="5" name="deleteUnreachables" type="EdgeRemoveUnreachable" order ="5"/>
+		<graphModel id="6" name="usefulEdges" type="EdgeCreateOvermarsUseful" order="6">
+			<property name="detourFactor" type="Double" value="2"/>
+		</graphModel>
+		<graphModel id="7" name="usefulVertices" type="VertexCreateAtIntersections" order="7">
+			<property name="precision" type="Double" value="0.3"/>
+		</graphModel>
+	</graphModels>
+	
+	<layouts>
+		<scenario id="0" name="SCC_2016_Validation_IKOM" maxX="48.0" maxY="31.5" minX="-1.0" minY="-1.0">
+			<area id="0" name="A_Left_In" type="Origin">
+				<point x="3.2621" y="13.1781" />
+				<point x="3.2621" y="19.176" />
+				<point x="0.985" y="18.8477" />
+				<point x="1.0669" y="12.8479" />
+				<point x="3.2621" y="13.1781" />
+			</area>
+			<area id="1" name="B_Right_In" type="Origin">
+				<point x="45.5458" y="19.2323" />
+				<point x="45.5443" y="26.9458" />
+				<point x="42.4963" y="26.5217" />
+				<point x="42.49" y="18.7835" />
+			</area>
+			<area id="2" name="C_Left_Top_In" type="Origin">
+				<point x="15.2707" y="24.8529" />
+				<point x="14.8835" y="26.1833" />
+				<point x="8.4782" y="25.1698" />
+				<point x="8.7578" y="23.7084" />
+				<point x="15.2707" y="24.8529" />
+			</area>
+			<area id="3" name="D_Right_Top_In" type="Origin">
+				<point x="39.79" y="27.4798" />
+				<point x="39.79" y="29.0855" />
+				<point x="34.361" y="28.526" />
+				<point x="34.4446" y="27.0882" />
+				<point x="39.79" y="27.4798" />
+			</area>
+			<area id="4" name="E_Bottom_In" type="Origin">
+				<point x="36.0248" y="0.3001" />
+				<point x="36.0179" y="2.5224" />
+				<point x="33.4866" y="2.4993" />
+				<point x="33.4752" y="0.2997" />
+				<point x="36.0248" y="0.3001" />
+			</area>
+			<area id="5" name="1_Application" type="Intermediate">
+				<point x="2.4213" y="21.5942" />
+				<point x="2.4213" y="20.0942" />
+				<point x="3.4213" y="20.0942" />
+				<point x="3.4213" y="21.5942" />
+				<gatheringLine>
+					<point x="2.4213" y="21.5942" />
+					<point x="2.4213" y="20.0942" />
+				</gatheringLine>
+			</area>
+
+			<area id="7" name="2_Company" type="Intermediate">
+				<point x="24.2619" y="21.9174" />
+				<point x="24.0689" y="22.5975" />
+				<point x="23.4713" y="23.4393" />
+				<point x="22.4589" y="23.9919" />
+				<point x="19.1036" y="24.3475" />
+				<point x="15.5535" y="23.881" />
+				<point x="16.497" y="22.5038" />
+				<point x="19.4095" y="21.804" />
+				<point x="24.2619" y="21.9174" />
+			</area>
+			<area id="6" name="3_Company" type="Intermediate">
+				<point x="34.3639" y="25.4606" />
+				<point x="34.4734" y="26.5923" />
+				<point x="31.3087" y="25.7231" />
+				<point x="30.0251" y="25.0508" />
+				<point x="29.3273" y="23.7695" />
+				<point x="29.3273" y="22.9141" />
+				<point x="31.966" y="23.8749" />
+				<point x="34.3639" y="25.4606" />
+			</area>
+			<area id="8" name="4_Kiosk" type="Intermediate">
+				<point x="38" y="10.0" />
+				<point x="37" y="10.0" />
+				<point x="37" y="9.5" />
+				<point x="38" y="9.5" />
+				<point x="38" y="10.0" />
+				<gatheringLine>
+					<point x="37" y="9.5" />
+					<point x="38" y="9.5" />
+				</gatheringLine>
+			</area>
+			<area id="9" name="5_Lecture" type="Intermediate">
+				<point x="17.7226" y="17.9552" />
+				<point x="18.6937" y="12.9285" />
+				<point x="20.2344" y="7.5536" />
+				<point x="33.5068" y="7.6907" />
+				<point x="33.4748" y="20.1357" />
+				<point x="17.7226" y="17.9552" />
+				<gatheringLine>
+					<point x="20.2344" y="7.5536" />
+					<point x="33.5068" y="7.6907" />
+				</gatheringLine>
+			</area>
+			<area id="10" name="A_Left_Out" type="Destination">
+				<point x="0" y="12.6988" />
+				<point x="2.446" y="13.0574" />
+				<point x="2.3643" y="19.0466" />
+				<point x="0" y="18.7106" />
+				<point x="0" y="12.6988" />
+			</area>
+			<area id="11" name="B_Right_Out" type="Destination">
+				<point x="43.2322" y="18.8926" />
+				<point x="46.8851" y="19.4291" />
+				<point x="46.8851" y="27.1187" />
+				<point x="43.1565" y="26.6001" />
+				<point x="43.2322" y="18.8926" />
+			</area>
+			<area id="12" name="C_Left_Top_Out" type="Destination">
+				<point x="8.4047" y="25.5539" />
+				<point x="8.6673" y="24.1815" />
+				<point x="15.1668" y="25.2099" />
+				<point x="14.8155" y="26.4168" />
+				<point x="8.4047" y="25.5539" />
+			</area>
+			<area id="13" name="D_Right_Top_Out" type="Destination">
+				<point x="34.4181" y="27.5441" />
+				<point x="39.79" y="28.1036" />
+				<point x="39.79" y="29.6385" />
+				<point x="34.3403" y="28.8824" />
+				<point x="34.4181" y="27.5441" />
+			</area>
+			<area id="14" name="E_Bottom_Out" type="Destination">
+				<point x="36.0248" y="0.3001" />
+				<point x="36.0242" y="2.5338" />
+				<point x="33.4831" y="2.5175" />
+				<point x="33.4752" y="0.2997" />
+				<point x="36.0248" y="0.3001" />
+			</area>
+			<obstacle id="0" name="Wall0" type="Wall">
+				<point x="2.4213" y="21.5942" />
+				<point x="0" y="21.5942" />
+			</obstacle>
+			<obstacle id="1" name="Wall1" type="Wall">
+				<point x="2.4213" y="21.5942" />
+				<point x="2.4213" y="20.0942" />
+			</obstacle>
+			<obstacle id="2" name="Wall2" type="Wall">
+				<point x="2.4213" y="20.0942" />
+				<point x="0" y="20.0942" />
+			</obstacle>
+			<obstacle id="3" name="Wall3" type="Wall">
+				<point x="38" y="9.4001" />
+				<point x="38" y="17.4714" />
+			</obstacle>
+			<obstacle id="4" name="Wall4" type="Wall">
+				<point x="38" y="17.4714" />
+				<point x="39.0752" y="18.2819" />
+			</obstacle>
+			<obstacle id="5" name="Wall5" type="Wall">
+				<point x="19.1036" y="24.3475" />
+				<point x="22.4589" y="23.9919" />
+			</obstacle>
+			<obstacle id="6" name="Wall6" type="Wall">
+				<point x="22.4589" y="23.9919" />
+				<point x="23.4713" y="23.4393" />
+			</obstacle>
+			<obstacle id="7" name="Wall7" type="Wall">
+				<point x="23.4713" y="23.4393" />
+				<point x="24.0685" y="22.5989" />
+			</obstacle>
+			<obstacle id="8" name="Wall8" type="Wall">
+				<point x="29.3273" y="23.7695" />
+				<point x="30.0251" y="25.0508" />
+			</obstacle>
+			<obstacle id="9" name="Wall9" type="Wall">
+				<point x="30.0251" y="25.0508" />
+				<point x="31.3087" y="25.7231" />
+			</obstacle>
+			<obstacle id="10" name="Wall10" type="Wall">
+				<point x="31.3087" y="25.7231" />
+				<point x="34.4734" y="26.5923" />
+			</obstacle>
+			<obstacle id="11" name="Wall11" type="Wall">
+				<point x="34.4734" y="26.5923" />
+				<point x="34.3403" y="28.8824" />
+			</obstacle>
+			<obstacle id="12" name="Wall12" type="Wall">
+				<point x="34.3403" y="28.8824" />
+				<point x="39.79" y="29.6385" />
+			</obstacle>
+			<obstacle id="13" name="Wall13" type="Wall">
+				<point x="46.8851" y="30.0485" />
+				<point x="46.8851" y="0" />
+			</obstacle>
+			<obstacle id="14" name="Wall14" type="Wall">
+				<point x="46.8851" y="0" />
+				<point x="0" y="0" />
+			</obstacle>
+			<obstacle id="15" name="Wall15" type="Wall">
+				<point x="0" y="0" />
+				<point x="0" y="30.0485" />
+			</obstacle>
+			<obstacle id="16" name="Wall16" type="Wall">
+				<point x="0" y="30.0485" />
+				<point x="46.8851" y="30.0485" />
+			</obstacle>
+			<obstacle id="17" name="Solid0" type="Solid">
+				<point x="17.6925" y="15.1033" />
+				<point x="18.0925" y="15.1033" />
+				<point x="18.0925" y="15.5033" />
+				<point x="17.6925" y="15.5033" />
+			</obstacle>
+			<obstacle id="18" name="Solid1" type="Solid">
+				<point x="11.4192" y="11.6223" />
+				<point x="11.7739" y="11.6533" />
+				<point x="11.0057" y="14.345" />
+				<point x="10.7748" y="14.0082" />
+				<point x="11.4192" y="11.6223" />
+			</obstacle>
+			<obstacle id="19" name="Solid2" type="Solid">
+				<point x="8.9469" y="22.7201" />
+				<point x="8.3552" y="25.8125" />
+				<point x="0" y="25.0301" />
+				<point x="0" y="21.5942" />
+				<point x="2.4213" y="21.5942" />
+				<point x="8.9469" y="22.7201" />
+			</obstacle>
+			<obstacle id="20" name="Solid3" type="Solid">
+				<point x="46.8851" y="27.1187" />
+				<point x="46.8851" y="30.0485" />
+				<point x="39.79" y="29.6385" />
+				<point x="39.79" y="26.221" />
+				<point x="40.4322" y="26.221" />
+				<point x="46.8851" y="27.1187" />
+			</obstacle>
+			<obstacle id="21" name="Solid4" type="Solid">
+				<point x="8.3461" y="25.8113" />
+				<point x="8.4" y="25.5533" />
+				<point x="14.8155" y="26.4168" />
+				<point x="14.7349" y="26.6928" />
+				<point x="8.3461" y="25.8113" />
+			</obstacle>
+			<obstacle id="22" name="Solid5" type="Solid">
+				<point x="33.1754" y="0" />
+				<point x="36.3248" y="0.0001" />
+				<point x="36.3248" y="0.3001" />
+				<point x="33.18" y="0.2971" />
+				<point x="33.1754" y="0" />
+			</obstacle>
+			<obstacle id="23" name="Solid6" type="Solid">
+				<point x="24.0689" y="22.5975" />
+				<point x="24.2594" y="21.9174" />
+				<point x="29.3273" y="22.9141" />
+				<point x="29.3273" y="23.7813" />
+				<point x="24.0689" y="22.5975" />
+			</obstacle>
+			<obstacle id="24" name="Solid7" type="Solid">
+				<point x="39.3638" y="18.0275" />
+				<point x="39.0752" y="18.2819" />
+				<point x="39.0638" y="9.4001" />
+				<point x="39.3638" y="9.1001" />
+				<point x="39.3638" y="18.0275" />
+			</obstacle>
+			<obstacle id="25" name="Solid8" type="Solid">
+				<point x="19.1036" y="24.3475" />
+				<point x="14.7353" y="26.6926" />
+				<point x="15.5535" y="23.881" />
+				<point x="19.1036" y="24.3475" />
+			</obstacle>
+			<obstacle id="26" name="Solid9" type="Solid">
+				<point x="33.161" y="6.3749" />
+				<point x="33.1801" y="0.2971" />
+				<point x="33.4752" y="0.2997" />
+				<point x="33.5068" y="6.3749" />
+				<point x="33.161" y="6.3749" />
+			</obstacle>
+			<obstacle id="27" name="Solid10" type="Solid">
+				<point x="18.4774" y="12.5955" />
+				<point x="20.282" y="6.2875" />
+				<point x="20.5702" y="6.3705" />
+				<point x="18.6937" y="12.9285" />
+				<point x="18.4774" y="12.5955" />
+			</obstacle>
+			<obstacle id="28" name="Solid11" type="Solid">
+				<point x="36.0211" y="9.3932" />
+				<point x="36.0248" y="0.3001" />
+				<point x="36.3248" y="0.3001" />
+				<point x="36.3248" y="9.1001" />
+				<point x="36.0211" y="9.3932" />
+			</obstacle>
+			<obstacle id="29" name="Solid12" type="Solid">
+				<point x="39.3638" y="9.1001" />
+				<point x="39.0638" y="9.4001" />
+				<point x="36.0211" y="9.3932" />
+				<point x="36.3248" y="9.1001" />
+				<point x="39.3638" y="9.1001" />
+			</obstacle>
+			<obstacle id="30" name="Solid13" type="Solid">
+				<point x="39.0752" y="18.2819" />
+				<point x="39.3638" y="18.0275" />
+				<point x="46.8851" y="19.0688" />
+				<point x="46.8851" y="19.4291" />
+				<point x="39.0752" y="18.2819" />
+			</obstacle>
+			<obstacle id="31" name="Solid14" type="Solid">
+				<point x="18.4774" y="12.5955" />
+				<point x="18.6939" y="12.9288" />
+				<point x="11.6939" y="11.9451" />
+				<point x="11.7739" y="11.6533" />
+				<point x="18.4774" y="12.5955" />
+			</obstacle>
+			<obstacle id="32" name="Solid15" type="Solid">
+				<point x="20.2344" y="7.5536" />
+				<point x="20.5726" y="6.3749" />
+				<point x="33.5068" y="6.3749" />
+				<point x="33.5068" y="7.6907" />
+				<point x="20.2344" y="7.5536" />
+			</obstacle>
+			<obstacle id="33" name="Solid16" type="Solid">
+				<point x="0" y="12.6988" />
+				<point x="0" y="12.2775" />
+				<point x="10.7748" y="14.0082" />
+				<point x="11.0057" y="14.345" />
+				<point x="0" y="12.6988" />
+			</obstacle>
+			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.44"/>
+		</scenario>
+	</layouts>
+</simulator>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="2.0.0" simulationName="ODMatrix_originDestinationMatrix_Test">
+	
+	<strategicalModels>
+		<strategical id="0" name="ODMatrix_originDestinationMatrix_Test" type="ODMatrix" perceptualModel="0">
+			<complexProperty name="originDestination" type="Matrix" valueType="Double">
+				<row index="0">
+					<column index="1" value="0.4"/>
+					<column index="4" value="0.6"/>
+				</row>
+				<row index="3">
+					<column index="1" value="0.0"/>
+					<column index="4" value="1.0"/>
+				</row>
+			</complexProperty>
+		</strategical>
+	</strategicalModels>
+	
+	
+	<layouts>
+    	<scenario id="0" name="StrategicalModel_Scenario" maxX="51" maxY="51" minX="-1.0" minY="-1.0">
+			 <area id="0" name="Origin0" type="Origin">
+			    <point x="20" y="0" />
+			    <point x="30" y="0" />
+			    <point x="30" y="2" />
+			    <point x="20" y="2" />
+			  </area>
+			  <area id="3" name="LeftBottom" type="Intermediate">
+			    <point x="2" y="35" />
+			    <point x="15" y="35" />
+			    <point x="15" y="48" />
+			    <point x="2" y="48" />
+			  </area>
+			  <area id="4" name="Right" type="Destination">
+			    <point x="20" y="48" />
+			    <point x="30" y="48" />
+			    <point x="30" y="50" />
+			    <point x="20" y="50" />
+			  </area>
+		</scenario>
+	</layouts>
+</simulator>

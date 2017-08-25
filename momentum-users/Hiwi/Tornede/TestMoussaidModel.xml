@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulator version="MomenTUMv2.0.0" simulationName="MousaidTesting" simEnd="2000.0" threads="1" timeStepDuration="0.05">
+	<operationalModels>
+		<operational id="0" name="moussaid" type="Moussaid" perceptualModel="0" queryModel="0">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="social_interaction_strength" type="Double" value="4.0"/> <!-- in paper: beta1 -->
+			<property name="attraction_effects_strength" type="Double" value="3.0"/> <!-- in paper: beta2 -->
+			<property name="repulsion_strength" type="Double" value="1.0"/>	<!-- in paper: beta3 -->
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/> <!-- from here Helbing parameters -->
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="0.8e3"/>
+			<property name="mass_behaviour_B" type="Double" value="0.05"/>	
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="0.01"/>
+		</operational>
+	</operationalModels>
+	<tacticalModels>
+			<tactical id="0" name="unifiedRouting" type="UPRM" perceptualModel="0" queryModel="0">
+			<property name="landmarkRouting" type="Boolean" value="false" />
+			<property name="probability" type="Boolean" value="true"/> <!-- the numbers down are probabilities or stocks -->
+			<property name="I" type="Double" value="1.0"/> <!-- FP -->
+			<property name="II" type="Double" value="1.0"/> <!-- BH -->
+			<property name="IIV" type="Double" value="1.0"/> <!-- FP & BH -->
+			<property name="IV" type="Double" value="1.0"/> <!-- SALL -->
+			<property name="V" type="Double" value="1.0"/>  <!-- GBH -->
+			<property name="VI" type="Double" value="1.0"/> <!-- SALL & GBH -->
+			<property name="VII" type="Double" value="1.0"/> <!-- SALL & BH -->
+			<property name="IIX" type="Double" value="1.0"/> <!-- SALL & FP -->
+			<property name="IX" type="Double" value="1.0"/> <!-- SALL & GBH & FP -->
+			<property name="X" type="Double" value="1.0"/> <!-- GBH & FP & BH -->  
+			<property name="XI" type="Double" value="1.0"/> <!-- SALL & GBH & FP & BH -->
+		</tactical>
+	</tacticalModels>
+	<strategicalModels>
+		<strategical id="0" name="noStrategy" type="NoDecision" perceptualModel="0" queryModel="0"/>
+	</strategicalModels>
+	<perceptualModels>
+		<perceptual id="0" name="worldKnowledge" type="WorldKnowledge"/>
+	</perceptualModels>
+	<queryModels>
+			<query id="0" name="kielarSupportQuery" type="KielarSupport">
+				<property name="positionJitter" type="Double" value="0.05"/> 
+				<!-- minimal distance for ignoring operation behavior at gathering points -->
+				<property name="gatheringDistance" type="Double" value="0.15"/>	
+				<!-- distance at which a gathering point is reached -->
+				<property name="gatheringSafetyDistance" type="Double" value="0.1"/> 
+				<!-- Safety distance between pedestrian boundaries for gathering points -->
+				<property name="navigationVisitingNorm" type="Double" value="2.0"/>	
+				 <!-- expansion of the vertex polygon -->
+				<property name="navigationVisitingRotation" type="Double" value="80.0"/> 
+				<!-- In degree maximal 100 minimal 45 -->
+			</query>
+	</queryModels>
+	<metaModels/>
+	<generators>
+		<generator id="1" name="testGenerator" scenario="0" origin="0" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0"/> <!-- in seconds -->
+			<property name="endTime" type="Double" value="Infinity"/> <!-- in seconds -->
+			<property name="basicHeading" type="Double" value="0"/> <!-- 0 till 359 in degree -->
+			<property name="maximalPedestrians" type="Integer" value="1"/>  <!-- 0 till n in pedestrians -->
+			<property name="safetyDistance" type="Double" value="0.4"/> <!-- 0 till n in meter to pedestrians' radius -->
+			<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- iD of the lattice for the cellular automaton -->
+			<geometry geometryType="Lattice" fillingType="Random"/> <!-- Random | Complete  fillingType="Random" -->
+			<complexProperty name="interval" type="List" valueType="Double"> <!-- list of time slices for generation -->
+				<entry index="0" value="0"/>
+				<entry index="1" value="10"/>  
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double"> <!-- list of percentage of pedestrians to generator for the slices (sum = 1)-->
+				<entry index="0" value="1.0"/>
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+	</generators>
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="seedPreBTTW2014" type="HistogramDistribution">
+	<property name="radiusMeter" type="Double" value="0.23"/>	
+	<property name="minimalVelocity" type="Double" value="1.2478"/>			
+	<property name="velocityBinWidth" type="Double" value="0.1236"/>			
+	<complexProperty name="velocityBins" type="List" valueType="Double">
+		<entry index="0" value="0.042857143"/> 
+		<entry index="1" value="0.071428571"/>
+		<entry index="2" value="0.228571429"/>
+		<entry index="3" value="0.257142857"/>
+		<entry index="4" value="0.214285714"/>
+		<entry index="5" value="0.114285714"/>
+		<entry index="6" value="0.028571429"/>
+		<entry index="7" value="0.028571429"/>
+		<entry index="8" value="0.014285714"/>
+	</complexProperty>	
+	<property name="minimalGroupSize" type="Double" value="1"/>			
+	<property name="groupSizeBinWidth" type="Double" value="1"/>			
+	<complexProperty name="groupSizeBins" type="List" valueType="Double">
+		<entry index="0" value="0.37"/> 
+		<entry index="1" value="0.46"/>
+		<entry index="2" value="0.11"/>
+		<entry index="3" value="0.06"/> <!-- Peters -->
+	</complexProperty>		
+</pedestrianSeed>
+	</pedestrianSeeds>	
+	<absorbers>
+		<absorber id="0" name="goalAbsorber" scenario="0" destination="1" type="DestinationInstantly"/>
+	</absorbers>
+	<outputWriters>
+		<outputWriter id="0" name="csvWriter"  type="csvWriter">
+			<property name="call" type="Integer" value="5"/>
+			<property name="file" type="File" value="./MomenTUMv2_Moussaid_Operational_Output.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="currentVertexID"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="currentVertexID" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="layoutWriter" type="configurationWriter">
+			<property name="file" type="File" value="./MomenTUMv2_Moussaid_Operational_Layout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+		<outputWriter id="3" name="exeuctionTimeWriter" type="statisticsWriter">
+			<property name="file" type="File" value="./MomenTUMv2_Moussaid_Operational_Statistics.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="1"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="executionOperational"/>
+				<entry index="1" value="executionTactical"/>
+				<entry index="2" value="executionStrategical"/>
+				<entry index="3" value="executionAbsorber"/>
+				<entry index="4" value="executionGenerator"/>
+				<entry index="5" value="executionOverhead"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="TimeStep">
+				<property name="executionOperational" type="Format" value="%.2f"/>
+				<property name="executionTactical" type="Format" value="%.2f"/>
+				<property name="executionStrategical" type="Format" value="%.2f"/>
+				<property name="executionAbsorber" type="Format" value="%.2f"/>
+				<property name="executionGenerator" type="Format" value="%.2f"/>
+				<property name="executionOverhead" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+	<layouts>
+		<scenario id="0" name="groundPlan" maxX="100.0" maxY="10.0" minX="0.0" minY="0.0">
+			<area id="0" name="origin" type="Origin">
+				<point x="0.0" y="0.0"/>
+				<point x="6.0" y="0.0"/>
+				<point x="6.0" y="10.0"/>
+				<point x="0.0" y="10.0"/>
+			</area>
+			<area id="1" name="dest" type="Destination">
+				<point x="98.0" y="0.0"/>
+				<point x="100.0" y="0.0"/>
+				<point x="100.0" y="10.0"/>
+				<point x="98.0" y="10.0"/>
+			</area>
+			<obstacle name="spike1" type="Solid">
+				<point x="65.0" y="0.0"/>
+				<point x="75.0" y="0.0"/>
+				<point x="75.0" y="6.5"/>
+			</obstacle>	
+			<obstacle name="spike2" type="Solid">
+				<point x="55.0" y="10.0"/>
+				<point x="45.0" y="10.0"/>
+				<point x="55.0" y="3.5"/>
+			</obstacle>			
+			<obstacle name="outerWallTop" type="Wall">
+				<point x="0.0" y="0.0"/>
+				<point x="100.0" y="0.0"/>
+			</obstacle>			
+			<obstacle name="outerWallRight" type="Wall">
+				<point x="100.0" y="0.0"/>
+				<point x="100.0" y="10.0"/>
+			</obstacle>		
+			<obstacle name="outerWallBottom" type="Wall">
+				<point x="100.0" y="10.0"/>
+				<point x="0.0" y="10.0"/>
+			</obstacle>		
+			<obstacle name="outerWallLeft" type="Wall">
+				<point x="0.0" y="10.0"/>
+				<point x="0.0" y="0.0"/>
+			</obstacle>
+			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout"  cellEdgeSize="0.46"/>
+	        <graph id="0" type="Visibility">
+        		<property name="cornerDistance" type="Double" value="2"/>
+        	</graph>
+		</scenario>
+	</layouts>
+</simulator>

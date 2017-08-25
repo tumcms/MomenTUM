@@ -1,0 +1,208 @@
+/*******************************************************************************
+ * Welcome to the pedestrian simulation framework MomenTUM. 
+ * This file belongs to the MomenTUM version 2.0.2.
+ * 
+ * This software was developed under the lead of Dr. Peter M. Kielar at the
+ * Chair of Computational Modeling and Simulation at the Technical University Munich.
+ * 
+ * All rights reserved. Copyright (C) 2017.
+ * 
+ * Contact: peter.kielar@tum.de, https://www.cms.bgu.tum.de/en/
+ * 
+ * Permission is hereby granted, free of charge, to use and/or copy this software
+ * for non-commercial research and education purposes if the authors of this
+ * software and their research papers are properly cited.
+ * For citation information visit:
+ * https://www.cms.bgu.tum.de/en/31-forschung/projekte/456-momentum
+ * 
+ * However, further rights are not granted.
+ * If you need another license or specific rights, contact us!
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ ******************************************************************************/
+ 
+ package tum.cms.sim.momentum.visualization.view
+
+import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.HBox
+import tum.cms.sim.momentum.visualization.controller.MenuBarController
+import javafx.scene.control.MenuBar
+import javafx.scene.control.Menu
+import javafx.scene.control.MenuItem
+import javafx.scene.input.KeyCharacterCombination
+import javafx.scene.input.KeyCodeCombination
+import javafx.scene.image.ImageView
+import javafx.scene.image.Image
+
+component MenuBarView 
+controlledby MenuBarController 
+resourcefile "resources.properties" { 	
+	
+	HBox {
+		MenuBar id menuBar {	
+			
+			static hgrow : "ALWAYS",
+			menus : [			
+				Menu {		
+					text : rstring "configurationMenu",
+					MenuItem {	
+						text : rstring "menu.configuration.layoutLoad",
+						onAction : "#onLoadLayout",
+						accelerator : KeyCodeCombination {
+							code : "Y",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+						}
+					},
+					MenuItem {					
+						text : rstring "menu.configuration.csvLoad",
+						onAction : "#onLoadCsvOutput",
+						accelerator : KeyCodeCombination {
+							code : "S",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+						}
+					},
+					MenuItem {					
+						text : rstring "menu.configuration.quickLoad",
+						onAction : "#onQuickLoad",
+						accelerator : KeyCodeCombination {
+							code : "D",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+						}
+					},
+					MenuItem {					
+						text : rstring "menu.configuration.quit",
+						onAction : "#onQuit",
+						accelerator : KeyCodeCombination {
+							code : "Q",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+						}
+					}
+					,
+					MenuItem {					
+						text : rstring "menu.configuratoin.unLoad",
+						onAction : "#onUnload",
+						accelerator : KeyCodeCombination {
+							code : "U",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+						}
+					}
+				},
+				Menu {			
+					text : rstring "analyzeMenu",
+					disable : true
+				},
+				Menu {			
+					text : rstring "menu.extras",
+					MenuItem id find {
+						text : rstring "menu.extras.find",
+						onAction : "#onFind",
+						accelerator : KeyCodeCombination {
+							code : "F",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+						}
+					},
+					MenuItem id record {
+						text : rstring "menu.extras.record",
+						onAction : "#onRecord",
+						accelerator : KeyCodeCombination {
+							code : "P",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+						}
+					},
+					MenuItem id snapshot {
+						text : rstring "menu.extras.snapshot",
+						onAction : "#onSnapshot",
+						accelerator : KeyCodeCombination {
+							code : "T",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+						}
+					},
+					MenuItem id setCamera {
+						text : rstring "menu.extras.setCamera",
+						onAction : "#onSetCamera",
+						disable : true
+					},
+					MenuItem id switchView {
+						text : rstring "menu.extras.switchView",
+						onAction : "#onSwitchView",
+						disable : false
+					},
+					MenuItem id loadBackgroundImage {
+						text : rstring "menu.extras.loadBackgroundImage",
+						onAction : "#onLoadBackgroundImage",
+						disable : false
+					}
+				},
+				Menu {			
+					text : rstring "customizeMenu",
+						MenuItem id color {
+						text : rstring "menu.customize.visualization",
+						onAction : "#onColor",
+						accelerator : KeyCodeCombination {
+							code : "C",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "UP",
+							shortcut : "UP"
+							}
+						},
+						MenuItem id snapshotCustomizationMenu {
+						text : rstring "menu.customize.snapshot",
+						onAction : "#onSnapshotMenu",
+						accelerator : KeyCodeCombination {
+							code : "T",
+							control : "DOWN",
+							alt : "UP",
+							meta : "UP",
+							shift : "DOWN",
+							shortcut : "UP"
+							}
+						
+					}
+				}
+			]
+		}
+	}
+}

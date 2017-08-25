@@ -1,0 +1,28 @@
+	<!-- The xtDensity analysis computes the pedestrian density on lattice=1. -->
+		
+		<!-- ID relevant for output, unique id in all analysis models-->
+		<analysis id="1" name="xtDensityAnalysis"> 
+	
+			<!-- Call defines the multiple of the time step this model computes a measurement -->
+			<property name="call" type="Integer" value="20"/> <!-- Every 1 seconds -->
+			<!-- The first time step to start the computation. -->
+			<property name="analysisStartStep" type="Integer" value="0"/>
+			<!-- The last time step to end the computation. -->
+			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			
+			<!--Defines that this analysi models computes the density based on the XT method-->
+			<measure type="XtDensity">		
+				<!-- The lattice to use -->
+				<property name="latticeId" type="Integer" value="1"/>
+				<!-- For grid method set 1, set for XT method a non-even value. -->
+				<property name="timeRange" type="Integer" value="3"/>
+				<!-- Maximal in a cell. -->
+				<property name="maximalDensity" type="Double" value="5.0"/>
+			</measure>
+			
+			<!-- Use pedestrian data for the computation -->
+			<writerSource sourceType="Pedestrian"> 
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+			</writerSource>
+		</analysis>

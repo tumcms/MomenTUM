@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<simulator version="0.9.0" simulationName="PED_2016_Queueing" simEnd="300.0" threads="3" timeStepDuration="0.05">
+
+	<queryModels>
+		<query id="0" name="basicQuery" type="BasicQuery">
+			<property name="navigationDistanceRadius" type="Double" value="0.15"/>
+			<property name="navigationSizePolygon" type="Double" value="0.75"/>
+			<property name="navigationRotationPolygon" type="Double" value="75.0"/>
+		</query>
+	</queryModels>
+	
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries"/>
+	</perceptualModels>
+
+	<operationalModels>
+		<operational id="0" name="operational" perceptualModel="0" queryModel="0">
+			<standingReference modelId="0"/>
+			<walkingReference modelId="0"/>
+		</operational>
+	</operationalModels>
+	
+	<walkingModels>
+		<walking id="0" name="socialForceModel" type="SocialForce">
+			<property name="relaxation_time" type="Double" value="0.5" />
+			<property name="physical_interaction_kappa" type="Double"
+				value="2.4e5" />
+			<property name="physical_interaction_k" type="Double" value="1.2e5" />
+			<property name="panic_degree" type="Double" value="0.4" />
+			<property name="mass_behaviour_A" type="Double" value="26.67" />
+			<property name="mass_behaviour_B" type="Double" value="0.06" />
+			<property name="helbing_Epsilon" type="Double" value="10e-6" />
+			<property name="koester_Epsilon" type="Double" value="10e-6" />
+		</walking>
+	</walkingModels>
+	<standingModels>
+	<!-- 	<standing id="0" name="fixedStanding" type="FixedStanding" /> -->
+		<standing id="0" name="JohannsonStanding" type="JohannsonStanding">
+			<property name="relaxation_time" type="Double" value="0.5" />
+			<property name="physical_interaction_kappa" type="Double"
+				value="2.4e5" />
+			<property name="physical_interaction_k" type="Double" value="1.2e5" />
+			<property name="panic_degree" type="Double" value="0.4" />
+			<property name="mass_behaviour_A" type="Double" value="26.67" />
+			<property name="mass_behaviour_B" type="Double" value="0.06" />
+			<property name="helbing_Epsilon" type="Double" value="10e-6" />
+			<property name="koester_Epsilon" type="Double" value="10e-6" />
+			<property name="waiting_case" type="Integer" value="1" />
+			<property name="massWaitingPoint" type="Double" value="4.0" />
+		</standing>
+	</standingModels>
+	
+	<tacticalModels>
+		<tactical id="1" name="tactical"  perceptualModel="0" queryModel="0">
+			<participatingReference modelId="0"/>
+			<queuingReference modelId="0"/>
+			<routingReference modelId="0"/>
+			<searchingReference modelId="0"/>
+		</tactical>
+	</tacticalModels>
+	
+	<participatingModels>
+		<participating id="0" name="noParticipating" type="NoParticipating"/>
+	</participatingModels>
+	<queuingModels>
+		<queuing id="0" name="angularQueuing" type="AngularQueueing" >
+			<property name="numberOfGambles" type="Integer" value="30"/>
+			<property name="safetyDistance" type="Double" value="0.4"/>
+			<!-- arc has to be 360 mod arc = 0!, a good value is 20 or 30 -->
+			<property name="queueArc" type="Double" value="30"/>
+			<property name="queueDistance" type="Double" value="1.0"/>
+			<property name="queuingLag" type="Double" value="0.5"/>
+			<complexProperty name="closeToSelf" type="List" valueType="String">
+				<entry index="0" value="close"/>
+			</complexProperty>
+		</queuing>
+	</queuingModels>
+	<routingModels>
+		<routing id="0" name="dijkstra" type="Dijkstra"/>
+	</routingModels>
+	<searchingModels>
+		<searching id="0" name="noSearching" type="NoSearching"/>
+	</searchingModels>
+	
+	<strategicalModels>
+		<strategical id="0" name="strictOrderModel" type="StrictOrder" perceptualModel="0" queryModel="0">
+			<!--  The order the locations have to be visited -->
+			<!--  The values correspond to the area ids -->
+			<complexProperty name="areaOrder" type="List" valueType="Integer"> 
+			    <entry index="0" value="1"/>
+			    <entry index="1" value="2"/>
+			</complexProperty>
+			<!--  The navigation task at the location, the index corresponds to the areaOrder list -->
+			<!-- Participating | Queuing -->
+			<complexProperty name="areaTask" type="List" valueType="String"> 
+			    <entry index="0" value="Queuing"/>
+			    <entry index="1" value="Participating"/>
+			</complexProperty>
+			<!-- Duration a pedestrian has to stay at the location in seconds-->
+			<!-- The index corresponds to the areaOrder list -->
+			<complexProperty name="areaDuration" type="List" valueType="Double"> 
+				<entry index="0" value="20.0"/>
+			    <entry index="1" value="10.0"/>
+			</complexProperty>	
+		</strategical>
+	</strategicalModels>
+	
+	<generators>
+		<generator id="0" name="int" scenario="0" origin="0" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="30"/>
+			<property name="safetyDistance" type="Double" value="0.5"/>
+			<geometry geometryType="Lattice" fillingType="Random" />
+			<property name="scenarioLatticeId" type="Integer" value="0"/> 
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0"/> 
+				<entry index="1" value="60.0"/> 
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double"> 
+				<entry index="0" value="1.0"/> 
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+	</generators>
+	
+	<absorbers>
+		<absorber id="0" name="default" scenario="0" destination="2" type="DestinationInstantly"/>
+	</absorbers>
+	
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.34"/>
+			<property name="maximalVelocity" type="Double" value="2.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<property name="groupSize" type="Integer" value="1"/>
+		</pedestrianSeed>
+	</pedestrianSeeds>	
+	<outputWriters>
+		<outputWriter id="0" name="csvWriter" type="csvSingleWriter">
+			<property name="call" type="Integer" value="3"/>
+			<property name="file" type="File" value="./2017_Chp4_Queuing_Single_Data.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="groupID"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="groupID" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="layoutWriter" type="configurationWriter">
+			<property name="file" type="File" value="./2017_Chp4_Queuing_Layout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+	</outputWriters>
+	<graphs>
+		<graphModel name="routing" id="0">
+			 <graphOperation id="0" name="raw" type="RawGraph">
+				<property name="graphId" type="Integer" value="0"/>
+			</graphOperation> 
+			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased"/>
+			<graphOperation id="2" name="corners" type="VertexCreateAtCorners"> 
+				<property name="cornerDistance" type="Double" value="0.7"/> 
+			</graphOperation> 	
+			<graphOperation id="3" name="visibility" type="EdgeCreateVisibilityConnect">
+				<property name="visibilityTolerance" type="Double" value="0.1"/>
+			</graphOperation> 
+			<graphOperation id="4" name="removeDispensible" type="EdgeRemoveUnreachable" order="5"/>
+			<graphOperation id="5" name="toConfiguration" type="ToConfiguration">
+				<property name="scenarioId" type="Integer" value="0"/>
+			</graphOperation>
+		</graphModel> 
+	</graphs>
+	<lattices>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+	</lattices>
+	 <layouts>
+   <scenario id="0" name="AngularQueuingModel" maxX="30.5" maxY="20.5" minX="-0.5" minY="-0.5">
+  <area id="0" name="Origin0" type="Origin">
+    <point x="0" y="0" />
+    <point x="4" y="0" />
+    <point x="4" y="3" />
+    <point x="0" y="3" />
+  </area>
+  <area id="1" name="Intermediate0" type="Intermediate" category="close">
+    <point x="26" y="19" />
+    <point x="30" y="19" />
+    <point x="30" y="20" />
+    <point x="26" y="20" />
+    <gatheringLine>
+      <point x="26" y="20" />
+      <point x="30" y="20" />
+    </gatheringLine>
+  </area>
+  <area id="2" name="Destination0" type="Destination">
+    <point x="0" y="17" />
+    <point x="4" y="17" />
+    <point x="4" y="20" />
+    <point x="0" y="20" />
+  </area>
+   <obstacle id="0" name="Wall0" type="Wall">
+        <point x="0" y="20" />
+        <point x="0" y="0" />
+      </obstacle>
+      <obstacle id="1" name="Wall1" type="Wall">
+        <point x="30" y="20" />
+        <point x="0" y="20" />
+      </obstacle>
+      <obstacle id="2" name="Wall2" type="Wall">
+        <point x="30" y="0" />
+        <point x="30" y="20" />
+      </obstacle>
+      <obstacle id="3" name="Wall3" type="Wall">
+        <point x="0" y="0" />
+        <point x="30" y="0" />
+      </obstacle>
+      <obstacle id="4" name="Wall4" type="Wall">
+        <point x="3.6191" y="15.3953" />
+        <point x="0" y="14" />
+      </obstacle>
+      <obstacle id="5" name="Wall5" type="Wall">
+        <point x="8.3636" y="14.6407" />
+        <point x="3.6191" y="15.3953" />
+      </obstacle>
+      <obstacle id="6" name="Wall6" type="Wall">
+        <point x="11.6704" y="15.3234" />
+        <point x="8.3636" y="14.6407" />
+      </obstacle>
+      <obstacle id="7" name="Wall7" type="Wall">
+        <point x="14.6177" y="14.2455" />
+        <point x="11.6704" y="15.3234" />
+      </obstacle>
+      <obstacle id="8" name="Wall8" type="Wall">
+        <point x="17.8167" y="14.6767" />
+        <point x="14.6177" y="14.2455" />
+      </obstacle>
+      <obstacle id="9" name="Wall9" type="Wall">
+        <point x="23.4957" y="12.5927" />
+        <point x="17.8167" y="14.6767" />
+      </obstacle>
+      <obstacle id="10" name="Wall10" type="Wall">
+        <point x="26" y="16" />
+        <point x="23.4957" y="12.5927" />
+      </obstacle>
+      <obstacle id="11" name="Wall11" type="Wall">
+        <point x="7.8162" y="11.7603" />
+        <point x="3.5158" y="12.2554" />
+      </obstacle>
+      <obstacle id="12" name="Wall12" type="Wall">
+        <point x="11.8983" y="9.6902" />
+        <point x="7.8162" y="11.7603" />
+      </obstacle>
+      <obstacle id="13" name="Wall13" type="Wall">
+        <point x="17.527" y="12.2784" />
+        <point x="11.8983" y="9.6902" />
+      </obstacle>
+      <obstacle id="14" name="Wall14" type="Wall">
+        <point x="21.985" y="10.3203" />
+        <point x="17.527" y="12.2784" />
+      </obstacle>
+      <obstacle id="15" name="Wall15" type="Wall">
+        <point x="26.1727" y="11.1756" />
+        <point x="21.985" y="10.3203" />
+      </obstacle>
+      <obstacle id="16" name="Wall16" type="Wall">
+        <point x="30" y="10.3471" />
+        <point x="26.1727" y="11.1756" />
+      </obstacle>
+      <obstacle id="17" name="Wall17" type="Wall">
+        <point x="22.149" y="6.8065" />
+        <point x="27.1924" y="3.9902" />
+      </obstacle>
+      <obstacle id="18" name="Wall18" type="Wall">
+        <point x="6.7695" y="6.8065" />
+        <point x="22.149" y="6.8065" />
+      </obstacle>
+      <obstacle id="19" name="Wall19" type="Wall">
+        <point x="0" y="10" />
+        <point x="6.7695" y="6.8065" />
+      </obstacle>
+      <obstacle id="20" name="Wall20" type="Wall">
+        <point x="19.2685" y="3.2701" />
+        <point x="7" y="0" />
+      </obstacle>
+      <obstacle id="21" name="Wall21" type="Wall">
+        <point x="25" y="0" />
+        <point x="19.2685" y="3.2701" />
+      </obstacle>
+		</scenario>
+  </layouts>
+  
+</simulator>

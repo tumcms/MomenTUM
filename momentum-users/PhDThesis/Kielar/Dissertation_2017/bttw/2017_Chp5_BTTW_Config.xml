@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="0.9.0" simulationName="2016_BTTW_Config_Layout_v1">
+	
+	<timeState simulationEndTime="43200.0" timeStepDuration="0.025"/>
+	<threadingState threads="4"/>
+	<logging>
+		<loggingState type="Console" level="User"/>
+	</logging>
+
+	<layouts>
+		<scenario id="0" layoutLink="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_Layout.xml"/>
+	</layouts>
+	
+	<lattices>
+		<lattice name="generator" id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+		<lattice name="denstiy" id="1" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="10.0"/>
+	</lattices>
+	
+	<graphs>
+		<graphModel name="routing" id="0">
+			<graphOperation name="fromConfig" type="FromConfiguration" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+				<property name="precisionSeed" type="Double" value="0.001"/>
+			</graphOperation> 
+		</graphModel>
+	</graphs>
+
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+			<property name="accuracy" type="Double" value="0.46"/>
+		</perceptual>
+	</perceptualModels>
+	
+	<operationalModels>
+		<operational id="1" name="operational" perceptualModel="0">
+			<standingReference modelId="2"/>
+			<walkingReference modelId="3"/>
+		</operational>
+	</operationalModels>
+	
+	<standingModels>
+		<standing id="2" name="JohannsonStanding" type="JohannsonStanding">
+			<property name="relaxation_time" type="Double" value="0.5" />
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5" />
+			<property name="physical_interaction_k" type="Double" value="1.2e5" />
+			<property name="mass_behaviour_A" type="Double" value="29.0"/>
+			<property name="mass_behaviour_B" type="Double" value="0.03"/>	
+			<property name="waiting_case" type="Integer" value="1"/>
+			<property name="massWaitingPoint" type="Double" value="1.0"/>
+		</standing> 
+	</standingModels>
+	
+	<walkingModels>
+        <walking id="3" name="socialForceModel" type="SocialForce">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.0"/>
+			<property name="mass_behaviour_A" type="Double" value="29.0"/>
+			<property name="mass_behaviour_B" type="Double" value="0.03"/>	
+		</walking>
+	</walkingModels>
+
+	<tacticalModels>
+		<tactical id="4" name="tactical"  perceptualModel="0">
+			<routingReference modelId="5"/>
+			<stayingReference modelId="6"/>
+			<queuingReference modelId="7"/>
+			<searchingReference modelId="8"/>
+			<property name="goalDistanceRadius" type="Double" value="0.23" />
+			<property name="navigationDistanceRadius" type="Double" value="1.00"/>
+		</tactical>
+	</tacticalModels>
+	
+	<routingModels>
+		<routing id="5" name="unifiedRouting" type="UPRM">
+			<property name="randomMode" type="Boolean" value="True"/>
+			<complexProperty name="resultMode" type="CsvMatrix" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_UPRM.csv" separator=";"/>
+			</complexProperty>
+		</routing>
+	</routingModels>
+	
+	<stayingModels>
+		<staying id="6" name="shiftedRandomParticipating" type="ShiftedRandomParticipating">
+			<property name="participateDistance" type="Double" value="2.0"/>
+			<property name="numberOfGambles" type="Integer" value="10"/>
+			<property name="safetyDistance" type="Double" value="0.1"/>
+			<property name="groupPositionRadius" type="Double" value="2.0"/>
+			<complexProperty name="close" type="List" valueType="String">
+				<entry index="0" value="dancing"/> 
+				<entry index="1" value="ground"/>
+			</complexProperty>
+			<complexProperty name="center" type="List" valueType="String">
+				<entry index="0" value="center"/>
+			</complexProperty>
+		</staying>
+	</stayingModels>
+	
+	<queuingModels>
+		<queuing id="7" name="angularQueuing" type="AngularQueueing" >
+			<property name="proximityDistance" type="Double" value="1.5"/>
+			<property name="safetyDistance" type="Double" value="0.1"/>
+			<property name="queueArc" type="Double" value="30"/>
+			<property name="queueDistance" type="Double" value="0.71"/> <!-- 0.91 -->
+			<property name="initalDistance" type="Double" value="2.0"/>
+			<property name="queuingLag" type="Double" value="1.5"/>
+			<complexProperty name="useIntial" type="List" valueType="String">
+				<entry index="0" value="wc"/>  
+				<entry index="1" value="single"/> 
+				<etnry index="2" value="entrance"/>
+			</complexProperty>
+			<complexProperty name="closeToSelf" type="List" valueType="String">
+				<entry index="0" value="entrance"/> 
+				<entry index="1" value="buy"/>
+			</complexProperty>
+		</queuing>
+	</queuingModels>
+
+	<searchingModels>
+		<searching id="8" name="noSearching" type="NoSearching"/>
+	</searchingModels>
+	
+	<strategicalModels>
+		<strategical id="9" name="csc" type="CognitiveSpatialChoice" perceptualModel="0" queryModel="0">
+
+			<!-- General Parameters-->
+			<!-- Duration between strategic behavior -->
+			<property name="cognitiveClock" type="Double" value="1.0"/> <!-- Slow down 2 times for bttw -->
+			<property name="maximalPedestrians" type="Integer" value="5877"/>
+			
+			<!-- For start/end time, time where opening hours start -->
+			<property name="openingMalus" type="Double" value="0.0"/>
+
+			<!-- Model choice parameter, best options currently -->
+			<property name="perceptionFunction" type="String" value="Leaky"/>
+			<property name="occupancyFunction" type="String" value="Space"/>
+			<property name="scheduleFunction" type="String" value="Rank"/>
+			<property name="preferenceFunction" type="String" value="Interest"/>
+			<property name="valuationFunction" type="String" value="IntraAttribute"/>
+
+			<!-- Group Id which should be used for model pedestrian data output -->
+			<!-- <property name="groupOutputTargetId" type="Integer" value="60"/> -->
+
+			<!-- Perception Parameter -->
+			<property name="distanceScale" type="Double" value="1000.0"/> <!-- Bttw specific -->
+			<property name="leakyIntegrationAlpha" type="Double" value="0.0076"/>
+			<property name="leakyIntegrationK" type="Double" value="0.98"/>
+			<property name="participatingPenalty" type="Double" value="1.25"/> <!--  Ikom -->
+			<property name="waitingPenalty" type="Double" value="0.0"/> <!--  Ikom -->
+			<!-- Distance to activate specific behavior (queueing..)  -->
+			<property name="proximityDistance" type="Double" value="1.5"/> 
+
+			<!-- Preference Parameter -->
+			<property name="minimalServiceTime" type="Double" value="2.0"/>
+
+			<!-- Number of people in each group, measured, index 0 -> 1 person -->
+			<complexProperty name="groupDistribution" type="List" valueType="Double">  <!--  specific -->
+				<entry index="0" value="0.0638"/>  	
+				<entry index="1" value="0.3936"/>
+				<entry index="2" value="0.1596"/> 
+				<entry index="3" value="0.2234"/>
+				<entry index="4" value="0.1596"/>
+			</complexProperty>	
+
+			<!-- Valuation Parameter -->
+			<property name="intensityChange" type="Double" value="3.0"/> <!-- Ikom -->
+						
+			<!-- Reschedule Parameter -->
+			<property name="rescheduleThreshold" type="Double" value="1.0"/> <!-- TODO Ikom -->
+
+			<propertyContainer id="0" name="Entrance">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="78"/> 
+					<entry index="1" value="79"/> 
+					<entry index="2" value="80"/> 
+					<entry index="3" value="81"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="0"/>
+				<property name="oneTime" type="Boolean" value="True"/>				
+				<property name="serviceTimeGammaK" type="Double" value="1.0"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="1.0"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="23"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="1" name="Coffee">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="82"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="1"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.4364"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="28.4857"/>
+				<property name="interarrivalTimeLambda" type="Double" value="38.8947"/> 
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="2" name="Joes Pub">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="83"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="2"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.1088"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="14.0347"/>
+				<property name="interarrivalTimeLambda" type="Double" value="41.7857"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="3" name="Frittes">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="84"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="3"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.193"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="46.2841"/>
+				<property name="interarrivalTimeLambda" type="Double" value="48.4375"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="4" name="Makeup">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="85"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="4"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="16.7382"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="15.7125"/>
+				<property name="interarrivalTimeLambda" type="Double" value="89.4286"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="5" name="Shower">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="90"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="5"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.0"/> <!-- *estimate -->
+				<property name="serviceTimeGammaTheta" type="Double" value="0.5"/>  <!-- *estimate -->
+				<property name="interarrivalTimeLambda" type="Double" value="89.4286"/> <!-- *makeup -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="6" name="RegionExit">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="129"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="6"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="interarrivalTimeLambda" type="Double" value="135.0"/> <!-- 3 * 2015 Qcounts -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="7" name="Mini Stage">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="46"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="7"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="singlePlace" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.5023"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="31.1713"/>
+				<property name="interarrivalTimeLambda" type="Double" value="21.75"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="8" name="Cheese">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="44"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="8"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="6.4268"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="6.3212"/>
+				<property name="interarrivalTimeLambda" type="Double" value="18.5833"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="9" name="Wood Stage">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="43"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="9"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.024"/> <!-- main stage* -->  
+				<property name="serviceTimeGammaTheta" type="Double" value="572.6"/> <!-- main stage* -->  
+				<property name="interarrivalTimeLambda" type="Double" value="5.0"/>  <!-- *estimate -->  
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="10" name="Cigarettes">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="42"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="10"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.654"/> <!--  bar bot*  -->
+				<property name="serviceTimeGammaTheta" type="Double" value="11.54"/> <!-- bar bot* -->
+				<property name="interarrivalTimeLambda" type="Double" value="89.43"/>  <!-- makeup* -->
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="11" name="Bar Bottom">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="36"/>
+					<entry index="1" value="37"/>
+					<entry index="2" value="38"/>
+					<entry index="3" value="39"/>
+					<entry index="4" value="40"/>
+					<entry index="5" value="41"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="11"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.654"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="11.5435"/>
+				<property name="interarrivalTimeLambda" type="Double" value="6.2366"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="12" name="Bar Right">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="32"/>
+					<entry index="1" value="33"/>
+					<entry index="2" value="34"/>
+					<entry index="3" value="35"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="12"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.9789"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="20.8632"/>
+				<property name="interarrivalTimeLambda" type="Double" value="7.5133"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="13" name="Bar Left">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="26"/>
+					<entry index="1" value="27"/>
+					<entry index="2" value="28"/>
+					<entry index="3" value="29"/>
+					<entry index="4" value="30"/>
+					<entry index="5" value="31"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="13"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.441"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="24.4278"/>
+				<property name="interarrivalTimeLambda" type="Double" value="8.4493"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>	
+
+			<propertyContainer id="14" name="Bar Cocktail">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="25"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="14"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.5226"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="18.285"/>
+				<property name="interarrivalTimeLambda" type="Double" value="44.6038"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>	
+
+			<propertyContainer id="15" name="Tent Stage">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="24"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="15"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.024"/> <!-- main stage* -->  
+				<property name="serviceTimeGammaTheta" type="Double" value="572.6"/> <!-- main stage* -->  
+				<property name="interarrivalTimeLambda" type="Double" value="5.0"/>  <!-- *estimate -->   
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="16" name="Information">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="22"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="16"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.2895"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="24.2857"/>
+				<property name="interarrivalTimeLambda" type="Double" value="71.0"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>	
+
+			<propertyContainer id="17" name="Okra Gemuesedoener">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="13"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="17"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.194"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="41.5182"/>
+				<property name="interarrivalTimeLambda" type="Double" value="44.1111"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>
+
+			<propertyContainer id="18" name="Hexenwerk Vegetarisch">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="12"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="18"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.3092"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="19.5654"/>
+				<property name="interarrivalTimeLambda" type="Double" value="88.9"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>	
+
+			<propertyContainer id="19" name="Main Stage">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="5"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="19"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2.024"/> 
+				<property name="serviceTimeGammaTheta" type="Double" value="572.6"/>
+				<property name="interarrivalTimeLambda" type="Double" value="5.0"/>  <!-- *estimate -->    
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+
+			<propertyContainer id="20" name="WC Tent">
+				<complexProperty name="areaIds" type="CsvList" valueType="Integer">
+					<entry file="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_WCTentIds.csv" separator=";"/>
+				</complexProperty>	
+				<property name="preferenceId" type="Integer" value="20"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="singlePlace" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.8461"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="19.292"/>
+				<property name="interarrivalTimeLambda" type="Double" value="9.6356"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>		
+
+			<propertyContainer id="21" name="WC Main">
+				<complexProperty name="areaIds" type="CsvList" valueType="Integer">
+					<entry file="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_WCMainIds.csv" separator=";"/>
+				</complexProperty>	
+				<property name="preferenceId" type="Integer" value="21"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="singlePlace" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.8461"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="19.292"/>
+				<property name="interarrivalTimeLambda" type="Double" value="5.6286"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+
+			<propertyContainer id="22" name="Chill Out">
+				<complexProperty name="areaIds" type="CsvList" valueType="Integer">
+					<entry file="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_ChillOutIds.csv" separator=";"/>
+				</complexProperty>	
+				<property name="preferenceId" type="Integer" value="22"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="0.5"/>  
+				<property name="serviceTimeGammaTheta" type="Double" value="1187"/>  
+				<property name="interarrivalTimeLambda" type="Double" value="5.0"/> <!-- estimate* -->   
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>	
+			
+			<propertyContainer id="23" name="Security">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="130"/>
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="23"/>
+				<property name="oneTime" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.7990"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="0.2807"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+			</propertyContainer>	
+			
+			<propertyContainer id="24" name="Interaction">
+				<complexProperty name="areaIds" type="CsvList" valueType="Integer">
+					<entry file="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_InteractionIds.csv" separator=";"/>
+				</complexProperty>	
+				<property name="preferenceId" type="Integer" value="24"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.474"/> <!--  -->  
+				<property name="serviceTimeGammaTheta" type="Double" value="976.2"/> <!--  -->  
+				<property name="interarrivalTimeLambda" type="Double" value="5.0"/> <!-- estimate* -->   
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"> 
+					<entry index="0" value="0"/>
+				</complexProperty>
+			</propertyContainer>	
+		</strategical>
+	</strategicalModels>
+	
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="basic" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.23"/>
+			<property name="minimalVelocity" type="Double" value="1.2478"/>			
+			<property name="velocityBinWidth" type="Double" value="0.1236"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double"> <!-- bttw pre -->
+				<entry index="0" value="0.042857143"/> 
+				<entry index="1" value="0.071428571"/>
+				<entry index="2" value="0.228571429"/>
+				<entry index="3" value="0.257142857"/>
+				<entry index="4" value="0.214285714"/>
+				<entry index="5" value="0.114285714"/>
+				<entry index="6" value="0.028571429"/>
+				<entry index="7" value="0.028571429"/>
+				<entry index="8" value="0.014285714"/>
+			</complexProperty>	
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="1"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<entry index="0" value="0.0638"/>  	
+				<entry index="1" value="0.3936"/>
+				<entry index="2" value="0.1596"/> 
+				<entry index="3" value="0.2234"/>
+				<entry index="4" value="0.1596"/>
+			</complexProperty>	
+		</pedestrianSeed>
+	</pedestrianSeeds>
+
+	<generators>
+		<generator id="0" name="RegionEntranceGenerator" type="Stock" scenario="0" origin="0" seed="0"> <!-- 2015 Qcounts -->
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="35215"/> <!-- seconds -->
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="5877"/>
+			<property name="safetyDistance" type="Double" value="0.2"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice"/>
+			<complexProperty name="timePoint" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_Inflow_TimePoint_Input.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="stock" type="CsvList" valueType="Integer"> 
+				<entry file="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_Inflow_Stock_Input.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+	</generators>
+
+	<absorbers>
+		<absorber id="0" name="RegionExitAborber" scenario="0" destination="129" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.1"/>
+		</absorber>
+	</absorbers>
+	
+	<analysisModels>
+		<analysis name="occupancyAnalysis" type="occupancy" id="0">
+			<analysisInputSource type="Simulation">
+				<property name="call" type="Integer" value="400"/>  <!-- 0.025 * 40 = 1 sec; 400 steps = 10 seconds -->
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+				<writerSource sourceType="Pedestrian"> 
+					<property name="timeStep" type="Format" value="%d"/>
+					<property name="id" type="Format" value="%d"/>
+					<property name="targetID" type="Format" value="%d"/>
+					<property name="performedBehavior" type="Format" value="%d"/>
+					<property name="x" type="Format" value="%.2f"/>
+					<property name="y" type="Format" value="%.2f"/>
+				</writerSource>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="xtDensityAnalysis" type="xtDensity" id="1">
+			<property name="latticeId" type="Integer" value="1"/>
+			<property name="timeRange" type="Integer" value="1"/>
+			<property name="maximalDensity" type="Double" value="50.0"/>
+			<analysisInputSource type="Simulation">
+				<property name="call" type="Integer" value="12000"/> <!-- 0.025 * 40 = 1 sec; 24000 steps = 10 minutes -->
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+				<property name="delimiter" type="String" value=";"/>
+				<writerSource sourceType="Pedestrian"> 
+					<property name="timeStep" type="Format" value="%d"/>
+					<property name="id" type="Format" value="%d"/>
+					<property name="x" type="Format" value="%.2f"/>
+					<property name="y" type="Format" value="%.2f"/>
+				</writerSource>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels> 
+	
+	<outputWriters>
+	 <!-- 0.025 * 40 = 1 sec; 400 steps = 10 seconds -->
+		<!--  <outputWriter id="0" name="occupancyOutput" type="csvSingleWriter">
+			<property name="call" type="Integer" value="400"/> 
+			<property name="index" type="Boolean" value="False"/>
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\BTTW_Output\2017_Chp5_BTTW_Occupancy.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="25000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="occupancy"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="occupancy" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>-->
+		<!--Every second --> <!-- 
+		<outputWriter id="1" name="pedestrianOutput" type="csvSingleWriter">
+			<property name="call" type="Integer" value="40"/> 
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\BTTW_Output\2017_Chp5_BTTW_Data.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="50000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="targetID"/>
+				<entry index="7" value="groupID"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="targetID" type="Format" value="%d"/>
+				<property name="groupID" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>-->
+		  <!--Every second -->	<!--  
+		<outputWriter id="2" name="outflowOutput" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="False"/>
+			<property name="call" type="Integer" value="40"/>
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\BTTW_Output\2017_Chp5_BTTW_OutFlow.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="5000"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="removedCount"/>
+			</complexProperty>
+            <writerSource sourceType="Absorber" additionalId="0"> 
+               <property name="timeStep" type="Format" value="%d"/>
+               <property name="removedCount" type="Format" value="%d"/>
+            </writerSource>
+		</outputWriter> -->
+		<outputWriter id="3" name="densityOutput" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="True"/>
+			<property name="call" type="Integer" value="12000"/> <!-- 0.025 * 40 = 1 sec; 24000 steps = 10 minutes -->
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\BTTW_Output\2017_Chp5_BTTW_Density.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="cornerSize"/>
+				<entry index="3" value="cellCenterX"/>
+				<entry index="4" value="cellCenterY"/>
+				<entry index="5" value="density"/>
+				<entry index="6" value="maximalDensity"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="1"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%s"/>
+				<property name="cornerSize" type="Format" value="%.2f"/>
+				<property name="cellCenterX" type="Format" value="%.2f"/>
+				<property name="cellCenterY" type="Format" value="%.2f"/>
+				<property name="density" type="Format" value="%.2f"/>
+				<property name="maximalDensity" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter> 
+	</outputWriters>
+
+</simulator>

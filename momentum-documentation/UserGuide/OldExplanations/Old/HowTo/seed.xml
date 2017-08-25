@@ -1,0 +1,46 @@
+	
+<pedestrianSeed id="0" name="basic" type="NoDistribution">
+	<property name="desiredVelocity" type="Double" value="1.34"/>
+	<property name="maximalVelocity" type="Double" value="2.7"/>
+	<property name="radiusMeter" type="Double" value="0.23"/>	
+	<property name="groupSize" type="Integer" value="1"/>
+</pedestrianSeed>
+<pedestrianSeed id="0" name="seedPreBTTW2014" type="HistogramDistribution">
+	<property name="radiusMeter" type="Double" value="0.23"/>	
+	<property name="minimalVelocity" type="Double" value="1.2478"/>			
+	<property name="velocityBinWidth" type="Double" value="0.1236"/>			
+	<complexProperty name="velocityBins" type="List" valueType="Double"> <!-- bttw pre -->
+		<entry index="0" value="0.042857143"/> 
+		<entry index="1" value="0.071428571"/>
+		<entry index="2" value="0.228571429"/>
+		<entry index="3" value="0.257142857"/>
+		<entry index="4" value="0.214285714"/>
+		<entry index="5" value="0.114285714"/>
+		<entry index="6" value="0.028571429"/>
+		<entry index="7" value="0.028571429"/>
+		<entry index="8" value="0.014285714"/>
+	</complexProperty>	
+	<property name="minimalGroupSize" type="Double" value="1"/>			
+	<property name="groupSizeBinWidth" type="Double" value="1"/>			
+	<complexProperty name="groupSizeBins" type="List" valueType="Double">
+		<entry index="0" value="0.37"/> 
+		<entry index="1" value="0.46"/>
+		<entry index="2" value="0.11"/>
+		<entry index="3" value="0.06"/> <!-- Peters -->
+	</complexProperty>		
+</pedestrianSeed>
+
+<pedestrianSeed id="0" name="basic" type="ForceGroup">
+	<property name="desiredVelocity" type="Double" value="1.34"/>
+	<property name="maximalVelocity" type="Double" value="2.7"/>
+	<property name="radiusMeter" type="Double" value="0.23"/>	
+	<complexProperty name="groupSize" type="List" valueType="Integer">
+		<!-- Defines the group size, is initialized if the current group size is null -->
+		<!-- CsvList type of group sizes can be given -->
+		<!--  by value;value;...;value list, use -->
+		<!-- <entry file="./groupSize.csv" separator=";"/> -->
+		<entry index="0" value="1"/> 
+		<entry index="1" value="1"/>
+		<entry index="2" value="9"/>
+	</complexProperty>
+</pedestrianSeed>

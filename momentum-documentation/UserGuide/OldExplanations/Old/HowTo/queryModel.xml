@@ -1,0 +1,8 @@
+<query id="0" name="BasicQuery" type="BasicQuery">
+	<property name="positionJitter" type="Double" value="0.05"/> <!-- minimal distance for ignoring operation behavior at gathering points -->
+	<property name="gatheringDistance" type="Double" value="0.15"/>	<!-- distance at which a gathering point is reached -->
+	<property name="gatheringSafetyDistance" type="Double" value="0.1"/> <!-- distance between pedestrian boundaries for gathering points -->
+	<property name="navigationVisitingNorm" type="Double" value="1.0"/>	 <!-- expansion of the vertex polygon -->
+	<property name="navigationVisitingRotation" type="Double" value="60.0"/> <!-- In degree maximal 100 minimal 5 -->
+	<property name="findGroupRadius" type="Double" value="10.0"/> <!-- Radius for finding own group members in meter -->
+</query>

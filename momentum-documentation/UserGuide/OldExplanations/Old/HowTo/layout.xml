@@ -1,0 +1,58 @@
+
+<!--  you can point to a file by setting layoutLink to a scenario xml file in order to organize your layouts in external files.
+Remember that the ids of the areas and so on will have to match nonetheless.  -->
+<!-- in a external layout xml the exact same content of a scenario is mandatory as if normally included.
+Thus, the scenario tag have to be included -->
+
+<scenario layoutLink="./groundPlan.xml"/>
+
+
+<scenario id="0" name="groundPlan" maxX="100.0" maxY="10.0" minX="0.0" minY="0.0">
+	<area id="0" name="origin" type="Origin">
+		<point x="0.0" y="0.0"/>
+		<point x="6.0" y="0.0"/>
+		<point x="6.0" y="10.0"/>
+		<point x="0.0" y="10.0"/>
+	</area>
+	<area id="1" name="dest" type="Destination">
+		<point x="98.0" y="0.0"/>
+		<point x="100.0" y="0.0"/>
+		<point x="100.0" y="10.0"/>
+		<point x="98.0" y="5.0"/>
+	</area>
+	<obstacle name="spike1" type="Solid">
+		<point x="65.0" y="0.0"/>
+		<point x="75.0" y="0.0"/>
+		<point x="75.0" y="6.5"/>
+	</obstacle>	
+	<obstacle name="spike2" type="Solid">
+		<point x="55.0" y="10.0"/>
+		<point x="45.0" y="10.0"/>
+		<point x="55.0" y="3.5"/>
+	</obstacle>			
+	<obstacle name="outerWallTop" type="Wall">
+		<point x="0.0" y="0.0"/>
+		<point x="100.0" y="0.0"/>
+	</obstacle>			
+	<obstacle name="outerWallRight" type="Wall">
+		<point x="100.0" y="0.0"/>
+		<point x="100.0" y="10.0"/>
+	</obstacle>		
+	<obstacle name="outerWallBottom" type="Wall">
+		<point x="100.0" y="10.0"/>
+		<point x="0.0" y="10.0"/>
+	</obstacle>		
+	<obstacle name="outerWallLeft" type="Wall">
+		<point x="0.0" y="10.0"/>
+		<point x="0.0" y="0.0"/>
+	</obstacle>	
+    <!-- latticeType: Quadratic --> <!-- neigborhoodType: Touching | Edge --> <!-- fillingType: Empty | ScenarioLayout -->
+	<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout"  cellEdgeSize="0.46"/>
+	<graph id="0" type="VisibilityAlpha"> <!-- Raw | Visibility | VisibilityAlpha | VisibilityAlphaSegregation -->
+        <property name="cornerDistance" type="Double" value="2"/>
+        <property name="reductionStrength" type="Double" value="10"/> 
+        <!-- only for VisibilityAlpha -->
+        <property name="segmentSegregation" type="Double" value="5"/>
+        <!-- only for VisbilityAlphaSegregation meter for subsegments -->
+    </graph>
+</scenario>

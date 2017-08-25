@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulator version="0.9.0" simulationName="sta_2016_Mannheim_Analysis" simEnd="10000.0" threads="3" timeStepDuration="0.25">
+
+	<!--  <loop updateType="Stepwise" >
+		<loopVariable name="AVOID" initial="0.9" change="0.1" stop="1.1"/>
+	</loop> -->
+	
+	<analysisModels>
+		<analysis name="B1" type="lineCrossing" id="0">
+			<property name="dataSet" type="String" value="0"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="195.5"/> <!-- L1 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="174.08"/> <!-- L1 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="204.16"/> <!-- L1 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="187.58"/> <!-- L1 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\STS_2016_mannheim_output_final_noAvoid.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		<analysis name="B2" type="lineCrossing" id="1">
+			<property name="dataSet" type="String" value="1"/>
+			<complexProperty name="leftX" type="List" valueType="Double">
+				<entry index="0" value="210.0"/> <!-- L1 -->
+			</complexProperty>
+			<complexProperty name="leftY" type="List" valueType="Double">
+				<entry index="0" value="187.41"/> <!-- L1 -->
+			</complexProperty>
+			<complexProperty name="rightX" type="List" valueType="Double">
+				<entry index="0" value="215.66"/> <!-- L1 -->
+			</complexProperty>
+			<complexProperty name="rightY" type="List" valueType="Double">
+				<entry index="0" value="183.75"/> <!-- L1 -->
+			</complexProperty>
+			<analysisInputSource type="Csv">
+				<property name="csvFileName" type="String" value="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\STS_2016_mannheim_output_final_noAvoid.csv"/> 
+				<property name="delimiter" type="String" value=";"/> 
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			</analysisInputSource>
+		</analysis>
+		
+	</analysisModels>
+	
+	<outputWriters>
+		<outputWriter id="0" name="lineCrossingLLL" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_B1_final_noAvoid.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="lineCrossingLLR" type="csvMultipleWriter">
+			<property name="append" type="Boolean" value="true"/>
+			<property name="call" type="Integer" value="Integer.MAX_VALUE"/>
+			<property name="file" type="File" value="./sts_2016_B2_final_noAvoid.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="id"/>
+				<entry index="1" value="lineCrossing"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="1"> 
+				<property name="id" type="Format" value="%d"/>
+				<property name="lineCrossing" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+</simulator>

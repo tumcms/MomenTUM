@@ -1,0 +1,5 @@
+<absorber id="0" name="defaultAbsorber" scenario="0" destination="1" type="DestinationInstantly" />
+
+<absorber id="0" name="defaultAbsorber" scenario="0" destination="1" type="DestinationSelected">
+	<property name="vanishTime" type="Double" value="0.5"/> <!-- time to vanish for a pedestrian in seconds -->
+</absorber>

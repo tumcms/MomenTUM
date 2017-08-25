@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="0.9.0" simulationName="SCC_2016_Validation_IKOM_Final" simEnd="43200.0" threads="1" timeStepDuration="0.1"> <!-- 2200 -->
+	
+	<analysisModels>
+		<analysis name="xtDensityAnalysis" type="xtDensity" id="0">
+			<property name="latticeId" type="Integer" value="0"/>
+			<property name="timeRange" type="Integer" value="1"/>
+			<property name="maximalDensity" type="Double" value="50.0"/>
+			<analysisInputSource type="Csv">
+				<property name="timeStepDifference" type="Integer" value="10"/>
+				<property name="call" type="Integer" value="36000"/>
+				<property name="analysisStartStep" type="Integer" value="0"/>
+				<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+				<property name="csvFileName" type="String" value="C:\Users\ga37sib\Desktop\BTTW_Output\2017_Chp5_BTTW_Data_v6.csv"/>
+				<property name="delimiter" type="String" value=";"/>
+				<writerSource sourceType="Pedestrian"> 
+					<property name="timeStep" type="Format" value="%d"/>
+					<property name="id" type="Format" value="%d"/>
+					<property name="x" type="Format" value="%.2f"/>
+					<property name="y" type="Format" value="%.2f"/>
+				</writerSource>
+			</analysisInputSource>
+		</analysis>
+	</analysisModels>
+
+	<outputWriters>
+		<outputWriter id="0" name="anyalysisOutput" type="csvSingleWriter">
+			<property name="index" type="Boolean" value="True"/>
+			<property name="call" type="Integer" value="36000"/>
+			<property name="file" type="File" value="C:\Users\ga37sib\Desktop\BTTW_Output\2017_Chp5_BTTW_Data_XT_Dichte.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="cornerSize"/>
+				<entry index="3" value="cellCenterX"/>
+				<entry index="4" value="cellCenterY"/>
+				<entry index="5" value="density"/>
+				<entry index="6" value="maximalDensity"/>
+			</complexProperty>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%s"/>
+				<property name="cornerSize" type="Format" value="%.2f"/>
+				<property name="cellCenterX" type="Format" value="%.2f"/>
+				<property name="cellCenterY" type="Format" value="%.2f"/>
+				<property name="density" type="Format" value="%.2f"/>
+				<property name="maximalDensity" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter> 
+	</outputWriters>
+
+	<lattices>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="10.0"/>
+	</lattices>
+	
+	<layouts>
+		<scenario id="0" layoutLink="C:\Users\ga37sib\Desktop\BTTW_Input\2017_Chp5_BTTW_Layout.xml"/>
+	</layouts>
+</simulator>

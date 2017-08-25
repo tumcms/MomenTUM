@@ -1,0 +1,46 @@
+<!-- This configuration part is not mandatory, if not present the simulator will execute 
+the operation, tactical, and strategical models in this order in an non-deterministic order (but typically the xml order) -->
+
+
+<!-- The order number indicates the execution order regarding other time step blocks, have to be an unique value
+and in order and without missing values (0,1,2,3) not (1,3,4,5) -->
+<!-- The multiplicator determines in which modulo % time step the block should be executed (e.g. 3 time step)-->
+<!-- The blockManipulator metaId refers to a meta model which should be called before the block is executed -->
+<!-- The blockManipulator attribute multiplicator refers how often (modulo) the meta model should be called (each 2 time the block is executed?)-->
+<!-- The blockManipultaor is optional -->
+<!-- The entries in the models list can be as long is needed, thus quite complex simulation can be crafted -->
+<!-- The entries start with 0! The simulator will fail hard without this ordering -->
+
+<!-- Not adding an exeuction order configuration will create a simulator order which is the classical version:
+operational, tactical, and strategic model -->
+
+<!-- Simple version, identical to the classical approach -->
+<executionOrder>
+	<executionBlock id="0" orderNumber="1" timeStepMultiplicator="1">
+		<complexProperty name="models" type="List" valueType="String">
+			<entry index="0" value="2"/> <!-- index is the model execution order and valueis the model id (e.g. tactical) -->
+		    <entry index="1" value="1"/> 
+			<entry index="2" value="0"/>	    
+		 </complexProperty>
+	</executionBlock>
+</executionOrder>
+
+<!-- transiTUM framework -->
+<executionOrder>
+	<executionBlock id="0" orderNumber="1" timeStepMultiplicator="2">
+		<complexProperty name="models" type="List" valueType="String">
+		    <entry index="0" value="3"/> <!-- index is the model execution order and value is the model id (e.g. tactical) -->
+		    <entry index="1" value="2"/>
+		    <entry index="2" value="0"/> 
+		 </complexProperty>
+		 <blockManipulator metaId="0" multiplicator="1" /> <!-- Meso to Micro Meta Model -->
+	</executionBlock>
+	<executionBlock id="1" orderNumber="2" timeStepMultiplicator="5">
+		<complexProperty name="models" type="List" valueType="String">
+			<entry index="0" value="3"/> <!-- index is the model execution order and value is the model id (e.g. tactical) -->
+		    <entry index="1" value="2"/>
+		    <entry index="2" value="1" /> 
+		 </complexProperty>
+		 <blockManipulator metaId="1" multiplicator="1" /> <!-- Micro to Meso Meta Model -->
+	</executionBlock>
+</executionOrder>

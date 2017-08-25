@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="0.0.0" simulationName="analysisModels" simEnd="0" threads="0" timeStepDuration="0">
+<analysisModels>
+<!-- do not forget to create a model based output source for your analysis -->
+
+<!-- Creates an analysis measure model based pedestrian data. Hence, the analysis
+will be executed in the post processing. Normally, the pedestrian data is non-permanent.
+Therefore use a csv as input source -->
+
+<!-- The system could be loaded with other sources too but that is not useful at the moment -->
+<!-- analysisStartStep and analysisEndStep help to clip a start or end time frame -->
+
+<!-- precondition x and y are part of the cvs -->
+<analysis name="CrossLineAnalysis" type="lineCrossing" id="0">
+	<analysisInputSource type="Csv"> 
+		<property name="csvFileName" type="String" value="./MomenTumV2_Sall_Output.csv"/> 
+		<property name="layoutFileName" type="String" value="./MomenTumV2_Sall_Layout.xml"/> 
+		<property name="delimiter" type="String" value=";"/>
+	</analysisInputSource>
+	<property name="analysisStartStep" type="Integer" value="0"/>
+	<property name="analysisEndStep" type="Integer" value="Integer.MaxValue"/>
+	<property name="leftX" type="Double" value="0.0"/>
+	<property name="leftY" type="Double" value="0.0"/>
+	<property name="rightX" type="Double" value="1.0"/>
+	<property name="righty" type="Double" value="0.0"/> 
+</analysis>
+
+<!-- precondition x and y are part of the cvs -->
+<analysis name="InsidePolygonAnalysis" type="insidePolygon" id="1">
+	<analysisInputSource type="Csv">
+		<property name="csvFileName" type="String" value="./MomenTumV2_Sall_Output.csv"/> 
+		<property name="layoutFileName" type="String" value="./MomenTumV2_Sall_Layout.xml"/>
+		<property name="delimiter" type="String" value=";"/> 
+	</analysisInputSource>
+	<property name="analysisStartStep" type="Integer" value="0"/>
+	<property name="analysisEndStep" type="Integer" value="Integer.MaxValue"/>
+	<property name="areaId" type="Integer" value="0"/>
+</analysis>
+
+<!-- precondition x, y, and tacticalTarget are part of the cvs -->
+<!--<analysisModels name="TurningAngleAnalysis" type="turningAngle" id="0">
+	<analysisInputSource type="Csv">
+		<property name="csvFileName" type="String" value="./MomenTumV2_Sall_Output.csv"/> 
+		<property name="layoutFileName" type="String" value="./MomenTumV2_Sall_Layout.xml"/>
+		<property name="delimiter" type="String" value=";"/> 
+	</analysisInputSource>
+	<property name="analysisStartStep" type="Integer" value="0"/>
+	<property name="analysisEndStep" type="Integer" value="Integer.MaxValue"/>
+</analysisModels>-->
+
+<!-- precondition x, y, and tacticalTarget are part of the cvs -->
+<!--<analysisModels name="PathDistanceAnalysis" type="pathDistance" id="0">
+	<inputSource type="Csv">
+		<property name="csvFileName" type="String" value="./MomenTumV2_Sall_Output.csv"/> 
+		<property name="layoutFileName" type="String" value="./MomenTumV2_Sall_Layout.xml"/>
+		<property name="delimiter" type="String" value=";"/> 
+	</inputSource>
+	<property name="analysisStartStep" type="Integer" value="0"/>
+	<property name="analysisEndStep" type="Integer" value="Integer.MaxValue"/>
+</analysisModels>-->
+</analysisModels>
+</simulator>
+
+<!-- do not forget to create a model based output source for your analysis -->
+<!-- At the moment no time analysis exist. A time analysis runs as model in the
+execution system of the simulation and calculates something on the given data set (time step!)
+e.g. densities, velocity maps and so on -->
+
+<!-- normally a simulation input source is needed; thus, a definition of  the data the analysis should use -->
+<!-- analysisStartStep and analysisEndStep help to clip a start or end time frame -->
+<!--
+<analysisTime name="XXX Nothing Jet XXX" type="XXX Nothing Jet XXX" id="0">
+	<inputSource type="Simulation">
+		<writerSource name="redirectPedestrianInfo" sourceType="Pedestrian">
+			<property name="timeStep" type="Format" value="%d"/>
+			<property name="id" type="Format" value="%d"/>
+			<property name="x" type="Format" value="%.2f"/>
+			<property name="y" type="Format" value="%.2f"/>
+		</writerSource>
+	</inputSource>
+	<property name="analysisStartStep" type="Integer" value="0"/>
+	<property name="analysisEndStep" type="Integer" value="Integer.MaxValue"/>
+	<property name="XXX Nothing Jet XXX" type="String" value="XXX Nothing Jet XXX"/>
+</analysisTime>-->

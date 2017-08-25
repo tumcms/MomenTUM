@@ -1,0 +1,325 @@
+<scenario id="0" name="TGF_Artifical" maxX="57.5" maxY="57.5" minX="0.0" minY="0">
+	<area id="0" name="Origin0" type="Origin" geometry="Polygon">
+		<point x="5" y="2.5" />
+		<point x="5" y="5" />
+		<point x="2.5" y="5" />
+		<point x="2.5" y="2.5" />
+	</area>
+	<area id="1" name="Destination0" type="Destination" geometry="Polygon">
+      <point x="57.5" y="55.0"/>
+        <point x="57.5" y="57.5"/>
+        <point x="55.0" y="57.5"/>
+        <point x="55.0" y="55.0"/>
+	</area>
+	<obstacle id="0" name="Wall0" type="Wall" geometry="Segment">
+		<point x="2.5" y="2.5" />
+		<point x="57.5" y="2.5" />
+	</obstacle>
+	<obstacle id="1" name="Wall1" type="Wall" geometry="Segment">
+		<point x="57.5" y="2.5" />
+		<point x="57.5" y="57.5" />
+	</obstacle>
+	<obstacle id="2" name="Wall2" type="Wall" geometry="Segment">
+		<point x="57.5" y="57.5" />
+		<point x="2.5" y="57.5" />
+	</obstacle>
+	<obstacle id="3" name="Wall3" type="Wall" geometry="Segment">
+		<point x="2.5" y="57.5" />
+		<point x="2.5" y="2.5" />
+	</obstacle>
+	<obstacle id="4" name="Solid0" type="Solid" geometry="Polygon">
+		<point x="27.5" y="6" />
+		<point x="27.5" y="2.5" />
+		<point x="32.5" y="2.5" />
+		<point x="32.5" y="6" />
+	</obstacle>
+	<obstacle id="5" name="Solid1" type="Solid" geometry="Polygon">
+		<point x="52.5" y="32.5" />
+		<point x="52.5" y="27.5" />
+		<point x="55" y="27.5" />
+		<point x="55" y="32.5" />
+	</obstacle>
+	<obstacle id="6" name="Solid2" type="Solid" geometry="Polygon">
+		<point x="50" y="47.5" />
+		<point x="50" y="42.5" />
+		<point x="52.5" y="42.5" />
+		<point x="52.5" y="47.5" />
+	</obstacle>
+	<obstacle id="7" name="Solid3" type="Solid" geometry="Polygon">
+		<point x="5" y="25" />
+		<point x="5" y="20" />
+		<point x="7.5" y="20" />
+		<point x="7.5" y="25" />
+	</obstacle>
+	<obstacle id="8" name="Solid4" type="Solid" geometry="Polygon">
+		<point x="27.5" y="56" />
+		<point x="27.5" y="53.5" />
+		<point x="32.5" y="53.5" />
+		<point x="32.5" y="56" />
+	</obstacle>
+	<obstacle id="9" name="Solid5" type="Solid" geometry="Polygon">
+		<point x="7.5" y="17.5" />
+		<point x="7.5" y="12.5" />
+		<point x="10" y="12.5" />
+		<point x="10" y="17.5" />
+	</obstacle>
+	<obstacle id="10" name="Solid6" type="Solid" geometry="Polygon">
+		<point x="7.5" y="32.5" />
+		<point x="7.5" y="27.5" />
+		<point x="10" y="27.5" />
+		<point x="10" y="32.5" />
+	</obstacle>
+	<obstacle id="11" name="Solid7" type="Solid" geometry="Polygon">
+		<point x="27.5" y="13.5" />
+		<point x="27.5" y="11" />
+		<point x="32.5" y="11" />
+		<point x="32.5" y="13.5" />
+	</obstacle>
+	<obstacle id="12" name="Solid8" type="Solid" geometry="Polygon">
+		<point x="27.5" y="51" />
+		<point x="27.5" y="46" />
+		<point x="32.5" y="46" />
+		<point x="32.5" y="51" />
+	</obstacle>
+	<obstacle id="13" name="Solid9" type="Solid" geometry="Polygon">
+		<point x="5" y="40" />
+		<point x="5" y="35" />
+		<point x="10" y="35" />
+		<point x="10" y="40" />
+	</obstacle>
+	<obstacle id="14" name="Solid10" type="Solid" geometry="Polygon">
+		<point x="12.5" y="43.5" />
+		<point x="12.5" y="38.5" />
+		<point x="17.5" y="38.5" />
+		<point x="17.5" y="43.5" />
+	</obstacle>
+	<obstacle id="15" name="Solid11" type="Solid" geometry="Polygon">
+		<point x="42.5" y="57.5" />
+		<point x="42.5" y="53.5" />
+		<point x="47.5" y="53.5" />
+		<point x="47.5" y="57.5" />
+	</obstacle>
+	<obstacle id="16" name="Solid12" type="Solid" geometry="Polygon">
+		<point x="42.5" y="51" />
+		<point x="42.5" y="46" />
+		<point x="47.5" y="46" />
+		<point x="47.5" y="51" />
+	</obstacle>
+	<obstacle id="17" name="Solid13" type="Solid" geometry="Polygon">
+		<point x="42.5" y="43.5" />
+		<point x="42.5" y="38.5" />
+		<point x="47.5" y="38.5" />
+		<point x="47.5" y="43.5" />
+	</obstacle>
+	<obstacle id="18" name="Solid14" type="Solid" geometry="Polygon">
+		<point x="42.5" y="36" />
+		<point x="42.5" y="31" />
+		<point x="47.5" y="31" />
+		<point x="47.5" y="36" />
+	</obstacle>
+	<obstacle id="19" name="Solid15" type="Solid" geometry="Polygon">
+		<point x="42.5" y="28.5" />
+		<point x="42.5" y="23.5" />
+		<point x="47.5" y="23.5" />
+		<point x="47.5" y="28.5" />
+	</obstacle>
+	<obstacle id="20" name="Solid16" type="Solid" geometry="Polygon">
+		<point x="42.5" y="21" />
+		<point x="42.5" y="16" />
+		<point x="47.5" y="16" />
+		<point x="47.5" y="21" />
+	</obstacle>
+	<obstacle id="21" name="Solid17" type="Solid" geometry="Polygon">
+		<point x="42.5" y="13.5" />
+		<point x="42.5" y="2.5" />
+		<point x="50" y="2.5" />
+		<point x="50" y="13.5" />
+	</obstacle>
+	<obstacle id="22" name="Solid18" type="Solid" geometry="Polygon">
+		<point x="27.5" y="43.5" />
+		<point x="27.5" y="41" />
+		<point x="32.5" y="41" />
+		<point x="32.5" y="43.5" />
+	</obstacle>
+	<obstacle id="23" name="Solid19" type="Solid" geometry="Polygon">
+		<point x="27.5" y="38.5" />
+		<point x="27.5" y="33.5" />
+		<point x="32.5" y="33.5" />
+		<point x="32.5" y="38.5" />
+	</obstacle>
+	<obstacle id="24" name="Solid20" type="Solid" geometry="Polygon">
+		<point x="27.5" y="28.5" />
+		<point x="27.5" y="23.5" />
+		<point x="32.5" y="23.5" />
+		<point x="32.5" y="28.5" />
+	</obstacle>
+	<obstacle id="25" name="Solid21" type="Solid" geometry="Polygon">
+		<point x="27.5" y="21" />
+		<point x="27.5" y="16" />
+		<point x="32.5" y="16" />
+		<point x="32.5" y="21" />
+	</obstacle>
+	<obstacle id="26" name="Solid22" type="Solid" geometry="Polygon">
+		<point x="12.5" y="6" />
+		<point x="12.5" y="2.5" />
+		<point x="17.5" y="2.5" />
+		<point x="17.5" y="6" />
+	</obstacle>
+	<obstacle id="27" name="Solid23" type="Solid" geometry="Polygon">
+		<point x="12.5" y="57.5" />
+		<point x="12.5" y="53.5" />
+		<point x="17.5" y="53.5" />
+		<point x="17.5" y="57.5" />
+	</obstacle>
+	<obstacle id="28" name="Solid24" type="Solid" geometry="Polygon">
+		<point x="12.5" y="51" />
+		<point x="12.5" y="46" />
+		<point x="17.5" y="46" />
+		<point x="17.5" y="51" />
+	</obstacle>
+	<obstacle id="29" name="Solid25" type="Solid" geometry="Polygon">
+		<point x="12.5" y="36" />
+		<point x="12.5" y="31" />
+		<point x="17.5" y="31" />
+		<point x="17.5" y="36" />
+	</obstacle>
+	<obstacle id="30" name="Solid26" type="Solid" geometry="Polygon">
+		<point x="12.5" y="28.5" />
+		<point x="12.5" y="23.5" />
+		<point x="17.5" y="23.5" />
+		<point x="17.5" y="28.5" />
+	</obstacle>
+	<obstacle id="31" name="Solid27" type="Solid" geometry="Polygon">
+		<point x="12.5" y="21" />
+		<point x="12.5" y="16" />
+		<point x="17.5" y="16" />
+		<point x="17.5" y="21" />
+	</obstacle>
+	<obstacle id="32" name="Solid28" type="Solid" geometry="Polygon">
+		<point x="12.5" y="13.5" />
+		<point x="12.5" y="8.5" />
+		<point x="17.5" y="8.5" />
+		<point x="17.5" y="13.5" />
+	</obstacle>
+	<obstacle id="33" name="Solid29" type="Solid" geometry="Polygon">
+		<point x="50" y="55" />
+		<point x="50" y="50" />
+		<point x="55" y="50" />
+		<point x="55" y="55" />
+	</obstacle>
+	<obstacle id="34" name="Solid30" type="Solid" geometry="Polygon">
+		<point x="35" y="55" />
+		<point x="35" y="50" />
+		<point x="40" y="50" />
+		<point x="40" y="55" />
+	</obstacle>
+	<obstacle id="35" name="Solid31" type="Solid" geometry="Polygon">
+		<point x="20" y="55" />
+		<point x="20" y="50" />
+		<point x="25" y="50" />
+		<point x="25" y="55" />
+	</obstacle>
+	<obstacle id="36" name="Solid32" type="Solid" geometry="Polygon">
+		<point x="5" y="55" />
+		<point x="5" y="50" />
+		<point x="10" y="50" />
+		<point x="10" y="55" />
+	</obstacle>
+	<obstacle id="37" name="Solid33" type="Solid" geometry="Polygon">
+		<point x="50" y="40" />
+		<point x="50" y="35" />
+		<point x="55" y="35" />
+		<point x="55" y="40" />
+	</obstacle>
+	<obstacle id="38" name="Solid34" type="Solid" geometry="Polygon">
+		<point x="35" y="47.5" />
+		<point x="35" y="42.5" />
+		<point x="40" y="42.5" />
+		<point x="40" y="47.5" />
+	</obstacle>
+	<obstacle id="39" name="Solid35" type="Solid" geometry="Polygon">
+		<point x="20" y="47.5" />
+		<point x="20" y="42.5" />
+		<point x="25" y="42.5" />
+		<point x="25" y="47.5" />
+	</obstacle>
+	<obstacle id="40" name="Solid36" type="Solid" geometry="Polygon">
+		<point x="35" y="40" />
+		<point x="35" y="35" />
+		<point x="40" y="35" />
+		<point x="40" y="40" />
+	</obstacle>
+	<obstacle id="41" name="Solid37" type="Solid" geometry="Polygon">
+		<point x="20" y="40" />
+		<point x="20" y="35" />
+		<point x="25" y="35" />
+		<point x="25" y="40" />
+	</obstacle>
+	<obstacle id="42" name="Solid38" type="Solid" geometry="Polygon">
+		<point x="50" y="25" />
+		<point x="50" y="2.5" />
+		<point x="57.5" y="2.5" />
+		<point x="57.5" y="25" />
+	</obstacle>
+	<obstacle id="43" name="Solid39" type="Solid" geometry="Polygon">
+		<point x="35" y="32.5" />
+		<point x="35" y="27.5" />
+		<point x="40" y="27.5" />
+		<point x="40" y="32.5" />
+	</obstacle>
+	<obstacle id="44" name="Solid40" type="Solid" geometry="Polygon">
+		<point x="20" y="32.5" />
+		<point x="20" y="27.5" />
+		<point x="22.5" y="27.5" />
+		<point x="22.5" y="32.5" />
+	</obstacle>
+	<obstacle id="45" name="Solid41" type="Solid" geometry="Polygon">
+		<point x="35" y="25" />
+		<point x="35" y="20" />
+		<point x="40" y="20" />
+		<point x="40" y="25" />
+	</obstacle>
+	<obstacle id="46" name="Solid42" type="Solid" geometry="Polygon">
+		<point x="20" y="25" />
+		<point x="20" y="22.5" />
+		<point x="25" y="22.5" />
+		<point x="25" y="25" />
+	</obstacle>
+	<obstacle id="47" name="Solid43" type="Solid" geometry="Polygon">
+		<point x="35" y="17.5" />
+		<point x="35" y="12.5" />
+		<point x="40" y="12.5" />
+		<point x="40" y="17.5" />
+	</obstacle>
+	<obstacle id="48" name="Solid44" type="Solid" geometry="Polygon">
+		<point x="20" y="17.5" />
+		<point x="20" y="12.5" />
+		<point x="22.5" y="12.5" />
+		<point x="22.5" y="17.5" />
+	</obstacle>
+	<obstacle id="49" name="Solid45" type="Solid" geometry="Polygon">
+		<point x="35" y="10" />
+		<point x="35" y="2.5" />
+		<point x="42.5" y="2.5" />
+		<point x="42.5" y="10" />
+	</obstacle>
+	<obstacle id="50" name="Solid46" type="Solid" geometry="Polygon">
+		<point x="20" y="10" />
+		<point x="20" y="2.5" />
+		<point x="25" y="2.5" />
+		<point x="25" y="10" />
+	</obstacle>
+	<obstacle id="51" name="Solid47" type="Solid" geometry="Polygon">
+		<point x="5" y="10" />
+		<point x="5" y="5" />
+		<point x="10" y="5" />
+		<point x="10" y="10" />
+	</obstacle>
+	<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+	<graph id="0" type="VisibilityAlpha">
+        <property name="cornerDistance" type="Double" value="0.78"/>
+        <property name="reductionStrength" type="Double" value="5"/>
+        <!-- <property name="cornerDistance" type="Double" value="0.4"/>
+        <property name="reductionStrength" type="Double" value="3"/> -->
+	</graph>
+</scenario>

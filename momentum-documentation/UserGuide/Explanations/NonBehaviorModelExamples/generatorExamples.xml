@@ -1,0 +1,292 @@
+<!-- OutputWriters write information from the simulation somewhere, e.g. in a file. -->
+
+<!-- The outputWriter definition block is: -->
+
+<generators>
+
+	<!-- Here are generators are defined. Each generator has a:
+		 id, this is a unique number for all generators
+		 name, a user-readable name
+		 type, the kind of generator that refers to the method of pedestrian generator
+		 origin, the origin id that points to a origin layout in a scenario
+		 scenario, the scenario id that points to the layout in which the origin is
+		 seed, the seed id that provides the initial properties of all generated pedestrians
+		 
+		 However, the generator type "Instant" and "Multiple" do not have the origin id
+		  -->
+	<generator id="0" name="myGeneratorName" type="Plan" scenario="0" origin="0" seed="0">
+	
+		<!-- Based on the type of generator the contents of the generator is different. -->
+		<!-- However, there are some property that are valid for all generators. -->
+		
+		<!-- The startTime provides a time in seconds. This is the time the generator may starts create pedestrians. -->
+		<!-- The generator type "External" and "Instant" do not have the startTime. -->
+		<property name="startTime" type="Double" value="0"/>
+		
+		<!-- The endTime provides a time in seconds. -->
+		<!-- This is the time the generator stops to generate pedestrians. -->
+		<!-- The generator type "External" and "Instant" do not have the endTime. -->
+		<property name="endTime" type="Double" value="Infinity"/> <!-- Yes you can use java style doubles definitions. -->
+		
+		<!-- The basicHeading provides the initial heading direction of pedestrians after generator. -->
+		<!-- This provides the direction of walking because the origins are not oriented regarding "inside/outside" -->
+		<!-- The value is 0 till 359 in degree. 0 look right, 90 look top, 180 look left, 270 look down. -->
+		<!-- The generator type "Instant" do not have basicHeading. -->
+		<property name="basicHeading" type="Double" value="0"/> 
+		
+		<!-- The maximal pedestrians give maximal number of pedestrians this generate can create. -->
+		<!-- The generator type "Instant" do not have maximalPedestrians. -->
+		<property name="maximalPedestrians" type="Integer" value="3"/>
+		
+		<!-- The safetyDistance provides the minimal distance between the body of an existing and an new pedestrian. -->
+		<!-- The value is given in meters. -->
+		<!-- The generator type "Instant" do not have safetyDistance. -->
+		<property name="safetyDistance" type="Double" value="0.25"/> 
+	
+		<!-- Each generator has a geometryType that describes how to place pedestrians in the origin. -->
+		<!-- At the moment, there are 3 geometryType
+			Point, all pedestrians are generated in the center of the origin
+			Lattice, all pedestrian are placed randomly within a lattice.
+			
+			However, the generator type "Instant" do not have the origin id.  -->
+		<geometry geometryType="Lattice"/> 
+		
+		<!-- In case the geometryType is a Lattice, the scenarioLatticeId is mandatory -->
+		<!-- This id points to a lattice, which is on the scenario (see scenario property in generator). -->
+		<!-- This lattice defines the resolution of placing pedestrians in the origin. -->
+		<property name="scenarioLatticeId" type="Integer" value="0"/>
+		
+		<!-- **************************************************** -->
+		<!-- Here, generator type specific information are given. -->
+		<!-- Find below, the detailed explanations.				  -->
+		<!-- **************************************************** -->
+			
+	</generator>
+	
+	<!-- Generator can have three different types:
+		Plan, describes a strict percentage of pedestrians to create in defined time-intervals
+		Stock, describes a strict number of pedestrians to create in defined time-intervals
+		Distribution, describes that pedestrian are generated based on discrete distributions
+		External, is a method to generate pedestrians based on data form a (external) file.
+				  Thus, External generators do not need a startTime and endTime.
+		Instant, describes that pedestrians are generated at predefined positions.
+				 Thus, Instant generators do not need a origin id
+		Multiple, is an aggregation tool that applies the identical generator configuration on many origins. 
+	-->
+	
+	<!-- This is an example of an plan generator -->
+	<generator id="1" name="generatorPlan" type="Plan" scenario="0" origin="1" seed="0">
+		<property name="startTime" type="Double" value="0"/> <!-- Start at second 0 -->
+		<property name="endTime" type="Double" value="300.0"/> <!-- End at second 300 -->
+		<property name="basicHeading" type="Double" value="90.0"/> <!-- Pedestrian looks "up" -->
+		<property name="maximalPedestrians" type="Integer" value="100"/> <!-- 100 Pedestrians to generate -->
+		<property name="safetyDistance" type="Double" value="0.25"/>  <!-- 0.25 meter spawn distance -->
+		<geometry geometryType="Lattice"/> <!-- Generate pedestrians randomly on a lattice -->
+		<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- Use the lattice with id 0 -->
+		
+		<!-- A Plan generator has two lists.-->
+		<!-- The first list is the interval list comprising Double entries. -->
+		<!-- Each entry of the interval list defines a time in seconds. -->
+		<!-- The second list is the percentage list comprising Double entries -->
+		<!-- Each entry of the percentage list defines the percentage of pedestrians to generate.  -->
+		<!-- The percentage is based on the maximalPedestrian property, in this example 100 pedestrians.  -->
+		<!-- Furthermore, the interval entry with index i and i+1 defined the time-slot for the percentage list. -->
+		<!-- For example:
+			entry index="0" value="0" and entry index="1" value="60" define 0 - 60 seconds
+			in which entry index="0" value="0.1" (10 percent) of pedestrians are generated.
+			This are 0.1 * 300 = 30 pedestrians in 60 seconds -> 0.5 Ped/Sec.
+			 -->
+		<!-- The last percentage interval is defined from the last entry of the intervals to the endTime -->
+		<!-- For example:
+			 entry index="2" value="120" start of the final time slot is 120 seconds.
+			 and the end of the third time slot is 300.0 seconds from the endTime property. -->
+		<complexProperty name="interval" type="List" valueType="Double">
+			<entry index="0" value="0.0"/>  <!-- start time of the first time-slot -->
+			<entry index="1" value="60.0"/> <!-- start time of the second time-slot, end of the first time-slot -->
+			<entry index="2" value="120.0"/> <!-- start of time of the third time-slot, end of the second times-lot -->
+		</complexProperty>		
+		<complexProperty name="percentage" type="List" valueType="Double"> <!-- list of percentage of pedestrians to generator for the slices (sum = 1)-->
+			<entry index="0" value="0.1"/> <!-- percentage of maximal pedestrians to generate in the index 0 - 1 time-slot -->
+			<entry index="1" value="0.0"/> <!-- percentage of maximal pedestrians to generate in the index 1 - 2 time-slot -->
+			<entry index="2" value="0.9"/> <!-- percentage of maximal pedestrians to generate in the index 2 - endTime time-slot -->
+		</complexProperty>
+	</generator>
+	
+	<!-- This is an example of an stock generator -->
+	<generator id="2" name="generatorStock" type="Stock" scenario="0" origin="2" seed="0">
+		<property name="startTime" type="Double" value="0"/> <!-- Start at second 0 -->
+		<property name="endTime" type="Double" value="300.0"/> <!-- End at second 300 -->
+		<property name="basicHeading" type="Double" value="90.0"/> <!-- Pedestrian looks "up" -->
+		<property name="maximalPedestrians" type="Integer" value="100"/> <!-- 100 Pedestrians to generate -->
+		<property name="safetyDistance" type="Double" value="0.25"/>  <!-- 0.25 meter spawn distance -->
+		<geometry geometryType="Lattice"/> <!-- Generate pedestrians randomly on a lattice -->
+		<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- Use the lattice with id 0 -->
+		
+		<!-- A Stock generator has two lists.-->
+		<!-- The first list is the timePoint list comprising Double entries. -->
+		<!-- Each entry of the timePoint list defines a time in seconds. -->
+		<!-- The second list is the stock list comprising Integer entries. -->
+		<!-- Each entry of the stock list defines the number of pedestrians to generate. -->
+		<!-- The stock is bounded by the maximalPedestrian property, in this example 100 pedestrians. -->
+		<!-- Each entry of index i of the timePoint list defines a the second to generated a number of pedestrians. -->
+		<!-- For example:
+			entry index="1" value="60.0" of the timePoint list defines second 60 of a simulation.
+			entry index="1" value="78" defines the number of pedestrians to generated in second 60. 
+			 -->
+		<complexProperty name="timePoint" type="List" valueType="Double"> 
+			<!-- Sometimes adding many time points can be bothersome. -->
+			<!-- You can use the CsvList type instead of the list type and provide a file. -->
+			<!-- <entry file="./timePointFile.csv" separator=";"/> -->
+			<!-- In this file the values are listed via: value;value;...;value -->
+			<!-- This can be done for all List types! -->
+			<entry index="0" value="0.0"/> <!-- first time to generated pedestrians -->
+			<entry index="1" value="60.0"/> <!-- second time to generated pedestrians -->
+			<entry index="2" value="120.0"/> <!-- third time to generated pedestrians -->
+		</complexProperty>
+		<complexProperty name="stock" type="List" valueType="Integer">
+			<entry index="0" value="12"/> <!-- number of pedestrians to generate in the index = 0 time-point -->
+			<entry index="1" value="78"/> <!-- number of pedestrians to generate in the index = 1 time-point -->
+			<entry index="2" value="10"/> <!-- number of pedestrians to generate in the index = 2 time-point -->
+		</complexProperty>
+	</generator>
+			 
+	<!-- This is an example of a Distribution generator. -->
+	<generator id="3" name="generator" type="Distribution" scenario="0" origin="3" seed="0">
+		<property name="startTime" type="Double" value="0"/> <!-- Start at second 0 -->
+		<property name="endTime" type="Double" value="300.0"/> <!-- End at second 300 -->
+		<property name="basicHeading" type="Double" value="90.0"/> <!-- Pedestrian looks "up" -->
+		<property name="maximalPedestrians" type="Integer" value="100"/> <!-- 100 Pedestrians to generate -->
+		<property name="safetyDistance" type="Double" value="0.25"/>  <!-- 0.25 meter spawn distance -->
+		<geometry geometryType="Lattice"/> <!-- Generate pedestrians randomly on a lattice -->
+		<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- Use the lattice with id 0 -->
+		
+		<!-- The Distribution generator has two lists. -->
+		<!-- The first list timeGap comprises Double entries. -->
+		<!-- Each entry of the timeGap list defines the duration between creating two pedestrians. -->
+		<!-- The second list percentage comprises Double entries. -->
+		<!-- Each entry of the percentage list defines the probability of a timeGap entry. -->
+		<!-- For example:
+			 A timeGap list entry of index i defines the duration between two pedestrians to generated.
+			 The percentage list entry of index i models the probability of that wait the time duration
+			 of timeGap list entry of index i until creating the next pedestrian. -->
+		<!-- Using the example data following generation series is possible:
+			 Create pedestrian, wait 6 seconds (probability 30%).
+			 Create pedestrian, wait 2 seconds (probability 20%).
+			 Create pedestrian, wait 2 seconds (probability 20%).
+			 Create pedestrian, wait 0.5 seconds (probability 50%).
+			 -->
+		<complexProperty name="timeGap" type="CsvList" valueType="Double">
+			<entry index="0" value="2.0"/> <!-- Values that can be drawn out of a generation distribution. -->
+			<entry index="1" value="6.0"/> <!-- Value that can be drawn out of a generation distribution. -->
+			<entry index="2" value="0.5"/> <!-- Values that can be drawn out of a generation distribution. -->
+		</complexProperty>	
+		<complexProperty name="percentage" type="CsvList" valueType="Double">
+			<entry index="0" value="0.2"/> <!-- Percentage that the time duration of index = 0 is used. -->
+			<entry index="1" value="0.3"/> <!-- Percentage that the time duration of index = 1 is used. -->
+			<entry index="2" value="0.5"/> <!-- Percentage that the time duration of index = 2 is used. -->
+		</complexProperty>
+	</generator>
+
+	<!-- This is an example of an External generator. -->
+	<!-- the external generator starts an executable command-line program that uses the exchangeFile
+		 to stored the number of pedestrian that should be generated. Before starting the external program,
+		 the generator will write that file and store the current time of the simulation in the file.
+		 Afterwards, the external command-line program is stared. The convention is that the external
+		 program writes the exchangeFile and stores the number of pedestrians to generate. 
+		 In general, the framework will wait until the external command was executed! -->
+	<generator id="4" name="generator" type="External" scenario="0" origin="4" seed="0">
+		<!-- The External generator does not have a startTime and endTime. -->
+		<property name="basicHeading" type="Double" value="90.0"/> <!-- Pedestrian looks "up" -->
+		<property name="maximalPedestrians" type="Integer" value="100"/> <!-- 100 Pedestrians to generate -->
+		<property name="safetyDistance" type="Double" value="0.25"/>  <!-- 0.25 meter spawn distance -->
+		<geometry geometryType="Lattice"/> <!-- Generate pedestrians randomly on a lattice -->
+		<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- Use the lattice with id 0 -->
+		
+		<!-- This file is used as basis for communication with the external program. -->
+		<property name="exchangeFile" type="File" value="C:\mypath\myfile"/>
+
+		<!-- The Executable type has a complexProperty container. It defines the command-line program to run. -->
+		<!-- The engine is the actual executable e.g. the java vm or a .exe file. -->
+		<!-- The runDirectory points to the folder in which the executable is stored. -->
+		<!-- The parameter List provides a list of space-separated parameters to pass to the executable. -->
+		<complexProperty id="0" name="externalGenerator" >
+			<property name="engine" type="String" value="python"/>
+			<property name="executable"  type="String"  value="stuff"/>
+			<property name="runDirectory"  type="String"  value="runDirectory"/>
+			<complexProperty name="parameter" type="List" valueType="String"/> 
+				<entry index="0" value="parameter1"/> 
+				<entry index="1" value="parameter2"/>
+				<entry index="2" value="parameter3"/> 
+		</complexProperty>
+	</generator>
+
+	<!-- This is an example of an Instant generator. It does not have an origin id. -->
+	<!-- The instant generator creates multiple pedestrian at the start of the simulation. -->
+	<!-- The user has to give the positions and the heading directions off all pedestrians. -->
+	<generator id="5" name="generator" type="Instant" scenario="0" seed="0">
+		<!-- The Instant generator does not have a startTime, endTime, maximalPedestrians, safetyDistance or a geometryType-->
+		
+		<!-- Typically, use a Matrix (or better a CsvMatrix) to provide the pedestrian data. -->
+		<!-- For example:
+			The content of the CsvMatrix should contain a line for every pedestrian that will be generated.
+			Each line has the format (; = separator)
+			xPosition; yPosition, xHeading; yHeading -->
+		<complexProperty name="startPositions" type="CsvMatrix" valueType="Double">
+			<entry file="./startPositions.csv" separator=";"/>
+		</complexProperty>
+	</generator>
+		
+	<!-- This is a Multiple generator example. -->
+	<!-- A Multiple generator helps you to define multiple identical generators for multiple origins. -->
+	<!-- This concept works for Plan, Distribution and Stock generator types. -->
+	<!-- Each sub-generator applies the identical properties. -->
+	<generator id="6" name="underground_exit" scenario="0" seed="0" type="Multiple">
+		<!-- The subType defines the type of generators to create:
+			Plan,
+			Distribution,
+			Stock, -->	 
+			<property name="subType" type="String" value="Plan"/>
+			
+			<!-- The origins list references to the origin id of the scenario layout. -->
+			<!-- For each of this origin a generators is created which follows the definition of the subType. -->
+			<complexProperty name="origins" type="List" valueType="Integer">
+				<entry index="0" value="0"/>
+				<entry index="1" value="1"/>
+				<entry index="2" value="2"/>
+				<entry index="3" value="3"/>
+				<entry index="4" value="4"/>
+				<entry index="5" value="5"/>
+				<entry index="6" value="6"/>
+				<entry index="7" value="7"/>
+				<entry index="8" value="8"/>
+				<entry index="9" value="9"/>
+				<entry index="10" value="10"/>
+				<entry index="11" value="11"/>
+				<entry index="12" value="12"/>
+				<entry index="13" value="13"/>
+				<entry index="14" value="14"/>
+				<entry index="15" value="15"/>
+				<entry index="16" value="16"/>
+				<entry index="17" value="17"/>
+			</complexProperty>
+			
+		<!-- The rest of the Multiple generator follows the generator configuration of the subType. -->
+		<!-- Thus take a look into the Plan, Distribution or Stock generator explanations. -->
+		<!-- The following example is for a Plan generator. -->
+		<property name="startTime" type="Double" value="0"/> <!-- Start at second 0 -->
+		<property name="endTime" type="Double" value="300.0"/> <!-- End at second 300 -->
+		<property name="basicHeading" type="Double" value="90.0"/> <!-- Pedestrian looks "up" -->
+		<property name="maximalPedestrians" type="Integer" value="100"/> <!-- 100 Pedestrians to generate -->
+		<property name="safetyDistance" type="Double" value="0.25"/>  <!-- 0.25 meter spawn distance -->
+		<geometry geometryType="Lattice"/> <!-- Generate pedestrians randomly on a lattice -->
+		<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- Use the lattice with id 0 -->
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0"/>
+				<entry index="1" value="50"/>  
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+</generators>

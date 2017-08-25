@@ -1,0 +1,53 @@
+﻿<!-- This example was created via the AutoCad Plugin and is linked to the exampeSimulation.xml layout scenario. -->
+<simulator version="MomenTumV2.0.0" simulationName="BasicExampleLayout">
+  <layouts>
+		<scenario id="0" name="2016_lauterbach_testcase_counterflow" maxX="50" maxY="25" minX="0" minY="0">
+			<graph id="0" type="Visibility">
+        		<property name="cornerDistance" type="Double" value="2"/>
+        	</graph>
+			<area id="0" name="Origin0" type="Origin">
+				<point x="50" y="5" />
+				<point x="45" y="0" />
+				<point x="50" y="0" />
+			</area>
+			<area id="1" name="Origin1" type="Origin">
+				<point x="0" y="0" />
+				<point x="5" y="0" />
+				<point x="0" y="5" />
+			</area>
+			<area id="2" name="Destination0" type="Destination">
+				<point x="0" y="20" />
+				<point x="5" y="25" />
+				<point x="0" y="25" />
+			</area>
+			<area id="3" name="Destination1" type="Destination">
+				<point x="45" y="25" />
+				<point x="50" y="20" />
+				<point x="50" y="25" />
+			</area>			
+			<obstacle id="0" name="Wall0" type="Wall">
+				<point x="0" y="0" />
+				<point x="50" y="0" />
+			</obstacle>
+			<obstacle id="1" name="Wall1" type="Wall">
+				<point x="50" y="0" />
+				<point x="50" y="25" />
+			</obstacle>
+			<obstacle id="2" name="Wall2" type="Wall">
+				<point x="50" y="25" />
+				<point x="0" y="25" />
+			</obstacle>
+			<obstacle id="3" name="Wall3" type="Wall">
+				<point x="0" y="25" />
+				<point x="0" y="0" />
+			</obstacle>
+			<obstacle id="4" name="Solid0" type="Solid">
+				<point x="20" y="10" />
+				<point x="30" y="10" />				
+				<point x="30" y="20" />
+				<point x="20" y="20" />				
+			</obstacle>
+			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout"  cellEdgeSize="0.46"/>
+		</scenario>
+	</layouts>
+</simulator>

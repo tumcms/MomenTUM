@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="2.0.0" simulationName="ODMatrix_behaviorType_Test">
+	
+	<strategicalModels>
+		<strategical id="0" name="ODMatrix_behaviorType_Test" type="ODMatrix" perceptualModel="0">
+			<complexProperty name="behaviorType" type="List" valueType="String">
+			    <entry index="2" value="Queuing"/>
+			    <entry index="3" value="Queuing"/>
+			    <entry index="5" value="Staying"/>
+			    <entry index="7" value="Staying"/>
+			</complexProperty>
+		</strategical>
+	</strategicalModels>
+	
+	<layouts>
+    	<scenario id="0" name="StrategicalModel_Scenario" maxX="51" maxY="51" minX="-1.0" minY="-1.0">
+			 <area id="0" name="Origin0" type="Origin">
+			    <point x="20" y="0" />
+			    <point x="30" y="0" />
+			    <point x="30" y="2" />
+			    <point x="20" y="2" />
+			  </area>
+			  <area id="1" name="LeftBottom" type="Intermediate">
+			    <point x="2" y="35" />
+			    <point x="15" y="35" />
+			    <point x="15" y="48" />
+			    <point x="2" y="48" />
+			  </area>
+			  <area id="2" name="RightBottom" type="Intermediate">
+			    <point x="30" y="20" />
+			    <point x="48" y="20" />
+			    <point x="48" y="48" />
+			    <point x="30" y="48" />
+			  </area>
+			  <area id="3" name="RightTop" type="Intermediate">
+			    <point x="32" y="2" />
+			    <point x="48" y="2" />
+			    <point x="48" y="10" />
+			    <point x="32" y="10" />
+			  </area>
+			  <area id="4" name="LeftTop" type="Intermediate">
+			    <point x="2" y="2" />
+			    <point x="15" y="2" />
+			    <point x="15" y="20" />
+			    <point x="2" y="20" />
+			  </area>
+			  <area id="5" name="Bottom" type="Destination">
+			    <point x="48" y="10" />
+			    <point x="50" y="10" />
+			    <point x="50" y="20" />
+			    <point x="48" y="20" />
+			  </area>
+			  <area id="6" name="Left" type="Destination">
+			    <point x="0" y="21" />
+			    <point x="2" y="21" />
+			    <point x="2" y="34" />
+			    <point x="0" y="34" />
+			  </area>
+			  <area id="7" name="Right" type="Destination">
+			    <point x="20" y="48" />
+			    <point x="30" y="48" />
+			    <point x="30" y="50" />
+			    <point x="20" y="50" />
+			  </area>
+		</scenario>
+	</layouts>
+</simulator>

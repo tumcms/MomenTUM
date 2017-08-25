@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<simulator version="0.9.0" simulationName="SCC_2016_Proof_Of_Concept_BTTW" simEnd="11800.0" threads="3" timeStepDuration="0.05">
+
+	<queryModels>
+		<query id="0" name="basicQuery" type="BasicQuery">
+			<property name="navigationDistanceRadius" type="Double" value="0.25"/>
+			<property name="navigationSizePolygon" type="Double" value="1.25"/>
+			<property name="navigationRotationPolygon" type="Double" value="75.0"/>
+		</query>
+	</queryModels>
+
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries"/>
+	</perceptualModels>
+
+	<operationalModels>
+		<operational id="0" name="operational" perceptualModel="0" queryModel="0">
+			<standingReference modelId="0"/>
+			<walkingReference modelId="0"/>
+		</operational>
+	</operationalModels>
+
+	<walkingModels>
+		<walking id="0" name="stock" type="StockCellular">
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<property name="timeStepMultiplicator" type="Integer" value="4"/>
+		</walking>
+		<!--  <walking id="0" name="socialForceModel" type="SocialForce">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="26.67"/>
+			<property name="mass_behaviour_B" type="Double" value="0.06"/>	
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="10e-6"/>
+		</walking>-->
+	</walkingModels>
+	<standingModels>
+		<standing id="0" name="fixedStanding" type="FixedStanding" />
+	</standingModels>
+
+	<tacticalModels>
+		<tactical id="1" name="tactical"  perceptualModel="0" queryModel="0">
+			<participatingReference modelId="0"/>
+			<queuingReference modelId="0"/>
+			<routingReference modelId="0"/>
+			<searchingReference modelId="0"/>
+		</tactical>
+	</tacticalModels>
+
+	<participatingModels>
+		<participating id="0" name="shiftedRandomParticipating" type="ShiftedRandomParticipating">
+			<property name="participateDistance" type="Double" value = "4.0"/>
+			<property name="numberOfGambles" type="Integer" value="30"/>
+			<property name="safetyDistance" type="Double" value="0.25"/>
+			<property name="groupPositionRadius" type="Double" value="2.0"/>
+			<complexProperty name="gatheringCrowding" type="List" valueType="String">
+				<entry index="1" value="Everywhere"/> 
+				<entry index="2" value="Everywhere"/> 
+				<entry index="3" value="Everywhere"/> 
+				<entry index="4" value="Everywhere"/> 
+				<entry index="5" value="Everywhere"/> 
+				<entry index="6" value="Everywhere"/> 
+				<entry index="7" value="Everywhere"/> 
+				<entry index="8" value="Everywhere"/> 
+				<entry index="9" value="Everywhere"/> 
+				<entry index="10" value="Everywhere"/> 
+				<entry index="11" value="Everywhere"/> 
+				<entry index="12" value="Everywhere"/> 
+				<entry index="19" value="Close"/> 
+				<entry index="20" value="Close"/> 
+				<entry index="21" value="Close"/> 
+				<entry index="84" value="Everywhere"/> 
+				<entry index="85" value="Everywhere"/> 
+				<entry index="86" value="Everywhere"/> 
+			</complexProperty>
+		</participating>
+	</participatingModels>
+	<queuingModels>
+		<queuing id="0" name="angularQueuing" type="AngularQueueing" >
+			<property name="safetyDistance" type="Double" value="0.23"/>
+			<property name="queueArc" type="Double" value="30"/>
+			<property name="queueDistance" type="Double" value="0.92"/>
+			<property name="initalDistance" type="Double" value="1.84"/>
+			<property name="queuingLag" type="Double" value="1.0"/>
+			<!-- use category="" in area for this, use initial distance between head and next ped-->
+			<complexProperty name="useIntial" type="List" valueType="String">
+				<entry index="0" value="wc"/>  
+			</complexProperty>
+			<!-- use category"" in area for this, describes if pedestrian should wait closer to themselves
+			in a queue, if not the will search a position closer to the queue ender to the next -->
+			<complexProperty name="closeToSelf" type="List" valueType="String">
+				<entry index="0" value="entrance"/>  
+			</complexProperty>
+		</queuing>
+	</queuingModels>
+	<routingModels>
+		<routing id="0" name="dijkstra" type="Dijkstra"/>
+	</routingModels>
+	<searchingModels>
+		<searching id="0" name="noSearching" type="NoSearching"/>
+	</searchingModels>
+
+	<strategicalModels>
+		<strategical id="0" name="csc" type="CognitiveSpatialChoice" perceptualModel="0" queryModel="0">
+			<!-- General Parameters -->
+			<property name="cognitiveClock" type="Double" value="0.25"/>
+			<property name="openingMalus" type="Double" value="3000.0"/>
+			<property name="perceptionFunction" type="String" value="Leaky"/>
+			<property name="occupancyFunction" type="String" value="Space"/>
+			<property name="rescheduleFunction" type="String" value="DecisionFieldTheory"/><!-- DecisionFieldTheory"/>-->
+			<property name="scheduleFunction" type="String" value="IntraAlternative"/>
+			<property name="preferenceFunction" type="String" value="Interest"/>
+			<property name="valuationFunction" type="String" value="Sigmoid"/>
+			
+			<!-- Group Id which should be used for model pedestrian data output -->
+			<property name="groupOutputTargetId" type="Integer" value="60"/>
+ 
+			<!-- Reschedule Parameter -->
+			<property name="decisionThresholdFactor" type="Double" value="1.5"/>
+			<!-- Test Value need to be fitted -->
+			<property name="eliminateThreshold" type="Double" value="-1.0"/>
+			<!-- Test Value need to be fitted -->
+
+			<!-- Perception Parameter -->
+			<property name="leakyIntegrationAlpha" type="Double" value="0.0076"/>
+			<property name="leakyIntegrationK" type="Double" value="0.98"/>
+			<property name="queuingOccupancyPenalty" type="Double" value="2.4"/>
+			<!-- Radius * 2 = 0.5 meter + minimal personal distance 1.2 meter, should be density dependent -->
+			<property name="distanceScale" type="Double" value="250.0"/>
+			<!-- Space of the outer environment e.g. building, festival, which norms the distance frame -->
+
+			<!-- Preference Parameter -->
+			<property name="minimalServiceTime" type="Double" value="1"/>
+			<!-- Test Value in seconds -->
+			<complexProperty name="groupDistribution" type="List" valueType="Double">
+				<entry index="0" value="0.52"/>  	
+				<entry index="1" value="0.4"/>
+				<entry index="2" value="0.08"/> 
+			</complexProperty>	
+			<!-- Number of people in each group, measured, index 0 -> 1 person -->
+			
+			<!-- Operation Parameter -->
+			<property name="proximityDistance" type="Double" value="2.0"/> 
+			<!-- Test Value in meter -->
+
+			<!-- Schedule Parameter -->
+			<property name="nearestNeighborThreshold" type="Double" value="1.5"/>
+			<!-- Test Value in meter -->
+			<property name="scheduleSizeMean" type="Double" value="7"/>
+			<!-- Test value -->
+			<property name="scheduleSizeVarianz" type="Double" value="1"/>
+			<!-- Test value -->
+			<property name="scheduleTimeMean" type="Double" value="0.5"/>
+			<!-- Test value -->
+			<property name="scheduleTimeVarianz" type="Double" value="0.5"/>
+			<!-- Test value for each visible goal -->
+
+			<!-- Valuation Parameter -->
+			<property name="valenceThreshold" type="Double" value="0.5"/>
+			<!-- Test value for each visible goal -->
+			<property name="intensityChange" type="Double" value="0.00001"/>
+			
+			<!-- Test value -->
+			<!-- Local Knowledge Histogram -->
+			<!-- <property name="familiarityMinimal" type="Double" value="1.0"/>	
+			<property name="familiarityBinSize" type="Double" value="0.0"/>
+			<complexProperty name="familiarityHistogram" type="List" valueType="Double">
+				<entry index="0" value="1.0"/>
+			</complexProperty> -->
+
+			<propertyContainer id="0" name="tickets">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="23"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="0"/>
+				<property name="oneTime" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="0.86"/>
+				<property name="serviceTimeGammaTheta" type="Double" value="9.51"/>
+				<property name="interarrivalTimeLambda" type="Double" value="6.48"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/>
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer"/> 
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="1" name="chill_out">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="1"/> 
+					<entry index="1" value="2"/> 
+					<entry index="2" value="3"/> 
+					<entry index="3" value="4"/> 
+					<entry index="4" value="5"/> 
+					<entry index="5" value="6"/> 
+					<entry index="6" value="7"/> 
+					<entry index="7" value="8"/> 
+					<entry index="8" value="9"/> 
+					<entry index="9" value="10"/> 
+					<entry index="10" value="11"/> 
+					<entry index="11" value="12"/> 
+					<entry index="12" value="21"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="1"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1600"/> 
+				<property name="serviceTimeGammaTheta" type="Double" value="0.75"/>
+				<property name="interarrivalTimeLambda" type="Double" value="5620.00"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/> 
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer">
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="2" name="bar">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="30"/> 
+					<entry index="1" value="31"/> 
+					<entry index="2" value="32"/> 
+					<entry index="3" value="33"/> 
+					<entry index="4" value="34"/> 
+					<entry index="5" value="35"/> 
+					<entry index="6" value="24"/> 
+					<entry index="7" value="25"/> 
+					<entry index="8" value="26"/> 
+					<entry index="9" value="27"/> 
+					<entry index="10" value="28"/> 
+					<entry index="11" value="41"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="2"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="1.8"/> 
+				<property name="serviceTimeGammaTheta" type="Double" value="26.49"/>
+				<property name="interarrivalTimeLambda" type="Double" value="1620.00"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/> 
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer">
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="3" name="food">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="22"/> 
+					<entry index="1" value="36"/> 
+					<entry index="2" value="37"/> 
+					<entry index="3" value="38"/> 
+					<entry index="4" value="39"/> 
+					<entry index="5" value="40"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="3"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="3.3"/> 
+				<property name="serviceTimeGammaTheta" type="Double" value="10.08"/>
+				<property name="interarrivalTimeLambda" type="Double" value="6480.00"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/> 
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer">
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="4" name="cigarette">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="29"/>  
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="4"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="67.50"/> 
+				<property name="serviceTimeGammaTheta" type="Double" value="0.67"/>
+				<property name="interarrivalTimeLambda" type="Double" value="11480.00"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/> 
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer">
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="5" name="dance">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="20"/> 
+					<entry index="1" value="19"/> 
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="5"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="2160"/> 
+				<property name="serviceTimeGammaTheta" type="Double" value="0.83"/>
+				<property name="interarrivalTimeLambda" type="Double" value="6230.00"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/> 
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer">
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="6" name="toilet">
+				<complexProperty name="areaIds" type="CsvList" valueType="Integer">
+					<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\proof_of_concept_input\SCC_2016_Proof_of_Concept_Toilet_Area_Ids.csv" separator=";"/>
+				</complexProperty>	
+				<property name="preferenceId" type="Integer" value="6"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="singlePlace" type="Boolean" value="True"/>
+				<property name="serviceTimeGammaK" type="Double" value="8.09"/> 
+				<property name="serviceTimeGammaTheta" type="Double" value="7.49"/>
+				<property name="interarrivalTimeLambda" type="Double" value="3240.00"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Waiting"/> 
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer">
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+			<propertyContainer id="7" name="exit_entrance">
+				<complexProperty name="areaIds" type="List" valueType="Integer">
+					<entry index="0" value="84"/>  
+				</complexProperty>
+				<property name="preferenceId" type="Integer" value="7"/>
+				<property name="oneTime" type="Boolean" value="False"/>
+				<property name="serviceTimeGammaK" type="Double" value="25"/> 
+				<property name="serviceTimeGammaTheta" type="Double" value="0.02"/>
+				<property name="interarrivalTimeLambda" type="Double" value="10480.00"/>
+				<property name="motivationalType" type="String" value="Approach"/>
+				<property name="occupancyType" type="String" value="Engage"/> 
+				<complexProperty name="predecessorPreferences" type="List" valueType="Integer">
+					<entry index="0" value="0"/>
+				</complexProperty>
+				<complexProperty name="openingHours" type="Matrix" valueType="Integer"/>
+			</propertyContainer>
+		</strategical>
+	</strategicalModels>
+
+	<generators>
+		<generator id="0" name="Entrance_Lantern" scenario="0" origin="0" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="1200"/>
+			<property name="safetyDistance" type="Double" value="2.0"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0"/>
+				<entry index="1" value="600"/>  
+				<entry index="2" value="651"/>
+				<entry index="3" value="1200"/> 
+				<entry index="4" value="1251"/>
+				<entry index="5" value="1800"/> 
+				<entry index="6" value="1851"/> 
+				<entry index="7" value="2400"/>
+				<entry index="8" value="2451"/>
+				<entry index="9" value="3000"/> 
+				<entry index="10" value="3051"/> 
+				<entry index="11" value="3600"/> <!-- 60 Min -->
+				<entry index="12" value="3651"/>
+				<entry index="13" value="4200"/>
+				<entry index="14" value="4251"/>
+				<entry index="15" value="4800"/>
+				<entry index="16" value="4851"/>
+				<entry index="17" value="5400"/>
+				<entry index="18" value="5451"/>
+				<entry index="19" value="6000"/>
+				<entry index="20" value="6051"/>
+				<entry index="21" value="6600"/>
+				<entry index="22" value="6651"/>
+				<entry index="23" value="7200"/> <!-- 120 Min -->
+				<entry index="24" value="7251"/>
+				<entry index="25" value="7800"/>
+				<entry index="26" value="7851"/>
+				<entry index="27" value="8400"/>
+				<entry index="28" value="8451"/>
+				<entry index="29" value="9000"/>
+				<entry index="30" value="9051"/>
+				<entry index="31" value="9600"/>
+				<entry index="32" value="9651"/>
+				<entry index="33" value="10200"/>
+				<entry index="34" value="10251"/>
+				<entry index="35" value="10800"/> <!-- 180 Min -->
+				<entry index="36" value="10851"/>
+				<entry index="37" value="11200"/> <!-- 190 Min -->
+				<entry index="38" value="11251"/>
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<entry index="0" value="0.00"/>
+				<entry index="1" value="0.05"/>	
+				<entry index="2" value="0.00"/>
+				<entry index="3" value="0.05"/>
+				<entry index="4" value="0.00"/>
+				<entry index="5" value="0.05"/>
+				<entry index="6" value="0.00"/>
+				<entry index="7" value="0.05"/>
+				<entry index="8" value="0.00"/>
+				<entry index="9" value="0.05"/>
+				<entry index="10" value="0.00"/>
+				<entry index="11" value="0.05"/>
+				<entry index="12" value="0.00"/>
+				<entry index="13" value="0.05"/>
+				<entry index="14" value="0.00"/>
+				<entry index="15" value="0.05"/>
+				<entry index="16" value="0.00"/>
+				<entry index="17" value="0.05"/>
+				<entry index="18" value="0.00"/>
+				<entry index="19" value="0.05"/> <!-- 50 % -->
+				<entry index="20" value="0.00"/>
+				<entry index="21" value="0.05"/>
+				<entry index="22" value="0.00"/>
+				<entry index="23" value="0.05"/>
+				<entry index="24" value="0.00"/>
+				<entry index="25" value="0.05"/>
+				<entry index="26" value="0.00"/>
+				<entry index="27" value="0.05"/>
+				<entry index="28" value="0.00"/>
+				<entry index="29" value="0.05"/>
+				<entry index="30" value="0.00"/>
+				<entry index="31" value="0.05"/>
+				<entry index="32" value="0.00"/>
+				<entry index="33" value="0.05"/>
+				<entry index="34" value="0.00"/>
+				<entry index="35" value="0.05"/>
+				<entry index="36" value="0.00"/>
+				<entry index="37" value="0.05"/>
+				<entry index="38" value="0.00"/>
+				<entry index="19" value="0.05"/> <!-- 10 % -->
+				<entry index="20" value="0.0"/>
+			</complexProperty>
+		</generator>
+		<!-- <generator id="0" name="Entrance_Lantern" type="Stock" scenario="0" origin="0" seed="0">
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="20"/>
+			<property name="safetyDistance" type="Double" value="1.5"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timePoint" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\proof_of_concept_input\SCC_2016_Proof_of_Concept_Generator_Duration.csv" separator=";"/>
+			</complexProperty>		
+			<complexProperty name="stock" type="CsvList" valueType="Integer">
+				<entry file="C:\Users\ga37sib\Desktop\Paper_InProgress\SCC_Strategic\research_data\proof_of_concept_input\SCC_2016_Proof_of_Concept_Generator_Stock.csv" separator=";"/>
+			</complexProperty>
+		</generator>-->
+	</generators>
+
+	<pedestrianSeeds>
+
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.34"/>
+			<property name="maximalVelocity" type="Double" value="2.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>
+			<property name="groupSize" type="Integer" value="1"/>
+		</pedestrianSeed>
+
+		<!--  <pedestrianSeed id="0" name="Force_Group_Seed" type="ForceGroup">
+			<property name="desiredVelocity" type="Double" value="1.04"/>
+			<property name="maximalVelocity" type="Double" value="1.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>	
+			<complexProperty name="groupSize" type="CsvList" valueType="Integer">
+				<entry file="C:\Users\ga37sib\Desktop\SCC_Strategic\research_data\proof_of_concept_input\SCC_2016_Proof_of_Concept_Seed.csv" separator=";"/> 
+			</complexProperty>
+		</pedestrianSeed>-->
+	</pedestrianSeeds>
+
+	<absorbers>
+		<absorber id="0" name="Exit_Lantern" scenario="0" destination="84" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="1.0"/> 
+		</absorber>
+	</absorbers>
+
+	<outputWriters>
+		<outputWriter id="0" name="csvWriter" type="csvSingleWriter">
+			<property name="call" type="Integer" value="5"/>
+			<property name="file" type="File" value="./SCC_2016_Proof_Of_Concept_BTTW_Output.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="targetID"/>
+				<entry index="7" value="groupID"/>
+				<entry index="8" value="leader"/>
+				<entry index="9" value="xNextWalkingTarget"/>
+				<entry index="10" value="yNextWalkingTarget"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="targetID" type="Format" value="%d"/>
+				<property name="groupID" type="Format" value="%d"/>
+				<property name="leader" type="Format" value="-"/>
+				<property name="xNextWalkingTarget" type="Format" value="%.2f"/>
+				<property name="yNextWalkingTarget" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+	<!--	<outputWriter id="1" name="layoutWriter" type="configurationWriter">
+			<property name="file" type="File" value="./SCC_2016_Proof_Of_Concept_BTTW_Layout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter> -->
+	</outputWriters> 
+
+	<!--	<graphModels>
+
+		<graphModel id="0" name="seeds" type="VertexCreateSeedBased" order="0"/>
+	
+ 		<graphModel id="1" name="corners" type="VertexCreateAtCorners" order="1"> 
+ 			<property name="cornerDistance" type="Double" value="0.7"/> 
+ 		</graphModel> 
+ 	
+		<graphModel id="2" name="vertices" type="VertexCreateVoronoiBased" order="2">
+			<property name="cellEdgeSize" type="Double" value="5.0"/>
+		</graphModel>
+
+		<graphModel id="3" name="remove" type="VertexRemoveSimple" order="3">
+			<property name="mergeDistance" type="Double" value="0.5"/>
+			<property name="visibilityTolerance" type="Double" value="0.1"/>
+		</graphModel>
+
+	
+ 		<graphModel id="4" name="visibility" type="EdgeCreateVisibilityAngleBased" order="4"> 
+ 			<property name="alpha" type="Double" value="30"/> 
+ 			<property name="visibilityTolerance" type="Double" value="0.1"/>
+ 		</graphModel> 
+
+		<graphModel id="5" name="removeDispensible" type="EdgeRemoveUnreachable" order="5"/>
+		
+ 		<graphModel id="6" name="usefulVertices" type="VertexCreateAtIntersections" order="6">
+			<property name="precision" type="Double" value="1.5"/>
+		</graphModel>
+	</graphModels> -->
+	
+	<layouts>
+		<scenario id="0" layoutLink="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\MomenTumV2Simulator\MTUM_2016_BTTW.xml"/>
+	</layouts>
+	
+</simulator>

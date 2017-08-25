@@ -1,0 +1,35 @@
+
+<gathering id="0" name="RandomGatheringModel" type="RandomGathering" queryModel="0">
+	<property name="gatheringSafetyDistance" type="Double" value="0.1"/> <!-- distance between pedestrian boundaries for gathering points -->
+	<property name="gatherGroupRadius" type="Double" value="5.0"/> <!-- Distance to group members at gathering location -->
+	<complexProperty name="gatheringCrowding" type="List" valueType="String"> <!--  index is intermediate or destination id value Everywhere | Far | Close -->
+	    <entry index="0" value="Everywhere"/>
+	    <entry index="1" value="Far"/>
+	    <entry index="2" value="Close"/>
+	</complexProperty>
+</gathering>
+
+<!-- Use the KielarGathering model only, if the applied strategic model can generate perform and queue task on sight to the goal area -->
+<gathering id="0" name="KielarGatheringModel" type="KielarGathering" queryModel="0">
+	<property name="gatheringSafetyDistance" type="Double" value="0.1"/> <!-- distance between pedestrian boundaries for gathering points -->
+	<property name="gatherGroupRadius" type="Double" value="5.0"/> <!-- Distance to group members at gathering location -->
+	<complexProperty name="gatheringCrowding" type="List" valueType="String"> <!--  index is intermediate or destination id value Everywhere | Far | Close -->
+	    <entry index="0" value="Everywhere"/>
+	    <entry index="1" value="Far"/>
+	    <entry index="2" value="Close"/>
+	</complexProperty> 
+	<!-- Percentage of occupancy for a location to switch to herding behavior -->
+	<property name="herdingThreshold" type="Double" value="0.125"/>
+	<!-- Percentage of occupancy for a location to switch to individual behavior again (random filling) -->
+	<property name="chaoticThreshold" type="Double" value="0.5"/> 
+	<!-- Arc in degree for positioning a queuing pedestrian behind in the queue -->
+	<property name="queueArc" type="Double" value="90.0"/> 
+	<!-- Distance to the next pedestrian in a queue -->
+	<property name="queueDistance" type="Double" value="1.0"/> 
+	<!-- Rotation to find the fix-point to look at (heading) for a perform area, 60 seems optimal (triangle)-->
+	<property name="attractorRotation" type="Double" value="60.0"/> 
+	<!-- Each pedestrian creates an rectangle for others to crowed to for perform areas this is width to fix-point -->
+	<property name="gatheringRectangleWidth" type="Double" value="2.0"/> 
+	<!-- Each pedestrian creates an rectangle for others to crowed to for perform areas this is height to fix-point -->
+	<property name="gatheringRectangleHeight" type="Double" value="1.0"/> 
+</gathering>

@@ -1,0 +1,5 @@
+<perceptual id="0" name="worldKnowledge" type="WorldKnowledge"/>
+
+<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+	<property name="Discretisation" type="Double" value="2.0"/>
+</perceptual>

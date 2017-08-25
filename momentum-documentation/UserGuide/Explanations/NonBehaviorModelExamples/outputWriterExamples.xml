@@ -1,0 +1,295 @@
+<!-- Output writer provide a method to extract data from simulation objects. -->
+<!-- Than, the formated data is printed in an output target, e.i. a file, a network or the console. -->
+
+<!-- The outputWriters definition block is: -->
+
+<outputWriters>
+
+	<!-- Here are outputWriters are defined. Each outputWriter has a:
+		 id, this is a unique number for all output writers
+		 name, a user-readable name
+		  -->
+	<outputWriter id="0" name="myOutputWriter"> 
+		
+		<!-- All output writer have a call property -->
+		<!-- It defines at which multiple of the time-step the writer should operate. -->
+		<!-- The value of call must be between 0 and Integer.MAX_VALUE to provide such behavior. -->
+		<!-- This concept is important to reduce the amount of data of a simulation. -->
+		<!-- For example, pedestrian data can be quite enormous if small time-step is used. -->
+		<!-- If the value of call is 0, the outputWriter is called in the end of the pre-processing phase. -->
+		<!-- If the value of call is Integer.MAX_VALUE, the writer is called in the end of the  post-processing phase. -->
+		<property name="call" type="Integer" value="2"/> <!-- Print every 2 * 0.05 = 0.1 seconds -->
+		
+		<!-- The buffer is an optional property that reduced the number of write operations. -->
+		<!-- A buffer of 1 (default value) force the writer data very call. -->
+		<!-- Hence, if data is written to a file this slows down the simulation. -->
+		<!-- If the PC has lots of memory, use a huge buffer e.g. >> 1000. -->
+		<!-- The writer will store the data until the buffer is full before writing the data to its target. -->
+		<property name="buffer" type="Integer" value="50"/>
+		
+		<!-- Every output writer has a writerTarget, writerFormat and writerSource -->
+		<!-- Each tag is mandatory for an output writer. -->
+		
+		
+		<!-- ***************************************** -->
+		<!-- Here, writerTarget information are given. -->
+		<!-- ***************************************** -->
+		
+		<!-- The writerTarget provides the location where to put the data. -->
+		<!-- The target can have three different types:
+			Console, the data is printed in the console (the command-line)
+			File, the data is stored in a file (using memory-mapped files)
+			Network the data is send to a network target (using active MQ) -->
+			
+		<!-- For each targetType different properties exists. -->
+		<!-- See blow the descriptions for each target type. -->
+		<!-- However, use only a single writerTarget for each outputWriter. -->
+		
+		<!-- The Console targetType explained: -->
+		<!-- The console type is simple, no further properties are needed. -->
+		<writerTarget targetType="Console"/>
+		
+		<!-- The file targetType explained: -->
+		<writerTarget targetType="File">
+		
+			<!-- The file is given by the file property. Use a full or relative path including the file name. -->
+			<property name="file" type="File" value="./2017_BasicExample_Pedestrian.csv"/>
+			
+			<!-- The File targetType is able to write additional information. -->
+			<!-- Typically, the index is used for Csv writerSources to provide a file index. -->
+			<!-- The index should be true for data that should be visualized. -->
+			<!-- This are for example density or pedestrian data. -->
+			<!-- If the data does not provide an index, no index file will be written. -->
+			<!-- This property is optional, it can be removed or set to False. -->
+			<property name="index" type="Boolean" value="True"/>
+		</writerTarget>
+		
+		<!-- The Network targetType explained: -->
+		<writerTarget targetType="Network">
+		
+			<!-- The hostAddress is the address of the simulation framework. -->
+			<property name="hostAddress" type="String" value="tcp://127.0.0.1:61616"/>
+			
+			<!-- The networkTopic provides the broadcast topic of the writer. -->
+			<!-- Reader will use this topic to listen to via active MQ. -->
+			<property name="networkTopic" type="String" value="SimulationData"/>
+		</writerTarget>
+		
+		<!-- ***************************************** -->
+		<!-- Here, writerFormat information are given. -->
+		<!-- ***************************************** -->
+		
+		<!-- The writerFormat use the data given by a writer source and puts it into a target. -->
+		<!-- The format can have the types:
+			Csv, prints the data into character separated values
+			Json, prints the data into a json structure
+			List, prints a single data set with a header and multiple line separated entries
+			Single, prints a single data element as string. -->
+			
+		<!-- For each formatType different properties exists. -->
+		<!-- See blow the descriptions for each format type. -->
+		<!-- However, use only a single writerFormat for each outputWriter. -->
+		
+		<!-- The Csv formatType explained: -->
+		<!-- The data is formated as following.
+			 Header properties from writerSource, separated by the delimiter following a newline. 
+			 First data line from writerSource, separated by the delimiter following a newline.
+			 Second data .... -->
+		<writerFormat formatType="Csv">
+			
+			<!-- The Csv formatType can provide index data that helps to fast access the information later. -->
+			<!-- Set this to true if the data should be visualized later on. -->
+			<!-- This property is optional, it can be removed or set to False. -->
+			<property name="index" type="Boolean" value="True"/> 
+			
+			<!-- The delimiter property defines the character that separates the values. -->
+			<!-- In German speaking countries this is often a semicolon ";". E.g. German excel uses this. -->
+			<!-- However, English based tools often us a comma ",". -->
+			<property name="delimiter" type="String" value=";"/>
+		</writerFormat>	
+		
+		<!-- The Json formatType explained: -->
+		<!-- The data is formated as following
+			{
+				"Data":
+				{
+					"Object" :
+					{
+						"Header1FromSource", "FirstDataValueForHeader1",
+						"Header2FromSource", "FirstDataValueForHeader2",
+						...More header first-value pairs...
+					},
+					"Object" :
+					{
+						"Header1FromSource", "SecondDataValueForHeader1",
+						"Header2FromSource", "SecondDataValueForHeader2",
+						...More header second-value pairs.....
+					}
+					...More Objects...
+				}
+			}
+			If the data is a number the quotes ".." for value are missing. -->
+		<!-- The Json writerFormat does not have further properties. -->
+		<writerFormat formatType="Json"/>	
+		
+		<!-- The List formatType explained: -->
+		<!-- The data is formated as following
+			Single Header of a set, following  newline
+			First data element of the set, following newline
+			Second .... -->
+		<!-- The List writerFormat does not have further properties. -->
+		<writerFormat formatType="List"/>
+		
+		<!-- The Single formatType explained: -->
+		<!-- The data is a lone string. -->
+		<!-- The Single writerFormat does not have further properties. -->
+		<writerFormat formatType="Single"/>
+		
+		<!-- ***************************************** -->
+		<!-- Here, writerSource information are given. -->
+		<!-- ***************************************** -->
+		
+		<!-- The writerSource provides the data source of the writer. -->
+		<!-- The source is a model or agents that have properties that can be read. -->
+		<!-- Furthermore, the source defines which data and the data accuracy via format strings. -->
+		<!-- The source can have different types:
+			Pedestrian, provides basic pedestrian data.
+			Time, provides computational-durations of the simulation. 
+			Configuration, provides access to the simulation configuration.
+			Analysis, provides access to analysis results.
+			Absorber, provides the number of removed pedestrians in the absorber.
+			
+			From here model specific types are given, which were explicitly implemented:
+			UPRM_Pedestrian, provides pedestrian data of the Unified Routing Model
+			CSC_Pedestrian, provides pedestrian data of the Spice Model
+			CSC, provides data of the Spice Model
+			TransitZones,  provides data of the transitum model
+			ClassicLWR,  provides data of the LWR model	-->
+			
+		<!-- Each type has a set of usable properties that can be used as source. -->
+		<!-- However, it is not mandatory to use all data properties. -->
+		<!-- See blow the descriptions for each source type. -->
+		<!-- Use only a single writerSource for each outputWriter. -->
+		
+		<!-- The pedestrian source explained: -->
+		<writerSource soureType="Pedestrian">
+			<!-- The pedestrian data source provides the following output properties: 
+				timeStep, is the current time-step of the simulation
+				id, the identification number of the pedestrian,
+				x, the x part of the position vector
+				y, the y part of the position vector
+				xHeading, the x part of the viewing gaze unit vector
+				yHeading, the y part of the viewing gaze unit vector
+				xVelocity, the x part of the velocity vector
+				yVelocity, the y part of the velocity vector
+				xNextWalkingTarget, the x part of the position vector of the next walking target
+				yNextWalkingTarget, the y part of the position vector of the next walking target
+				currentVertexID, the identification number of the next navigation vertex (from the graph)
+				targetID, the identification number of the next strategic target (from an area)	
+				behavior, the text of the currently executed behavior of a pedestrian
+				motoric, the text of the currently executed movement behavior	
+				leader, indicates if the pedestrian is a leader of a group (will stay the same most of the time)
+				groupID, the identification number of the social group of a pedestrian
+				seedID, the identification number of the seed the pedestrian was create with (will stay the same most of the time)
+				bodyRadius, the body radius (will stay the same most of the time)
+				desiredVelocity, the desired velocity (will stay the same most of the time)
+				maximalVelocity, the maximal velocity  (will stay the same most of the time) -->
+			<!-- The accuracy of the data elements can be set by Java format strings. -->
+			<!-- This is a typical minimal example of pedestrian data to visualize a simulation. -->
+			<!-- IMPORTANT, the order of the following properties provide the order the properties are processes. -->
+			<!-- E.g. in a csv file the order would be timeStep, id, x, y, xHeading, yHeading, behavior. -->
+			<property name="timeStep" type="Format" value="%d"/> <!-- Full integer accuracy -->
+			<property name="id" type="Format" value="%d"/> 
+			<property name="x" type="Format" value="%.2f"/> <!-- 2 decimals  -->
+			<property name="y" type="Format" value="%.2f"/>
+			<property name="xHeading" type="Format" value="%.2f"/>
+			<property name="yHeading" type="Format" value="%.2f"/>
+			<property name="behavior" type="Format" value="%s"/> <!-- This is a text. -->
+		</writerSource>
+		
+		<!-- The time source explained: -->
+		<writerSource sourceType="Time">
+			<!-- The time data source provides the following output properties:
+				 runTime, gives current runtime of the simulation in hours (%hr), minutes (%min), or seconds (%sec)
+				 overheadTime, gives the time not simulating pedestrian behavior in hours (%hr), minutes (%min), or seconds (%sec)
+				 postProcessingTime, gives the post-processing time of the simulation in hours (%hr), minutes (%min), or seconds (%sec)
+				 preProcessingTime, gives the pre-processing time of the simulation in hours (%hr), minutes (%min), or seconds (%sec). -->
+			<!-- Furthermore, the name of each model, defined by the user in the model's xml name attribute
+				 can be used to get the runtime of this model. Be aware that calls to libraries
+				 and e.g. perception models are included in the runtime. -->
+			<!-- The Time source is typically combined with a list output format.
+				 For the following example the result would be:
+				 runTime; ValueForRuntime, newline
+				 socialForceModel; ValueForRuntime, newline -->
+			<property name="runTime" type="Format" value="%min"/> <!-- Simulation runtime in minutes-->
+			<property name="socialForceModel" type="Format" value="%sec"/>  <!-- Runtime of model with name "socialForceModel" in seconds. -->
+		</writerSource>
+		
+				
+		<!-- The configuration source explained: -->
+		<writerSource sourceType="Configuration">
+			<!-- The configuration data source provides an output type for every high-level xml tag of the configuration.
+				For example:
+				layouts,
+				logging,
+				graphs, or
+				analysisModels.
+				In general, all tags that are one step below the simulator xml tag can be used. -->
+			<!-- The data is defined by the dataElement property of the configuration source. -->
+			<!-- Use this source with the Single writerFormat. -->
+			<property name="dataElement" type="String" value="layout"/>
+		</writerSource>
+		
+		<!-- The analysis source explained: -->
+		<!-- Because the analysis source points to a specific analysis model, the addtionalId give the id from which model the data is used. -->
+		<writerSource sourceType="Analysis" additionalId="0">
+			<!-- Based on the analysis model different data can be used.
+				 Thus, the output data elements are specific for each analysis model. -->
+				 
+			<!-- AgentExistens analysis model: -->
+			<property name="timeStep" type="Format" value="%d"/> <!-- Time step where a pedestrian was removed from a simulation. -->
+			<property name="id" type="Format" value="%d"/> <!-- The id of the pedestrian that was removed from a simulation. -->
+			<property name="exist" type="Format" value="%d"/> <!-- The number of time steps the pedestrian existed. -->
+			
+			<!-- AreaOccupancy analysis model: -->
+			<property name="timeStep" type="Format" value="%d"/> <!-- Time step at which the analysis was done. -->
+			<property name="id" type="Format" value="%d"/> <!-- The id area at which the analysis was done. -->
+			<property name="areaOccupancy" type="Format" value="%d"/> <!-- The number pedestrians at the area at time step x. -->
+			
+			<!-- LineCrossing analysis model: -->
+			<property name="timeStep" type="Format" value="%d"/> <!-- Time step at which a pedestrian crossed all lines. -->
+			<property name="id" type="Format" value="%d"/> <!--  The id of the pedestrian that crossed all lines. -->
+			<property name="linesCrossed" type="Format" value="%d"/> <!-- The number of lines defined in the analysis model. -->
+			
+			<!-- WalkingDistance analysis model: -->
+			<property name="timeStep" type="Format" value="%d"/> <!-- Time step at which the analysis was done. -->
+			<property name="id" type="Format" value="%d"/> <!-- The id of the pedestrian that is analyzed. -->
+			<property name="walkingDistance" type="Format" value="%d"/> <!-- The distance the pedestrian walked until time step x. -->
+			
+			<!-- XtDensity analysis model: -->
+			<property name="timeStep" type="Format" value="%d"/> <!-- Time step at which the analysis was done. -->
+			<property name="id" type="Format" value="%s"/> <!-- The name/id of the cell on the 2D grid at which the analysis was done. -->
+			<property name="cornerSize" type="Format" value="%d"/> <!-- The size of the quadratic cell of the 2D grid. -->
+			<property name="cellCenterX" type="Format" value="%d"/> <!-- The x position of the center of the cell of the 2D grid. -->
+			<property name="cellCenterY" type="Format" value="%d"/> <!-- The y position of the center of the cell of the 2D grid. -->
+			<property name="density" type="Format" value="%d"/> <!-- The density in the cell of the 2D grid at time step x. -->
+			<property name="maximalDensity" type="Format" value="%d"/> <!-- The maximal density. -->
+
+		</writerSource>
+		
+		<!-- The absorber source explained: -->
+		<!-- Because the absorber source points to a specific absorber model, the addtionalId give the id from which model the data is used. -->
+		<writerSource sourceType="Absorber" additionalId="0">
+			<!-- Absorber models provide a single information to output writer:
+				removedCount at timeStep -->
+			<!-- Hence, absorber models count the number of removed pedestrians. -->
+			<property name="timeStep" type="Format" value="%d"/> <!-- The time step at which the removed number of pedestrian was read. -->
+       		<property name="removedCount" type="Format" value="%d"/> <!-- The number of pedestrians removed in the absorber model.  -->
+		</writerSource>
+		
+		<!-- In order to use the specific model sources, take a look into the implementation. -->
+		
+	</outputWriter>
+	
+</outputWriters>
+

@@ -1,0 +1,19 @@
+	<participatingModels>
+		<participating id="0" name="shiftedRandomParticipating" type="ShiftedRandomParticipating">
+			<property name="participateDistance" type="Double" value = "0.5"/>
+			<property name="numberOfGambles" type="Integer" value="60"/>
+			<property name="safetyDistance" type="Double" value="0.6"/>
+			<property name="groupPositionRadius" type="Double" value="2.0"/>
+			<!-- use category="" in area for this, use in -->
+			<complexProperty name="close" type="List" valueType="String">
+				<entry index="0" value="Cateogry"/> 
+			</complexProperty>
+			<complexProperty name="far" type="List" valueType="String">
+				<entry index="0" value="Cateogry"/> 
+			</complexProperty>
+			<complexProperty name="center" type="List" valueType="String">
+				<entry index="0" value="Cateogry"/> 
+			</complexProperty>
+			<!-- all other areas are of type everywhere -->
+		</participating>
+	</participatingModels>

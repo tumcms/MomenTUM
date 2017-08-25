@@ -1,0 +1,13 @@
+<!-- The lattice models are quite simple and used to provide lattice to other models if demanded. -->
+<!-- The basic idea of a lattice model originates in saving memory, because lattice can be quite huge. -->
+<!-- If every model generates a lattice for its one needs, this may create out of memery exceptions. -->
+
+<!-- Lattices are defined in the lattices tag -->
+<lattices>
+	<!-- Each lattice has a unique lattice id,
+		 a scenariId to reference the corresponding scenario in the layouts xml tag section,
+		 a latticeType, which defines if a Quadratic or Hexagonal is used (at the moment only quadratic is implemented)
+		 a neigborhoodType, which defines if neigborhood cells are these which touch (Touching) a cell or touch (Edge) the edges of a cell.
+		 a cellEdgeSize, which defines the size of the edge of a cell-->
+	<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" cellEdgeSize="0.46"/>
+</lattices>

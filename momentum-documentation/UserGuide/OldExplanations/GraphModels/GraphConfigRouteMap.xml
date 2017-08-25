@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<simulator version="MomenTumV2.0.1" simulationName="BTTW_" simEnd="900.0" threads="3" timeStepDuration="0.05">
+
+	<outputWriters>
+		<outputWriter id="1" name="layoutWriter" type="configurationWriter">
+			<property name="file" type="File" value="./RouteMap_Layout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+	</outputWriters>
+	
+	<graphs>
+		<graphModel name="routing" id="0">
+			<!-- Creates a vertex in the center of each origin, destination and intermediate area -->
+			<graphOperation id="0" name="seeds" type="VertexCreateSeedBased" order="0"/>
+			
+			<!-- Creates vertices based on the Voronoi diagram of the scenario geometry -->
+			<!-- parameter cellEdgeSize: the edge size of the grid used to generate the Voronoi diagram -->
+			<graphOperation id="1" name="vertices" type="VertexCreateVoronoiBased" order="1">
+				<property name="cellEdgeSize" type="Double" value="0.44"/>
+			</graphOperation>
+			
+			<!-- Merges vertices in the range of the given precision -->
+	
+			<graphOperation id="2" name="simple" type="VertexRemoveSimple" order="2">
+				<property name="mergeDistance" type="Double" value="0.44"/>
+			</graphOperation>
+			
+			<!-- Connects all vertices based on their visibility -->
+			<graphOperation id="3" name="visibility" type="EdgeCreateVisibilityConnect" order="3"/>
+			
+			<!-- Converts the graph to a minimum spanning tree -->
+			<graphOperation id="4" name="MST" type="EdgeRemoveMST" order="4"/>
+			
+			<!-- Removes all edges and vertices unreachable from the defined points -->
+			<graphOperation id="5" name="deleteUnreachables" type="EdgeRemoveUnreachable" order ="5"/>
+			
+			<!-- Adds useful edges according to Overmars -->
+			<!-- property detourFactor: if the path between two vertices along the current graph is by the given detourFactor longer than the direct connection, the direct connection is added as a new edge to the graph-->
+			<graphOperation id="6" name="usefulEdges" type="EdgeCreateOvermarsUseful" order="6">
+				<property name="detourFactor" type="Double" value="10"/>
+				<property name="visibilityTolerance" type="Double" value="0.25"/>
+			</graphOperation>
+			
+			<!-- Creates vertices at intersection points of graph edges -->
+			<!-- parameter precision: the minimum distance between two vertices -->
+			<graphOperation id="7" name="usefulVertices" type="VertexCreateAtIntersections" order="7">
+				<property name="precision" type="Double" value="0.44"/>
+			</graphOperation>
+		</graphModel>
+	</graphs>
+	
+	 <layouts>
+    	<scenario id="0" name="OperationalModels_Scenario" maxX="100.0" maxY="30.0" minX="0.0" minY="0.0">
+			<area id="0" name="origin" type="Origin">
+				<point x="0.0" y="0.0"/>
+				<point x="6.0" y="0.0"/>
+				<point x="6.0" y="30.0"/>
+				<point x="0.0" y="30.0"/>
+			</area>
+			<area id="1" name="dest" type="Destination">
+				<point x="98.0" y="0.0"/>
+				<point x="100.0" y="0.0"/>
+				<point x="100.0" y="30.0"/>
+				<point x="98.0" y="30.0"/>
+			</area>		
+			<obstacle name="outerWallTop" type="Wall">
+				<point x="0.0" y="0.0"/>
+				<point x="100.0" y="0.0"/>
+			</obstacle>			
+			<obstacle name="outerWallRight" type="Wall">
+				<point x="100.0" y="0.0"/>
+				<point x="100.0" y="30.0"/>
+			</obstacle>		
+			<obstacle name="outerWallBottom" type="Wall">
+				<point x="100.0" y="30.0"/>
+				<point x="0.0" y="30.0"/>
+			</obstacle>		
+			<obstacle name="outerWallLeft" type="Wall">
+				<point x="0.0" y="30.0"/>
+				<point x="0.0" y="0.0"/>
+			</obstacle>
+			<obstacle name="spike1" type="Solid">
+				<point x="65.0" y="0.0"/>
+				<point x="75.0" y="0.0"/>
+				<point x="75.0" y="10.0"/>
+			</obstacle>	
+			<obstacle name="spike2" type="Solid">
+				<point x="55.0" y="20.0"/>
+				<point x="45.0" y="5.0"/>
+				<point x="55.0" y="5.0"/>
+			</obstacle>	
+			<obstacle name="spike3" type="Solid">
+				<point x="65.0" y="25.0"/>
+				<point x="75.0" y="20.0"/>
+				<point x="75.0" y="25.0"/>
+			</obstacle>	
+			<obstacle name="spike4" type="Solid">
+				<point x="55.0" y="30.0"/>
+				<point x="45.0" y="30.0"/>
+				<point x="55.0" y="25.0"/>
+			</obstacle>	
+			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout"  cellEdgeSize="0.46"/>
+		</scenario>
+  </layouts>
+
+</simulator>

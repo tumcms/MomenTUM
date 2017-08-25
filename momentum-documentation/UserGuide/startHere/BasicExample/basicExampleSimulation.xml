@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="2.0.0" simulationName="ExampleSimulation">
+	
+	<!-- The simulation runs 1200 seconds = 20 Minutes, and has 1200/0.05 = 24000 steps of length 0.05 second. -->
+	<timeState simulationEndTime="1200.0" timeStepDuration="0.05"/>
+	
+	<!-- The parallelization is done based on 3 threads. -->
+	<threadingState threads="3"/>
+	
+	<!-- We log to the console on debug level. -->
+	<logging>
+		<loggingState type="Console" level="Debug"/>
+	</logging>
+	
+	<!-- We re-run the simulation. Each re-run the name="LOOP" variable will be increased. -->
+	<!-- The variables starts at 0.0 ends after at 1.0; thus, after 2 changes. -->
+	<!-- Look for $LOOP$, this value will be exchanged in each loop. -->
+	<loop updateType="Stepwise" accuracyDigits="1">
+		<loopVariable name="LOOP" start="0.0" change="1.0" steps="0"/> <!-- number of steps number of loops --> 
+	</loop>
+	
+	<!-- The layout was created via the AutoCad Plugin. -->
+	<!-- We use the link option of the layout scenario to load it. -->
+	<!-- The content of the scenario could have been copy-pasted to into the scenario tag. -->
+	<layouts>
+		<scenario id="0" layoutLink="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleLayout.xml"/>
+	</layouts>
+	
+	<!-- We need 2 lattices. -->
+	<lattices>
+		<!-- Used by the generated=0 -->
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46"/>
+		<!-- Used by the xtDensity analysis=1 -->
+		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="1.0"/>
+	</lattices>
+	
+	<!-- A simple routing graph is generated for the routing model=4 -->
+	<graphs>
+		<graphModel name="routing" id="0">
+			 <graphOperation id="0" name="raw" type="RawGraph">
+				<property name="graphId" type="Integer" value="0"/>
+			</graphOperation> 
+			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased"/>
+			<graphOperation id="2" name="corners" type="VertexCreateAtCorners"> 
+				<property name="cornerDistance" type="Double" value="0.7"/> 
+			</graphOperation> 	
+			<graphOperation id="3" name="visibility" type="EdgeCreateVisibilityConnect">
+				<property name="visibilityTolerance" type="Double" value="0.1"/>
+			</graphOperation> 
+			<graphOperation id="4" name="removeDispensible" type="EdgeRemoveUnreachable"/>
+			<graphOperation id="5" name="toConfiguration" type="ToConfiguration">
+				<property name="scenarioId" type="Integer" value="0"/>
+			</graphOperation>
+		</graphModel> 
+	</graphs>
+	
+	<!-- <exeuctionOrder> is not needed in this simulation, because we apply the classical approach. -->
+	
+	<!-- The standard BlockingGeometries perception model is used.. there is no other. -->
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+			<property name="accuracy" type="Double" value="0.1"/>
+		</perceptual>
+	</perceptualModels>
+	
+	<!-- A single operational model, because we apply the "classical" simulation approach. -->
+	<operationalModels>
+		<operational id="1" name="operational" perceptualModel="0">
+			<walkingReference modelId="2"/>
+			<standingReference modelId="3"/>
+		</operational>
+	</operationalModels>
+	
+	<!-- A single walking model. -->
+	<walkingModels>
+        <walking id="2" name="socialForceModel" type="SocialForce">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="1.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="0.2e5"/>
+			<property name="panic_degree" type="Double" value="0.0"/>
+			<property name="mass_behaviour_A" type="Double" value="29.0"/>
+			<property name="mass_behaviour_B" type="Double" value="0.04"/>	
+		</walking>
+	</walkingModels>
+	
+	<!-- A single standing model -->
+	<standingModels>
+		<standing id="3" name="JohannsonStanding" type="JohannsonStanding">
+			<property name="relaxation_time" type="Double" value="0.5" />
+			<property name="physical_interaction_kappa" type="Double" value="1.4e5" />
+			<property name="physical_interaction_k" type="Double" value="0.2e5" />
+			<property name="mass_behaviour_A" type="Double" value="29.0"/>
+			<property name="mass_behaviour_B" type="Double" value="0.04"/>	
+			<property name="waiting_case" type="Integer" value="1" />
+			<property name="massWaitingPoint" type="Double" value="1.0" />
+		</standing> 
+	</standingModels>
+	
+	<!-- A single tactical model. -->
+	<tacticalModels>
+		<tactical id="4" name="tactical"  perceptualModel="0">
+			<routingReference modelId="5"/>
+			<stayingReference modelId="6"/>
+			<queuingReference modelId="7"/>
+			<searchingReference modelId="8"/>
+			<property name="goalDistanceRadius" type="Double" value="0.15" />
+			<property name="navigationDistanceRadius" type="Double" value="0.66"/>
+		</tactical>
+	</tacticalModels>
+
+	<!-- A single routing model. -->
+	<routingModels>
+		<routing id="5" name="dijkstra" type="Dijkstra"/>
+	</routingModels>
+	
+	<!-- A single staying model. -->
+	<stayingModels>
+		<staying id="6" name="shiftedRandomParticipating" type="ShiftedRandomParticipating">
+			<property name="participateDistance" type="Double" value="2.0"/>
+			<property name="numberOfGambles" type="Integer" value="60"/>
+			<property name="safetyDistance" type="Double" value="0.1"/>
+			<property name="groupPositionRadius" type="Double" value="2.0"/>
+		</staying>
+	</stayingModels>
+	
+	<!-- A single queueing model. -->
+	<queuingModels>
+		<queuing id="7" name="angularQueuing" type="AngularQueueing" >
+			<property name="proximityDistance" type="Double" value="1.5"/>
+			<property name="safetyDistance" type="Double" value="0.1"/>
+			<property name="queueArc" type="Double" value="30"/>
+			<property name="queueDistance" type="Double" value="0.71"/>
+			<property name="queuingLag" type="Double" value="1.5"/>
+			<complexProperty name="closeToSelf" type="List" valueType="String">
+				<entry index="0" value="ticket"/> 
+			</complexProperty>
+		</queuing>
+	</queuingModels>
+
+	<!-- A single searching model. This is a dummy model, which provides no real searching behavior!. -->
+	<searchingModels>
+		<searching id="8" name="noSearching" type="NoSearching"/>
+	</searchingModels>	
+	
+	<!-- A single destination choice (strategic model) model. -->
+	<strategicalModels>
+		<strategical id="9" name="odMatrx" type="ODMatrix" perceptualModel="0">
+			<complexProperty name="originDestination" type="CsvMatrix" valueType="Double">
+				<entry file="C:\Programmierung\MomenTumV2_workspace\MomenTumV2Trunk\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleODMatrix.csv" separator=";"/>
+			</complexProperty>
+			<complexProperty name="behaviorType" type="List" valueType="String">
+			    <entry index="1" value="Staying"/>
+			    <entry index="2" value="Queuing"/>
+			    <entry index="3" value="Staying"/>
+			</complexProperty>
+			<complexProperty name="fulfilmentDuration" type="List" valueType="Double">
+			   	<entry index="1" value="60.0"/>
+			    <entry index="2" value="10.0"/>
+			    <entry index="3" value="1.0"/>
+			</complexProperty>
+		</strategical>
+	</strategicalModels>
+	
+	<!-- A seed concept for the generator, provides basic pedestrian data -->
+	<pedestrianSeeds>
+		<!-- The seed is used in the generator=0 -->
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.34"/>
+			<property name="maximalVelocity" type="Double" value="2.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>
+			<property name="groupSize" type="Integer" value="1"/>
+		</pedestrianSeed>
+	</pedestrianSeeds>
+	
+	<!-- A single generator -->
+	<generators>
+		<!-- The generator is used for the scenario=0 origin=0, which are in the exampleLayout.xml file. -->
+		<!-- Lattice=0 is used and pedestrian are generated randomly on the lattice=0 and origin=0. -->
+		<generator id="0" name="generator" scenario="0" origin="0" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="90"/>
+			<property name="maximalPedestrians" type="Integer" value="400"/>
+			<property name="safetyDistance" type="Double" value="0.5"/>
+			<geometry geometryType="Lattice" fillingType="Random" />
+			<property name="scenarioLatticeId" type="Integer" value="0"/> 
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0"/> 
+				<entry index="1" value="200.0"/> 
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double"> 
+				<entry index="0" value="1.0"/> 
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+	</generators>
+	
+	<!-- A single absorber -->
+	<absorbers>
+		<!-- The generator is used in the scenario=0 destination=3, which are in the exampleLayout.xml file. -->
+		<absorber id="0" name="absorber" scenario="0" destination="3" type="DestinationInstantly">
+			<property name="vanishTime" type="Double" value="0.2"/>
+		</absorber>
+	</absorbers>
+	
+	<!-- Two analysis models are applied, occupancy and xt-Density.  -->
+	<analysisModels>
+	
+		<!-- The occupancy counts the number of pedestrians performing an activity in intermediate locations. -->
+		<analysis id="0" name="occupancyAnalysis">
+		
+			<property name="call" type="Integer" value="20"/> <!-- Every 1 seconds -->
+			<property name="analysisStartStep" type="Integer" value="0"/>
+			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			
+			<measure type="AreaOccupancy"/>
+			
+			<writerSource sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="targetID" type="Format" value="%d"/>
+				<property name="behavior" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+			</writerSource>
+		</analysis>
+		
+		<!-- The xtDensity analysis computes the pedestrian density on lattice=1. -->
+		<analysis id="1" name="xtDensityAnalysis">
+	
+			<property name="call" type="Integer" value="20"/> <!-- Every 1 seconds -->
+			<property name="analysisStartStep" type="Integer" value="0"/>
+			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			
+			<measure type="XtDensity">		
+				<property name="latticeId" type="Integer" value="1"/>
+				<property name="timeRange" type="Integer" value="3"/>
+				<property name="maximalDensity" type="Double" value="5.0"/>
+			</measure>
+			
+			<writerSource sourceType="Pedestrian"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+			</writerSource>
+		</analysis>
+	</analysisModels>
+	
+	<!-- We print the pedestrian data, xt-density data, occupancy data, the number of leaving pedestrians and the configuration -->
+	<outputWriters>
+		<outputWriter id="0" name="pedestrianOutputToFile"> 
+			<property name="call" type="Integer" value="2"/> <!-- Print every 2 * 0.05 = 0.1 seconds -->
+			<property name="buffer" type="Integer" value="50"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_BasicExample_Pedestrian_$LOOP$.csv"/>
+				<property name="index" type="Boolean" value="True"/> 
+			</writerTarget>
+			<writerFormat formatType="Csv">
+				<property name="index" type="Boolean" value="True"/> 
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>
+			<writerSource sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="behavior" type="Format" value="%d"/>
+				<property name="currentVertexID" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		
+		<outputWriter id="1" name="layoutWriter">
+			<property name="call" type="Integer" value="0"/> <!-- In pre-processing -->
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_BasicExample_Layout.xml"/>
+			</writerTarget>
+			<writerFormat formatType="Single"/>
+			<writerSource sourceType="Configuration">
+				<property name="dataElement" type="String" value="layouts"/>
+			</writerSource>
+		</outputWriter>
+		
+		<outputWriter id="2" name="occupancyAnalysisOutput">
+			<property name="call" type="Integer" value="20"/> <!-- Every 1 seconds -->
+			<property name="buffer" type="Integer" value="100"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_BasicExample_Occupancy_$LOOP$.csv"/>
+			</writerTarget>
+			<writerFormat formatType="Csv">
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="areaOccupancy" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter> 
+		
+		<outputWriter id="3" name="densityAnalysisOutput">
+			<property name="call" type="Integer" value="20"/> <!-- Every 1 (0.05 * 40) seconds -->
+			<property name="buffer" type="Integer" value="1"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_BasicExample_XT_Density_$LOOP$.csv"/>
+				<property name="index" type="Boolean" value="True"/> 
+			</writerTarget>
+			<writerFormat formatType="Csv">
+				<property name="index" type="Boolean" value="True"/> 
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>			
+			<writerSource sourceType="Analysis" additionalId="1"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%s"/>
+				<property name="cornerSize" type="Format" value="%.2f"/>
+				<property name="cellCenterX" type="Format" value="%.2f"/>
+				<property name="cellCenterY" type="Format" value="%.2f"/>
+				<property name="density" type="Format" value="%.2f"/>
+				<property name="maximalDensity" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter> 
+		
+		<!--  This is a Model specific output writer for absorbers! -->
+		<outputWriter id="4" name="outflowAbsorber">
+			<property name="call" type="Integer" value="1"/> <!-- Print time step, in order to get all removed pedestrians. -->	
+			<property name="buffer" type="Integer" value="50"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_BasicExample_OutFlow_$LOOP$.csv"/>
+			</writerTarget>
+			<writerFormat formatType="Csv">
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>
+			<!-- Output source is an absorber with the id = 0 -->
+            <writerSource sourceType="Absorber" additionalId="0"> 
+               <property name="timeStep" type="Format" value="%d"/>
+               <property name="removedCount" type="Format" value="%d"/>
+            </writerSource>
+		</outputWriter>
+	</outputWriters>
+</simulator>

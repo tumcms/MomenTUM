@@ -1,0 +1,45 @@
+<complexProperty name="Origins" type="List" valueType="String">
+    <entry index="0" value="start1"/>
+    <entry index="1" value="start2"/>
+    <entry index="2" value="start3"/>
+ </complexProperty>
+  
+  <!-- The index property of the entries have to be without missing values from 0 till max -->
+ <complexProperty name="Models" type="LinkedHashMap" valueType="String">
+    <entry index="0" key="12" value="start1" /> <!-- key is integer and unique in the map -->
+    <entry index="1" key="1" value="start2"/>
+    <entry index="2" key="-1" value="start3"/>
+ </complexProperty>
+ 
+<complexProperty name="percentage" type="CsvList" valueType="Double">
+	<entry file="./pedestrainPercentages.csv" separator=";"/>
+</complexProperty>
+
+<complexProperty name="percentage" type="CsvMatrix" valueType="String">
+	 <entry file="./pedestrainPercentages1.csv" separator=";"/>
+</complexProperty>
+
+<complexProperty name="testProp" type="Matrix" valueType="Double">
+  <row index="0">
+    <column index="0" value="2.0"/>
+    <column index="1" value="3.0"/>
+  </row>
+  <row index="1">
+    <column index="0" value="-2.0"/>
+    <column index="1" value="-3.0"/>
+  </row>
+</complexProperty>
+
+<complexProperty name="testProp" type="Matrix" valueType="Integer">
+  <row index="0">
+    <column index="0" value="2"/>
+    <column index="1" value="3"/>
+  </row>
+  <row index="1">
+    <column index="0" value="-2"/>
+    <column index="1" value="-3"/>
+  </row>
+</complexProperty>
+
+<propertyContainer name="x" id="0"> <!-- named sub cointainer usable in all property containers -->
+</propertyContainer>

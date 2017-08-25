@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>tum.cms.sim.momentum</groupId>
+	<artifactId>momentum-utility</artifactId>
+	<version>2.0.2</version>
+	<packaging>jar</packaging>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+	
+
+	<dependencies>
+		<dependency>
+			<groupId>de.xabsl</groupId>
+			<artifactId>jxabsl</artifactId>
+			<version>2014Bugfix0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>delaunay</groupId>
+			<artifactId>DelaunaySourceCodeJava</artifactId>
+			<version>60</version>
+		</dependency>
+		<dependency>
+			<groupId>edu.wlu.cs.levy.CG</groupId>
+			<artifactId>levys_kd_tree</artifactId>
+			<version>1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dyn4j</groupId>
+			<artifactId>dyn4j</artifactId>
+			<version>3.2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.algart</groupId>
+			<artifactId>algart</artifactId>
+			<version>1.2.7</version>
+		</dependency>
+		<dependency>
+			<groupId>tum.cms.sim.momentum</groupId>
+			<artifactId>momentum-configuration</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+	</dependencies>
+	<description>This project comprises multiple packages that address different specific mathematical and theoretical concept useful in the simulation framework.</description>
+	<name>momentum-utility</name>
+</project>

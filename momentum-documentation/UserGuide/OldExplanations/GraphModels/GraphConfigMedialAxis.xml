@@ -1,0 +1,60 @@
+<graphs>
+    <graphModel name="medial" id="0">
+    
+        <!-- create the raw graph -->
+        <graphOperation id="0" name="raw" type="RawGraph" order="0">
+            <property name="graphId" type="Integer" value="0" />
+        </graphOperation>
+        
+        <graphOperation id="1" name="seeds" type="VertexCreateSeedBased" order="1" />
+        
+        <!-- create vertice along the medial axis -->
+        <graphOperation id="2" name="medialAxis" type="VertexCreateMedialAxis" order="2">
+            <property name="cellEdgeSize" type="Double" value="1"/>
+        </graphOperation>
+        
+        <!-- connect all vertices -->
+        <graphOperation id="3" name="visibility" type="EdgeCreateVisibilityConnect" order="3">
+            <property name="visibilityTolerance" type="Double" value="0.2" />
+        </graphOperation>
+        
+        <!-- convert to a minimum spanning tree -->
+        <graphOperation id="4" name="mst" type="EdgeRemoveMST" order="4"/>
+        
+        <!-- remove obsolete vertices along the edges -->
+        <graphOperation id="5" name="lineRemove" type="VertexRemoveAlongLine" order="5"/>
+            
+       	<!-- optional: remove further vertices -->
+        <graphOperation id="6" name="remove" type="VertexRemoveSimple" order="6">
+			<property name="mergeDistance" type="Double" value="1" />
+			<property name="visibilityTolerance" type="Double" value="0.2" />
+		</graphOperation>
+        
+		<!-- optional: if VertexRemoveSimple was performed, connect the graph again -->
+        <graphOperation id="7" name="visibility" type="EdgeCreateVisibilityConnect" order="7">
+			<property name="visibilityTolerance" type="Double" value="0.2" />
+		</graphOperation>
+        
+		<!-- optional: and convert it to a MST again -->
+        <graphOperation id="8" name="mst" type="EdgeRemoveMST" order="8"/>
+        
+        <graphOperation id="9" name="usefulEdges" type="EdgeCreateOvermarsUseful" order="9">
+            <property name="detourFactor" type="Double" value="10"/>
+            <property name="visibilityTolerance" type="Double" value="0.2" />
+        </graphOperation>
+        
+        <graphOperation id="99" name="toConfiguration" type="ToConfiguration" order="99">
+            <property name="scenarioId" type="Integer" value="0"/>
+        </graphOperation>
+        <!-- create some useful edges -->
+        <graphOperation id="5" name="usefulEdges" type="EdgeCreateOvermarsUseful" order="5">
+            <property name="detourFactor" type="Double" value="10"/>
+        </graphOperation>
+        
+        <!-- save the graph to the configuration -->
+        <graphOperation id="6" name="toConfiguration" type="ToConfiguration" order="6">
+            <property name="scenarioId" type="Integer" value="0"/>
+        </graphOperation>
+        
+    </graphModel>
+</graphs>

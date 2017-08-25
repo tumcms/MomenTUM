@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="MomenTumV2.0.0" simulationName="MomenTumV2_Layout_Unifed_A_Output" simEnd="5000.0" threads="4" timeStepDuration="0.05">
+	<operationalModels>
+		<operational id="0" name="socialForceModel" type="SocialForce" perceptualModel="0">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="0.8e3"/>
+			<property name="mass_behaviour_B" type="Double" value="0.05"/>			
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="0.01"/>
+		</operational>
+	</operationalModels>
+	<tacticalModels>
+		<tactical id="0" name="dijkstra" type="Dijkstra" perceptualModel="0">
+			<property name="haloRadius" type="Double" value="0.5"/>
+		</tactical>
+	</tacticalModels>
+	<strategicalModels>
+		<strategical id="0" name="interestFuncion" type="InterestFunction" perceptualModel="0">
+			<property name="separator" type="String" value=";"/>
+			<property name="interarrivalDistributions" type="File" value="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\interarrivalDistributions.csv"/>
+			<property name="serviceTimeDistributions" type="File" value="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\serviceTimeDistributions.csv"/>
+			<property name="pedestrianNumbers" type="File" value="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\pedestrianNumbers.csv"/>
+		</strategical>
+	</strategicalModels>
+	<perceptualModels>
+		<perceptual id="0" name="worldKnowledge" type="WorldKnowledge"/>
+	</perceptualModels>
+	<generators>
+		<generator id="0" name="generatorA" type="Distribution" scenario="0" origin="0" seed="0"> <!-- 678  -->
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="270"/> 
+			<property name="maximalPedestrians" type="Integer" value="5000"/>
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/> >
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originA_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originA_percentage.csv" separator=";"/> 
+			</complexProperty>
+		 </generator>
+		<generator id="1" name="generatorB" type="Distribution" scenario="0" origin="1" seed="0"> <!-- 947 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="90"/> 
+			<property name="maximalPedestrians" type="Integer" value="5000"/>
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/> 
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originB_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originB_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="2" name="generatorC" type="Distribution" scenario="0" origin="2" seed="0"> <!-- 60 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="0"/> 
+			<property name="maximalPedestrians" type="Integer" value="2000"/> 
+			<property name="safetyDistance" type="Double" value="0.75"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originC_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originC_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="3" name="generatorD" type="Distribution" scenario="0" origin="3" seed="0"> <!-- 29 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="2000"/>  
+			<property name="safetyDistance" type="Double" value="0.75"/> 
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originD_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double"> 
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originD_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+		<generator id="4" name="generatorE" type="Distribution" scenario="0" origin="4" seed="0"> <!-- 180 -->
+			<property name="startTime" type="Double" value="0"/> 
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<property name="basicHeading" type="Double" value="360"/>
+			<property name="maximalPedestrians" type="Integer" value="2000"/>
+			<property name="safetyDistance" type="Double" value="0.75"/>
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<complexProperty name="timeGap" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originE_timeGap.csv" separator=";"/>
+			</complexProperty>	
+			<complexProperty name="percentage" type="CsvList" valueType="Double">
+				<entry file="C:\Users\ga37sib\Desktop\SIMPAT_Interest\Research_Data\IKOM_Simulation_In\originE_percentage.csv" separator=";"/>
+			</complexProperty>
+		</generator>
+	</generators>
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<!-- Weidmann -->
+			<property name="desiredVelocity" type="Double" value="1.34"/>
+			<property name="maximalVelocity" type="Double" value="1.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>		
+		</pedestrianSeed>
+	</pedestrianSeeds>	
+	<absorbers>
+		<absorber id="0" name="destinationA" scenario="0" destination="10" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.76"/>
+		</absorber>
+		<absorber id="1" name="destinationB" scenario="0" destination="11" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.76"/>
+		</absorber>
+		<absorber id="2" name="destinationC" scenario="0" destination="12" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.76"/>
+		</absorber>
+		<absorber id="3" name="destinationD" scenario="0" destination="13" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.76"/>
+		</absorber>
+		<absorber id="4" name="destinationE" scenario="0" destination="14" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.76"/>
+		</absorber>
+	</absorbers>
+	<outputWriters>
+		<outputWriter id="0" name="csvWriter"  type="csvWriter">
+			<property name="call" type="Integer" value="10"/>
+			<property name="file" type="File" value="./IKOM_Interest_output_$LOOP$_simulation.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="targetID"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="targetID" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="layoutWriter" type="configurationWriter">
+			<property name="file" type="File" value="./IKOM_Interest_output_$LOOP$_layout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+		<outputWriter id="2" name="exeuctionTimeWriter" type="statisticsWriter">
+			<property name="file" type="File" value="./IKOM_Interest_output_$LOOP$_statistics.cvs"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="1"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="executionOperational"/>
+				<entry index="1" value="executionTactical"/>
+				<entry index="2" value="executionStrategical"/>
+				<entry index="3" value="executionAbsorber"/>
+				<entry index="4" value="executionGenerator"/>
+				<entry index="5" value="executionOverhead"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="TimeStep">
+				<property name="executionOperational" type="Format" value="%.2f"/>
+				<property name="executionTactical" type="Format" value="%.2f"/>
+				<property name="executionStrategical" type="Format" value="%.2f"/>
+				<property name="executionAbsorber" type="Format" value="%.2f"/>
+				<property name="executionGenerator" type="Format" value="%.2f"/>
+				<property name="executionOverhead" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+		<layouts>
+	<scenario id="0" name="IKOM" maxX="35.00" maxY="55.0" minX="0.0" minY="0.0">
+			<area id="14" name="DestinationE" type="Destination" geometry="Polygon">
+				<point x="31.7116" y="40.6496" />
+				<point x="30.2482" y="40.6634" />
+				<point x="30.29" y="38.2068" />
+				<point x="31.7276" y="38.2123" />
+			</area>
+			<area id="13" name="DestinationD" type="Destination" geometry="Polygon">
+				<point x="4.4826" y="39.1516" />
+				<point x="3.9273" y="44.4055" />
+				<point x="2.5271" y="44.3675" />
+				<point x="3.2332" y="39.0608" />
+			</area>
+			<area id="12" name="DestinationC" type="Destination" geometry="Polygon">
+				<point x="6.5606" y="13.1991" />
+				<point x="7.6107" y="13.4207" />
+				<point x="6.8146" y="19.7517" />
+				<point x="5.6886" y="19.4582" />
+			</area>
+			<area id="10" name="DestinationA" type="Destination" geometry="Polygon">
+				<point x="19.2715" y="5.076" />
+				<point x="19.0104" y="7.0386" />
+				<point x="13.0782" y="7.0386" />
+				<point x="13.3651" y="5.0664" />
+			</area>
+			<area id="11" name="DestinationB" type="Destination" geometry="Polygon">
+				<point x="13.0573" y="47.9053" />
+				<point x="12.5985" y="51.175" />
+				<point x="5.1475" y="51.175" />
+				<point x="5.632" y="47.8957" />
+			</area>
+			<area id="9" name="Location5" type="Intermediate" geometry="Polygon">
+				<point x="14.1205" y="22.3969" />
+				<point x="23.956" y="25.0032" />
+				<point x="24.054" y="38.1491" />
+				<point x="11.94" y="38.1491" />
+			</area>
+			<area id="8" name="Location4" type="Intermediate" geometry="Polygon">
+				<point x="13.0256" y="43.7141" />
+				<point x="13.4353" y="39.7135" />
+				<point x="22.6428" y="39.7135" />
+				<point x="22.6428" y="43.6894" />
+				<point x="13.7994" y="43.7141" />
+			</area>
+			<area id="5" name="Location1" type="Intermediate" geometry="Polygon">
+				<point x="10.6034" y="6.5126" />
+				<point x="12.8254" y="7.0956" />
+				<point x="11.5672" y="13.9942" />
+				<point x="9.4453" y="13.6284" />
+			</area>
+			<area id="6" name="Location2" type="Intermediate" geometry="Polygon">
+				<point x="10.1668" y="28.8761" />
+				<point x="9.5086" y="28.6881" />
+				<point x="8.7131" y="28.1025" />
+				<point x="8.2042" y="27.1198" />
+				<point x="7.8671" y="23.7584" />
+				<point x="8.3124" y="20.2591" />
+				<point x="11.3017" y="20.8574" />
+				<point x="10.1668" y="28.8761" />
+			</area>
+			<area id="7" name="Location3" type="Intermediate" geometry="Polygon">
+				<point x="8.4398" y="39.2873" />
+				<point x="5.6578" y="39.1362" />
+				<point x="6.4368" y="35.9945" />
+				<point x="7.0732" y="34.7944" />
+				<point x="8.3244" y="34.0787" />
+				<point x="9.1489" y="34.0787" />
+				<point x="8.4398" y="39.2873" />
+			</area>
+			<area id="4" name="OriginE" type="Origin" geometry="Polygon">
+				<point x="30.2422" y="40.6496" />
+				<point x="28.4579" y="40.6634" />
+				<point x="28.4997" y="38.2069" />
+				<point x="30.2582" y="38.2123" />
+			</area>
+			<area id="3" name="OriginD" type="Origin" geometry="Polygon">
+				<point x="5.0939" y="44.3812" />
+				<point x="3.9763" y="44.4249" />
+				<point x="4.5316" y="39.1711" />
+				<point x="5.524" y="39.2577" />
+			</area>
+			<area id="2" name="OriginC" type="Origin" geometry="Polygon">
+				<point x="8.2568" y="20.1479" />
+				<point x="6.8755" y="19.7676" />
+				<point x="7.7089" y="13.4383" />
+				<point x="9.1757" y="13.736" />
+			</area>
+			<area id="0" name="OriginA" type="Origin" geometry="Polygon">
+				<point x="18.6166" y="9.3155" />
+				<point x="12.6902" y="9.3155" />
+				<point x="13.0529" y="7.1098" />
+				<point x="18.9536" y="7.1194" />
+			</area>
+			<area id="1" name="OriginB" type="Origin" geometry="Polygon">
+				<point x="13.5483" y="44.5611" />
+				<point x="13.0895" y="47.8308" />
+				<point x="5.6543" y="47.8308" />
+				<point x="6.1388" y="44.5516" />
+			</area>
+			<obstacle id="0" name="Wall1" type="Wall" geometry="Segment">
+				<point x="0.5272" y="4.6743" />
+				<point x="0.5272" y="51.5594" />
+			</obstacle>
+			<obstacle id="1" name="Wall2" type="Wall" geometry="Segment">
+				<point x="32.3005" y="4.6743" />
+				<point x="0.5272" y="4.6743" />
+			</obstacle>
+			<obstacle id="2" name="Wall3" type="Wall" geometry="Segment">
+				<point x="32.3005" y="51.5594" />
+				<point x="32.3005" y="4.6743" />
+			</obstacle>
+			<obstacle id="3" name="Wall4" type="Wall" geometry="Segment">
+				<point x="0.5272" y="51.5594" />
+				<point x="32.3005" y="51.5594" />
+			</obstacle>
+			<obstacle id="4" name="Wall5" type="Wall" geometry="Segment">
+				<point x="3.1933" y="39.0146" />
+				<point x="1.4527" y="51.5596" />
+			</obstacle>
+			<obstacle id="5" name="Wall6" type="Wall" geometry="Segment">
+				<point x="5.4834" y="39.1477" />
+				<point x="3.1933" y="39.0146" />
+			</obstacle>
+			<obstacle id="6" name="Wall7" type="Wall" geometry="Segment">
+				<point x="6.3526" y="35.983" />
+				<point x="6.1072" y="37.0421" />
+			</obstacle>
+			<obstacle id="7" name="Wall8" type="Wall" geometry="Segment">
+				<point x="7.0249" y="34.6994" />
+				<point x="6.3526" y="35.983" />
+			</obstacle>
+			<obstacle id="8" name="Wall9" type="Wall" geometry="Segment">
+				<point x="8.3062" y="34.0016" />
+				<point x="7.0249" y="34.6994" />
+			</obstacle>
+			<obstacle id="9" name="Wall10" type="Wall" geometry="Segment">
+				<point x="8.6364" y="28.1456" />
+				<point x="9.4768" y="28.7428" />
+			</obstacle>
+			<obstacle id="10" name="Wall11" type="Wall" geometry="Segment">
+				<point x="8.0838" y="27.1332" />
+				<point x="8.6364" y="28.1456" />
+			</obstacle>
+			<obstacle id="11" name="Wall12" type="Wall" geometry="Segment">
+				<point x="8.0427" y="26.0549" />
+				<point x="8.0838" y="27.1332" />
+			</obstacle>
+			<obstacle id="12" name="Wall13" type="Wall" geometry="Segment">
+				<point x="8.0417" y="26.0569" />
+				<point x="7.7306" y="23.7584" />
+			</obstacle>
+			<obstacle id="13" name="Wall14" type="Wall" geometry="Segment">
+				<point x="5.4834" y="39.1477" />
+				<point x="6.1072" y="37.0421" />
+			</obstacle>
+			<obstacle id="14" name="Solid1" type="Solid" geometry="Polygon">
+				<point x="19.3769" y="4.7368" />
+				<point x="19.7982" y="4.7368" />
+				<point x="18.0675" y="15.4491" />
+				<point x="17.7307" y="15.68" />
+			</obstacle>
+			<obstacle id="15" name="Solid2" type="Solid" geometry="Polygon">
+				<point x="24.5221" y="24.9087" />
+				<point x="25.7008" y="25.2469" />
+				<point x="25.7008" y="38.1811" />
+				<point x="24.385" y="38.1811" />
+			</obstacle>
+			<obstacle id="16" name="Solid3" type="Solid" geometry="Polygon">
+				<point x="19.4802" y="23.1517" />
+				<point x="19.1469" y="23.3682" />
+				<point x="20.1306" y="16.3682" />
+				<point x="20.4224" y="16.4482" />
+			</obstacle>
+			<obstacle id="17" name="Solid4" type="Solid" geometry="Polygon">
+				<point x="13.799" y="43.7136" />
+				<point x="14.0482" y="44.0381" />
+				<point x="13.0069" y="51.5577" />
+				<point x="12.6466" y="51.5552" />
+			</obstacle>
+			<obstacle id="18" name="Solid5" type="Solid" geometry="Polygon">
+				<point x="22.9756" y="44.0381" />
+				<point x="22.6756" y="43.7381" />
+				<point x="22.6756" y="40.6954" />
+				<point x="22.9756" y="40.9991" />
+			</obstacle>
+			<obstacle id="19" name="Solid6" type="Solid" geometry="Polygon">
+				<point x="22.6793" y="40.6991" />
+				<point x="31.7756" y="40.6991" />
+				<point x="31.7756" y="40.9991" />
+				<point x="22.9756" y="40.9991" />
+			</obstacle>
+			<obstacle id="20" name="Solid7" type="Solid" geometry="Polygon">
+				<point x="19.4802" y="23.1517" />
+				<point x="25.7882" y="24.9563" />
+				<point x="25.7052" y="25.2445" />
+				<point x="19.1472" y="23.368" />
+			</obstacle>
+			<obstacle id="21" name="Solid8" type="Solid" geometry="Polygon">
+				<point x="25.7008" y="37.8353" />
+				<point x="31.7786" y="37.8544" />
+				<point x="31.776" y="38.1495" />
+				<point x="25.7008" y="38.1811" />
+			</obstacle>
+			<obstacle id="22" name="Solid9" type="Solid" geometry="Polygon">
+				<point x="7.7282" y="23.7779" />
+				<point x="5.3831" y="19.4096" />
+				<point x="8.1947" y="20.2278" />
+			</obstacle>
+			<obstacle id="23" name="Solid10" type="Solid" geometry="Polygon">
+				<point x="14.0482" y="44.0381" />
+				<point x="13.7938" y="43.7495" />
+				<point x="22.6756" y="43.7381" />
+				<point x="22.9756" y="44.0381" />
+			</obstacle>
+			<obstacle id="24" name="Solid11" type="Solid" geometry="Polygon">
+				<point x="9.4782" y="28.7432" />
+				<point x="10.1583" y="28.9337" />
+				<point x="9.1616" y="34.0016" />
+				<point x="8.2944" y="34.0016" />
+			</obstacle>
+			<obstacle id="25" name="Solid12" type="Solid" geometry="Polygon">
+				<point x="32.0757" y="37.8497" />
+				<point x="32.0756" y="40.9991" />
+				<point x="31.7766" y="40.9991" />
+				<point x="31.7786" y="37.8543" />
+			</obstacle>
+			<obstacle id="26" name="Solid13" type="Solid" geometry="Polygon">
+				<point x="6.2644" y="13.0204" />
+				<point x="6.5224" y="13.0743" />
+				<point x="5.6589" y="19.4898" />
+				<point x="5.3829" y="19.4092" />
+			</obstacle>
+			<obstacle id="27" name="Solid14" type="Solid" geometry="Polygon">
+				<point x="4.957" y="51.558" />
+				<point x="1.4559" y="51.5569" />
+				<point x="2.4912" y="44.4643" />
+				<point x="5.8547" y="44.4643" />
+				<point x="5.8547" y="45.1065" />
+				<point x="4.957" y="51.558" />
+			</obstacle>
+			<obstacle id="28" name="Solid15" type="Solid" geometry="Polygon">
+				<point x="9.3556" y="13.6212" />
+				<point x="6.2632" y="13.0295" />
+				<point x="7.0456" y="4.8331" />
+				<point x="10.2533" y="4.8331" />
+				<point x="10.2533" y="7.3883" />
+				<point x="9.3556" y="13.6212" />
+			</obstacle>
+			<obstacle id="90" name="Solid54" type="Solid" geometry="Polygon">
+				<point x="20.4534" y="16.0935" />
+				<point x="20.4224" y="16.4482" />
+				<point x="17.7307" y="15.6800" />
+				<point x="18.0675" y="15.4491" />
+			</obstacle>
+			<graph id="0" type="VisibilityAlpha">
+				<property name="cornerDistance" type="Double" value="1.0"/>
+				<property name="reductionStrength" type="Double" value="10"/>
+			</graph>
+			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+		</scenario>
+	</layouts>
+</simulator>

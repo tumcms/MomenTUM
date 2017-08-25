@@ -1,0 +1,828 @@
+
+<!-- This file is only for explanations and does not run. -->
+<!-- Use the basicExampleSimulation.xml to test. -->
+
+<!-- The root is always simulation, current version is 2.0.2 -->
+<!-- Give the simulation a name, if you like.  -->
+<!-- The version and the name are basically without function but a useful hint for the user of this file. -->
+
+<simulator version="2.0.2" simulationName="BasicSetupExample">
+
+	<!-- **************************************************** -->
+	<!-- From here on general configurations are explained.   -->
+	<!-- **************************************************** -->	
+	
+	<!-- The timeState contains the most basic time related properties. -->
+	<!-- timeState is mandatory for all simulations (except of pre-processing simulations without "simulation body"). -->
+	<!-- simulationEndTime is the time in seconds until a simulations ends. -->
+	<!-- timeStepDuration is the time discretisation of the simulation in seconds. -->
+	<timeState simulationEndTime="100.0" timeStepDuration="0.5"/>
+	
+	<!-- threadingState is used to define threading options in the simulation. -->
+	<!-- This is only used for behavior models that operate on a set of agents (e.g. pedestrians). -->
+	<!-- In the future, this is the place to add overall threading options (e.g. barns-hut parallel social force model) -->
+	<!-- The threads defines the number of threads the simulation will use. Typical value is the number of CPUs. -->
+	<threadingState threads="3"/>
+	
+	<!-- The logging tag is used to change the logging behavior of the framework.  -->
+	<!-- If there is no logging tag, user level console logging is still active. -->
+	<logging>
+	
+		<!-- Each loggingState has a log level that provides the level of 'noise' :
+			Trace (Prints trace-like logs, creates noise!)
+			Debug (Prints debug logs, e.g. model commands but not every simulation cycle)
+			User (Prints high-level logs only, e.g. Simulation start)
+			None (Prints nothing, to silence console logging.)
+		-->
+		<!-- Use the Console type logger to print logs in the command window. -->
+		<!-- A console logger can exist only once. -->
+		<!-- If no console logger is defined a base console logger with user level. -->
+		<!-- Deactive console logging by level 'None'. -->
+		<loggingState type="Console" level="User"/>
+		
+		<!-- Use the File type logger to print logs to a folder. -->
+		<!-- Folder points to a location where the log-file will be written to. Make sure it exists. -->
+		<!-- Do not add the trailing \ or / to the file path. -->
+		<loggingState type="File" level="Debug">
+			<folder name="C:\Users\Desktop\logs" />
+		</loggingState>
+		
+	</logging>
+
+	<!-- If you want to repeat a simulation use the loop tag. -->
+	<!-- The loop provides a method to exchange values in the configuration for every loop. -->
+	<!-- There are two types of value exchange methods
+		Permutation
+		Stepwise -->
+	<!-- In the permutation case, all possible variable combination of the loop variables will be set. -->
+	<!-- The simulations will stop if every variant was executed. -->
+	<!-- In the stepwise case, every variable will be increased by its change value in every simulation loop. -->
+	<!-- The simulations will stop if the minimal number of steps where done. -->
+	<!-- The accuracyDigits provides the number of digits accuracy for the loop variables. -->
+	<loop updateType="Permutation" accuracyDigits="3">
+	
+		<!-- At least a single loopVariables is mandatory if the loop tag exists. -->
+		<!-- The name corresponds to the $TEXT$ within the configuration xml that will be replaced with the variable value. -->
+		<!-- Every variable must have a start, change and steps value. The initial value is optional. -->
+		<!-- The start value gives the minimal value of the variable. -->
+		<!-- The change value gives the delta, which will  be added to the current value of a variable after a loop. -->
+		<!-- The steps value gives the number of deltas; thus, defines the maximal value by steps x change. -->
+		<!-- The initial value, if given, is the value from which the looping will start. -->
+		<!-- Especially in the permutation loop type this may be helpful to skip some values between start and initial. -->
+		<loopVariable name="LOOP" start="1.0" change="1.0" steps="3"/> 
+		<loopVariable name="VARI" initial="0.5" start="0.25" change="0.25" steps="4"/> 
+	</loop>
+	
+	<!-- **************************************************** -->
+	<!-- From here on geometry configurations are explained.  -->
+	<!-- **************************************************** -->
+	
+	<!-- layouts provides the basic 2D-geometry for the simulation -->
+	<!-- The layout comprises at least a single scenario. -->
+	<!-- Multiple scenarios stories (floors) -->
+	<!-- At the moment only a single floor (single scenario) is supported! -->
+	<layouts>
+	
+		<!-- A scenario is a floor (story) or similar. -->
+		<!-- The id including is a unique number (unique for scenarios). -->
+		<!-- The name is a user friendly name of the scenario (e.g. second floor). -->
+		<!-- Provide a maxX, maxY, minX, minY for the coordinate system. -->
+		<!-- Be careful, if an agent (e.g. pedestrian) reaches the boundaries, errors may occur. -->
+		<scenario id="0" name="Scenario_Name" maxX="21" maxY="31" minX="-1" minY="-1">
+		
+			<!-- A scenario comprises areas and obstacles. -->
+			<!-- However, also lattices and graphs can be present. -->
+			<!-- Graphs and lattices are important for the visualization.  -->
+			<!-- Graphs can be re-loaded into a simulation. Look for graph models for more details. -->
+			
+			<!-- There are three types of areas
+				Origin,
+				Destination,
+				Intermediate -->
+			<!-- Models can access the areas via their id, make sure that they are unique. -->
+			<!-- Origin are mostly used for adding (generating) agents to the simulation. -->
+			<!-- Destinations are mostly used for removing agents for the simulation. -->
+			<!-- Intermediate areas are used as temporal destination at which agent can interact with the environment. -->
+			<!-- Intermediate areas can have a gatheringLine element. This is a line with start- and end-point. -->
+			<!-- A gathering line is used by specific models to improve the interaction with the intermediate goal. -->
+			<!-- Areas can have none ore multiple category items with a name. Categories are used as sub-types in models. -->
+			<!-- Areas comprise of a convex polygon and the points have to be in order. -->
+			<!-- The vertices can be in clock-wise or counter-clockwise order. -->
+			<area id="0" name="EntryDoor" type="Origin">
+				<!-- Convex polygon, at least 3 points -->
+				<point x="8" y="7" />
+				<point x="10" y="7" />
+				<point x="10" y="8" />
+				<point x="8" y="8" />
+			</area>
+			<area id="1" name="QueueForTicket" type="Intermediate">
+				<!-- Convex polygon, at least 3 points -->
+				<point x="10" y="5" />
+				<point x="12" y="5" />
+				<point x="12" y="6" />
+				<point x="10" y="6" />
+				<!-- Optional, set of category elements -->
+				<category name="AutographQueue"/>
+				<!-- Optional, a gatheringLine element -->
+				<gatheringLine>
+					<!-- Two points -->
+					<point x="10" y="5" />
+					<point x="12" y="5" />
+				</gatheringLine>
+			</area>
+			<area id="2" name="WaitForTicketNumber" type="Intermediate">
+				<!-- Convex polygon, at least 3 points -->
+				<point x="10" y="5" />
+				<point x="12" y="5" />
+				<point x="12" y="6" />
+				<point x="10" y="6" />
+				<!-- Optional, set of category elements -->
+				<category name="AutographWait"/>
+				<!-- Optional, a gatheringLine element -->
+				<gatheringLine>
+					<!-- Two points -->
+					<point x="10" y="5" />
+					<point x="12" y="5" />
+				</gatheringLine>
+			</area>
+			<area id="3" name="ExitDoor" type="Destination">
+				<!-- Convex polygon, at least 3 points -->
+				<point x="10" y="0" />
+				<point x="12" y="0" />
+				<point x="12" y="5" />
+				<point x="10" y="5" />
+			</area>
+			
+			<!-- There are four types of obstacles
+				Solid, (Convex structure)
+				Wall, (Two vertices and without thickness)
+				OneWayWall, (Like a wall but used by specific models)
+				VirtualWall, (Only for visualization purposes)
+			 -->
+			<!-- All obstacles have a unique obstacle id and a name -->
+			<!-- Solid obstacles comprise of a convex polygon and the points have to be in order. -->
+			<!-- The vertices can be in clock-wise or counter-clockwise order. -->
+			<!-- Wall obstacle comprise two points but could have multiple points to create a long segment. -->
+			<!-- VirtualWalls and OneWayWalls are identical to Wall obstacles. -->
+			<obstacle id="0" name="Solid0" type="Solid">
+				<!-- Convex polygon, at least 3 points -->
+				<point x="10" y="0" />
+				<point x="10" y="10" />
+				<point x="9" y="10" />
+				<point x="9" y="0" />
+			</obstacle>
+			<obstacle id="1" name="Wall1" type="Wall">
+				<!-- At least two points (typically two points) -->
+				<point x="20" y="0" />
+				<point x="20" y="30" />
+			</obstacle>
+			<obstacle id="2" name="Wall2" type="Wall">
+				<!-- At least two points (typically two points) -->
+				<point x="20" y="30" />
+				<point x="0" y="30" />
+			</obstacle>
+			<obstacle id="3" name="Wall3" type="Wall">
+				<!-- At least two points (typically two points) -->
+				<point x="0" y="30" />
+				<point x="0" y="0" />
+			</obstacle>
+			<obstacle id="4" name="Wall0" type="Wall">
+				<!-- At least two points (typically two points) -->
+				<point x="0" y="0" />
+				<point x="20" y="0" />
+			</obstacle>
+			
+			<!-- A graph comprises edges and vertices but is typically not part of the initial configuration. -->
+			<!-- Graph models generate graphs and put the graphs into the configuration for later reuse. -->
+			<!-- Optional -->
+			
+			<!-- Alternative way to define the scenario is by providing a link. -->
+			<!-- Typically, the scenario has a lots of elements and is a huge part of the configuration. -->
+			<!-- Use the link to reduce (outsource) the scenario in another file. -->
+			<!-- The layout xml has to have the simulator and layouts xml tags! -->
+			<scenario id="0" layoutLink="C:\Users\Desktop\Layout.xml"/>
+			
+		</scenario>
+	</layouts>
+			
+	<!-- A lattice is a data structure used by many models of the simulator. -->
+	<!-- In general every simulation does have at least one lattice. -->
+	<lattices>
+	
+		<!-- Each lattice has a unique lattice id and a scenario id to be connected to the scenario in the layout. -->
+		<!-- At the moment only latticeType Quadratic is supported. -->
+		<!-- All lattices defined here are scenario lattices. -->
+		<!-- The cellEdgeSize is typically the width of a pedestrian. -->
+		<!-- A scenario lattice provides empty cells for all areas that are not overlapping obstacles. -->
+		<lattice name="generatorsLattice" id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46"/>
+		
+		<!-- Multiple more lattices can be added. -->
+		<!-- For each scenario (floor) a lattice is used. -->
+		
+	</lattices>
+	
+	<!-- A graph is a data structure used by many models of the simulator. --> 
+	<!-- Routing and searching models are typically user of graphs! -->
+	<!-- In general every simulation has at least on graph. -->
+	<graphs>
+	
+		<!-- Each graphModel has a user-friendly name and a unique graph id. -->
+		<!-- Graphs are generated via a set of operations. -->
+		<!-- If you do not know what to do, use this configuration, it works most of the time. -->
+		<graphModel name="routing" id="0">
+		
+			<!-- Important, every time create a RawGraph to create an empty graph. -->
+			 <graphOperation id="0" name="raw" type="RawGraph">
+				<property name="graphId" type="Integer" value="0"/>
+			</graphOperation> 
+			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased"/>
+			<graphOperation id="2" name="corners" type="VertexCreateAtCorners"> 
+				<property name="cornerDistance" type="Double" value="0.7"/> 
+			</graphOperation> 	
+			<graphOperation id="3" name="visibility" type="EdgeCreateVisibilityConnect">
+				<property name="visibilityTolerance" type="Double" value="0.1"/>
+			</graphOperation> 
+			<graphOperation id="4" name="removeDispensible" type="EdgeRemoveUnreachable"/>
+			
+			<!-- This graphOperation puts the graph to the layout (see above). -->
+			<!-- If you use a layout writer you can visualize the graph later on (see below).  -->
+			<graphOperation id="5" name="toConfiguration" type="ToConfiguration">
+				<property name="scenarioId" type="Integer" value="0"/>
+			</graphOperation>
+			
+		</graphModel> 
+		
+		<!-- Multiple more graphs can be added. -->
+		<!-- For each scenario (floor) a graph is used. -->
+	</graphs>
+	
+	<!-- **************************************************** -->
+	<!-- From here on behavior configurations are explained.  -->
+	<!-- **************************************************** -->
+	
+	<!-- Execution order concept is only in use if demanded by the user. Thus, it is optional! -->
+	<!-- If not added, the classical operational/tactical/strategic behavior concept is active -->
+	<!-- and the user has to provide all basic models (walking, wayfinding ...) -->
+	<!-- If blocks exists the user need to provide the corresponding models as given by model a (unique) id -->
+	<!-- The execution order tag comprises at least a single block. -->
+	<exeuctionOrder>
+		
+		<!-- Blocks are in order and processed based on the given sequence. -->
+		<!-- Blocks have a multiplicator, which indicates in which multiple of the -->
+		<!-- time-step the block should be executed. 2 means run the block in every second time-step. -->
+		<!-- A block comprises at least one model-->
+		<executionBlock id="1" multiplicator="1">
+		
+			<!-- Each execution block can have at least one block model -->
+			<!-- They refer to model id. Make sure the model ids are unique! -->
+			<!-- A modelType is an important hint for the framework and is
+				meta 
+				operational
+				tactical 
+				strategic 
+				and should be the type of the model referenced by the id. -->
+			<!-- The multiplicator works similar to the multiplicator in the execution block. -->
+			<!-- However, blockModels can be called if timeStep % executionBlock.multiplicator = 0 -->
+			<!-- and if timeStep % bockModel.multiplicator = 0. -->
+			<bockModel id="11" modelType="operational" multiplicator="2"/>
+			<bockModel id="2" modelType="operational" multiplicator="1"/>
+			<bockModel id="3" modelType="meta" multiplicator="1"/>
+		</executionBlock>
+		
+		<!-- Multiple more executionBlock can be added. -->
+		<!-- The order of the blocks is important for the execution sequence! -->
+		
+	</exeuctionOrder>
+	
+	<!-- Agent can perceive objects and other agents. The model of perception is defined here. -->
+	<!-- At the moment only a single model exists, which is of type BlockingGeometries. -->
+	<!-- Adding future approaches demands other fall-back strategies in dead-lock situations (e.g. wayfinding deadlock). -->
+	<!-- Thus, most of the time this block is identical. Also, the id attribute must be unique! -->
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+			<property name="accuracy" type="Double" value="0.23"/>
+		</perceptual>
+	</perceptualModels>
+	
+	<!-- Operational models are concepts that describe how pedestrian walk and stand still. -->
+	<!-- A simulation typical has a single operational model, but can have multiple if used in the executionOrder tag. -->
+	<operationalModels>
+	
+		<!-- An operational model based on a standing and walking model. -->
+		<!-- The id is unique with this configuration for all models! -->
+		<!-- The name is a user friendly way to name this model. -->
+		<!-- The percetualModel provides a reference to the id of a perception model. -->
+		<operational id="1" name="operational" perceptualModel="0">
+		
+			<!-- A reference to a standing model by id. -->
+			<standingReference modelId="2"/>
+			
+			<!-- A reference to a walking model by id. -->
+			<walkingReference modelId="3"/>
+				
+			<!-- Multiple more operational models, include a set of sub-models references can be added if needed. -->
+					
+		</operational>
+	</operationalModels>
+	
+	<!-- Walking models define how pedestrian do their movement. -->
+	<!-- Similar to other models, multiple walking models can be defined here. -->
+	<!-- Operational models use the reference to the id of a walking model to use it. -->
+	<walkingModels>
+	
+		<!-- All walking model have a unique model id, a user-friendly name, and a type. -->
+        <walking id="3" name="socialForceModel" type="SocialForce">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.0"/>
+			<property name="mass_behaviour_A" type="Double" value="29.0"/>
+			<property name="mass_behaviour_B" type="Double" value="0.05"/>	
+		</walking>
+		
+		<!-- Multiple more walking models can be added here, if needed by the user. -->
+		
+	</walkingModels>
+	
+	<!-- Standing models define how pedestrian stand still. -->
+	<!-- Similar to other models, multiple standing models can be defined here. -->
+	<!-- Operational models use the reference to the id of a standing model to use it. -->
+	<standingModels>
+	
+		<!-- All standing model have a unique model id, a user-friendly name, and a type. -->
+		<standing id="2" name="JohannsonStanding" type="JohannsonStanding">
+			<property name="relaxation_time" type="Double" value="0.5" />
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5" />
+			<property name="physical_interaction_k" type="Double" value="1.2e5" />
+			<property name="mass_behaviour_A" type="Double" value="29.0"/>
+			<property name="mass_behaviour_B" type="Double" value="0.05"/>	
+			<property name="waiting_case" type="Integer" value="1" />
+			<property name="massWaitingPoint" type="Double" value="1.0" />
+		</standing> 
+		
+		<!-- Multiple more standing models can be added here, if needed by the user. -->
+		
+	</standingModels>
+	
+	<!-- Tactical models are concepts for spatial task solving, e.g. wayfinding or queuing. -->
+	<!-- A simulation typical has a single tactical model, but can have multiple if used in the executionOrder tag. -->
+	<tacticalModels>
+	
+		<!-- A tactical model based on a routing, searching, queuing and participating model. -->
+		<!-- The id is unique with this configuration for all models! -->
+		<!-- The name is a user friendly way to name this model. -->
+		<!-- The percetualModel provides a reference to the id of a perception model. -->
+		<tactical id="4" name="tactical"  perceptualModel="0">
+			
+			<!-- A reference to a routing model by id. -->
+			<routingReference modelId="5"/>
+
+			<!-- A reference to a participating model by id. -->
+			<stayingReference modelId="6"/>
+			
+			<!-- A reference to a queuing model by id. -->
+			<queuingReference modelId="7"/>
+			
+			<!-- A reference to a searching model by id. -->
+			<searchingReference modelId="8"/>
+			
+			<!-- The goalDistanceRadius provides the distance at which tactical models see locations as reached. -->
+			<!-- This is distance between the center of a pedestrian and the final goal position (where to stop). -->
+			<property name="goalDistanceRadius" type="Double" value="0.15" />
+			
+			<!-- The navigationDistanceRadius models the distance and the parameter for reaching navigations nodes. -->
+			<!-- The nodes are typically graph nodes of a routing graph. If there is no previous node the distance is the radius for the reaching the node. -->
+			<!-- If there is a previous node form where the pedestrian started towards the next node the distance creates a polygon (trapezoid). -->
+			<property name="navigationDistanceRadius" type="Double" value="0.66"/>
+			
+			<!-- The tacticalControl is mostly set to True and activates "smart" behavior. -->
+			<!-- This smart behavior includes to start routing if walking goals of e.g. queuing models are not visible. -->
+			<!-- Hence, the tacticalControl helps to reduce nonsense behavior like being "stuck". -->
+			<propety name="tacticalControl" type="Boolean" value="True"/>
+			
+			<!-- The routeMemory indicates if a pedestrian should remember and avoid already visited route nodes. -->
+			<!-- Typically, in linear scenarios that address wayfinding, this is true. -->
+			<!-- In system in which the pedestrians visit some location more than once, this is mostly false. -->
+			<property name="routeMemory" type="Boolean" value="false"/>
+		</tactical>
+		
+		<!-- Multiple more tactical models, include a set of sub-models references can be added if needed. -->
+		
+	</tacticalModels>
+	
+	<!-- Routing models define how pedestrian find their way with knowledge (routing/wayfinding). -->
+	<!-- Similar to other models, multiple routing models can be defined here. -->
+	<!-- Tactical models use the reference to the id of a routing model to use it. -->
+	<routingModels>
+	
+		<!-- All routing model have a unique model id, a user-friendly name, and a type. -->
+		<routing id="5" name="dijkstra" type="Dijkstra"/>
+		
+		<!-- Multiple more routing models can be added here, if needed by the user. -->
+		
+	</routingModels>
+	
+	<!-- Staying models define how pedestrian find their a position to stay (in front of a stage or a waiting area). -->
+	<!-- Similar to other models, multiple staying models can be defined here. -->
+	<!-- Tactical models use the reference to the id of a staying model to use it. -->
+	<stayingModels>
+	
+		<!-- All staying model have a unique model id, a user-friendly name, and a type. -->
+		<staying id="6" name="shiftedRandomParticipating" type="ShiftedRandomParticipating">
+			<property name="participateDistance" type="Double" value="2.0"/>
+			<property name="numberOfGambles" type="Integer" value="60"/>
+			<property name="safetyDistance" type="Double" value="0.1"/>
+			<property name="groupPositionRadius" type="Double" value="2.0"/>
+		</staying>
+		
+		<!-- Multiple more staying models can be added here, if needed by the user. -->
+		
+	</stayingModels>
+	
+	<!-- Queuing models define how pedestrian queue up (typical queuing at a counter). -->
+	<!-- Similar to other models, multiple queuing models can be defined here. -->
+	<!-- Tactical models use the reference to the id of a queuing model to use it. -->
+	<queuingModels>
+	
+		<!-- All queuing model have a unique model id, a user-friendly name, and a type. -->
+		<queuing id="7" name="angularQueuing" type="AngularQueueing" >
+			<property name="proximityDistance" type="Double" value="1.5"/>
+			<property name="safetyDistance" type="Double" value="0.1"/>
+			<property name="queueArc" type="Double" value="30"/>
+			<property name="queueDistance" type="Double" value="0.71"/>
+			<property name="queuingLag" type="Double" value="1.5"/>
+		</queuing>
+		
+		<!-- Multiple more queuing models can be added here, if needed by the user. -->
+		
+	</queuingModels>
+
+	<!-- Searching models define how pedestrian find their way without knowledge (uninformed search). -->
+	<!-- Similar to other models, multiple searching models can be defined here. -->
+	<!-- Tactical models use the reference to the id of a searching model to use it. -->
+	<searchingModels>
+	
+		<!-- All searching model have a unique model id, a user-friendly name, and a type. -->
+		<searching id="8" name="noSearching" type="NoSearching"/>
+		
+		<!-- Multiple more searching models can be added here, if needed by the user. -->
+		
+	</searchingModels>
+	
+	<!-- Stratgic models are concepts for destination choice decision making, e.g. where to buy ice cream. -->
+	<!-- A simulation typical has a single strategic model, but can have multiple if used in the executionOrder tag. -->
+	<strategicalModels>
+	
+		<!-- Strategic models comprise a single model only, in contrast to operational and tactical models. -->
+		<!-- Therefore, all models are directly added to the strategicModels tag. -->
+		<!-- The strategical model has an unique id, a type a user-friendly name, and a perception model id reference. -->
+		<strategical id="9" name="odMatrx" type="ODMatrix" perceptualModel="0">
+			<complexProperty name="originDestination" type="Matrix" valueType="Double">
+				<row index="0">
+					<column index="1" value="0.1"/>
+					<column index="2" value="0.4"/>
+					<column index="3" value="0.5"/>
+				</row>
+				<row index="1">
+					<column index="2" value="0.1"/>
+					<column index="3" value="0.9"/>
+				</row>
+				<row index="2">
+					<column index="1" value="0.1"/>
+					<column index="3" value="0.9"/>
+				</row>
+			</complexProperty>
+			<complexProperty name="behaviorType" type="List" valueType="String">
+			    <entry index="1" value="Staying"/>
+			    <entry index="2" value="Queuing"/>
+			    <entry index="3" value="Staying"/>
+			</complexProperty>
+			<complexProperty name="fulfilmentDuration" type="List" valueType="Double">
+			   	<entry index="1" value="60.0"/>
+			    <entry index="2" value="10.0"/>
+			    <entry index="3" value="180.0"/>
+			</complexProperty>
+		</strategical>
+		
+		<!-- Multiple more strategic models can be added here, if needed by the user. -->
+		
+	</strategicalModels>
+	
+	<!-- Additional hint: -->
+	<!-- There is always a dummy model, e.g. noSearching or noRouting. -->
+	<!-- Such dummy models provide most basic and unrealistic behavior for a model type. -->
+	<!-- This exists for all models (standing, walking, routing, staying, queuing and searching. -->
+	<!-- Dummy models are of type "noBehavior". -->
+	<!-- These models are helpful to test specific models only, e.g. routing model without proper walking. -->
+	
+	<!-- *********************************************** -->
+	<!-- From here on non-behavior models are explained. -->
+	<!-- *********************************************** -->
+	
+	<!-- The pedestrianSeeds define the basic data of a pedestrian, e.g. its width (size). -->
+	<!-- Typically pedestrian are created via generator models and each generator needs a seed id! -->
+	<!-- Multiple generators can use the same seed. -->
+	<!-- The pedestrianSeeds are also known as the agent population! -->
+	<pedestrianSeeds>
+	
+		<!-- Each pedestrianSeed has a unique seed id, a user-friendly name, and a type. -->
+		<!-- There are static and dynamic seeds. -->
+		<!-- Static seeds provide fixed data for every pedestrian during generation. -->
+		<!-- Dynamic seeds draw a value based on distributions for every pedestrian that is generated. -->
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.34"/>
+			<property name="maximalVelocity" type="Double" value="2.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>
+			<property name="groupSize" type="Integer" value="1"/>
+		</pedestrianSeed>
+		
+		<!-- Multiple more seeds can be added here if needed by the user. -->
+	
+	</pedestrianSeeds>
+	
+	<!-- Generators are linked with origin areas and are models for creating pedestrians. -->
+	<!-- There are multiple methods for creating pedestrian. -->
+	<!-- Each simulation needs at least a single generator. -->
+	<generators>
+	
+		<!-- Each generator has a unique generator id and a user-friendly name.  -->
+		<!-- The scenario id refers to a scenario in the layout. -->
+		<!-- The origin id refers to an origin in the scenario in the layout. -->
+		<!-- The seed id refers to a seed (see above). -->
+		<!-- The type provides the method of generating pedestrians. -->
+		<generator id="0" name="generator" scenario="0" origin="0" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="90"/>
+			<property name="maximalPedestrians" type="Integer" value="100"/>
+			<property name="safetyDistance" type="Double" value="0.5"/>
+			<geometry geometryType="Lattice" fillingType="Random" />
+			<property name="scenarioLatticeId" type="Integer" value="0"/> 
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0"/> 
+				<entry index="1" value="300.0"/> 
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double"> 
+				<entry index="0" value="1.0"/> 
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+		
+		<!-- Multiple more generators can be added here if needed by the user. -->
+		
+	</generators>
+	
+	<!-- The absorbers are the opposite of generators. They remove pedestrians. -->
+	<!-- Typically, simulations do have absorbers to remove pedestrian. -->
+	<absorbers>
+	
+		<!-- Each absorber has a unique generator id and a user-friendly name.  -->
+		<!-- The scenario id refers to a scenario in the layout. -->
+		<!-- The destination id refers to an destination in the scenario in the layout. -->
+		<!-- The type provides the method of removing pedestrians. -->
+		<absorber id="0" name="absorber" scenario="0" destination="3" type="DestinationInstantly">
+			<property name="vanishTime" type="Double" value="0.2"/>
+		</absorber>
+			
+		<!-- Multiple more absorbers can be added here if needed by the user. -->
+		
+	</absorbers>
+	
+	<!-- The analysisModels provide different methods for analyzing simulation data. -->
+	<!-- The analysis runs always parallel to the time-line of the simulation. -->
+	<!-- There are many different measure models for analysis. -->
+	<!-- The most important one may be the density-xt and the occupancy measure model. -->
+	<analysisModels>
+	
+		<!-- Each analysis model has a unique analysis id and a user-friendly name. -->
+		<!-- Each analysis model has a measure model and a writer source. -->
+		
+		<!-- The occupancy analysis computes the number of people in intermediate areas over time. -->
+		<analysis id="0" name="occupancyAnalysis">
+			<!-- Call indicates if the analysis should be executed call x time-steps. -->
+			<!-- E.g., if call = 1 the analysis is done every time-step. -->
+			<!-- E.g., if call = 3 it is done every third time-step. -->
+			<property name="call" type="Integer" value="2"/>
+			<!-- Defines the start time of the simulation the analysis should start. -->
+			<property name="analysisStartStep" type="Integer" value="0"/>
+			<!-- Defines the end time of the simulation at which to stop the analysis. -->
+			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			
+			<!-- This defines the analysis type. -->
+			<measure type="AreaOccupancy"/>
+		
+			<!-- The occupancy analysis needs pedestrian data as input. -->
+			<!-- However, only timeStep, id, targetID (area id), behavior (e.g. routing), x and y are needed. -->
+			<writerSource sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="targetID" type="Format" value="%d"/>
+				<property name="behavior" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+			</writerSource>
+
+		</analysis>
+
+			
+		<!-- The xtDensity analysis computes the pedestrian density on grids. -->
+		<analysis id="1"  name="xtDensityAnalysis">
+	
+			<property name="call" type="Integer" value="20"/> <!-- Every 1 seconds -->
+			<property name="analysisStartStep" type="Integer" value="0"/>
+			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+			
+			<!-- The xt density measurment model has some addtional properties. -->
+			<measure type="XtDensity">		
+				<!-- The xtDensity analysis computes the pedestrian density on lattice=1. -->
+				<property name="latticeId" type="Integer" value="1"/>
+				<!-- For timeRange = 1 the grid-method is given. -->
+				<!-- For timeRange > 1, where timeRange % 3 = 0, it is the XT-Method. -->
+				<property name="timeRange" type="Integer" value="3"/>
+				<!-- The maximal density (100%) -->
+				<property name="maximalDensity" type="Double" value="5.0"/>
+			</measure>
+			
+			<!-- The occupancy analysis needs pedestrian data as input. -->
+			<!-- However, only timeStep, id, x and y are needed. -->
+			<writerSource sourceType="Pedestrian"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+			</writerSource>
+		</analysis>
+	</analysisModels>
+	
+	<!-- The outputWriters are important interfaces to generate data that can be visualized and analyzed. -->
+	<!-- Each Output writer comprises a target, a format and a writer source. -->
+	<!-- Multiple models provide output sources and therefore a method to write model specific data. -->
+	
+	<outputWriters>
+	
+		<!-- Each outputWriter has a unique writer id, a user-friendly name, and a type.-->
+		
+		<!-- The output writer defines to write pedestrian data (source) into a file (target) in csv (format). -->
+		<outputWriter id="0" name="pedestrianOutputToFile"> 
+		
+			<!-- Call indicates with 1 that the data should be written every time-step. -->
+			<!-- Thus, to save time and memory use e.g. 5 to write every 5th time-step. -->
+			<property name="call" type="Integer" value="3"/> <!-- Print every 2 * 0.05 = 0.1 seconds -->
+			<property name="delimiter" type="String" value=";"/>
+			
+			<!-- The buffer holds the data until it overflows. Then, the data is written to the file. -->
+			<!-- Huge buffer can increase the performance and reduce the number of disk accesses. -->
+			<!-- However huge buffers need alot of memory! -->
+			<property name="buffer" type="Integer" value="50"/>
+			
+			<!-- The target is a file in the file system -->
+			<writerTarget targetType="File">
+				<!-- The place to save the file. -->
+				<property name="file" type="File" value="./2017_Pedestrian_$LOOP$.csv"/>
+				<!-- Create an index file for fast visualization -->
+				<property name="index" type="Boolean" value="True"/> 
+			</writerTarget>
+			
+			<!-- The format is CSV (character separated values) -->
+			<writerFormat formatType="Csv">
+				<!-- Enable the csv format to create a index data context. This is important to write index into the target. -->
+				<property name="index" type="Boolean" value="True"/> 
+				<!-- The character delimiter is a semicolon (;). E.g. value;value -->
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>
+			
+			<!-- The writer source are pedestrian data. -->
+			<writerSource sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="behavior" type="Format" value="%d"/>
+				<property name="currentVertexID" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		
+		<!-- This writer stores the xml layout in a file after the graph and lattice operations! -->
+		<outputWriter id="1" name="layoutWriter">
+			<!-- This writer is called only once. Zero means at the beginning of the simulation. -->
+			<property name="call" type="Integer" value="0"/> <!-- In pre-processing only -->
+			<!-- The target is a file. -->
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_Layout.xml"/>
+			</writerTarget>
+			<!-- The content of the writer is a text single element (here the xml layout). -->
+			<writerFormat formatType="Single"/>
+			<!-- The source is the configuration. Here, the graph and lattice models are part of the output. -->
+			<writerSource sourceType="Configuration">
+				<!-- At the moment only layoutConfiguration is the only data element that the configuration source offers. -->
+				<property name="dataElement" type="String" value="layouts"/>
+			</writerSource>
+		</outputWriter>
+		
+		<!-- This writes stores the occupancy data from the analysis model id=0. -->
+		<!-- Why? The outputSource is of type Analysis. -->
+		<!-- The data is exists for each call=2 time-step (see analysis model occupancy) -->
+		<outputWriter id="2" name="occupancyAnalysisOutput">
+			<property name="call" type="Integer" value="2"/> <!-- Every 1 seconds -->
+			<property name="buffer" type="Integer" value="100"/>
+			<!-- Data into file -->
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_Occupancy_$LOOP$.csv"/>
+				<!-- No index property here.  -->
+			</writerTarget>
+			<!-- Data as cvs -->
+			<writerFormat formatType="Csv">
+				<property name="delimiter" type="String" value=";"/>
+				<!-- No index property here.  -->
+			</writerFormat>
+			<!-- The analysis model with addtionalId=0 is the source of the output writer. -->
+			<writerSource sourceType="Analysis" additionalId="0"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="areaOccupancy" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter> 
+		
+		<!-- This writer stores the density data form the analysis model id=1. -->
+		<!-- Why? The outputSource is of type Analysis. -->
+		<!-- The data is exists for each call=10 time-step (see analysis model density) -->
+		<outputWriter id="3" name="densityAnalysisOutput">
+			<property name="call" type="Integer" value="10"/> <!-- Every 5 seconds -->
+			<property name="buffer" type="Integer" value="1000"/>
+			<!-- Data into file -->
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_XT_Density_$LOOP$.csv"/>
+				<property name="index" type="Boolean" value="True"/> 
+			</writerTarget>
+			<!-- Data as cvs -->
+			<writerFormat formatType="Csv">
+				<property name="index" type="Boolean" value="True"/> 
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>			
+			<writerSource sourceType="Analysis" additionalId="1"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%s"/>
+				<property name="cornerSize" type="Format" value="%.2f"/>
+				<property name="cellCenterX" type="Format" value="%.2f"/>
+				<property name="cellCenterY" type="Format" value="%.2f"/>
+				<property name="density" type="Format" value="%.2f"/>
+				<property name="maximalDensity" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter> 
+		
+		<!-- Multiple more writers can be added here if needed by the user. -->
+		
+	</outputWriters>
+	
+	<!-- The metaModels are specific models used for "meta"-operations. -->
+	<!-- Meta models can only be applied if the execution order engine is in use (see above). -->
+	<!-- As normal user you will not get in touch with this. -->
+	<!-- However, this is an example of the TransiTUM model for coupling CA models and continuous models of walking behavior. -->
+	<!-- One meta model that might be of use as teleportation to create continuous boundary conditions in a loop. -->
+	<!-- This teleportation model is still not implemented. -->
+	<metaModels>
+	
+		<!-- Similar to the other models, meta models do have a unique model id. -->
+		<!-- Also, they have a user-friendly name and a type. -->
+		<meta id="10" name="transiTum" type="TransiTum">
+			<complexProperty name="microscopicModel" type="List" valueType="Integer">
+				    <entry index="0" value="3"/> 
+				    <entry index="1" value="2"/>
+				    <entry index="2" value="1"/> 
+			</complexProperty>
+			<complexProperty name="mesoscopicModel" type="List" valueType="Integer">
+					<entry index="0" value="3"/> 
+				    <entry index="1" value="2"/>
+				    <entry index="2" value="0" /> 
+			</complexProperty>
+			<propertyContainer name="ConfigurationData" id="0"> 
+				<property name="mesoscopicTimeStepMultiplikator" type="Integer" value="4"/>
+				<property name="microscopicTimeStepMultiplikator" type="Integer" value="1"/>
+				<property name="maximalVelocity" type="Double" value="2.12"/>
+				<property name="transitionAreaFactor" type="Double" value="15"/>
+				<property name="scenarioLatticeId" type="Integer" value="0"/>
+				<property name="collisionDetectionLatticeId" type="Integer" value="0"/>
+			</propertyContainer>
+			<propertyContainer name="MultiscaleArea" id="1"> 
+				<property name="areaType" type="String" value="Microscopic"/>
+				<property name="radius" type="Double" value="12"/>
+				<property name="xPosition" type="Double" value="67"/>
+				<property name="yPosition" type="Double" value="13"/>
+			</propertyContainer>
+			<propertyContainer name="MultiscaleArea" id="2"> 
+				<property name="areaType" type="String" value="Microscopic"/>
+				<property name="radius" type="Double" value="25"/>
+				<property name="xPosition" type="Double" value="24"/>
+				<property name="yPosition" type="Double" value="53"/>
+			</propertyContainer>
+		</meta>
+					
+		<!-- Multiple more meta models can be added here if needed by the user. -->
+	
+	</metaModels>
+	
+	<!-- The order of the tags within the simulation tag is arbitrary. -->
+	
+</simulator>			

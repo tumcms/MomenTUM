@@ -1,0 +1,188 @@
+
+<!--  call property
+	  if 0 it is preprocessing
+	  if Integer.MIN_VALUE it is postprocessing
+	  if n element 1-N its call each n simulation step 
+	  only valid for cvsWriter and consoleWriter
+	  
+	  other converter to as coded 
+	  configurationWriter preprocessing
+	  statisticsWriter postprocessing -->
+
+<outputWriter id="3" name="modelWriter" type="csvWriter">
+	<property name="call" type="Integer" value="5"/>
+	<property name="file" type="File" value="./Analyis_Output.csv"/>
+	<property name="delimiter" type="String" value=";"/>
+	<property name="buffer" type="Integer" value="500"/>
+	<complexProperty name="order" type="List" valueType="String">
+		<entry index="0" value="timeStep"/>
+		<entry index="1" value="id"/>
+		<entry index="2" value="turingAngleType"/> <!-- In model output source defined! -->
+	</complexProperty>
+	<writerSource name="turningAngleOuptut" sourceType="Analysis" additionalId="0"> <!-- Use the analyis model id here -->
+		<property name="timeStep" type="Format" value="%d"/>
+		<property name="id" type="Format" value="%d"/>
+		<property name=turingAngleType type="Format" value="%.2f"/> <!-- check the analysis model type definition, each model generates a single output -->
+	</writerSource>
+</outputWriter>
+
+<outputWriter id="1" name="ConsoleWriter" type="consoleWriter">
+	<property name="call" type="Integer" value="5"/>
+	<complexProperty name="order" type="List" valueType="String">
+		<entry index="0" value="time"/>
+		<entry index="1" value="id"/>
+		<entry index="2" value="x"/>
+		<entry index="3" value="y"/>
+	</complexProperty>
+	<writerSource name="basic" loop="pedestrian">
+		<property name="time" type="Format" value="%.2f"/>
+		<property name="id" type="Format" value="%d"/>
+		<property name="x" type="Format" value="%.2f"/>
+		<property name="y" type="Format" value="%.2f"/>
+	</writerSource>
+</outputWriter>
+		
+<outputWriter id="2" name="layoutWriter" type="configurationWriter">
+	<property name="file" type="File" value="./MomenTumV2_Layout_Sall_Layout.xml"/>
+	<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+	<writerSource name="xml" sourceType="Configuration" />
+</outputWriter>
+
+
+<outputWriter id="3" name="exeuctionTimeWriter" type="statisticsWriter">
+	<property name="file" type="File" value="./BlockGeometry_Perception_Test_Statistics.csv"/>
+	<property name="delimiter" type="String" value=";"/>
+	<property name="buffer" type="Integer" value="1"/>
+	<complexProperty name="order" type="List" valueType="String">
+		<entry index="0" value="executionOperational"/>
+		<entry index="1" value="executionTactical"/>
+		<entry index="2" value="executionStrategical"/>
+		<entry index="3" value="executionAbsorber"/>
+		<entry index="4" value="executionGenerator"/>
+		<entry index="5" value="executionOverhead"/>
+		<entry index="6" value="executionPreProcessing"/>
+		<entry index="7" value="executionPostProcessing"/>
+	</complexProperty>
+	<writerSource name="basic" sourceType="TimeStep">
+		<property name="executionOperational" type="Format" value="%.2f"/>
+		<property name="executionTactical" type="Format" value="%.2f"/>
+		<property name="executionStrategical" type="Format" value="%.2f"/>
+		<property name="executionAbsorber" type="Format" value="%.2f"/>
+		<property name="executionGenerator" type="Format" value="%.2f"/>
+		<property name="executionOverhead" type="Format" value="%.2f"/>
+		<property name="executionPreProcessing" type="Format" value="%.2f"/>
+		<property name="executionPostProcessing" type="Format" value="%.2f"/>		
+	</writerSource>
+</outputWriter>
+
+<outputWriter id="0" name="csvWriter" type="csvWriter">
+	<property name="call" type="Integer" value="5"/>  <!-- Only for csv or console writer, the writer will be called each n timeStep -->
+	<property name="file" type="File" value="./MomenTumV2_Layout_Sall_Output.csv"/>
+	<property name="delimiter" type="String" value=";"/>
+	<property name="buffer" type="Integer" value="500"/>
+	<complexProperty name="order" type="List" valueType="String">
+		<entry index="0" value="timeStep"/>
+		<entry index="1" value="id"/>
+		<entry index="2" value="x"/>
+		<entry index="3" value="y"/>
+		<entry index="4" value="xHeading"/>
+		<entry index="5" value="yHeading"/>
+		<entry index="6" value="currentVertexID"/>
+		<entry index="7" value="targetID"/>
+	</complexProperty>
+	<writerSource name="basic" sourceType="Pedestrian">
+		<property name="timeStep" type="Format" value="%d"/>
+		<property name="id" type="Format" value="%d"/>
+		<property name="x" type="Format" value="%.2f"/>
+		<property name="y" type="Format" value="%.2f"/>
+		<property name="xHeading" type="Format" value="%.2f"/>
+		<property name="yHeading" type="Format" value="%.2f"/>
+		<property name="currentVertexID" type="Format" value="%d"/>
+		<property name="targetID" type="Format" value="%d"/>
+	</writerSource>
+</outputWriter>
+
+<outputWriter id="3" name="modelWriter" type="csvWriter">
+	<property name="call" type="Integer" value="5"/>
+	<property name="file" type="File" value="./UnifiedRouting_Output.csv"/>
+	<property name="delimiter" type="String" value=";"/>
+	<property name="buffer" type="Integer" value="500"/>
+	<complexProperty name="order" type="List" valueType="String">
+		<entry index="0" value="timeStep"/>
+		<entry index="1" value="id"/>
+		<entry index="2" value="FastestPath"/> <!-- In model output source defined! -->
+		<entry index="3" value="Beeline"/> <!-- In model output source defined! -->
+		<entry index="4" value="GreedyBeeline"/> <!-- In model output source defined! -->
+		<entry index="5" value="StraightLongLegs"/> <!-- In model output source defined! -->
+	</complexProperty>
+	<writerSource name="urpmOutput" sourceType="UPRM" additionalId="1"> <!-- Use the uprm model id here -->
+		<property name="timeStep" type="Format" value="%d"/>
+		<property name="id" type="Format" value="%d"/>
+		<property name="FastestPath" type="Format" value="%.2f"/>
+		<property name="Beeline" type="Format" value="%.2f"/>
+		<property name="GreedyBeeline" type="Format" value="%.2f"/>
+		<property name="StraightLongLegs" type="Format" value="%.2f"/>
+	</writerSource>
+</outputWriter>
+
+<!-- Describes how to dynamically create a csv file with multiple entries for each source element -->
+<outputWriter id="3" name="modelWriter" type="csvDynamicWriter">
+	<property name="call" type="Integer" value="5"/>
+	<property name="file" type="File" value="./UnifiedRouting_Output.csv"/>
+	<property name="delimiter" type="String" value=";"/>
+	<property name="buffer" type="Integer" value="100"/>
+	<property name="dynamicSize" type="Integer" value="7"/> <!-- descibes the number of sub entries in dynamic entries -->
+	<complexProperty name="order" type="List" valueType="String">
+		<entry index="0" value="timeStep"/>
+		<entry index="1" value="id"/>
+		<entry index="2" value="GoalName"/>
+		<entry index="3" value="Interruption"/>
+		<entry index="4" value="Distance"/> 
+		<entry index="5" value="Occupancy"/> 
+		<entry index="6" value="Interest"/> 
+		<entry index="7" value="LocalDensity"/> 
+		<entry index="8" value="Actualization"/> 
+		<entry index="9" value="Availability"/> 
+		<entry index="10" value="MotivationalType"/> 
+		<entry index="11" value="OccupancyType"/> 
+		<entry index="12" value="Implementation"/>
+		<entry index="13" value="PreferenceState"/>
+		<entry index="14" value="Schedule"/> 
+	</complexProperty>
+	<!-- set here corresponding to the order list if the element ist dynamic or static (multiple inputs for) -->
+	<complexProperty name="dynamic" type="List" valueType="Boolean">
+		<entry index="0" value="False"/>
+		<entry index="1" value="False"/>
+		<entry index="2" value="True"/> 
+		<entry index="3" value="False"/> 
+		<entry index="4" value="True"/>
+		<entry index="5" value="True"/>
+		<entry index="6" value="True"/> 
+		<entry index="7" value="False"/> 
+		<entry index="8" value="True"/> 
+		<entry index="9" value="True"/>
+		<entry index="10" value="True"/>
+		<entry index="11" value="True"/> 
+		<entry index="12" value="True"/>
+		<entry index="13" value="True"/>
+		<entry index="14" value="False"/>
+	</complexProperty>
+	<writerSource name="pccOutput" sourceType="PCC" additionalId="1"> <!-- Use the pcc model id here -->
+		<property name="timeStep" type="Format" value="%d"/>
+		<property name="id" type="Format" value="%d"/>
+		<property name="GoalName" type="Format" value="%d"/>
+		<property name="Interruption" type="Format" value="%d"/>
+		<property name="Distance" type="Format" value="%.2f"/>
+		<property name="Occupancy" type="Format" value="%.2f"/>
+		<property name="Interest" type="Format" value="%.2f"/>
+		<property name="LocalDensity" type="Format" value="%.2f"/>
+		<property name="Actualization" type="Format" value="%d"/>
+		<property name="Availability" type="Format" value="%d"/>
+		<property name="MotivationalType" type="Format" value="%d"/>
+		<property name="OccupancyType" type="Format" value="%d"/>
+		<property name="Implementation" type="Format" value="%d"/>
+		<property name="PreferenceState" type="Format" value="%.2f"/>
+		<property name="Schedule" type="Format" value="%d"/>
+	</writerSource>
+</outputWriter>
+

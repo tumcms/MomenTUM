@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="2.0.0" simulationName="Validation_Big_CellularAutomata_8T_400">
+	
+	<!-- The simulation runs 1200 seconds = 20 Minutes, and has 1200/0.05 = 24000 steps of length 0.05 second. -->
+	<timeState simulationEndTime="900.0" timeStepDuration="0.05"/>
+	
+	<!-- The parallelization is done based on 3 threads. -->
+	<threadingState threads="8"/>
+	
+	<!-- We log to the console on debug level. -->
+	<logging>
+		<loggingState type="Console" level="Debug"/>
+	</logging>
+	
+	<!-- We re-run the simulation. Each re-run the name="LOOP" variable will be increased. -->
+	<!-- The variables starts at 0.0 ends after at 1.0; thus, after 2 changes. -->
+	<!-- Look for $LOOP$, this value will be exchanged in each loop. -->
+	<loop updateType="Stepwise" accuracyDigits="1">
+		<loopVariable name="LOOP" start="0.0" change="1.0" steps="0"/> <!-- number of steps number of loops --> 
+	</loop>
+	
+	<!-- The layout was created via the AutoCad Plugin. -->
+	<!-- We use the link option of the layout scenario to load it. -->
+	<!-- The content of the scenario could have been copy-pasted to into the scenario tag. -->
+	<layouts>
+		<scenario id="0" layoutLink=".\config\MasterThesis\Lauterbach\ModelValidation\CellularAutomata\Big_Layout.xml"/>
+	</layouts>
+	
+	<!-- We need 2 lattices. -->
+	<lattices>
+		<!-- Used by the generated=0 -->
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46" neigborhoodType="Touching" fillingType="ScenarioLayout" behaviorType="Synchronized"/>
+	</lattices>
+	
+	<!-- A simple routing graph is generated for the routing model=4 -->
+	<graphs>
+		<graphModel name="routing" id="0">
+			 <graphOperation id="0" name="raw" type="RawGraph">
+				<property name="graphId" type="Integer" value="0"/>
+			</graphOperation> 
+			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased"/>
+			<graphOperation id="2" name="corners" type="VertexCreateAtCorners"> 
+				<property name="cornerDistance" type="Double" value="0.6"/> 
+			</graphOperation> 	
+			<graphOperation id="3" name="visibility" type="EdgeCreateVisibilityConnect">
+				<property name="alpha" type="Double" value="30"/>
+				<property name="visibilityTolerance" type="Double" value="0.1"/>
+			</graphOperation> 
+			<graphOperation id="4" name="removeDispensible" type="EdgeRemoveUnreachable"/>
+			<graphOperation id="5" name="toConfiguration" type="ToConfiguration">
+				<property name="scenarioId" type="Integer" value="0"/>
+			</graphOperation>
+		</graphModel> 
+	</graphs>
+	
+	<!-- <exeuctionOrder> is not needed in this simulation, because we apply the classical approach. -->
+	
+	<!-- The standard BlockingGeometries perception model is used.. there is no other. -->
+	<perceptualModels>
+		<perceptual id="0" name="worldKnowledge" type="WorldKnowledge"/>
+	</perceptualModels>
+		
+	<!-- A single operational model, because we apply the "classical" simulation approach. -->
+	<operationalModels>
+		<operational id="1" name="operational" perceptualModel="0">
+			<walkingReference modelId="2"/>
+			<standingReference modelId="3"/>
+		</operational>
+	</operationalModels>
+	
+	<!-- A single walking model. -->
+	<walkingModels>
+        <walking id="2" name="StockOperational" type="StockCellular">
+		  <property name="scenarioLatticeId" type="Integer" value="0" />
+		  <property name="timeStepMultiplicator" type="Integer" value="4" />
+		</walking>
+	</walkingModels>
+	
+	<!-- A single standing model -->
+	<standingModels>
+		<standing id="3" name="fixedStanding" type="FixedStanding" />
+	</standingModels>
+	
+	<!-- A single tactical model. -->
+	<tacticalModels>
+		<tactical id="4" name="tactical"  perceptualModel="0">
+			<routingReference modelId="5"/>
+			<stayingReference modelId="6"/>
+			<queuingReference modelId="7"/>
+			<searchingReference modelId="8"/>
+			<property name="goalDistanceRadius" type="Double" value="0.15" />
+			<property name="navigationDistanceRadius" type="Double" value="0.15"/>
+		</tactical>
+	</tacticalModels>
+
+	<!-- A single routing model. -->
+	<routingModels>
+		<routing id="5" name="dijkstra" type="Dijkstra"/>
+	</routingModels>
+	
+	<!-- A single staying model. -->
+	<stayingModels>
+		<staying id="6" name="noStaying" type="NoStaying" />
+	</stayingModels>
+	
+	<!-- A single queueing model. -->
+	<queuingModels>
+		<queuing id="7" name="noQueuing" type="NoQueuing" />
+	</queuingModels>
+
+	<!-- A single searching model. This is a dummy model, which provides no real searching behavior!. -->
+	<searchingModels>
+		<searching id="8" name="noSearching" type="NoSearching"/>
+	</searchingModels>	
+	
+	<!-- A single destination choice (strategic model) model. -->
+	<strategicalModels>
+		<strategical id="9" name="shortestDestination" type="ShortestDestination" perceptualModel="0" />
+	</strategicalModels>
+	
+	<!-- A seed concept for the generator, provides basic pedestrian data -->
+	<pedestrianSeeds>
+		<!-- The seed is used in the generator=0 -->
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.34" />
+			<property name="maximalVelocity" type="Double" value="2.7" />
+			<property name="radiusMeter" type="Double" value="0.23" />
+			<property name="groupSize" type="Integer" value="1" />
+		</pedestrianSeed>
+	</pedestrianSeeds>
+	
+	<!-- A single generator -->
+	<generators>
+		<!-- The generator is used for the scenario=0 origin=0, which are in the exampleLayout.xml file. -->
+		<!-- Lattice=0 is used and pedestrian are generated randomly on the lattice=0 and origin=0. -->
+		<generator id="0" name="generator" scenario="0" origin="0" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0" />
+			<property name="endTime" type="Double" value="Infinity" />
+			<property name="basicHeading" type="Double" value="90" />
+			<property name="maximalPedestrians" type="Integer" value="100" />
+			<!-- 3000 -->
+			<property name="safetyDistance" type="Double" value="0.5" />
+			<property name="scenarioLatticeId" type="Integer" value="0" />
+			<!-- iD of the lattice for the cellular automaton -->
+			<geometry geometryType="Point"/>
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0" />
+				<entry index="1" value="100.0" />
+			</complexProperty>
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<entry index="0" value="1.0" />
+				<entry index="1" value="0.0" />
+			</complexProperty>
+		</generator>
+		<generator id="1" name="generator" scenario="0" origin="1" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0" />
+			<property name="endTime" type="Double" value="Infinity" />
+			<property name="basicHeading" type="Double" value="90" />
+			<property name="maximalPedestrians" type="Integer" value="100" />
+			<!-- 3000 -->
+			<property name="safetyDistance" type="Double" value="0.5" />
+			<property name="scenarioLatticeId" type="Integer" value="0" />
+			<!-- iD of the lattice for the cellular automaton -->
+			<geometry geometryType="Point"/>
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0" />
+				<entry index="1" value="100.0" />
+			</complexProperty>
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<entry index="0" value="1.0" />
+				<entry index="1" value="0.0" />
+			</complexProperty>
+		</generator>
+		<generator id="2" name="generator" scenario="0" origin="2" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0" />
+			<property name="endTime" type="Double" value="Infinity" />
+			<property name="basicHeading" type="Double" value="90" />
+			<property name="maximalPedestrians" type="Integer" value="100" />
+			<!-- 3000 -->
+			<property name="safetyDistance" type="Double" value="0.5" />
+			<property name="scenarioLatticeId" type="Integer" value="0" />
+			<geometry geometryType="Point"/>
+			<!-- iD of the lattice for the cellular automaton -->
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0" />
+				<entry index="1" value="100.0" />
+			</complexProperty>
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<entry index="0" value="1.0" />
+				<entry index="1" value="0.0" />
+			</complexProperty>
+		</generator>
+		<generator id="3" name="generator" scenario="0" origin="3" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0" />
+			<property name="endTime" type="Double" value="Infinity" />
+			<property name="basicHeading" type="Double" value="90" />
+			<property name="maximalPedestrians" type="Integer" value="100" />
+			<!-- 3000 -->
+			<property name="safetyDistance" type="Double" value="0.5" />
+			<property name="scenarioLatticeId" type="Integer" value="0" />
+			<geometry geometryType="Point"/>
+			<!-- iD of the lattice for the cellular automaton -->
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0" />
+				<entry index="1" value="100.0" />
+			</complexProperty>
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<entry index="0" value="1.0" />
+				<entry index="1" value="0.0" />
+			</complexProperty>
+		</generator>
+	</generators>
+	
+	<!-- A single absorber -->
+	<absorbers>
+		<!-- The generator is used in the scenario=0 destination=3, which are in the exampleLayout.xml file. -->
+		<absorber id="0" name="default" scenario="0" destination="4" type="DestinationInstantly"/>
+		<absorber id="1" name="default" scenario="0" destination="5" type="DestinationInstantly"/>
+		<absorber id="2" name="default" scenario="0" destination="6" type="DestinationInstantly"/>
+		<absorber id="3" name="default" scenario="0" destination="7" type="DestinationInstantly"/>
+		<absorber id="4" name="default" scenario="0" destination="8" type="DestinationInstantly"/>
+	</absorbers>
+	
+	<!-- Two analysis models are applied, occupancy and xt-Density.  -->
+	
+	
+	<!-- We print the pedestrian data, xt-density data, occupancy data, the number of leaving pedestrians and the configuration -->
+	<outputWriters>
+		<outputWriter id="0" name="pedestrianOutputToFile"> 
+			<property name="call" type="Integer" value="3"/> <!-- Print every 3 * 0.05 = 0.1 seconds -->
+			<property name="buffer" type="Integer" value="500"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./Validation_Big_CellularAutomata_8T_400.csv"/>
+				<property name="index" type="Boolean" value="True"/> 
+			</writerTarget>
+			<writerFormat formatType="Csv">
+				<property name="index" type="Boolean" value="True"/> 
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>
+			<writerSource sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="xNextWalkingTarget" type="Format" value="%.2f"/>
+				<property name="yNextWalkingTarget" type="Format" value="%.2f"/>
+				<property name="desiredVelocity" type="Format" value="%.2f"/>
+				<property name="maximalVelocity" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+		
+		<outputWriter id="1" name="layoutWriter">
+			<property name="call" type="Integer" value="0"/> <!-- In pre-processing -->
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./Validation_Big_CellularAutomata_8T_400_Layout.xml"/>
+			</writerTarget>
+			<writerFormat formatType="Single"/>
+			<writerSource sourceType="Configuration">
+				<property name="dataElement" type="String" value="layoutConfiguration"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+</simulator>

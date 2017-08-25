@@ -1,0 +1,45 @@
+Build:
+Run maven build on the
+
+momentum-package-simulator
+and
+momentum-package-visualization-2D
+projects.
+
+You will get the jars
+momentum-simulator-2.0.2.jar
+and
+momentum-visualization-2D-2.0.2.jar
+in the target folders.
+
+
+Run the simulation:
+
+Check the C:\mypath\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleSimulation.xml" for paths you have to change
+<!-- Warning: update path! --> 
+
+Run on command line
+java -jar momentum-simulator-2.0.2.jar --config "C:\mypath\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleSimulation.xml"
+
+Run in eclipse:
+(SimulationKernel is the entry class):
+--config "C:\mypath\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleSimulation.xml"
+
+In case your run out of heap memory use the parameter
+java -Xms2048m -Xmx2048m -jar..
+-Xms -> minimal heap size
+-Xmx -> maximal heap size
+
+
+Run the visualsiation:
+
+Run on command line
+java -jar momentum-visualization-2D-2.0.2.jar
+or double click on the jar.
+
+Run in eclipse:
+(VisualisationKernel is the entry class)
+
+Load the layout (file -> load layout)
+Load the output csv file (file -> load csv data)
+Press play

@@ -1,0 +1,49 @@
+<operational id="0" name="noInteraction" type="NoInteraction" perceptualModel="0" queryModel="0"/>
+
+<operational id="0" name="socialForceModel" type="SocialForce" perceptualModel="0" queryModel="0">
+	<property name="relaxation_time" type="Double" value="0.5"/>
+	<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+	<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+	<property name="panic_degree" type="Double" value="0.4"/>
+	<property name="mass_behaviour_A" type="Double" value="2.74"/>
+	<property name="mass_behaviour_B" type="Double" value="0.08"/>	
+	<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+	<property name="koester_Epsilon" type="Double" value="0.01"/>
+</operational>
+
+<operational id="1" name="bonneaud" type="Bonneaud" perceptualModel="0" queryModel="0">
+	<!--<property name="initialAngularVelocity" type="Double" value="0.0"/>-->
+	<property name="STATIC_TARGET_DAMPING" type="Double" value="2.0"/>
+	<property name="STATIC_TARGET_ATTRACT" type="Double" value="0.4"/>
+	<property name="STATIC_TARGET_DISTANCE" type="Double" value="0.1"/>
+	<property name="STATIC_TARGET_ATTRACT_ASSURANCE" type="Double" value="0.5"/>
+	<property name="STATIC_OBSTACLE_DISTANCE" type="Double" value="1.0"/>
+	<property name="STATIC_OBSTACLE_REPULSION" type="Double" value="0.7"/>
+	<property name="STATIC_OBSTACLE_REPULSION_DECAY" type="Double" value="0.3"/>
+	<property name="MOVING_OBSTACLE_DISTANCE" type="Double" value="2.0"/>
+	<property name="MOVING_OBSTACLE_REPULSION" type="Double" value="10.0"/>
+	<property name="MOVING_OBSTACLE_HEADING" type="Double" value="100.0"/>
+	<property name="MOVING_OBSTACLE_CHANGE_DISTANCE" type="Double" value="1.0"/>
+	<property name="TAU_SPEED_BEARING" type="Double" value="2.0"/>
+	<property name="TAU_SPEED_DEACCEL" type="Double" value="3.0"/>
+	<property name="TAU_SPEED_PREFER" type="Double" value="2.0"/>
+	<property name="MAX_OBSTACLE_SIZE" type="Double" value="5.0"/>
+</operational>
+
+<operational id="2" name="moussaid" type="Moussaid" perceptualModel="0" queryModel="0">
+	<property name="relaxation_time" type="Double" value="0.5"/>
+	<property name="social_interaction_strength" type="Double" value="4.0"/> <!-- in paper: beta1 -->
+	<property name="attraction_effects_strength" type="Double" value="3.0"/> <!-- in paper: beta2 -->
+	<property name="repulsion_strength" type="Double" value="1.0"/>	<!-- in paper: beta3 -->
+	<property name="physical_interaction_kappa" type="Double" value="2.4e5"/> <!-- from here Helbing parameters -->
+	<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+	<property name="panic_degree" type="Double" value="0.4"/>
+	<property name="mass_behaviour_A" type="Double" value="0.8e3"/>
+	<property name="mass_behaviour_B" type="Double" value="0.05"/>	
+	<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+	<property name="koester_Epsilon" type="Double" value="0.01"/>
+</operational>
+
+<operational id="0" name="stockCellular" type="StockCellular" perceptualModel="0" queryModel="0">
+	<property name="scenarioLatticeId" type="Integer" value="0"/> <!-- iD of the lattice for the cellular automaton -->
+</operational>

@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="utf-8"?>
+<simulator version="MomenTumV2.0.0" simulationName="TGF_UnifiedRouting_Herding" simEnd="700.0" threads="3" timeStepDuration="0.1">
+	<!-- <executionOrder>
+		<executionBlock id="0" orderNumber="1" timeStepMultiplicator="1">
+			<complexProperty name="models" type="List" valueType="String">
+				<entry index="0" value="NoDecision"/> 
+			    <entry index="1" value="Dijkstra"/> 
+				<entry index="2" value="SocialForce"/>	    
+			 </complexProperty>
+		</executionBlock>
+	</executionOrder> -->
+	<operationalModels>
+		<operational id="0" name="socialForceModel" type="SocialForce" perceptualModel="0">
+			<property name="relaxation_time" type="Double" value="0.5"/>
+			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
+			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
+			<property name="panic_degree" type="Double" value="0.4"/>
+			<property name="mass_behaviour_A" type="Double" value="0.8e3"/>
+			<property name="mass_behaviour_B" type="Double" value="0.05"/>			
+			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
+			<property name="koester_Epsilon" type="Double" value="0.01"/>
+		</operational>
+	</operationalModels>
+	<tacticalModels>
+		<tactical id="0" name="unifiedRouting" type="UPRM" perceptualModel="0" queryModel="0">
+			<property name="landmarkRouting" type="Boolean" value="false" />
+			<property name="herding" type="Double" value="0.0"/>
+			<!-- 0 is no herding 1 is strong herding huge number weak herding -->
+			<property name="probability" type="Boolean" value="true"/>
+			<!-- the numbers down are probabilities or stocks -->
+			<property name="I" type="Double" value="0.0914"/>
+			<!-- FP -->
+			<property name="II" type="Double" value="0.1025"/>
+			<!-- BH -->
+			<property name="IIV" type="Double" value="0.091"/>
+			<!-- FP & BH -->
+			<property name="IV" type="Double" value="0.1115"/>
+			<!-- SALL -->
+			<property name="V" type="Double" value="0.1067"/>
+			<!-- GBH -->
+			<property name="VI" type="Double" value="0.1118"/>
+			<!-- SALL & GBH -->
+			<property name="VII" type="Double" value="0.1055"/>
+			<!-- SALL & BH -->
+			<property name="IIX" type="Double" value="0.0899"/>
+			<!-- SALL & FP -->
+			<property name="IX" type="Double" value="0.0998"/>
+			<!-- SALL & GBH & FP -->
+			<property name="X" type="Double" value="0.09"/>
+			<!-- GBH & FP & BH -->  
+			<property name="XI" type="Double" value="0.0"/>
+			<!-- SALL & GBH & FP & BH -->
+		</tactical>
+	</tacticalModels>
+	<strategicalModels>
+		<strategical id="0" name="noStrategy" type="NoDecision" perceptualModel="0" queryModel="0"/>
+	</strategicalModels>
+	<perceptualModels>
+		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+			<property name="Discretisation" type="Double" value="3.0"/>
+		</perceptual>
+	</perceptualModels>
+	<queryModels>
+		<query id="0" name="kielarSupportQuery" type="KielarSupport">
+			<property name="positionJitter" type="Double" value="0.05"/> 
+			<!-- minimal distance for ignoring operation behavior at gathering points -->
+			<property name="gatheringDistance" type="Double" value="0.15"/>	
+			<!-- distance at which a gathering point is reached -->
+			<property name="gatheringSafetyDistance" type="Double" value="0.1"/> 
+			<!-- Safety distance between pedestrian boundaries for gathering points -->
+			<property name="navigationVisitingNorm" type="Double" value="2.0"/>	
+			<!-- expansion of the vertex polygon -->
+			<property name="navigationVisitingRotation" type="Double" value="95.0"/> 
+			<!-- In degree maximal 100 minimal 45 -->
+		</query>
+	</queryModels>
+	<metaModels />
+	<generators>
+		<generator id="1" name="generatorPreBTTW2014" type="Plan" scenario="0" origin="0" seed="0">
+			<property name="startTime" type="Double" value="0"/>
+			<!-- in seconds -->
+			<property name="endTime" type="Double" value="Infinity"/>
+			<!-- in seconds -->
+			<property name="basicHeading" type="Double" value="0"/>
+			<!-- 0 till 359 in degree -->
+			<property name="maximalPedestrians" type="Integer" value="450"/>
+			<!-- 0 till n in pedestrians -->
+			<property name="safetyDistance" type="Double" value="1.5"/>
+			<!-- 0 till n in meter to pedestrians' radius -->
+			<property name="scenarioLatticeId" type="Integer" value="0"/>
+			<!-- ID of the ScenarioLattice-->
+			<geometry geometryType="Lattice" fillingType="Random"/>
+			<!-- Random | Complete -->
+			<complexProperty name="interval" type="List" valueType="Double">
+				<!-- list of time slices for generation -->
+				<entry index="0" value="0"/>
+				<entry index="1" value="180"/>  
+			</complexProperty>		
+			<complexProperty name="percentage" type="List" valueType="Double">
+				<!-- list of percentage of pedestrians to generator for the slices (sum = 1)-->
+				<entry index="0" value="1.0"/>
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+	</generators>
+	<pedestrianSeeds>
+		<pedestrianSeed id="0" name="basic" type="HistogramDistribution">
+			<property name="radiusMeter" type="Double" value="0.22 "/>	
+			<property name="minimalVelocity" type="Double" value="1.2478"/>			
+			<property name="velocityBinWidth" type="Double" value="0.1236"/>			
+			<complexProperty name="velocityBins" type="List" valueType="Double">
+				<entry index="0" value="0.042857143"/> 
+				<entry index="1" value="0.071428571"/>
+				<entry index="2" value="0.228571429"/>
+				<entry index="3" value="0.257142857"/>
+				<entry index="4" value="0.214285714"/>
+				<entry index="5" value="0.114285714"/>
+				<entry index="6" value="0.028571429"/>
+				<entry index="7" value="0.028571429"/>
+				<entry index="8" value="0.014285714"/>
+			</complexProperty>
+			<property name="minimalGroupSize" type="Double" value="1"/>			
+			<property name="groupSizeBinWidth" type="Double" value="0"/>			
+			<complexProperty name="groupSizeBins" type="List" valueType="Double">
+				<entry index="0" value="1.0"/> 
+			</complexProperty>			
+		</pedestrianSeed>
+	</pedestrianSeeds>	
+	<absorbers>
+		<absorber id="0" name="goalAbsorber" scenario="0" destination="1" type="DestinationInstantly"/>
+	</absorbers>
+	<outputWriters>
+		<outputWriter id="0" name="csvWriter"  type="csvWriter">
+			<property name="call" type="Integer" value="5"/>
+			<property name="file" type="File" value="./TGF_UnifiedRouting_Output.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="500"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="timeStep"/>
+				<entry index="1" value="id"/>
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+				<entry index="4" value="xHeading"/>
+				<entry index="5" value="yHeading"/>
+				<entry index="6" value="currentVertexID"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+				<property name="currentVertexID" type="Format" value="%d"/>
+			</writerSource>
+		</outputWriter>
+		<outputWriter id="1" name="layoutWriter" type="configurationWriter">
+			<property name="file" type="File" value="./TGF_UnifiedRouting_Layout.xml"/>
+			<property name="targetConfiguration" type="String" value="layoutConfiguration"/>
+			<writerSource name="xml" sourceType="Configuration" />
+		</outputWriter>
+		<outputWriter id="2" name="exeuctionTimeWriter" type="statisticsWriter">
+			<property name="file" type="File" value="./TGF_UnifiedRouting_Statistics.csv"/>
+			<property name="delimiter" type="String" value=";"/>
+			<property name="buffer" type="Integer" value="1"/>
+			<complexProperty name="order" type="List" valueType="String">
+				<entry index="0" value="executionOperational"/>
+				<entry index="1" value="executionTactical"/>
+				<entry index="2" value="executionStrategical"/>
+				<entry index="3" value="executionAbsorber"/>
+				<entry index="4" value="executionGenerator"/>
+				<entry index="5" value="executionOverhead"/>
+				<entry index="6" value="executionPreProcessing"/>
+				<entry index="7" value="executionPostProcessing"/>
+			</complexProperty>
+			<writerSource name="basic" sourceType="TimeStep">
+				<property name="executionOperational" type="Format" value="%.2f"/>
+				<property name="executionTactical" type="Format" value="%.2f"/>
+				<property name="executionStrategical" type="Format" value="%.2f"/>
+				<property name="executionAbsorber" type="Format" value="%.2f"/>
+				<property name="executionGenerator" type="Format" value="%.2f"/>
+				<property name="executionOverhead" type="Format" value="%.2f"/>
+				<property name="executionPreProcessing" type="Format" value="%.2f"/>
+				<property name="executionPostProcessing" type="Format" value="%.2f"/>		
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+	<layouts>
+		<scenario id="0" name="bttwPrePlan" maxX="860.0" maxY="670.0" minX="0.0" minY="0.0">
+			<area id="0" name="Origin1" type="Origin">
+				<point x="33.4971" y="82.0479"/>
+				<point x="33.0731" y="73.48"/>
+				<point x="51.27" y="72.5754"/>
+				<point x="51.5601" y="79.7693"/>
+				<point x="33.4971" y="82.0479"/>
+			</area>
+			<area id="1" name="Destination1" type="Destination">
+				<point x="525.9652" y="533.7318"/>
+				<point x="525.8975" y="542.0836"/>
+				<point x="514.9148" y="541.8832"/>
+				<point x="514.9148" y="533.754"/>
+				<point x="525.9652" y="533.7318"/>
+			</area>
+			<obstacle id="0" name="Wall1" type="Wall">
+				<point x="86.16" y="523.2699"/>
+				<point x="86.4719" y="434.6517"/>
+			</obstacle>
+			<obstacle id="1" name="Wall2" type="Wall">
+				<point x="86.4719" y="434.6517"/>
+				<point x="74.4886" y="428.8867"/>
+			</obstacle>
+			<obstacle id="2" name="Wall3" type="Wall">
+				<point x="74.4886" y="428.8867"/>
+				<point x="8.8443" y="429.6863"/>
+			</obstacle>
+			<obstacle id="3" name="Wall4" type="Wall">
+				<point x="8.8443" y="429.6863"/>
+				<point x="7.4958" y="149.8608"/>
+			</obstacle>
+			<obstacle id="4" name="Wall5" type="Wall">
+				<point x="7.4958" y="149.8608"/>
+				<point x="7.0944" y="75.8705"/>
+			</obstacle>
+			<obstacle id="6" name="Wall7" type="Wall">
+				<point x="7.0944" y="75.8705"/>
+				<point x="6.4188" y="20.7717"/>
+			</obstacle>
+			<obstacle id="7" name="Wall8" type="Wall">
+				<point x="6.4188" y="20.7717"/>
+				<point x="31.1707" y="2.1202"/>
+			</obstacle>
+			<obstacle id="8" name="Wall9" type="Wall">
+				<point x="31.1707" y="2.1202"/>
+				<point x="69.6312" y="3.2621"/>
+			</obstacle>
+			<obstacle id="9" name="Wall10" type="Wall">
+				<point x="69.6312" y="3.2621"/>
+				<point x="81.999" y="28.8267"/>
+			</obstacle>
+			<obstacle id="10" name="Wall11" type="Wall">
+				<point x="81.999" y="28.8267"/>
+				<point x="83.7484" y="40.9487"/>
+			</obstacle>
+			<obstacle id="11" name="Wall12" type="Wall">
+				<point x="83.7484" y="40.9487"/>
+				<point x="92.6555" y="118.0205"/>
+			</obstacle>
+			<obstacle id="12" name="Wall13" type="Wall">
+				<point x="92.6555" y="118.0205"/>
+				<point x="95.0199" y="213.6203"/>
+			</obstacle>
+			<obstacle id="13" name="Wall14" type="Wall">
+				<point x="95.0199" y="213.6203"/>
+				<point x="119.9389" y="213.518"/>
+			</obstacle>
+			<obstacle id="14" name="Wall15" type="Wall">
+				<point x="119.9389" y="213.518"/>
+				<point x="118.0895" y="224.2689"/>
+			</obstacle>
+			<obstacle id="15" name="Wall16" type="Wall">
+				<point x="118.0895" y="224.2689"/>
+				<point x="118.2578" y="251.1738"/>
+			</obstacle>
+			<obstacle id="16" name="Wall17" type="Wall">
+				<point x="118.2578" y="251.1738"/>
+				<point x="120.995" y="251.8628"/>
+			</obstacle>
+			<obstacle id="17" name="Wall18" type="Wall">
+				<point x="120.995" y="251.8628"/>
+				<point x="120.7381" y="263.869"/>
+			</obstacle>
+			<obstacle id="18" name="Wall19" type="Wall">
+				<point x="120.7381" y="263.869"/>
+				<point x="208.1542" y="263.8439"/>
+			</obstacle>
+			<obstacle id="19" name="Wall20" type="Wall">
+				<point x="208.1542" y="263.8439"/>
+				<point x="233.9107" y="263.8364"/>
+			</obstacle>
+			<obstacle id="20" name="Wall21" type="Wall">
+				<point x="233.9107" y="263.8364"/>
+				<point x="249.3296" y="266.4889"/>
+			</obstacle>
+			<obstacle id="21" name="Wall22" type="Wall">
+				<point x="249.3296" y="266.4889"/>
+				<point x="336.3141" y="267.8376"/>
+			</obstacle>
+			<obstacle id="22" name="Wall23" type="Wall">
+				<point x="336.3141" y="267.8376"/>
+				<point x="337.5738" y="260.5152"/>
+			</obstacle>
+			<obstacle id="23" name="Wall24" type="Wall">
+				<point x="337.5738" y="260.5152"/>
+				<point x="373.7263" y="255.897"/>
+			</obstacle>
+			<obstacle id="24" name="Wall25" type="Wall">
+				<point x="373.7263" y="255.897"/>
+				<point x="376.509" y="264.3859"/>
+			</obstacle>
+			<obstacle id="25" name="Wall26" type="Wall">
+				<point x="376.509" y="264.3859"/>
+				<point x="435.0255" y="290.8421"/>
+			</obstacle>
+			<obstacle id="26" name="Wall27" type="Wall">
+				<point x="435.0255" y="290.8421"/>
+				<point x="425.2325" y="308.6992"/>
+			</obstacle>
+			<obstacle id="27" name="Wall28" type="Wall">
+				<point x="425.2325" y="308.6992"/>
+				<point x="413.5257" y="312.5875"/>
+			</obstacle>
+			<obstacle id="28" name="Wall29" type="Wall">
+				<point x="413.5257" y="312.5875"/>
+				<point x="417.8345" y="349.8092"/>
+			</obstacle>
+			<obstacle id="29" name="Wall30" type="Wall">
+				<point x="417.8345" y="349.8092"/>
+				<point x="424.2287" y="350.0529"/>
+			</obstacle>
+			<obstacle id="30" name="Wall31" type="Wall">
+				<point x="424.2287" y="350.0529"/>
+				<point x="422.7178" y="388.4677"/>
+			</obstacle>
+			<obstacle id="31" name="Wall32" type="Wall">
+				<point x="422.7178" y="388.4677"/>
+				<point x="449.7805" y="388.5676"/>
+			</obstacle>
+			<obstacle id="32" name="Wall33" type="Wall">
+				<point x="449.7805" y="388.5676"/>
+				<point x="449.0382" y="425.8494"/>
+			</obstacle>
+			<obstacle id="33" name="Wall34" type="Wall">
+				<point x="449.0382" y="425.8494"/>
+				<point x="448.1749" y="469.2071"/>
+			</obstacle>
+			<obstacle id="34" name="Wall35" type="Wall">
+				<point x="448.1749" y="469.2071"/>
+				<point x="447.1749" y="519.4327"/>
+			</obstacle>
+			<obstacle id="35" name="Wall36" type="Wall">
+				<point x="447.1749" y="519.4327"/>
+				<point x="465.3602" y="533.6333"/>
+			</obstacle>
+			<obstacle id="36" name="Wall37" type="Wall">
+				<point x="465.3602" y="533.6333"/>
+				<point x="525.9791" y="533.7386"/>
+			</obstacle>
+			<obstacle id="37" name="Wall38" type="Wall">
+				<point x="525.9791" y="533.7386"/>
+				<point x="525.905" y="542.1034"/>
+			</obstacle>
+			<obstacle id="38" name="Wall39" type="Wall">
+				<point x="525.905" y="542.1034"/>
+				<point x="504.6822" y="541.6346"/>
+			</obstacle>
+			<obstacle id="39" name="Wall40" type="Wall">
+				<point x="504.6822" y="541.6346"/>
+				<point x="462.8311" y="543.9863"/>
+			</obstacle>
+			<obstacle id="40" name="Wall41" type="Wall">
+				<point x="462.8311" y="543.9863"/>
+				<point x="436.4168" y="525.9969"/>
+			</obstacle>
+			<obstacle id="41" name="Wall42" type="Wall">
+				<point x="436.4168" y="525.9969"/>
+				<point x="418.2797" y="525.4792"/>
+			</obstacle>
+			<obstacle id="42" name="Wall43" type="Wall">
+				<point x="418.2797" y="525.4792"/>
+				<point x="404.0056" y="522.2025"/>
+			</obstacle>
+			<obstacle id="43" name="Wall44" type="Wall">
+				<point x="404.0056" y="522.2025"/>
+				<point x="400.5279" y="524.8422"/>
+			</obstacle>
+			<obstacle id="44" name="Wall45" type="Wall">
+				<point x="400.5279" y="524.8422"/>
+				<point x="397.5912" y="524.337"/>
+			</obstacle>
+			<obstacle id="45" name="Wall46" type="Wall">
+				<point x="397.5912" y="524.337"/>
+				<point x="392.8056" y="529.5577"/>
+			</obstacle>
+			<obstacle id="46" name="Wall47" type="Wall">
+				<point x="392.8056" y="529.5577"/>
+				<point x="233.6668" y="530.9129"/>
+			</obstacle>
+			<obstacle id="47" name="Wall48" type="Wall">
+				<point x="233.6668" y="530.9129"/>
+				<point x="232.4406" y="524.3818"/>
+			</obstacle>
+			<obstacle id="48" name="Wall49" type="Wall">
+				<point x="232.4406" y="524.3818"/>
+				<point x="90.3036" y="523.3014"/>
+			</obstacle>
+			<obstacle id="49" name="Wall50" type="Wall">
+				<point x="90.3036" y="523.3014"/>
+				<point x="86.16" y="523.2699"/>
+			</obstacle>
+			<obstacle id="50" name="Solid1" type="Solid">
+				<point x="339.4529" y="384.3494"/>
+				<point x="339.5361" y="380.594"/>
+				<point x="395.5666" y="379.8428"/>
+				<point x="395.5666" y="384.3704"/>
+				<point x="339.4529" y="384.3494"/>
+			</obstacle>
+			<obstacle id="51" name="Solid2" type="Solid">
+				<point x="197.7852" y="293.8852"/>
+				<point x="198.3074" y="286.7562"/>
+				<point x="229.5169" y="286.3439"/>
+				<point x="229.5267" y="294.1222"/>
+				<point x="197.7852" y="293.8852"/>
+			</obstacle>
+			<obstacle id="52" name="Solid3" type="Solid">
+				<point x="240.9848" y="447.9386"/>
+				<point x="240.9991" y="431.806"/>
+				<point x="254.6942" y="432.0183"/>
+				<point x="267.3789" y="447.9386"/>
+				<point x="240.9848" y="447.9386"/>
+			</obstacle>
+			<obstacle id="53" name="Solid4" type="Solid">
+				<point x="287.6116" y="471.5901"/>
+				<point x="241.0577" y="471.6562"/>
+				<point x="240.9846" y="447.9395"/>
+				<point x="267.378" y="447.9395"/>
+				<point x="288.9266" y="448.9754"/>
+				<point x="287.6116" y="471.5901"/>
+			</obstacle>
+			<obstacle id="54" name="Solid5" type="Solid">
+				<point x="271.9794" y="435.0877"/>
+				<point x="257.28" y="423.3063"/>
+				<point x="319.4543" y="423.3063"/>
+				<point x="319.8266" y="435.9972"/>
+				<point x="271.9794" y="435.0877"/>
+			</obstacle>
+			<obstacle id="55" name="Solid6" type="Solid">
+				<point x="271.8812" y="439.2334"/>
+				<point x="271.9789" y="435.0877"/>
+				<point x="319.8265" y="436.0013"/>
+				<point x="320.0068" y="440.3428"/>
+				<point x="271.8812" y="439.2334"/>
+			</obstacle>
+			<obstacle id="56" name="Solid7" type="Solid">
+				<point x="294.0412" y="386.4199"/>
+				<point x="294.1117" y="384.0896"/>
+				<point x="301.3905" y="384.1317"/>
+				<point x="301.159" y="386.3127"/>
+				<point x="294.0412" y="386.4199"/>
+			</obstacle>
+			<obstacle id="57" name="Solid8" type="Solid">
+				<point x="295.1846" y="378.5821"/>
+				<point x="294.9946" y="369.0978"/>
+				<point x="301.5818" y="369.0637"/>
+				<point x="301.7279" y="378.5821"/>
+				<point x="295.1846" y="378.5821"/>
+			</obstacle>
+			<obstacle id="58" name="Solid9" type="Solid">
+				<point x="51.6117" y="79.7337"/>
+				<point x="51.2815" y="72.5688"/>
+				<point x="53.8642" y="72.4566"/>
+				<point x="52.8988" y="79.7177"/>
+				<point x="51.6117" y="79.7337"/>
+			</obstacle>
+			<obstacle id="59" name="Solid10" type="Solid">
+				<point x="31.7725" y="82.2206"/>
+				<point x="31.38" y="73.558"/>
+				<point x="33.0643" y="73.4749"/>
+				<point x="33.4894" y="82.0408"/>
+				<point x="31.7725" y="82.2206"/>
+			</obstacle>
+			<obstacle id="60" name="Solid11" type="Solid">
+				<point x="86.1384" y="348.1149"/>
+				<point x="51.5494" y="322.1546"/>
+				<point x="67.3578" y="233.3444"/>
+				<point x="85.7167" y="233.3444"/>
+				<point x="86.1384" y="348.1149"/>
+			</obstacle>
+			<obstacle id="61" name="Solid12" type="Solid">
+				<point x="437.4176" y="416.3086"/>
+				<point x="427.5113" y="416.3193"/>
+				<point x="428.2226" y="395.8638"/>
+				<point x="437.9881" y="396.2186"/>
+			</obstacle>
+			<obstacle id="62" name="Solid13" type="Solid">
+				<point x="409.5534" y="415.929"/>
+				<point x="410.3308" y="394.7916"/>
+				<point x="419.836" y="395.2005"/>
+				<point x="419.3496" y="416.1624"/>
+			</obstacle>
+			<obstacle id="63" name="Solid14" type="Solid">
+				<point x="435.4343" y="512.8984"/>
+				<point x="425.1002" y="512.4919"/>
+				<point x="427.5537" y="426.6354"/>
+				<point x="437.3491" y="426.742"/>
+			</obstacle>
+			<obstacle id="64" name="Solid15" type="Solid">
+				<point x="417.0122" y="513.0265"/>
+				<point x="409.6059" y="512.7178"/>
+				<point x="409.7387" y="426.6528"/>
+				<point x="419.3399" y="426.6565"/>
+			</obstacle>
+			<obstacle id="65" name="Solid16" type="Solid">
+				<point x="394.615" y="447.3906"/>
+				<point x="393.956" y="451.2211"/>
+				<point x="384.4245" y="446.7331"/>
+			</obstacle>
+			<obstacle id="66" name="Solid17" type="Solid">
+				<point x="348.3931" y="512.1831"/>
+				<point x="347.7546" y="449.6274"/>
+				<point x="376.4164" y="449.9567"/>
+				<point x="394.4581" y="457.2234"/>
+				<point x="394.0357" y="511.9278"/>
+			</obstacle>
+			<obstacle id="67" name="Solid18" type="Solid">
+				<point x="389.4878" y="523.9266"/>
+				<point x="389.4804" y="526.1962"/>
+				<point x="295.2122" y="527.3597"/>
+				<point x="295.1503" y="525.0803"/>
+			</obstacle>
+			<obstacle id="68" name="Solid19" type="Solid">
+				<point x="292.1266" y="525.1356"/>
+				<point x="292.0711" y="527.9076"/>
+				<point x="247.1228" y="528.7088"/>
+				<point x="247.0465" y="525.4884"/>
+			</obstacle>
+			<obstacle id="69" name="Solid20" type="Solid">
+				<point x="332.9355" y="511.7806"/>
+				<point x="332.9742" y="472.749"/>
+				<point x="340.605" y="472.7495"/>
+				<point x="340.2369" y="511.6593"/>
+			</obstacle>
+			<obstacle id="70" name="Solid21" type="Solid">
+				<point x="312.9725" y="454.4087"/>
+				<point x="325.2524" y="446.9101"/>
+				<point x="340.7864" y="446.2261"/>
+				<point x="340.6027" y="457.9413"/>
+				<point x="312.6318" y="458.164"/>
+			</obstacle>
+			<obstacle id="71" name="Solid22" type="Solid">
+				<point x="293.8961" y="465.925"/>
+				<point x="294.2977" y="450.2808"/>
+				<point x="313.3819" y="466.2259"/>
+			</obstacle>
+			<obstacle id="72" name="Solid23" type="Solid">
+				<point x="327.9443" y="471.5336"/>
+				<point x="327.0786" y="512.7057"/>
+				<point x="240.9048" y="513.1051"/>
+				<point x="241.0588" y="471.6555"/>
+			</obstacle>
+			<obstacle id="73" name="Solid24" type="Solid">
+				<point x="97.7884" y="514.9145"/>
+				<point x="98.9678" y="432.1648"/>
+				<point x="229.2074" y="432.2001"/>
+				<point x="229.2876" y="514.8558"/>
+			</obstacle>
+			<obstacle id="74" name="Solid25" type="Solid">
+				<point x="99.8778" y="419.8782"/>
+				<point x="99.8854" y="401.3297"/>
+				<point x="114.6611" y="419.5634"/>
+			</obstacle>
+			<obstacle id="75" name="Solid26" type="Solid">
+				<point x="18.187" y="423.2991"/>
+				<point x="18.1798" y="371.5812"/>
+				<point x="50.9519" y="334.9593"/>
+				<point x="87.118" y="368.3739"/>
+				<point x="86.6742" y="420.1115"/>
+				<point x="73.8461" y="424.1517"/>
+			</obstacle>
+			<obstacle id="76" name="Solid27" type="Solid">
+				<point x="330.2722" y="440.2788"/>
+				<point x="329.3879" y="384.4735"/>
+				<point x="395.5666" y="384.3718"/>
+				<point x="393.6765" y="441.0836"/>
+			</obstacle>
+			<obstacle id="77" name="Solid28" type="Solid">
+				<point x="319.4576" y="423.3113"/>
+				<point x="257.2422" y="423.2914"/>
+				<point x="239.1393" y="420.1773"/>
+				<point x="239.4595" y="387.3815"/>
+				<point x="318.3774" y="386.0237"/>
+			</obstacle>
+			<obstacle id="78" name="Solid29" type="Solid">
+				<point x="98.8002" y="293.3274"/>
+				<point x="229.5192" y="294.139"/>
+				<point x="230.1004" y="374.3389"/>
+				<point x="99.7246" y="372.1035"/>
+			</obstacle>
+			<obstacle id="79" name="Solid30" type="Solid">
+				<point x="357.7273" y="277.6467"/>
+				<point x="402.0785" y="282.9202"/>
+				<point x="404.7708" y="368.6689"/>
+				<point x="242.0703" y="369.2701"/>
+				<point x="243.1442" y="279.9929"/>
+			</obstacle>
+			<obstacle id="80" name="Solid31" type="Solid">
+				<point x="185.7804" y="279.6371"/>
+				<point x="185.6519" y="274.9031"/>
+				<point x="235.9058" y="276.0091"/>
+				<point x="235.1186" y="280.5855"/>
+			</obstacle>
+			<obstacle id="81" name="Solid32" type="Solid">
+				<point x="98.7918" y="285.1076"/>
+				<point x="98.6864" y="274.8031"/>
+				<point x="180.2215" y="276.3249"/>
+				<point x="178.7256" y="285.0202"/>
+			</obstacle>
+			<obstacle id="82" name="Solid33" type="Solid">
+				<point x="18.9463" y="178.2225"/>
+				<point x="27.6081" y="179.7126"/>
+				<point x="27.3319" y="210.7413"/>
+				<point x="18.2348" y="210.3808"/>
+			</obstacle>
+			<obstacle id="83" name="Solid34" type="Solid">
+				<point x="73.5123" y="171.289"/>
+				<point x="72.8899" y="160.2804"/>
+				<point x="87.598" y="163.0515"/>
+				<point x="85.5796" y="173.2913"/>
+			</obstacle>
+			<obstacle id="86" name="Solid37" type="Solid">
+				<point x="70.5501" y="85.4523"/>
+				<point x="84.0414" y="85.7871"/>
+				<point x="87.8975" y="155.7839"/>
+				<point x="71.1248" y="150.3708"/>
+			</obstacle>
+			<obstacle id="87" name="Solid38" type="Solid">
+				<point x="56.1458" y="86.2244"/>
+				<point x="65.6618" y="85.5142"/>
+				<point x="65.4855" y="148.4979"/>
+				<point x="48.924" y="141.8572"/>
+			</obstacle>
+			<obstacle id="88" name="Solid39" type="Solid">
+				<point x="15.8707" y="87.0427"/>
+				<point x="51.0876" y="85.1737"/>
+				<point x="43.8412" y="139.8995"/>
+				<point x="17.7478" y="130.9459"/>
+			</obstacle>
+			<obstacle id="89" name="Solid40" type="Solid">
+				<point x="62.0016" y="40.2472"/>
+				<point x="63.6217" y="40.5259"/>
+				<point x="65.7225" y="76.7934"/>
+				<point x="57.7781" y="77.4785"/>
+			</obstacle>
+			<obstacle id="90" name="Solid41" type="Solid">
+				<point x="68.9441" y="42.1568"/>
+				<point x="80.0165" y="41.8585"/>
+				<point x="83.2645" y="75.5788"/>
+				<point x="71.0812" y="76.2657"/>
+			</obstacle>
+			<obstacle id="91" name="Solid42" type="Solid">
+				<point x="31.3799" y="73.5587"/>
+				<point x="28.7903" y="13.9147"/>
+				<point x="34.5811" y="9.925"/>
+				<point x="44.5073" y="9.5455"/>
+				<point x="61.7468" y="12.5111"/>
+				<point x="53.8639" y="72.4561"/>
+			</obstacle>
+			<obstacle id="92" name="Solid43" type="Solid">
+				<point x="15.847" y="80.045"/>
+				<point x="15.0836" y="22.1082"/>
+				<point x="25.7598" y="22.0896"/>
+				<point x="26.8165" y="79.6515"/>
+			</obstacle>
+			<obstacle id="93" name="Solid44" type="Solid">
+				<point x="99.852" y="385.5507"/>
+				<point x="99.9412" y="383.3021"/>
+				<point x="233.0273" y="382.6643"/>
+				<point x="232.9383" y="420.1353"/>
+				<point x="124.8697" y="419.1647"/>
+			</obstacle>
+			<obstacle id="94" name="Solid45" type="Solid">
+				<point x="18.5422" y="164.1215"/>
+				<point x="18.5244" y="139.0212"/>
+				<point x="41.1365" y="147.2444"/>
+				<point x="37.7872" y="178.2655"/>
+				<point x="18.5422" y="164.1215"/>
+			</obstacle>
+			<obstacle id="95" name="Solid46" type="Solid">
+				<point x="44.2626" y="182.6295"/>
+				<point x="48.7908" y="150.0056"/>
+				<point x="65.1166" y="156.9668"/>
+				<point x="64.8344" y="200.6128"/>
+				<point x="44.2626" y="182.6295"/>
+			</obstacle>
+			<obstacle id="96" name="Solid47" type="Solid">
+				<point x="30.6567" y="211.0728"/>
+				<point x="31.5462" y="180.6194"/>
+				<point x="62.7585" y="209.3676"/>
+				<point x="30.6567" y="211.0728"/>
+			</obstacle>
+			<obstacle id="97" name="Solid48" type="Solid">
+				<point x="7.9165" y="233.9787"/>
+				<point x="67.358" y="233.344"/>
+				<point x="51.5447" y="322.1551"/>
+				<point x="8.5147" y="361.2896"/>
+				<point x="7.9165" y="233.9787"/>
+			</obstacle>
+			<obstacle id="98" name="Solid49" type="Solid">
+				<point x="97.9858" y="261.8501"/>
+				<point x="97.8468" y="224.2903"/>
+				<point x="109.5638" y="223.6875"/>
+				<point x="109.785" y="263.6766"/>
+				<point x="97.9858" y="261.8501"/>
+			</obstacle>
+			<obstacle id="99" name="Solid50" type="Solid">
+				<point x="411.1693" y="304.0074"/>
+				<point x="411.1519" y="286.7064"/>
+				<point x="425.2398" y="291.2805"/>
+				<point x="418.8191" y="301.9573"/>
+				<point x="411.1693" y="304.0074"/>
+			</obstacle>
+			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+			<graph id="0" type="VisibilityAlpha">
+				<!-- Raw | Visibility | VisibilityAlpha -->
+				<property name="cornerDistance" type="Double" value="1.5"/>
+				<property name="reductionStrength" type="Double" value="3"/>
+				<!-- only for VisibilityAlpha -->
+			</graph>
+		</scenario>
+	</layouts>
+</simulator>

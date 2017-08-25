@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="MomenTumV2.0.0" simulationName="Example Configuration MomenTumV2" simEnd="99.9" threads="1" timeStepDuration="0.1">
+	<exeuctionOrder> </exeuctionOrder>
+	<operationalModels> </operationalModels>
+	<tacticalModels> </tacticalModels>
+	<strategicalModels>	</strategicalModels>
+	<perceptualModels> </perceptualModels>
+	<analysisModels> </analysisModels>
+	<metaModels> </metaModels>
+	<queryModels> </queryModels>
+	<gatheringModels> </gatheringModels>
+	<generators> </generators>
+	<pedestrianSeeds> </pedestrianSeeds>	
+	<absorbers>	</absorbers>
+	<outputWriters> </outputWriters>
+	<layouts> </layouts>
+</simulator>
+
+<!-- Analysis only would be 
+
+<simulator version="MomenTumV2.0.0" simulationName="Example Configuration MomenTumV2" simEnd="99.9" threads="1" timeStepDuration="0.1">
+	<analysisModels> </analysisModels>
+	<outputWriters> </outputWriters>
+</simulator>
+
+-->
