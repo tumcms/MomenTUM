@@ -230,12 +230,12 @@ public abstract class AnimationCalculations {
 
 			for (String id : dataStep.getIdentifications()) {
 				
-				//String hashId = id + simulationOutputReader.getFilePathHash();
+				String hashId = id + simulationOutputReader.getFilePathHash();
 
-				if (!visualizationModel.getPedestrianShapes().containsKey(id)) {
+				if (!visualizationModel.getPedestrianShapes().containsKey(hashId)) {
 
-					pedestrianVisualization = new PedestrianModel(id);
-					newPedestrians.put(id, pedestrianVisualization);
+					pedestrianVisualization = new PedestrianModel(id, hashId);
+					newPedestrians.put(hashId, pedestrianVisualization);
 
 					pedestrianVisualization.updateProperties(dataStep);
 
@@ -248,7 +248,7 @@ public abstract class AnimationCalculations {
 				}
 				else {
 
-					pedestrianVisualization = visualizationModel.getPedestrianShapes().get(id);
+					pedestrianVisualization = visualizationModel.getPedestrianShapes().get(hashId);
 
 					if (animationDurationInSecond > 0.0 && pedestrianVisualization.isVisible()
 							&& animationNeeded(pedestrianVisualization, dataStep, visualizationModel)) {
@@ -325,8 +325,8 @@ public abstract class AnimationCalculations {
 
 		boolean animation = false;
 
-		double xPosition = dataStep.getDoubleData(pedestrianVisualization.getIdentification(), OutputType.x.name());
-		double yPosition = dataStep.getDoubleData(pedestrianVisualization.getIdentification(), OutputType.y.name());
+		double xPosition = dataStep.getDoubleData(pedestrianVisualization.getDisplayId(), OutputType.x.name());
+		double yPosition = dataStep.getDoubleData(pedestrianVisualization.getDisplayId(), OutputType.y.name());
 
 		if ((FastMath.abs(pedestrianVisualization.getPositionX() - xPosition) > visualizationModel.getMiniForAnimation()
 				|| FastMath.abs(pedestrianVisualization.getPositionY() - yPosition) > visualizationModel
@@ -405,15 +405,14 @@ public abstract class AnimationCalculations {
 
 			updateList = new HashMap<String, Point2D>();
 
-			for (String pedestrianId : visualizationModel.getPedestrianShapes().keySet()) {
+			for (PedestrianModel pedestrianModel : visualizationModel.getPedestrianShapes().values()) {
 
-				if (dataStep.containsIdentification(pedestrianId)) {
+				if (dataStep.containsIdentification(pedestrianModel.getDisplayId())) {
 
-					updatePoint = new Point2D(dataStep.getDoubleData(pedestrianId, OutputType.x.name()),
-							dataStep.getDoubleData(pedestrianId, OutputType.y.name())); // no
+					updatePoint = new Point2D(dataStep.getDoubleData(pedestrianModel.getDisplayId(), OutputType.x.name()),
+							dataStep.getDoubleData(pedestrianModel.getDisplayId(), OutputType.y.name())); // no
 																						// resolution!
-
-					updateList.put(pedestrianId, updatePoint);
+					updateList.put(pedestrianModel.getDisplayId(), updatePoint);
 				}
 			}
 		}

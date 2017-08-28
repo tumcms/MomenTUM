@@ -56,6 +56,8 @@ public class LoadLayoutHandler extends LoadHandler {
 				parentWindow);
 
 		if (layoutFile != null) {
+			
+			QuickloadHandler.resetCsvFiles();
 			this.load(coreController, layoutFile);
 		}
 
@@ -63,6 +65,7 @@ public class LoadLayoutHandler extends LoadHandler {
 
 	@Override
 	public void load(CoreController coreController, File file) throws Exception {
+		
 		if (coreController.getCoreModel().getLayoutLoaded()) {
 
 			coreController.resetCoreModel();
