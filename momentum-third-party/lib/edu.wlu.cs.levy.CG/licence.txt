@@ -1,0 +1,4 @@
+Please send comments, questions, and suggestions to simon.d.levy@gmail.com.
+Like all software I've posted, KDTree is released under the Gnu Lesser General Public License. 
+
+http://home.wlu.edu/~levys/software/kd/

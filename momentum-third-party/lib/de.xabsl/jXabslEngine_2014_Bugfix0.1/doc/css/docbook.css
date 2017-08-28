@@ -1,0 +1,3463 @@
+@import "folds.css";
+@import "links.css";
+
+/*
+===========================================
+    Book   
+===========================================
+*/
+
+/* 
+    A set is a collection of books 
+*/
+set {
+    display:block;
+}
+
+info {
+    display:block;
+}
+
+/*
+    Underline the set title.
+*/
+set > title,
+set > info > title{
+    font-size: 2.5em;
+    margin: 1em 0;
+    border-bottom: 3px solid #004477;    
+}
+set > title:before,
+set > info > title:before{
+    content:"Book Set: "
+}
+
+book {
+    display:block;
+    /* Declare and reset a counter for the chapters. */
+    counter-reset:chp;    
+}
+book > title,
+book > info > title{
+    font-size: 2.2em;
+    margin: 1em 0;
+    border-bottom: 2px solid #004477;    
+}
+
+/*
+    A Dedication is a section at the very 
+    beginning of a book (before any other body matter) 
+    containing a tribute to something (frequently someone) in connection 
+    with the writing or publication of the Book.
+*/
+dedication {
+    display:block;
+    background-color: #FFEEEE;
+    color:inherit;
+    margin:1em 1em;
+    padding:0.2em;
+    border: 1px solid #FFAAAA;
+}
+
+/*
+    Text at the back of a book describing facts about its production
+*/
+colophon {
+    display:block;
+    background-color: #EFEFEF;
+    color:inherit;
+    margin:1em 1em;
+    border: 1px solid #DDDDDD;    
+}
+
+
+/*
+    A division in a book
+*/
+part, 
+reference {
+    display:block;
+}
+
+part > title, 
+part > info > title, 
+reference > title,
+reference > info > title{
+    font-size: 2em;
+    margin: 1em 0;
+    border-bottom: 1px solid #004477;    
+}
+
+part > title:before,
+part > info > title:before{
+     content: "Part: ";
+}
+reference > title:before,
+reference > info > title:before{
+    content: "Reference: ";
+}
+
+partintro {
+    display:block;
+}
+
+/*
+    Chapters.
+*/
+chapter,
+preface {
+    display:block;
+}
+
+
+chapter > title,
+chapter > info > title,
+preface > title,
+preface > info > title{ 
+    font-size: 1.8em; 
+    margin: 1em 0;
+    border-bottom: 1px solid #004477;
+}
+
+chapter > title:before,
+chapter > info > title:before{
+    content: "Chapter " counter(chp, decimal) ": ";
+    counter-increment:chp;
+}
+
+/*
+    Table of Contents.
+*/
+
+toc {
+    display:block;
+}
+
+        
+tocchap,
+tocpart {
+    display: block;
+    margin: 1em 0;
+}
+tocfront,
+tocback,
+tocentry,
+toclevel1,
+toclevel2,
+toclevel3,
+toclevel4,
+toclevel5 {
+    display: block;
+}
+/*
+    Indent the subtocs.
+*/
+toclevel2,
+toclevel3,
+toclevel4,
+toclevel5 {
+    margin-left: 2em;
+}
+
+/*
+    List of titles.
+*/
+lot, 
+lotentry {
+    display: block;
+}
+     
+/*
+======================================
+Glossary
+======================================
+*/
+
+/*
+    A Glossary contains a collection 
+    of terms and brief descriptions or 
+    definitions of those terms.
+
+*/
+glossary,
+glossdiv,
+glosslist,
+glossentry,
+glossdef,
+glosssee,
+glossseealso{
+    display:block;
+}
+
+/*
+    While Glossarys are usually 
+    limited to component or section boundaries, 
+    appearing at the end of a Book or Chapter, 
+    for instance, GlossLists can appear anywhere 
+    that the other list types are allowed.
+*/
+glosslist {
+    margin-left: 2em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+glossterm {
+    display:inline;
+    font-style:italic;
+}
+
+glossdef,
+glosssee {
+    margin-left: 3em; 
+    margin-bottom: 1em;
+}
+
+glosssee:before {
+    content: "See ";
+    color:gray;
+    background-color:inherit;
+}
+
+glossseealso:before {
+    content: "See also ";
+    color:gray;
+    background-color:inherit;
+}
+
+/*
+======================================
+Index
+======================================
+*/
+index,
+indexentry,
+setindex,
+indexdiv {
+    display:block;
+}
+
+indexentry{
+    margin:1px;
+    background-color: #EFEFEF;
+    color:inherit;
+}
+
+/*
+    PrimaryIE identifies the most significant 
+    word or words in an IndexEntry. IndexEntrys 
+    occur in an Index, not in the flow of the text. 
+    They are part of a formatted index, not markers for indexing.
+*/
+primaryie,
+secondaryie,
+tertiaryie,
+/*
+    Formatted as a displayed block. IndexEntrys 
+    that include a SeeIE should be formatted normally, 
+    with the See also indented below the term. There 
+    should be no other entries for this term.
+    SeeIE is usually expected to generate the text, See. 
+*/
+seeie,
+seealsoie {
+    display:block;
+}
+
+secondaryie{
+    margin-left: 2em;
+}
+
+tertiaryie{
+    margin-left: 4em;
+}
+
+seealsoie{
+    margin-left: 6em;
+}
+
+
+seeie:before {
+    content: "See ";
+    color:gray;
+    background-color:inherit;
+    font-size: small;
+
+}
+
+seealsoie:before {
+    content: "See also ";
+    color:gray;
+    background-color:inherit;
+    font-size: small;
+}
+
+/*
+    Paragraphs
+*/
+ackno {
+    display:block;
+    margin:1em 0;
+}
+/*
+    Formatted as a displayed block. 
+    This element is displayed verbatim; 
+    whitespace and linebreaks within this 
+    element are significant.
+*/
+address {
+    white-space:pre;
+    display:block;
+    margin:1em 0;
+    font-family:monospace;
+}
+/*
+    Components of the address.
+*/
+street,
+/* Post office box. */
+pob,
+postcode,
+city,
+state,
+country,
+phone,
+fax,
+otheraddr {
+    display:inline;
+}
+
+formalpara {
+    display:block;
+}
+
+/*
+=====================
+Procedures and other lists.
+=====================
+*/
+
+procedure {
+    display:block;
+    margin-left:2ex;
+    margin-bottom:1ex;
+    margin-top:1ex;
+    /* The step counter. */
+    counter-reset:stp;
+}
+
+stepalternatives,
+substeps,
+step{
+    display: block;
+}
+
+substeps {
+    /* The step counter. */
+    counter-reset:stp;
+}
+
+step {
+    margin-left:6ex;
+    counter-increment:stp;
+}
+
+step:before {    
+    content:"Step " counters(stp, ".", decimal) ". "; 
+    font-weight:bold;
+    color:#004477;
+    background-color:inherit;
+}
+/*
+    A SegmentedList consists of a set of headings 
+    (SegTitles) and a list of parallel sets of elements. 
+    Every SegListItem contains a set of elements that 
+    have a one-to-one correspondence with the headings. 
+    Each of these elements is contained in a Seg.
+*/
+
+segmentedlist {
+    display: block;
+    margin-left: 1.5em; 
+    margin-top: 1em; 
+    margin-bottom: 1em; 
+}
+
+segmentedlist > title {
+    margin-top: 0;
+}
+
+
+segtitle {
+    display: inline;
+    font-weight: bold; 
+    color: #004477;
+    background-color:inherit;   
+}
+seg {
+    display:inline;
+}
+
+segtitle:after {
+    content:" ";
+}
+seg:after {
+    content:" ";
+}
+
+seglistitem {
+    display: block;
+    margin: 1.33ex 0;
+}
+
+/*
+    The simple list.
+*/
+simplelist {
+    display: block;
+    margin-left: 2ex; 
+    margin-top: 1.33ex; 
+    margin-bottom: 1.33ex; 
+}
+
+member {
+    display:block;
+}
+
+member:before {
+    content:"-";
+}
+
+/* When the list should be horizontal.*/
+simplelist[type=horiz] > member {
+    display: inline;
+}
+
+simplelist[type=horiz] > member:before {
+    content: " ";
+}
+
+/*TODO - check is this ok in oxygen?.*/
+simplelist[type=horiz] > member:first-child:before {
+    content: "";
+}
+
+simplelist[type=inline] {
+    display: inline;
+}
+
+simplelist[type=inline] > member {
+    display: inline;
+}
+
+simplelist[type=inline] > member:before {
+    content: ", ";
+    color: gray;
+}
+
+/*TODO - check is this ok in oxygen?.*/
+simplelist[type=inline] > member:first-child:before {
+    content: "";
+}
+
+/*
+=======================
+    Equation
+=======================
+*/
+
+equation,
+informalequaion {
+    display:block;
+    margin: 1em 0.5em;
+}
+
+equation > title {
+    /*Preserve the title color*/
+    font-style:italic;
+    font-weight:normal;
+    text-align:center;
+}
+
+/*
+    A text (or other nonvisual) description of a 
+    graphical element. This is intended to be an 
+    alternative to the graphical presentation.
+*/
+alt {
+    display:block;
+    font-size:small;
+    background-color:#FFFFEE;
+    color:inherit;
+    text-align:center;
+}
+
+inlineequation,
+inlineequation > alt{
+    display:inline;
+}
+
+/*
+    A ScreenShot is a graphical environment for 
+    displaying an image of what the user might 
+    see on a computer screen. It is often used 
+    to display application screen shots, dialog 
+    boxes, and other components of a graphical user interface.
+*/
+screenshot {
+    display:block;
+} 
+
+screeninfo {
+    display:block;
+    font-size:small;
+    background-color:#FFFFEE;
+    color:inherit;
+    text-align:center;
+}
+
+/*
+    A MediaObjectCO is a wrapper around a set 
+    of alternative, annotated media objects.
+    
+    Formatted as a displayed block.
+*/
+mediaobjectco {
+    display: block;
+}
+
+/*
+    Defines regions from the image to refer to something.
+    The region is generally decorated with a number, symbol, 
+    or other distinctive mark. The mark is usually used as 
+    the label for the Callout in a CalloutList, which 
+    allows the reader to identify which callouts 
+    are associated with which regions. The marks may be 
+    generated by the processing application from the Areas, 
+    or it may be added by some other process.
+*/
+areaspec,
+areaset,
+area {
+    display: block;
+    margin: 1ex 0.5ex;
+    padding: 2px;
+    background-color:#EEEEFF;
+    color:inherit;
+}
+
+area:before{
+    content: "Area Coords: " attr(coords) " - id: " attr(id);
+    color:gray;
+    background-color:inherit;
+}
+
+areaset:before{
+    content: "Set Coords: " attr(coords) " - id: " attr(id);
+    color:gray;
+    background-color:inherit;
+}
+
+areaset {
+    border:1px solid gray;
+}
+
+graphicco, 
+imageobjectco, 
+programlistingco, 
+screenco {
+    display:block;
+}
+
+/*
+    A CO identifies (by its location) 
+    a point of reference for a callout. 
+    Formatted inline.
+*/
+co:before, 
+coref:before {
+    display:inline;
+    color:gray;
+    background-color:inherit;
+    font-weight:bold;
+}
+
+co:before{
+    content:attr(id);
+}
+coref:before{
+    content: url('img/link.png') attr(linkend);
+}
+
+/*
+    The list of descriptions of the callouts.
+*/
+calloutlist {
+    display: block;
+    margin-left: 2ex;
+    margin-top: 1em; 
+    margin-bottom: 1em;
+}
+callout {
+    display:block;
+    margin-left: 7ex;
+}
+callout:before {
+    display:inline;
+    content:attr(arearefs) ": ";
+    color:gray;
+    background-color:inherit;
+    font-weight:bold;
+}
+
+/*
+======================
+    Highlights
+======================
+*/
+highlights {
+    display:block;
+    margin-top: 0.5ex;
+    margin-bottom: 1ex;
+    background-color: #FFCCCC; 
+    color:inherit;
+    border: thin solid #FF0000;
+    padding: 2px;
+}
+
+/*
+=========================
+    Other Sections
+=========================
+*/
+task{
+    display:block;
+    border-left: 2px solid #004477;
+    margin-left: 10ex;
+    margin-top: 1ex;
+    margin-bottom: 1ex;
+    padding-left: 2ex;
+}
+
+tasksummary,
+taskprerequisites,
+/* 
+    The taskrelated element provides other, 
+    relevant information about a task (cross 
+    references to other parts of the document, 
+    suggested next steps, etc.).
+*/
+taskrelated,
+task > procedure {
+    display: block;
+    margin-top: 0; 
+    margin-bottom: 0; 
+}
+
+/*
+    Question and answer.
+*/
+quandaset,
+quandadiv,
+quandaentry,
+question,
+answer{
+    display:block;
+}
+
+quandaentry{
+    margin: 1em 0;
+}
+
+question, answer {
+    margin-left: 1em;
+}
+
+question:before,
+answer:before{
+    background-color:inherit;
+    color:gray;
+    font-weight:bold;
+}
+
+question:before {
+    content: "Q:";
+}
+
+answer:before {
+    content: "A:";
+}
+
+/*
+    The Label of a Question or Answer identifies the label 
+    that is to be used when formatting the question or answer.
+*/
+label {
+    display: block;
+    margin: 1.33ex 0; 
+    color: #004477;
+    background-color:inherit;
+    font-weight: bold;
+}
+/*
+=====================
+    Messages
+=====================
+*/
+msgset {
+    display: block;
+}
+
+msgentry,
+simplemsgentry {
+    display: block;
+    margin: 1em 0;
+    border: thin solid gray;
+    padding: 2px;
+}
+
+msg,
+msgmain,
+msgsub,
+msgrel,
+simplemsgentry > msgtext,
+msgexplan,
+msginfo {
+    display: block;
+    margin-left: 10ex;
+    /* content of msg has a margin */
+}
+
+msglevel,
+msgorig,
+msgaud {
+    display: inline;
+}
+
+msglevel:before,
+msgorig:before,
+msgaud:before {
+    display: inline;
+    font-size: small;
+    color: gray;
+    background-color:inherit;
+}
+
+msglevel:before{
+    content: "Message level: ";
+}
+/*
+    The origin of a message in a message set
+*/
+msgorig:before{
+    content: "Message origin: ";
+}
+/*
+    The audience to which a message in a message 
+    set is relevant.
+*/
+msgaud:before {
+    content: "Message audience: ";
+}
+
+
+
+/* =====================================
+   Other
+===================================== */
+
+/*
+     A free-floating heading
+*/
+bridgehead {
+    display: block;
+    font-weight: bold; 
+    color: #004477;
+    background-color:inherit;
+    margin: 1em 0;
+}
+
+bridgehead[renderas=sect1] {
+    font-size: 2em;
+    margin: .83ex 0; 
+}
+
+bridgehead[renderas=sect2] {
+    font-size: 1.8em;
+    margin: 1ex 0; 
+}
+
+bridgehead[renderas=sect3] {
+    font-size: 1.6em;
+    margin: 1ex 0; 
+}
+
+bridgehead[renderas=sect4] {
+    font-size: 1.4em;
+    margin: 1ex 0; 
+}
+
+bridgehead[renderas=sect5] {
+    font-size: 1.2em;
+    margin: 1ex 0; 
+}
+
+/* ==================
+   Inlined elements.
+   ==================
+*/
+
+/* -------------------------------------
+   Technical
+------------------------------------- */
+
+/*
+    For actions that require multiple keystrokes, 
+    mouse actions, or other physical input 
+    selections, the KeyCombo element provides 
+    a wrapper for the entire set of events.
+*/
+keycombo {
+    display: inline;
+}
+
+keycombo > *:before {
+    content: "+";
+    color: gray;
+    background-color:inherit;
+}
+
+keycombo[action] > *:before {
+    content: "-";
+}
+
+keycombo[action=simul] > *:before {
+    content: "+";
+}
+
+keycombo > *:first-child:before {
+    content: "";
+}
+ 
+keycap,
+/*
+    The symbolic name of a key on a keyboard
+*/
+keysym,
+mousebutton {
+    font-weight: bold;
+}
+
+keycode {
+    font-family: monospace;
+}
+
+menuchoice {
+    display: inline;
+    background-color:#EEEEAA;
+    color:inherit;
+    padding-left:2px;
+    padding-right:2px;
+}
+
+menuchoice > guimenu:before {
+    content: " / ";
+    color: gray;
+    background-color:inherit
+}
+
+menuchoice > guimenu:first-child:before{
+    content: "";
+}
+/*
+shortcut {
+    display: inline;
+}
+*/
+
+/* shortcut:before should be enough but this selector makes this rule more
+   specific than the above one */
+
+shortcut:before { 
+    content: "(";
+    color: gray;
+    background-color:inherit;
+}
+/*
+shortcut >*:after {
+    content: " ";
+}
+*/
+shortcut:after {
+    content: ") ";
+    color: gray;
+    background-color:inherit;
+}
+
+guimenu,
+guisubmenu,
+guimenuitem,
+guibutton,
+guilabel,
+guiicon,
+/*
+    An accelerator is usually a letter used 
+    with a meta key (such as control or alt) to activate some element of 
+    a GUI without using the mouse to point and click at it.
+
+*/
+accel,
+/*
+    An Interface identifies some part of a 
+    graphical user interface. This element became 
+    obsolete in DocBook V3.0 with the introduction 
+    of GUIButton, GUIIcon, GUILabel, GUIMenu, 
+    GUIMenuItem, and GUISubMenu.
+*/
+interface {
+    font-weight: bold;
+}
+
+accel {
+    text-decoration: underline;
+}
+
+action {
+    display: inline;
+}
+
+application,
+hardware,
+database,
+productnumber {
+    display: inline;
+}
+
+medialabel {
+    font-weight: bold;
+}
+
+/*
+    Examples include packages in 
+    the Java language sense, org.apache.xml.resolver, 
+    and packages in the software distribution 
+    sense, docbook-4.3-1.1.deb.
+*/
+package,
+uri,
+code,
+constant,
+envar,
+markup,
+prompt,
+property,
+sgmltag,
+token,
+type,
+parameter,
+varname,
+returnvalue,
+errorcode,
+errorname,
+errortext,
+errortype,
+/*
+    The name of an exception. OOP
+*/
+exceptionname,
+/*    
+    The name of a class, in the object-oriented programming sense
+*/
+classname,
+methodname,
+interfacename,
+structfield,
+structname,
+symbol {
+    font-family: monospace;
+}
+
+optional {
+    display: inline;
+}
+/*
+    The Optional element indicates that a 
+    specified argument, option, or 
+    other text is optional. 
+*/
+synopsis > optional:before {
+    content: "[";
+    color: gray;
+    background-color:inherit;
+}
+synopsis > optional:after {
+    content: "]";
+    color: gray;
+    background-color:inherit;
+}
+
+
+
+
+/*
+    Attribute value. Use oxygen default values.
+*/
+sgmltag[class=attvalue]:before {
+    content: '"';
+    color: rgb(153, 51, 0);
+    background-color:inherit;    
+
+}
+sgmltag[class=attvalue]:after {
+    content: '"';
+    color: rgb(153, 51, 0);
+    background-color:inherit;    
+}
+sgmltag[class=attvalue]{
+    color: rgb(153, 51, 0);
+    background-color:inherit;    
+}
+
+/*
+    Attribute name.
+*/
+sgmltag[class=attribute]{
+    color: rgb(245, 132, 76);
+    background-color:inherit;    
+}
+
+
+/*
+    Blue for the element names.
+*/
+sgmltag[class=starttag]:before,
+sgmltag[class=emptytag]:before {
+    content: "<";
+    color: rgb(0,0,150);
+    background-color:inherit;
+}
+sgmltag[class=endtag]:before {
+    content: "</";
+    color: rgb(0,0,150);
+    background-color:inherit;
+}
+sgmltag[class=endtag]:after,
+sgmltag[class=starttag]:after {
+    content: ">";
+    color: rgb(0,0,150);
+    background-color:inherit;
+}
+sgmltag[class=emptytag]:after {
+    content: "/>";
+    color: rgb(0,0,150);
+    background-color:inherit;
+}
+
+sgmltag[class=starttag],
+sgmltag[class=emptytag],
+sgmltag[class=endtag],
+sgmltag[class=starttag] {
+    color: rgb(0,0,150);
+    background-color:inherit;
+}
+
+
+/*
+    The processing instruction is violet.
+*/
+sgmltag[class=pi]:before,
+sgmltag[class=xmlpi]:before {
+    content: "<?";
+    color: rgb(139, 38, 201);
+    background-color:inherit;
+}
+sgmltag[class=pi]:after,
+sgmltag[class=xmlpi]:after {
+    content: "?>";
+    color: rgb(139, 38, 201);
+    background-color:inherit;
+}
+
+sgmltag[class=pi],
+sgmltag[class=xmlpi]{
+    color: rgb(139, 38, 201);
+    background-color:inherit;
+}
+
+/*
+    The comment.
+*/
+
+sgmltag[class=sgmlcomment]:before {
+    content: "<!--";
+    color: rgb(0,100, 0);
+    background-color:inherit;
+}
+sgmltag[class=sgmlcomment]:after {
+    content: "-->";
+    color: rgb(0,100, 0);
+    background-color:inherit;
+}
+
+sgmltag[class=sgmlcomment]{
+    color: rgb(0,100, 0);
+    background-color:inherit;
+}
+
+/* 
+   %  Entity
+*/
+
+sgmltag[class=paramentity]:before {
+    content: "%";
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+sgmltag[class=paramentity]:after{
+    content: ";";
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+sgmltag[class=paramentity] {
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+
+/* 
+   &  Entity
+*/
+sgmltag[class=genentity]:before {    
+    content: "&";
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+sgmltag[class=genentity]:after{
+    content: ";";
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+sgmltag[class=genentity] {
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+
+/*
+    &# Entity
+*/
+
+sgmltag[class=numcharref]:before {
+    content: "&#";
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+
+sgmltag[class=numcharref]:after {
+    content: ";";
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+
+sgmltag[class=numcharref]{
+    color: rgb(150, 150, 0);
+    background-color:inherit;
+}
+
+/*
+==============
+   General
+==============
+*/
+/*
+A remark (or comment) intended for presentation in a draft manuscript
+*/
+remark {
+    font-style: italic;
+    color: #880000;
+    background-color: inherit;
+    display:block;
+}
+
+/*
+    The first occurrence of a term
+*/
+firstterm,
+/*
+    A word or phrase in a language other than the primary language of the document
+*/
+foreignphrase {
+    font-style: italic;
+}
+
+/*
+    An inline bibliographic reference to another published work
+*/
+citation {
+    font-weight: bold;
+}
+
+
+citerefentry {
+    display: inline;
+}
+
+citerefentry > refentrytitle {
+    display: inline;
+    font-weight:bold;
+}
+
+citerefentry > manvolnum:before {
+    content: "(";
+    color: gray;
+    background-color:inherit;
+}
+
+citerefentry > manvolnum:after {
+    content: ")";
+    color: gray;
+    background-color:inherit;
+}
+
+manvolnum,
+/*
+    RefMiscInfo is an escape hatch for additional 
+    meta-information about a reference page. It may hold 
+    copyright information, release or revision information, 
+    descriptive text for use in a print header or footer, 
+    or any other information not explicitly provided for in RefMeta.
+*/
+refmiscinfo { 
+    display: inline;
+}
+
+
+/*
+    Identifies a word or phrase that might otherwise be
+    interpreted in some specific way, and asserts that it
+    should be interpreted simply as a word.
+*/
+wordasword {
+    font-family: sans-serif;
+    font-size: medium;
+    font-style: normal;
+    font-weight: normal;
+    color: black;
+    background-color: inherit;
+}
+/*
+    A link that addresses its target indirectly, through an entity
+*/
+olink {
+    color: navy;
+    text-decoration: underline;
+    background-color: inherit;
+}
+olink[targetdoc]:before{
+    content:url('img/olink.png')
+}
+olink[targetdoc][targetptr]:before {
+    content: url('img/olink.png') attr(targetdoc) ":" attr(targetptr);
+}
+/*
+    ModeSpec contains application-specific instructions required to 
+    process an OLink.
+    The content of ModeSpec describes the semantic of the link in an 
+    entirely application-specific way.
+*/
+modespec {
+    display: inline;
+    border:1px solid gray;
+}
+
+/*
+    Defines regions from the document that can be pointend from the index. 
+*/
+indexterm,
+primary,
+secondary,
+tertiary,
+see,
+seealso {
+    display: inline;
+    font-size: small;
+}
+
+indexterm:before {
+    content: "Indexterm{ ";
+    color: gray;
+    background-color:inherit;
+}
+
+indexterm:after {
+    content: "} ";
+    color: gray;
+    background-color:inherit;
+}
+
+/*
+    Delimits regions in the document.
+*/
+indexterm[class=startofrange]:before {
+    content: "Start of Indexterm{ ";
+    color: gray;
+    background-color:inherit;
+}
+indexterm[class=startofrange]:after{
+    content: "";
+}
+indexterm[class=endofrange]:before{
+    content: "";
+}
+indexterm[class=endofrange]:after{
+    content: "} End of Indexterm. ";
+    color: gray;
+    background-color:inherit;
+}
+
+
+indexterm > see:before {
+    content: " see ";
+    color: gray;
+    background-color:inherit;
+}
+indexterm > seealso:before {
+    content: " see also ";
+    color: gray;
+    background-color:inherit;
+}
+indexterm > *:first-child:before {
+    content: "";
+}
+
+/* -------------------------------------
+   Other
+------------------------------------- */
+
+/*
+    The location of a page break in a print version of the document
+*/
+beginpage:before {
+    display: inline;
+    content: "--- PAGE BREAK ---";
+    color: gray;
+    background-color:inherit;
+}
+/*
+    The location of a line break in a print version of the document.
+*/
+sbr:before {
+    display: inline;
+    content: "\\n";
+    color: gray;
+    background-color:inherit;
+}
+    
+/*
+
+
+    SIMPLIFIED DOCBOOK.
+
+
+*/
+
+
+/*
+===========================================
+    Article    
+===========================================
+*/
+
+/*
+Description
+
+The Article element is a general-purpose container for articles. 
+The content model is both quite complex and rather loose in order 
+to accommodate the wide range of possible Article structures. 
+Although changes to the Article element have been discussed on 
+several occasions, no better model has been presented.
+
+An Article is composed of a header and a body. The body may include 
+a table of contents and multiple lists of tables, figures, and so on, 
+before the main text of the article and may include a number of 
+common end-matter components at the end.
+
+Processing expectations
+
+Formatted as a displayed block. Frequently causes a forced page break 
+in print media. May be numbered separately and presented in the table of contents. 
+*/
+article {
+    display:block;
+}
+
+/*
+-----------------------
+    Titles
+-----------------------
+*/
+
+/*
+    Underline the article title.
+*/
+article > title,
+article > info > title {
+    font-size: 2.2em;
+    margin: 1em 0;
+    border-bottom: 1px solid #004477;    
+}
+
+article > title:before,
+article > info > title:before{
+    content:"Article: "
+}
+
+/*
+    Make all the titles stand out.
+*/
+title,
+subtitle,
+titleabbrev {
+    color:#004477;
+    background-color:inherit;
+    display:block;
+    margin: 0.5em 0;
+}
+
+title,
+subtitle{
+    font-weight: bold;
+}
+
+/*
+-----------------------
+    Sections
+-----------------------
+*/
+
+section,
+sect1,
+sect2,
+sect3,
+sect4,
+sect5,
+simplesect {
+    display:block;
+}
+
+/*
+----------------------
+    Title for the sections.
+----------------------
+*/
+
+section > title,
+section > info > title,
+sect1 > title,
+sect1 > info > title
+{
+    font-size: 1.6em;
+    margin: 1em 0;
+}
+
+section section > title,
+section section > info > title,
+sect2 > title,
+sect2 > info > title{
+    font-size: 1.5em;
+    margin: 1em 0;
+}
+
+section section section > title,
+section section section > info > title,
+sect3 > title,
+sect3 > info > title{
+    font-size: 1.3em;
+    margin: 1em 0;
+}
+
+section section section section > title,
+section section section section > info > title,
+sect4 > title,
+sect4 > info > title{
+    font-size: 1.2em;
+    margin: 1em 0;
+}
+
+section section section section section > title,
+section section section section section > info > title,
+sect5 > title,
+sect5 > info > title{
+    font-size: 1.1em;
+    margin: 1em 0;
+}
+
+/*
+-----------------------
+    Paragraphs.
+-----------------------
+*/
+para, simpara {
+    display:block;
+    margin: 0.5em 0;
+}
+
+/*
+-----------------------
+    Lists
+-----------------------
+*/
+
+/*
+    The simplelist is undecorated. Depending on its type 
+    it can be horizontal, vertical, or inline
+*/
+simplelist {
+    display:block;
+    margin-left:2em;
+    margin-top:1.5em;
+    margin-bottom:1.5em;
+}
+/*Horizontal spaced*/
+simplelist[type='horiz'] > member{
+    display:inline;
+}
+simplelist[type='horiz'] > member:before{
+    content:" ";
+}
+simplelist[type='horiz'] > member:first-child:before{
+    content:"";
+}
+
+/*Comma separated*/
+simplelist[type='inline'] > member{
+    display:inline;
+}
+simplelist[type='inline'] > member:before{
+    content:", ";
+    color:gray;
+    background-color:inherit;
+}
+simplelist[type='inline'] > member:first-child:before{
+    content:"";
+}
+
+
+/*Vertical blocks*/
+member {
+    display:block;
+    margin-top:0.5em;
+    margin-bottom:0.5em;
+}
+
+/*
+    The itemized list is decorated.
+*/
+itemizedlist {
+    display:block;
+    margin-left:2em;
+    margin-top:1.5em;
+    margin-bottom:1.5em;
+}
+
+/*When the listitem is not child of a itemizedlist.*/
+listitem {
+    display:block;
+}
+
+/*The decoration of the nested list items must change with the depth*/
+/*Level = 1*/
+itemizedlist > listitem {
+    display:list-item;
+    list-style-type:disc;
+}
+/*Level = 2*/
+itemizedlist > listitem itemizedlist > listitem {
+    list-style-type:square;
+}
+/*Level = 3*/
+itemizedlist > listitem itemizedlist > listitem itemizedlist > listitem {
+    list-style-type:circle;
+}
+/*Level = 4*/
+itemizedlist > listitem itemizedlist > listitem itemizedlist > listitem itemizedlist > listitem {
+    list-style-type:disc;
+}
+
+/*
+    The ordered list is decorated with numbers or letters.
+*/
+orderedlist {
+  display:block;
+  margin-left:2em;
+  margin-top:1.5em;
+  margin-bottom:1.5em;
+}
+
+listitem > orderedlist{
+  margin-top:0;
+  margin-bottom:0;
+}
+
+/*
+    The folowing ordered list implementation
+    is making use of explicit counters.
+    It looks the same on Firefox and the Author,
+    but the numbers are placed above the menuitem.
+
+
+    Arabic is mapped to decimal.
+
+orderedlist{
+  counter-reset: item-count;
+}
+
+orderedlist > listitem {
+    display:block;
+}
+
+orderedlist > listitem:before{
+    content: counters(item-count, ".", decimal) " "; 
+    counter-increment: item-count;    
+}    
+
+orderedlist[numeration="arabic"] > listitem:before{
+    content: counters(item-count,".", decimal) " "; 
+    counter-increment: item-count;    
+}    
+orderedlist[numeration="loweralpha"] > listitem:before{
+    content: counters(item-count, ".", lower-alpha) " "; 
+    counter-increment: item-count;    
+}    
+orderedlist[numeration="lowerroman"] > listitem:before{
+    content: counters(item-count, ".", lower-roman) " "; 
+    counter-increment: item-count;    
+}    
+orderedlist[numeration="upperalpha"] > listitem:before{
+    content: counters(item-count, ". ", upper-alpha) " "; 
+    counter-increment: item-count;    
+}    
+orderedlist[numeration="upperroman"] > listitem:before{
+    content: counters(item-count, ".", upper-roman) " "; 
+    counter-increment: item-count;    
+}    
+*/
+
+/*
+  Although it is standard CSS, the following is not supported
+  by firefox. Use the above block if necessary.
+*/
+orderedlist > listitem,
+orderedlist[numeration="arabic"] > listitem{
+    display:list-item;
+    list-style:decimal;
+}
+orderedlist[numeration="loweralpha"] > listitem:before{
+    list-style:lower-alpha;
+}    
+orderedlist[numeration="lowerroman"] > listitem:before{
+    list-style:lower-roman;    
+}    
+orderedlist[numeration="upperalpha"] > listitem:before{
+    list-style:upper-alpha;
+}    
+orderedlist[numeration="upperroman"] > listitem:before{
+    list-style:upper-roman;
+}    
+
+
+
+
+/*
+    Variable list
+    A list in which each entry is composed of a set of 
+    one or more terms and an associated description
+*/
+variablelist {
+    display:block;
+    margin-left:2em;
+    margin-top:1.5em;
+    margin-bottom:1.5em;
+}
+
+varlistentry {
+    display:block;
+}
+
+term {
+    display:block;
+    font-weight:bold;
+}
+
+varlistentry > listitem {
+    margin-left: 3em;
+}
+
+/*
+==========================
+    Elements that preserve spaces.
+==========================
+*/
+
+/*
+    These element are displayed verbatim; whitespace 
+    and linebreaks within this element are significant.
+    A font change is implied.
+*/
+programlisting,
+screen,
+/*
+    This element is displayed verbatim; whitespace and 
+    linebreaks within this element are significant. Synopsis 
+    elements are usually displayed in a fixed width font.
+*/
+synopsis
+{
+    display:block;
+    font-family:monospace;
+    font-size:smaller;
+    white-space:pre;
+    margin: 1em 0;
+}
+
+/*
+    Unlike ProgramListing and Screen, which usually imply a 
+    font change, LiteralLayout does not. How spaces are to 
+    be represented faithfully in a proportional font is not 
+    addressed by DocBook.
+*/
+literallayout {
+    display:block;
+    white-space:pre;
+    margin: 1em 0;
+}
+
+
+
+/*
+==========================
+    Appendix
+==========================
+*/
+
+appendix {
+    display:block;
+}
+
+appendix > title,
+appendix > info > title{
+    font-size: 2em;
+}
+
+book > appendix > title,
+book > appendix > info > title{
+    border-bottom: 1px solid #004477;    
+}
+
+
+/*
+==========================
+    Figures
+==========================
+*/
+figure,
+informalfigure,
+example,
+informalexample {
+    display:block;
+    margin:1em;
+}
+
+figure > title,
+figure > info > title,
+example > title,
+example > info > title{
+    display:block;
+    font-weight:bold;
+    font-style:oblique;
+    text-align:center;
+    margin-left: 0;
+}
+
+/*
+    The media object.
+*/
+mediaobject {
+    display:block;
+    margin: 1em;
+}
+
+inlinemediaobject {
+    display:inline;
+}
+
+inlinemediaobject > imageobject {
+    display:inline;
+}
+
+mediaobject > caption {
+    display:block;
+    color:#004477;    
+    background-color:inherit;
+    font-style:italic;
+    text-align:center;   
+}
+
+objectinfo {
+    display:block;
+    text-align:left;
+}
+
+audioobject,
+textobject,
+videoobject,
+imageobject{
+    display:block;    
+}
+
+figure audioobject,
+figure textobject,
+figure videoobject,
+figure imageobject{
+    text-align:center;
+}
+
+
+/*In the above elements there is specific data*/
+audiodata:before{
+    display:inline;
+    content:url('img/audio.png');
+}
+textdata:before{
+    display:inline;
+    content:url('img/text.png');
+}
+videodata:before{
+    display:inline;
+    content:url('img/video.png');
+}
+
+/*
+    Conf. with the CSS3 Generated Content draft    
+*/
+graphic,
+inlinegraphic,
+imagedata{
+    content: attr(fileref, url); 
+}
+
+/*
+ * Support for displaying unparsed entityref images.
+*/
+graphic[entityref],
+inlinegraphic[entityref],
+imagedata[entityref]{
+    content: url(unparsed-entity-uri(attr(entityref))); 
+}
+
+graphic {
+    display:block;
+    text-align:center;   
+    margin: 1em;
+}
+
+inlinegraphic {
+    display:inline;    
+}
+
+/*
+=====================
+    Notes, warnings, tips, sidebar
+=====================
+*/
+
+/*An abstract can occur in most components of DocBook. 
+It is expected to contain some sort of summary of 
+the content with which it is associated (by containment).*/
+abstract{
+    display:block;
+    margin:1em;
+}
+
+abstract:before{
+    content: "Abstract: ";
+    color: #004477;
+    background-color:inherit;
+    font-weight: bold;
+}
+
+/*
+    Quotes.
+*/
+blockquote,
+epigraph{
+    display:block;
+    margin:1.5em 7em;
+}
+
+/* Places the quotation marks. */
+blockquote:before,
+epigraph:before{
+    content:open-quote;
+    font-weight:bold;
+    font-size:+1.5em;
+    color:gray;
+    background-color:inherit;    
+}
+blockquote:after,
+epigraph:after{
+    content:close-quote;
+    font-weight:bold;
+    font-size:+1.5em;
+    color:gray;
+    background-color:inherit;    
+}
+
+blockquote > title,
+blockquote > info > title{
+    display:block;
+    text-align:center;
+    font-style:oblique;
+    font-weight:100;
+    margin:0;
+}
+
+attribution{
+    display:block;
+    text-align:right;
+}
+
+attribution:before{
+    content: " -- "
+}
+
+/*
+    Notes
+*/
+
+footnote{
+    display:block;
+    font-size: small;
+    margin: 1.5em 10em;
+    padding: 0.5em;
+    background-color: #FEFEF0;
+    color:inherit;    
+}
+
+footnote:before{
+    display:inline;
+    content: "Footnote: ";
+    color:gray;
+    background-color:inherit;
+}
+
+/* User specified. */
+footnote[label]:before{
+    display:inline;
+    content: attr(label);
+    color:gray;
+    background-color:inherit;
+    
+}
+
+note,
+caution,
+tip,
+important,
+warning{
+    display:block;
+    margin-left: 1em;
+}
+
+/*Move the content to the right such that the 
+note and warn labels are in the left.*/
+note > *,
+caution > *,
+tip > *,
+important > *,
+warning > *{
+    margin-left: 8em;
+}
+
+note:before,
+caution:before,
+tip:before,
+important:before,
+warning:before{
+    display:inline;
+    font-weight:bold;    
+}
+note:before{
+    content:url('img/note.png') " Note: ";
+}
+caution:before{
+    content:url('img/caution.png') " Caution: ";
+}
+tip:before{
+    content:url('img/tip.png') " Tip: ";
+}
+important:before{
+    content:url('img/important.png') " Important: ";
+}
+warning:before{
+    content:url('img/warning.png') " Warning: ";
+}
+
+/*
+    Sidebar
+*/
+sidebar {
+    display:block;
+    margin:1em 1em;
+    border:thin solid #00EE00;
+    color:inherit;
+    background-color: #EEFFEE;
+    padding:2px;
+}
+
+
+/*
+===================
+    Bibliography
+===================
+*/
+
+bibliography,
+bibliodiv,
+bibliolist
+{
+    display:block;
+}
+
+/*
+    Biblioset
+*/
+
+biblioset {
+    display:block;
+    margin: 1.5em 0.5em;
+
+}
+
+biblioset > title,
+biblioset > info > title,
+biblioset > subtitle,
+biblioset > info > subtitle,
+biblioset > titleabbrev{  
+    font-weight: normal;
+    font-size: 1em;   
+}
+
+/*
+    Bibliomixed.
+    Formatted as a displayed block.
+    BiblioMixed entries are cooked. In addition to named 
+    fields, they can contain interspersed #PCDATA to provide 
+    punctuation and other formatting information.
+    The processing system is generally expected to present 
+    each and every element in the entry, and all interspersed 
+    #PCDATA, in the order in which it occurs.
+*/
+bibliomixed{
+    display:block;
+    margin: 1.5em 0.5em;
+    border: thin solid gray;
+    padding: 2px;
+}
+
+/* Title of a bibliography item, not a real title.*/
+bibliomixed > title,
+bibliomixed > subtitle,
+bibliomixed > info > title,
+bibliomixed > info > subtitle,
+bibliomixed > titleabbrev{
+    display: inline;
+    font-weight: normal;
+    font-size: 1em;   
+}
+bibliomixed > title,
+bibliomixed > subtitle,
+bibliomixed > info > subtitle,
+bibliomixed > info > title{ 
+    font-style:italic;
+}
+
+/*
+    Bibliomset.
+    Formatted as a displayed block.
+
+    BiblioMSets are cooked. In addition to named fields, 
+    they can contain interspersed #PCDATA to provide 
+    punctuation and other formatting information.
+
+    The processing system is generally expected to present 
+    each and every element in the set, all interspersed 
+    #PCDATA, in the order in which it occurs. 
+*/
+bibliomset{
+    display:block;
+    margin: 1.5em 0.5em;
+
+}
+bibliomset > title,
+bibliomset > subtitle,
+bibliomset > info > title,
+bibliomset > info > subtitle,
+bibliomset > titleabbrev{
+    display: inline;
+    font-weight: normal;
+    font-size: 1em;   
+}
+bibliomset > title,
+bibliomset > subtitle,
+bibliomset > info > title,
+bibliomset > info >subtitle{
+
+    font-style:italic;
+}
+
+/*
+    Biblioentry.
+    BiblioEntry is an entry in a Bibliography. 
+    The contents of BiblioEntry is a database of 
+    named fields. Presentation systems frequently 
+    suppress some elements in a BiblioEntry.
+
+*/
+biblioentry{
+    display:block;
+    margin: 1.5em 0.5em;
+    border: thin solid gray;
+    padding: 2px;
+}
+
+biblioentry > title,
+biblioentry > subtitle,
+biblioentry > info > title,
+biblioentry > info > subtitle,
+biblioentry > titleabbrev{
+    font-weight: normal;
+    font-size: 1em;   
+}
+
+
+/* ====================================
+   Bibliography from the full docbook.
+   ====================================
+*/
+
+/*
+    The spatial or temporal coverage of a document
+*/
+bibliocoverage,
+/*
+    The relationship of a document to another
+*/
+bibliorelation,
+
+/*
+    The source of a document
+*/
+bibliosource {
+   display: inline;
+   font-style:italic;
+}
+
+/*
+    A bibliographic identifier, such as an ISBN number, 
+    Library of Congress identifier, or URI.
+*/
+biblioid,
+
+isbn,
+issn,
+pubsnumber {
+   display: inline;
+   font-weight:bold;
+}
+/*
+    A citebiblioid identifies a citation to another 
+    work by bibliographic identifier.
+*/
+citebiblioid {
+   display: inline;
+}
+
+biblioref:before {
+    content: url('img/link.png') attr(linkend); 
+    color: navy;
+    background-color:inherit;
+}
+
+/*
+==========================================
+    Metainformation from the full docbook.
+==========================================
+*/
+
+/*
+    The page numbers of an article as published
+*/
+artpagenums,
+/*
+    The numbers of the pages in a book, 
+    for use in a bibliographic entry
+*/
+pagenums,
+/*
+    Numbers of the volumes in a series of books
+*/
+seriesvolnums,
+/*
+    Identifies a number in some organization-specific 
+    numbering scheme.
+*/
+invpartnumber,
+/*
+    A set of index terms in the meta-information of a document
+*/
+itermset{
+   display: inline;
+}
+
+
+
+/*
+================
+Collaborators.
+================   
+*/
+collab {
+    display: block;
+    margin: 0.5em 0;
+}
+
+collabname {
+    display: inline;
+}
+
+/*
+===============
+Conference
+===============
+*/
+confgroup {
+    display: block; /* can contain address */
+    margin: 1.33ex 0;
+}
+
+/*
+    The dates of a conference for which a document was written
+ */
+confdates,
+/*
+    The title of a conference for which a document was written
+*/
+conftitle,
+confnum,
+confsponsor {
+    display: inline;
+}
+
+conftitle{
+    font-weight: bold;
+}
+
+confdates:after,
+conftitle:after,
+confnum:after,
+confsponsor:after {
+    content: " ";
+}
+
+contractnum,
+contractsponsor {
+    display: inline;
+}
+contractnum:after,
+contractsponsor:after {
+    content: " ";
+}
+
+
+publisher {
+    display: block; 
+    margin: 1em 0;
+}
+printhistory {    
+    display: block;
+}
+    
+
+/*
+===========================
+    Metainformation.
+===========================
+*/
+
+appendixinfo,
+articleinfo,
+bibliographyinfo,
+blockinfo,
+bookinfo,
+chapterinfo,
+glossaryinfo,
+indexinfo,
+objectinfo,
+partinfo,
+prefaceinfo,
+refentryinfo,
+refmeta,
+referenceinfo,
+refsect1info,
+refsect2info,
+refsect3info,
+refsectioninfo,
+refsynopsisdivinfo,
+sect1info,
+sect2info,
+sect3info,
+sect4info,
+sect5info,
+sectioninfo,
+setindexinfo,
+setinfo,
+sidebarinfo{
+    display:block;
+    margin:1.5em 0.5em;
+    border: thin solid #AAAAFF;
+    background-color: #EEEEFF;
+    color:inherit;
+    padding:3px;
+}
+
+/*
+    Author information.
+*/
+
+author, 
+editor, 
+othercredit{
+    display:block;
+}
+
+authorgroup {
+    display:block;
+}
+
+authorinitials {
+    display: inline;
+    font-weight: bold;
+}
+
+/*Compound of firstname and surname*/
+personname,
+firstname,
+surname,
+/*Jr. or Sr.*/
+lineage,
+othername,
+/*Dr.*/
+honorific{
+    display:inline;
+}
+
+/*Separate the names - they are inlines.*/
+firstname:after,
+surname:after,
+lineage:after,
+othername:after,
+honorific:after {
+    content: " ";
+}
+
+corpauthor,
+corpname{
+    display:inline;
+}
+
+contrib{
+    display:inline;
+}
+
+authorblurb,
+personblurb {
+    display: block;
+}
+
+affiliation{
+    display:block;
+    margin: 1em;
+}
+
+shortaffil,
+jobtitle,
+orgname,
+orgdiv {
+    display:inline;
+}
+/* Separates the inlines */
+shortaffil:after,
+jobtitle:after,
+affiliation > orgname:after,
+orgdiv:after {
+    content: " ";
+}
+
+/*
+    The copyright.
+*/
+copyright {
+    display: inline;
+}
+copyright:before {
+    content: "\A9";
+    color:gray;
+    background-color:inherit;
+}
+
+year,
+holder {
+    display: inline;
+}
+
+/* Separates the inlines */
+year:after,
+holder:after {
+    content: " ";
+}
+
+date,
+pubdate,
+edition,
+issuenum,
+subject,
+subjectset,
+subjectterm,
+keyword,
+keywordset {
+    display:inline;
+}
+
+/* Separates the inlines */
+subjectterm:after,
+keyword:after {
+    content: " ";
+}
+
+legalnotice {
+    display:block;
+}
+
+/*
+    Publishername
+    Processing expectations
+    May be formatted inline or as a displayed block, 
+    depending on context. Sometimes suppressed. 
+*/
+publishername{
+    display:inline;
+}
+
+/*
+    ReleaseInfo contains a brief description of 
+    the release or published version of a document or 
+    part of a document.
+*/
+releaseinfo {
+    display: inline;
+}
+
+/*
+    List of revisions.
+*/
+revhistory {
+    display:block;
+    margin: 1em 0;
+}
+
+/*
+    A revision.
+*/
+revision {
+    display: block;
+    margin: 2em;
+}
+
+revision:before {
+    display: block;
+    content: "Revision: ";
+    color:gray;
+    background-color:inherit;
+}
+
+revnumber, revremark {
+    display:inline;
+}
+
+revdescription {
+    display:block;
+}
+
+revision > author {
+    display: inline;
+    font-weight: bold;
+}
+
+/*Spaces the inlines from the revision.*/
+revnumber:after,
+revision > date:after,
+revision > author:after,
+revision > authorinitials:after {
+    content: " ";
+}
+
+/* 
+    The volume number of a document in a set 
+    (as of books in a set or articles in a journal)
+*/
+volumenum {
+    display: inline;
+}
+
+
+/*
+========================
+    Inlines.
+========================
+*/
+
+/*
+    Emphasis for the text.
+    Several modes.
+*/
+emphasis{
+    font-style:italic;
+}
+
+emphasis[role=italic] {
+    text-decoration:inherit;
+    font-style:italic;
+    font-weight:inherit;
+}
+
+emphasis[role=bold] {
+    text-decoration:inherit;
+    font-style:inherit;
+    font-weight:bold;
+}
+
+emphasis[role=underline] {
+    text-decoration:inherit;
+    font-style:inherit;
+    text-decoration:underline;
+}
+
+emphasis[role=strikethrough] {
+    text-decoration:inherit;
+    font-style:inherit;
+    text-decoration:line-through;
+}
+
+
+
+
+/*
+    Formatted inline. A literal is frequently 
+    distinguished typographically and Literal is 
+    often used wherever that typographic presentation is desired.
+*/
+literal {
+    font-family:monospace;
+}
+
+/*
+    Web links, classical style.
+*/
+link,
+ulink,
+email {
+    color: navy;
+    text-decoration: underline;
+    background-color:inherit;
+}
+
+link:before,
+ulink:before{
+    content:url('img/link.png');
+    text-decoration: none;
+}
+
+/*
+    IT.
+*/
+
+command,
+option,
+computeroutput,
+filename,
+systemitem,
+userinput{
+    font-family:monospace;
+}
+
+command,
+option,
+computeroutput{
+    font-weight:bold;
+}
+
+/* input from the user */
+userinput{
+    color: #116677;
+    background-color:inherit;    
+}
+
+/* annotation in the program listing for instance */
+lineannotation{
+    font-style:italic;
+    color: #774400;   
+    background-color:inherit;
+}
+
+/* replaceable represents a text that is supposed to be replaced by
+the user, like in the arguments of a command */
+replaceable {
+    font-style:italic;
+    color: #882200;   
+    background-color:inherit;
+}
+
+/*
+    Other.
+*/
+subscript,
+superscript {
+    font-size: small;
+}
+subscript {
+    vertical-align: sub; 
+}
+superscript {
+    vertical-align: super; 
+}
+
+anchor:before {
+    content: url('img/anchor.png') attr(id);
+    color:gray;
+    background-color:inherit;
+}
+
+/*
+======================
+    Traditional Publishing Inlines
+======================
+*/
+
+abbrev,
+acronym {
+    font-weight:bold;    
+}
+
+citetitle {
+    font-style: italic;
+}
+
+footnoteref:before{
+    font-size:small;
+    content:url('img/link.png') "[" attr(linkend) "]";
+    color:navy;
+    background-color:inherit;
+}
+
+footnoteref[label]:before{
+    font-size:small;
+    content:url('img/link.png') "[" attr(label) "]";
+    color:navy;
+    background-color:inherit;
+}
+
+/*
+    Phrases with revision marks.    
+*/
+phrase[revisionflag=added]{
+    text-decoration:underline;
+}
+phrase[revisionflag=deleted]{
+    text-decoration:line-through;
+}
+phrase[revisionflag=changed]{
+    text-decoration:overline;
+}
+
+/*
+    Inline quotes.
+*/
+quote:before {
+    content: open-quote; 
+    color: gray;
+    background-color:inherit;
+}
+
+quote:after {
+    content: close-quote; 
+    color: gray; 
+    background-color:inherit;
+}
+
+/*
+========================
+    Copyrignt and trademarks.
+========================
+*/
+trademark:after,
+productname:after {
+    vertical-align:super;
+    color: gray;
+    background-color:inherit;
+    font-size: small; 
+}
+
+trademark:after, 
+productname[class=trade]:after { 
+    content: "[tm]";
+}
+
+trademark[class=copyright]:after,
+productname[class=copyright]:after {
+    content: "\A9"; 
+}
+
+trademark[class=registered]:after,
+productname[class=registered]:after {
+    content: "\AE"; 
+}
+
+trademark[class=service]:after,
+productname[class=service]:after {
+    content: "[sm]"; 
+}
+
+xref:before{
+    content: "XRef [" attr(linkend) "]";
+    color:gray;
+    background-color:inherit;
+}
+
+/*
+appendixinfo > title,
+articleinfo > title,
+bibliographyinfo > title,
+blockinfo > title,
+bookinfo > title,
+chapterinfo > title,
+glossaryinfo > title,
+indexinfo > title,
+objectinfo > title,
+partinfo > title,
+prefaceinfo > title,
+
+refentryinfo > title, 
+referenceinfo > title,
+refsect1info > title,
+refsect2info > title,
+refsect3info > title,
+refsectioninfo > title,
+refsynopsisdivinfo > title,
+sect1info > title,
+sect2info > title,
+sect3info > title,
+sect4info > title,
+sect5info > title,
+sectioninfo > title,
+setindexinfo > title,
+setinfo > title,
+sidebarinfo > title {
+    font-size: 1.3em;
+    font-family:sans-serif;
+    font-weight: bold;
+    color: #004080;
+    
+}
+*/
+
+
+/*
+
+    Refentries.
+
+
+*/
+
+/*
+    A reference page (originally a UNIX man-style reference page)
+*/
+refentry{
+    display: block;
+    border-top: 1px solid silver;
+    border-bottom: 1px solid silver;
+    margin: 1em 0;
+}
+
+/*
+    The name, purpose, and classification of a reference page
+*/
+refnamediv,
+/*
+    A syntactic synopsis of the subject of the reference page
+*/
+refsynopsisdiv {
+    display: block;
+}
+
+/*
+    The name     
+*/
+refnamediv:before {
+    content: "Name";
+}
+
+
+/*
+    The name, purpose, and classification of a reference page
+*/
+refnamediv:before,
+/*
+    Defines the section of the reference synopsis.
+*/
+refsynopsisdiv:before {
+    display: block;
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #004477;
+    background-color:inherit;
+    margin: 1ex 0;
+    content: "Synopsis";
+}
+
+refnamediv:before {
+    content: "Name";
+}
+
+refnamediv > *:before {
+    content: " ";
+}
+
+refnamediv > *:first-child:before {    
+    content: "";
+}
+
+/*
+    When none of the RefNames is appropriate, 
+    RefDescriptor is used to specify the topic name.
+*/
+refdescriptor,
+refname,
+/*
+    The RefPurpose is a concise summary of the topic of the reference page. A RefPurpose 
+    is usually limited to a single, short sentence.
+*/
+refpurpose,
+/*
+    The RefClass element describes the applicability or scope 
+    of a RefEntry. A RefClass might indicate that the entry 
+    was only applicable to a particular application, for 
+    example, or only to a particular vendors operating system.
+*/
+refclass {
+    display: inline;
+}
+
+refpurpose:before {
+    content: " -- ";
+    color: gray;
+    background-color:inherit;
+}
+
+
+refsynopsisdiv > title,
+refsynopsisdiv > info > title{
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 1ex;
+}
+
+/*
+    Section in the reference description.
+*/
+refsection,
+refsect1,
+refsect2,
+refsect3 {
+    display: block;
+}
+
+refsection > title,
+refsection > info > title,
+refsect1 > title,
+refsect1 > info > title{
+    font-size: 1.3em; 
+    margin: 1ex 0; 
+}
+
+refsection refsection > title, 
+refsection refsection > info > title, 
+refsect2 > title,
+refsect2 > info > title{
+    font-size: 1.2em; 
+    margin: 1ex 0; 
+}
+
+refsection refsection refsection > title, 
+refsection refsection refsection > info > title, 
+refsect3 > title,
+refsect3 > info > title{
+    font-size: 1.1em; 
+    margin: 1ex 0; 
+}
+
+
+/* =====================================
+   Synopsis environments
+===================================== */
+
+/* 
+    Synopsis for a command.
+*/
+cmdsynopsis {
+    display: block;
+    font-family: monospace;
+    margin: 1em 0; 
+}
+
+synopfragment {
+    display: block;
+    font-family: monospace;
+    margin-left: 4ex;
+}
+
+/*
+    An argument in a CmdSynopsis
+*/
+arg,
+/*
+    A Group surrounds several related items. 
+    Usually, they are grouped because they are 
+    mutually exclusive. The user is expected to 
+    select one of the items.
+*/
+group {
+    display: inline;
+}
+
+arg:before,
+group:before { 
+    content: " [";
+    color: gray;
+    background-color:inherit;
+}
+
+arg:after,
+group:after {
+    content: "]";
+    color: gray;
+    background-color:inherit;
+}
+
+/*
+    Separates the arguments from the group.
+    
+*/
+group > arg:before,
+group > group:before{ 
+    content: " | [";
+}
+
+arg:first-child:before,
+group:first-child:before { 
+    content: "[";
+}
+
+/*
+    Argument that repeats.
+*/
+arg[rep=repeat]:after,
+group[rep=repeat]:after {
+    content: "]...";
+    color: gray;
+    background-color:inherit;
+}
+
+/*
+    Argument that is required.
+*/
+arg[choice=req]:before,
+group[choice=req]:before {
+    content: " {";
+}
+arg[choice=req]:after,
+group[choice=req]:after {
+    content: "}";
+}
+/*
+    Arguments that are required and are
+    placed in a group.
+*/
+group > arg[choice=req]:before,
+group > group[choice=req]:before {
+    content: " | {";
+}
+arg[choice=req]:first-child:before,
+group[choice=req]:first-child:before {
+    content: "{";
+}
+
+arg[choice="req"][rep="repeat"]:after,
+group[choice="req"][rep="repeat"]:after {
+    content: "}...";
+}
+
+/*
+    Plain argument - no decoration.
+    Arguments identified as Plain are required, 
+    but are shown without additional decoration.
+*/
+arg[choice=plain]:before,
+group[choice=plain]:before {
+    content: " ";
+}
+
+group > arg[choice=plain]:before,
+group > group[choice=plain]:before {
+    content: " | ";
+}
+
+arg[choice=plain]:first-child:before,
+group[choice=plain]:first-child:before {
+    content: "";
+}
+
+arg[choice=plain]:after,
+group[choice=plain]:after {
+    content: "";
+}
+
+arg[choice=plain][rep=repeat]:after,
+group[choice=plain][rep=repeat]:after {
+    content: "...";
+}
+
+/*
+    A complex CmdSynopsis can be made more 
+    manageable with SynopFragments. Rather 
+    than attempting to present the entire 
+    synopsis in one large piece, parts of the 
+    synopsis can be extracted out and presented elsewhere.
+*/
+synopfragmentref {
+    display: inline;
+    color: navy;
+    background-color:inherit;
+    text-decoration: underline;
+}
+
+synopfragmentref:before{
+    content: url('img/olink.png'); 
+}
+
+/* -------------------------------------
+   funcsynopsis
+------------------------------------- */
+
+/*
+    Synopsis of a function.
+*/
+funcsynopsis {
+    display: block;
+    font-family: monospace;
+    margin: 1em 0; 
+}
+
+/*
+    This element is displayed verbatim; 
+    whitespace and linebreaks within this element are significant.
+*/
+funcsynopsisinfo {
+    display: block;
+    white-space: pre;
+    margin: 1em 0; 
+}
+
+/*
+    The function signature.
+*/
+funcprototype {
+    display: block;
+}
+
+/*
+    A function (subroutine) name and its return type
+*/
+funcdef, 
+function,
+paramdef{
+    display: inline;
+}
+
+funcdef:after{
+    content: "(";
+    color: gray;
+    background-color:inherit;
+}
+funcprototype:after{
+    content: ");";
+    color: gray;
+    background-color:inherit;
+}
+
+
+/*
+    An empty element in a function synopsis indicating 
+    that the function in question takes no arguments
+*/
+void {
+    display: inline;
+    content: "void";
+    color: gray;
+    background-color:inherit;
+    border:black 1px solid;
+}
+
+varargs:before{
+    display: inline;
+    content: "...";
+    color: gray;
+    background-color:inherit;
+}
+
+/*
+    The name of a parameter.
+*/
+paramdef > parameter {
+    font-style: italic;
+}
+
+paramdef+paramdef:before {
+    content: ", ";
+    color: gray;
+    background-color:inherit;
+}
+
+funcparams {
+    display: inline;
+}
+
+paramdef > funcparams:before {
+    content: "(";
+    color: gray;
+    background-color:inherit;
+}
+
+paramdef > funcparams:after {
+    content: ")";
+    color: gray;
+    background-color:inherit;
+}
+
+
+/* -------------------------------------
+   classsynopsis
+------------------------------------- */
+
+
+/*
+    A ClassSynopsis contains the syntax 
+    summary of a class (generally speaking, 
+    a class in the object-oriented 
+    programming language sense).
+*/
+classsynopsis {
+    display: block;
+    font-family: monospace;
+    margin-top: 1em; 
+}
+
+classsynopsisinfo,
+
+/*
+    A FieldSynopsis contains the syntax 
+    summary of a field (generally speaking, 
+    fields in the object-oriented 
+    programming language sense).
+*/
+fieldsynopsis,
+constructorsynopsis,
+destructorsynopsis,
+methodsynopsis{
+    display: block;
+    border-left:2px solid #006600;
+    margin-left:1em;
+    margin-top:0.5em;
+    margin-bottom:0.5em;
+    padding-left:2px;
+    font-family: monospace;
+}
+
+/*
+    Unlike the other info elements, ClassSynopsisInfo 
+    is not a container for meta-information. Instead 
+    ClassSynopsisInfo is a verbatim environment for 
+    adding additional information to a class synopsis.
+*/
+classsynopsisinfo {
+    white-space: pre;
+}
+
+ooclass,
+oointerface,
+ooexception {
+    display: inline;
+    font-family: monospace;
+}
+
+classsynopsis > ooclass:after,
+classsynopsis > oointerface:after,
+classsynopsis > ooexception:after {
+    content: " ";
+}
+
+/*
+    Separates the class identifiers.
+*/
+ooclass > *:before,
+oointerface > *:before,
+ooexception > *:before {
+    content: " ";
+}
+ooclass > classname:before {
+    content: " class ";
+    color: gray;
+    background-color:inherit;
+}
+oointerface > interfacename:before {
+    content: " interface ";
+    color: gray;
+    background-color:inherit;
+}
+ooexception > exceptionname:before {
+    content: " exception ";
+    color: gray;
+    background-color:inherit;
+}
+/*
+    Eliminates the delimiters before the first children.
+*/
+ooclass > *:first-child:before,
+oointerface > *:first-child:before,
+ooexception > *:first-child:before {
+    content: "";
+}
+/*
+    And adds them back to the first children of
+    type class, exception and interface.
+*/
+ooclass > classname:first-child:before {
+    content: "class ";
+    background-color: inherit;
+    color: gray;
+}
+oointerface > interfacename:first-child:before {
+    content: "interface ";
+    background-color: inherit;
+    color: gray;
+}
+ooexception > exceptionname:first-child:before {
+    content: "exception ";
+    background-color: inherit;
+    color: gray;
+}
+
+
+/*
+    The description of fields, constructors are
+    moved to the right.
+*/
+classsynopsis > fieldsynopsis,
+classsynopsis > constructorsynopsis,
+classsynopsis > destructorsynopsis,
+classsynopsis > methodsynopsis {
+    margin-left: 4ex;
+    margin-top: 1ex; 
+    margin-bottom: 1ex; 
+    border-left:2px solid #CC6600;
+    
+}
+
+/*
+    Ends the declarations.
+*/
+fieldsynopsis:after,
+constructorsynopsis:after,
+destructorsynopsis:after,
+methodsynopsis:after {
+    content: ";";
+    color: gray;
+    background-color:inherit;    
+}
+
+/*
+    Separates the children of each of the synopsis.
+*/
+fieldsynopsis > *:before,
+constructorsynopsis > *:before,
+destructorsynopsis > *:before,
+methodsynopsis > *:before {
+    content: " ";
+}
+
+/*
+    Resets the content before the first children.
+*/
+fieldsynopsis > *:first-child:before,
+constructorsynopsis > *:first-child:before,
+destructorsynopsis > *:first-child:before,
+methodsynopsis > *:first-child:before {
+    content: "";
+}
+
+constructorsynopsis > exceptionname:before,
+destructorsynopsis > exceptionname:before,
+methodsynopsis > exceptionname:before { /*In practice, cannot be first child*/
+    content: " throws ";
+    color: gray;
+    background-color:inherit;
+}
+
+methodparam {
+    display: inline;
+    /* rep and choice attributes not visualized */
+}
+
+
+methodparam:before{
+    content: "<Param:";
+    color: gray;
+    background-color:inherit;
+}
+
+methodparam:after{
+    content: ">";
+    color: red;
+    background-color:inherit;
+}
+
+methodparam > parameter {
+    font-style: italic;
+}
+/*
+    Separates the components of the method parameter.
+*/
+methodparam > *:before {
+    content: " ";
+}
+
+methodparam > *:first-child:before {
+    content: "";
+}
+
+/*
+    The modifier: public for instance.
+*/
+modifier {
+    display: inline;
+    font-family: monospace;
+}
+
+/*
+    Initializes a variable to a value.
+*/
+initializer {
+    display: inline;
+    font-family: monospace;
+}
+
+/*
+    The initializer is after a variable name.
+*/
+initializer:before { 
+    content: " = ";
+    color: gray;
+    background-color:inherit;
+}
+
+/*
+
+    EBNF productions.
+
+*/
+productionset {
+    display:block;
+    background-color:#FFFFEE;
+    padding:2px;
+    color:black;
+    border: 4px ridge yellow;
+    counter-reset: prod;
+}
+
+production:before{
+    content: "[" counter(prod) "]";
+    counter-increment:prod;
+    color:gray;
+    background-color:inherit;
+}
+
+production, productionrecap{
+    display:block;
+    margin: 1ex 0;
+}
+
+productionrecap:before{
+    content: "[" url("img/olink.png") attr(linkend) "]"; 
+    color:gray;
+    background-color:inherit;
+}
+
+constraint:before{
+    content: "Constraint: [" url("img/olink.png") attr(linkend) "]"; 
+    color:gray;
+    background-color:inherit;
+}
+
+lhs {
+    display:inline;
+}
+
+lhs:after{
+    content:"::=";
+    color:gray;
+    background-color:inherit;
+}
+
+rhs {
+    display:block;
+    margin-left: 8ex;
+}
+
+nonterminal{
+    display:inline;
+    color:navy;
+    background-color:inherit;
+}
+
+/*
+    A ConstraintDef contains a description of a constraint that cannot 
+    be expressed in the grammar (generally logical rather than syntactic constraints).
+*/
+constraintdef {
+    display: block;
+    background-color:#FFFFEE;
+    color:black;
+    padding:2px;
+    border: 1px solid silver;
+    margin:1ex 0;
+}
+
+

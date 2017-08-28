@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" type="xml"?>
+<?xml-stylesheet type="text/css" href="css/docbook.css"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
+    version="5.0">
+    <info>
+        <title>jXABSL Engine Tutorial</title>
+        <author>
+            <personname>
+                <firstname>Moritz</firstname>
+                <surname>Wissenbach</surname>
+            </personname>
+            <email>m.wissenbach@stud.tu-darmstadt.de</email>
+        </author>
+    </info>
+    <sect1>
+        <title>Introduction</title>
+        <para>This tutorial briefy describes how to use the Java implementation of XABSL. XABSL is a
+            language to specify the behavior of autonomous agents, utilizing a hierarchical state
+            machine. Learn more about XABSL at <link>http://www.xabsl.de</link></para>
+    </sect1>
+
+    <sect1>
+        <title>General Sequence</title>
+
+        <para>
+            <simplelist>
+                <member> Input/output symbols and basic behaviors specified in the XABSL source are
+                    to be implemented in native Java.</member>
+                <member> Those symbols and behaviors are then registered with the engine. </member>
+                <member> The XABSL source is compiled to intermediate code and read in by the engine
+                    to create the option graph.</member>
+                <member> A step can now executed by calling <code>Engine.execute()</code></member>
+            </simplelist>
+        </para>
+    </sect1>
+
+    <sect1>
+        <title>Reflection Engine</title>
+        <para>When using the basic engine <code>de.xabsl.jxabsl.engine.Engine</code>, you have to
+            implement and register all the input/output symbols and basic behaviors by hand (see
+            below). To save you that work, there is
+            <code>de.xabsl.jxabslx.engine.ReflectionEngine</code>, an extension of the basic engine.
+            Say you have an object <code>agent</code> which contains methods and fields that you
+            want to use as symbols/behaviors. You can then instantiate the engine with the agent
+            object:
+            <programlisting>
+            Engine engine = new ReflectionEngine(debug, timeFunction, agent);
+            </programlisting>
+            Provided that the functions and fields are named appropriately, you can now simply
+            construct the option graph, and the engine will register all symbols/behaviors on
+            itself:
+            <programlisting>
+            File intermediateCode = new File("xabslsrc/intermediatecode");
+                
+            InputSource input;
+                
+            try {
+                
+                input = new ScannerInputSource(intermediateCode);
+                engine.createOptionGraph(input);
+                
+             } catch (FileNotFoundException e) {
+                e.printStackTrace();
+             } catch (IntermediateCodeMalformedException e) {
+                e.printStackTrace();
+             }
+            </programlisting>
+            The engine will only look for symbols/behaviors that have not yet been registered
+            manually. For any missing input- or output symbol <code>foo</code> the engine will look
+            for the following, in this order: <simplelist>
+                <member> Getter-/setter methods, i.e. methods that have the name <code>foo</code> /
+                        <code> getFoo</code> or <code> setFoo</code>. Parameter list must match. One
+                    and only one method must match, or the engine will issue an error</member>
+                <member> A publicly accessible field <code>foo</code></member>
+            </simplelist> As output symbols in XABSL are readable, there must be a way to obtain a
+            value for each output symbol (for instance, a getter method). For any missing basic
+            behavior <code>foo</code>, the engine will look for a method called <code> foo </code>
+            with an appropriate parameter list. One and only one method must match, or the engine
+            will issue an error. </para>
+        <sect2>
+            <title>Types</title>
+            <para>By default, Java numerical types such as int, decimal etc. are mapped to XABSL
+                decimal, Java boolean is mapped to boolean, and Java enum is mapped to enumerated.
+                The ReflectionEngine will find public enums defined in the agent object.</para>
+            <para>If you want to configure other types, have a look at
+                    <code>de.xabsl.jxabslx.conversions.Conversions</code></para>
+        </sect2>
+        <title>Parameters</title>
+        <para>Unfortunately, in Java methods, parameters are only identified by their position in
+            the parameter list (but not by their name). In XABSL, on the other hand, parameters are
+            identified by their name (but not their position). </para>
+        <para>Thus, if there is a XABSL input symbol foo (float a, float b) and a Java function foo
+            (float, float), the engine has no way of determining how to map the parameters. There
+            are two ways to solve this problem: <simplelist>
+                <member>Register the symbol manually.</member>
+                <member>Enable parameter sorting, for example:
+                        <code>engine.setParameterOrder(String.CASE_INSENSITIVE_ORDER);</code> The
+                    engine will then map the lexical order of parameters to their position in
+                    functions. You have to enable this manually to prove you know what you are
+                    doing. </member>
+            </simplelist></para>
+        <sect2/>
+    </sect1>
+
+    <sect1>
+        <title>Basic Engine</title>
+        <para>The <code>ReflectionEngine</code> is in package <code>de.xabsl.jxabslx</code>. This
+            package contains convenience classes and implementations. The basic engine is in package
+                <code>de.xabsl.jxabsl</code>. None of the classes in this package depends on
+                <code>xabslx</code>, so you can always use the bare engine implementation on its
+            own. </para>
+    </sect1>
+
+    <sect1><title>Examples</title> If you need more examples, look into the test cases that come
+        with the engine. There is also an example application of the engine which lets a XABSL
+        controlled team compete in a soccer match of the <code>TeamBots</code> environment.</sect1>
+</article>

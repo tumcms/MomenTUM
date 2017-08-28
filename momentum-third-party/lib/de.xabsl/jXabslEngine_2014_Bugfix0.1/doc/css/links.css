@@ -1,0 +1,11 @@
+*[href]:before{
+  link:attr(href);
+}
+
+ulink[url]:before{
+  link:attr(url);
+}
+
+link:before, xref:before, coref:before, biblioref:before {
+  link: "#" attr(linkend);
+}
