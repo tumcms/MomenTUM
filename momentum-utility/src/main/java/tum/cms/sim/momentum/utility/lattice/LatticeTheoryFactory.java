@@ -113,6 +113,20 @@ public class LatticeTheoryFactory {
 		return lattice;
 	}
 	
+	public static ILattice copyLatticeWithOccupation(ILattice original, String name) {
+		
+		ILattice lattice = copyLattice(original, name); 
+		
+		for (int row = 0; row < lattice.getNumberOfRows(); row++) {
+			
+			for (int column = 0; column < lattice.getNumberOfColumns(); column++) {
+				
+				lattice.setCellTo(row, column, original.getCellValue(row, column));
+			}
+		}				
+		return lattice;
+	}
+	
 	public static CellIndex createCellIndex(int[] rowColumnIndex) {
 		
 		return new CellIndex(rowColumnIndex);

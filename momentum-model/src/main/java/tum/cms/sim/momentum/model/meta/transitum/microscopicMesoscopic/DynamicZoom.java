@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.model.meta.transitum.microscopicMesoscopic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.math3.geometry.spherical.twod.Circle;
 import org.apache.commons.math3.util.Pair;
 
 import tum.cms.sim.momentum.model.meta.transitum.data.TransitionArea;
@@ -49,6 +51,7 @@ import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
+import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 import tum.cms.sim.momentum.utility.lattice.LatticeTheoryFactory;
 
 public class DynamicZoom <T>{
@@ -64,8 +67,8 @@ public class DynamicZoom <T>{
 	private Double influenceSphereMultiplicator = null;
 	
 	public DynamicZoom(ILattice scenarioLattice, Double tolerableDensity, Double maximalVelocity, Double mesoscopicTimeStepDuration, Integer numberOfTimeStepsBetweenZooms, Integer maximalNumberOfZoomAreas, Double influenceSphereMultiplicator) {
-		
-		this.scenarioLattice = LatticeTheoryFactory.copyLattice(scenarioLattice, "DynamicZoomTransiTUM");	
+				
+		this.scenarioLattice =  LatticeTheoryFactory.copyLatticeWithOccupation(scenarioLattice, "DyanmicZoomTransiTUM");	
 		this.tolerableDensity = tolerableDensity;
 		this.maximalVelocity = maximalVelocity;
 		this.mesoscopicTimeStepDuration = mesoscopicTimeStepDuration;
@@ -98,6 +101,8 @@ public class DynamicZoom <T>{
 			Vector2D centerOfMassInfluenceSphere = MicroMesoUtility.getWeightedCenterOfMass(this.transformPairListFromCellIndexToPosition(influenceSphere));
 			Integer densityThresholdMultiplicator = this.getDensityThresholdMultiplicator(influenceSphere, centerOfMassInfluenceSphere);		
 
+			densityThresholdMultiplicator = 0;
+			
 			if (densityThresholdMultiplicator < 1) {
 				
 			break;
@@ -118,12 +123,39 @@ public class DynamicZoom <T>{
 
 	private Integer getDensityThresholdMultiplicator(ArrayList influenceSphere, Vector2D centerOfMass) {
 		
+		Integer thresholdMultiplicator = 0;
 		Cycle2D zoomCircle = GeometryFactory.createCycle(centerOfMass, influenceRadius);
 		
-		List<CellIndex> cellsInCircle = scenarioLattice.getAllCircleCells(zoomCircle);
-
 		
+		// method has to be tested
+		
+		List<CellIndex> cellsInCircle = scenarioLattice.getAllCircleCells(zoomCircle);
+		
+		Integer numberOfCells = cellsInCircle.size();
+		
+		List<CellIndex> cellsWithObstacles = getCellsWithObstacles(cellsInCircle);
+		
+		Integer numberOfObstacleCells = cellsWithObstacles.isEmpty() ? 0 : cellsWithObstacles.size();
+	//	System.out.println(numberOfObstacleCells);
+		Integer numberOfObstacleFreeCells = cellsInCircle.size() - numberOfObstacleCells;
+		
+	//cellsInCircle.stream().forEach(cell -> System.out.println(cell.getString()));
 		return null;
+	}
+	
+//	private isLargerDensityThreshold(Integer thresholdMultiplicator, Vector2D centerOfMass) {
+//		
+//	}
+	
+	private List<CellIndex> getCellsWithObstacles(List<CellIndex> cells) {
+		
+		if (!scenarioLattice.getAllCellsWith(Occupation.Dynamic).isEmpty()) {
+			//Exception NO DYNAMIC PEDS ALLOWED HERE
+			return null;
+		}
+
+		return cells.stream().filter(cell -> scenarioLattice.getCellValue(cell).equals(Occupation.Fixed))
+				.collect(Collectors.toList());
 	}
 
 	private List<ArrayList<Pair<CellIndex, Double>>> getAllInfluenceSpheres(HashMap<CellIndex, Double> densityMap) {

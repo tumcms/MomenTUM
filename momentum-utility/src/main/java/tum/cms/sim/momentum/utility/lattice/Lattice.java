@@ -54,6 +54,7 @@ import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Polygon2D;
 import tum.cms.sim.momentum.utility.geometry.Segment2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
+import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 import tum.cms.sim.momentum.utility.lattice.operation.QuadraticLatticCalculation;
 
 public class Lattice extends Unique implements IHasProperties, ILattice {
@@ -515,9 +516,16 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		this.grid.setCell(cellIndex, this.convertOccupationToDouble(occupation));
 	}
 	
+	@Override
+	public synchronized void setCellTo(int row, int column, Occupation occupation) {
+		
+		this.setCellTo(new CellIndex(row, column), occupation);
+	}
+	
 	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#occupyCell(tum.cms.sim.momentum.utility.lattice.CellIndex, tum.cms.sim.momentum.utility.lattice.Lattice.Occupation)
 	 */
+	
 	@Override
 	public synchronized boolean occupyCell(CellIndex cellIndex, Occupation occupation) {
 		

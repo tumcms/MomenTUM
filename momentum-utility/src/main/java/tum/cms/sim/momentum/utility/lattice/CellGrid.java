@@ -72,7 +72,7 @@ public class CellGrid {
 	
 		array[row][column] = cellValue; 
 	}
-	
+
 	public void setCell(int row, int column, Double cellValue) { //setter
 		
 		array[row][column] = cellValue; 

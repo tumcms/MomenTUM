@@ -107,6 +107,8 @@ public interface ILattice extends IUnique {
 	Boolean isCellFree(int row, int column);
 
 	void setCellTo(CellIndex cellIndex, Occupation occupation);
+	
+	void setCellTo(int row, int column, Occupation occupation);
 
 	boolean occupyCell(CellIndex cellIndex, Occupation occupation);
 
