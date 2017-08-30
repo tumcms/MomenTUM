@@ -49,6 +49,10 @@ public class CsvFile extends File {
 		this.type = type;
 	}
 
+	public CsvFile(File file) {
+		super(file.getAbsolutePath());
+	}
+	
 	public CsvFile(String pathname) {
 		super(pathname);
 		this.type = getCsvTypeFromFile(pathname);

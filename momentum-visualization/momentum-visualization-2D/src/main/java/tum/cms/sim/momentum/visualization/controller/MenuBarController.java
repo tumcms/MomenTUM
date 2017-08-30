@@ -132,7 +132,6 @@ private CoreController coreController;
 	public void onQuickLoad(ActionEvent event) throws Exception {
 
 		QuickloadHandler.quickload(coreController);
-		
 	}
 
 	@FXML

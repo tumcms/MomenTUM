@@ -32,50 +32,46 @@
 
 package tum.cms.sim.momentum.visualization.controller;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.Initializable;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
-import tum.cms.sim.momentum.visualization.model.LoadedFilesModel;
 
+// TODO, this should manage the loaded files (CSV output and layout).
 public class LoadedFilesController implements Initializable {
 
 	@FXML VBox loadedFilesBox;
 	
-	private LoadedFilesModel loadedFilesModel;
-
-	public LoadedFilesController() {
-		loadedFilesModel = new LoadedFilesModel();
-	}
-	
+//	private LoadedFilesModel loadedFilesModel;
+//
+//	public LoadedFilesController() {
+//		loadedFilesModel = new LoadedFilesModel();
+//	}
+//	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 	}
 	
-	private void addLoadedFile(File file) {
-		loadedFilesModel.addFilepathToLoadedFiles(file.getAbsolutePath());
-		loadedFilesBox.getChildren().add(new CheckBox());
-	}
-	
-	private CheckBox getNewCheckBox(String name) {
-		CheckBox checkBox = new CheckBox();
-		checkBox.setText(name);
-		checkBox.setSelected(true);
-		checkBox.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		return checkBox;
-	}
+//	private void addLoadedFile(File file) {
+//		loadedFilesModel.addFilepathToLoadedFiles(file.getAbsolutePath());
+//		loadedFilesBox.getChildren().add(new CheckBox());
+//	}
+//	
+//	private CheckBox getNewCheckBox(String name) {
+//		CheckBox checkBox = new CheckBox();
+//		checkBox.setText(name);
+//		checkBox.setSelected(true);
+//		checkBox.setOnAction(new EventHandler<ActionEvent>() {
+//			
+//			@Override
+//			public void handle(ActionEvent event) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
+//		return checkBox;
+//	}
 
 }

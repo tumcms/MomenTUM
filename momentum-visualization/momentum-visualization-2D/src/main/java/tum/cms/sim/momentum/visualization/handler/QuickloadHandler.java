@@ -37,6 +37,7 @@ import java.util.ArrayList;
 
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.enums.PropertyType;
+import tum.cms.sim.momentum.visualization.utility.CsvFile;
 
 /**
  * This class handles quickload events.
@@ -47,7 +48,7 @@ import tum.cms.sim.momentum.visualization.enums.PropertyType;
 public class QuickloadHandler {
 
 	// contains the last loaded csv files
-	private static ArrayList<File> csvFiles;
+	private static ArrayList<CsvFile> csvFiles;
 	// the latest loaded layout
 	private static File latestLayout;
 	
@@ -56,8 +57,11 @@ public class QuickloadHandler {
 	}
 
 	public static void quickload(CoreController coreController) {
+		
 		if (latestLayout != null) {
+			
 			quickloadLayout(coreController);
+			
 			if (csvFiles != null) {
 				quickloadCsv(coreController);
 			}
@@ -91,10 +95,15 @@ public class QuickloadHandler {
 	 * @param coreController
 	 */
 	private static void quickloadLayout(CoreController coreController) {
+		
 		LoadLayoutHandler loadLayoutHandler = new LoadLayoutHandler();
+		
 		try {
+			
 			loadLayoutHandler.load(coreController, latestLayout);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 	}
@@ -103,7 +112,7 @@ public class QuickloadHandler {
 	 * Adds a csv file to the quickload file list.
 	 * @param file
 	 */
-	public static void addFile(File file) {
+	public static void addFile(CsvFile file) {
 		if (csvFiles == null) {
 			csvFiles = new ArrayList<>();
 		}
@@ -119,11 +128,11 @@ public class QuickloadHandler {
 	 */
 	public static void setLatestLayout(File file) {
 		latestLayout = file;
-		resetCsvFiles();
+//		resetCsvFiles();
 		updatePropertiesFile();
 	}
 	
-	private static void resetCsvFiles() {
+	public static void resetCsvFiles() {
 		csvFiles = new ArrayList<>();
 		updatePropertiesFile();
 	}
@@ -132,10 +141,15 @@ public class QuickloadHandler {
 	 * Updates and stores the file paths into properties file
 	 */
 	private static void updatePropertiesFile() {
+		
 		String filePaths = "";
-		for(File file : csvFiles) {
-			filePaths = filePaths+file.getAbsolutePath()+PropertyType.DELIMITER;
+		
+		for(CsvFile file : csvFiles) {
+			
+			filePaths = filePaths + file.getAbsolutePath() + PropertyType.DELIMITER +
+					    file.getType().name() + PropertyType.DELIMITER;
 		}
+		
 		UserPreferenceHandler.putProperty(PropertyType.quickloadCsvPaths, filePaths);
 		UserPreferenceHandler.putProperty(PropertyType.quickloadLayoutPath, latestLayout.getAbsolutePath());
 	}
@@ -144,17 +158,32 @@ public class QuickloadHandler {
 	 * Loads quickload data from properties file
 	 */
 	public static void loadQuickloadDataFromProperties() {
+		
 		String joinedPaths = UserPreferenceHandler.loadProperty(PropertyType.quickloadCsvPaths);
 		String layoutPath = UserPreferenceHandler.loadProperty(PropertyType.quickloadLayoutPath);
-		String[] pathsFromProperties = joinedPaths.split(PropertyType.DELIMITER);
+		String[] quickPathDatafromProperties = joinedPaths.split(PropertyType.DELIMITER);
+		
 		try {
+			
 			latestLayout = new File(layoutPath);
 			csvFiles = new ArrayList<>();
-			for(String path : pathsFromProperties) {
-				File file = new File(path);
-				csvFiles.add(file);
+			
+			if(quickPathDatafromProperties.length % 2 == 0) {
+				
+				for(int iter = 0; iter < quickPathDatafromProperties.length; iter += 2) {
+					
+					CsvFile currentFile = new CsvFile(new File(quickPathDatafromProperties[iter]));
+					currentFile.setType(CsvFile.getCsvTypeFromFile(quickPathDatafromProperties[iter + 1]));
+					
+					csvFiles.add(currentFile);
+				}
 			}
-		} catch (Exception e) {
+			else {
+				
+				QuickloadHandler.resetCsvFiles();
+			}
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

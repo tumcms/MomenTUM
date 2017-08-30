@@ -41,6 +41,7 @@ import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration
 
 public class AnalysisType {
 	
+	public static final String id = OutputType.id.name();
 	public static final String timeStep = OutputType.timeStep.name();
 	public static final String xPositionType = OutputType.x.name();
 	public static final String yPositionType = OutputType.y.name();

@@ -67,7 +67,6 @@ public class VisibilitiyModel {
 
 	public void setGridVisibility(Boolean visibility) {
 		gridVisibility.set(visibility);
-		createForPreferences();
 	}
 
 	public BooleanProperty latticeVisibilityProperty() {
@@ -80,7 +79,6 @@ public class VisibilitiyModel {
 
 	public void setLatticeVisibility(Boolean visibility) {
 		latticeVisibility.set(visibility);
-		createForPreferences();
 	}
 
 	public BooleanProperty graphVisibilityProperty() {
@@ -93,7 +91,6 @@ public class VisibilitiyModel {
 
 	public void setGraphVisibility(Boolean visibility) {
 		graphVisibility.set(visibility);
-		createForPreferences();
 	}
 
 	public void resetVisibility() {

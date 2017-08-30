@@ -326,7 +326,7 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 		
 		if(Double.isNaN(lpWeight)) {
 			
-			lpWeight = 0.0;
+			lpWeight = 1.0;
 		}
 
 		Double socialWeight = fpWeight + lpWeight;
@@ -339,14 +339,14 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 		
 		if(Double.isNaN(avWeight)) {
 			
-			avWeight = 0.0;
+			avWeight = 1.0;
 		}
 		
 		Double emotionalWeight = avWeight;
 	
 		if(Double.isNaN(emotionalWeight)) {
 			
-			emotionalWeight =01.0;
+			emotionalWeight = 1.0;
 		}
 	
 //		if(emotionalWeight <= 0.1) {

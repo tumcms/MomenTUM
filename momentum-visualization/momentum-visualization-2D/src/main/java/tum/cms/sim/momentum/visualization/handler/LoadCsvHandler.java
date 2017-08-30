@@ -56,15 +56,20 @@ public class LoadCsvHandler extends LoadHandler {
 	@Override
 	public void load(CoreController coreController, Window parentWindow) throws Exception {
 
-		CsvFile file = new CsvFile(
-				getFile(titleOutputChooser, new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"), parentWindow)
-						.getPath());
+		File selectedFile = getFile(titleOutputChooser, new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"), parentWindow);
 
-		if (file != null) {
+		if (selectedFile != null) {
+			
+			CsvFile file = new CsvFile(selectedFile.getPath());
+				
 			try {
+				
 				file.setType(CustomCSVDialogCreator.createCustomCSVDialog(CsvFile.getCsvTypeFromFile(file.getPath())));
 				this.load(coreController, file);
-			} catch (Exception e) {
+				
+			} 
+			catch (Exception e) {
+				
 				InformationDialogCreator.createErrorDialog("", "Error loading csv data", e);
 			}
 		}
@@ -73,11 +78,6 @@ public class LoadCsvHandler extends LoadHandler {
 	@Override
 	public void load(CoreController coreController, File file)
 			throws Exception {
-		
-//		if (coreController.getCoreModel().getCsvLoaded() && coreController.getCoreModel().getLayoutLoaded()) {
-//		
-//			coreController.resetCoreModel();
-//		}
 		
 		if (file instanceof CsvFile) {
 			
@@ -131,7 +131,5 @@ public class LoadCsvHandler extends LoadHandler {
 				throw e;
 			}
 		}
-
 	}
-
 }

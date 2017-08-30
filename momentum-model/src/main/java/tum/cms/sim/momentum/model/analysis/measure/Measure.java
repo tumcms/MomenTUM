@@ -73,8 +73,8 @@ public abstract class Measure extends Unique implements IHasProperties {
 	public ArrayList<String> getOutputTypes() {
 		
 		ArrayList<String> outputTypesReturn = new ArrayList<>(outputTypes);
-		outputTypesReturn.add(0, OutputType.id.name());
-		outputTypesReturn.add(0, OutputType.timeStep.name());
+//		outputTypesReturn.add(0, OutputType.id.name());
+//		outputTypesReturn.add(0, OutputType.timeStep.name());
 		
 		return outputTypesReturn;
 	}

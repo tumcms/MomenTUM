@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>tum.cms.sim.momentum</groupId>
+  <artifactId>momentum-third-party</artifactId>
+  <version>2.0.2</version>
+  <packaging>pom</packaging>
+
+  <name>momentum-third-party</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+				<executions>
+					<execution>
+						<id>1</id>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${basedir}/lib/de.xabsl/jXabslEngine_2014_Bugfix0.1/bin/jxabsl-2014Bugfix0.1.jar</file>
+							<groupId>de.xabsl</groupId>
+							<artifactId>jxabsl</artifactId>
+							<version>2014Bugfix0.10</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+					<execution>
+						<id>2</id>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${basedir}/lib/delauny/DelaunaySourceCodeJava-60.jar</file>
+							<groupId>delaunay</groupId>
+							<artifactId>DelaunaySourceCodeJava</artifactId>
+							<version>60</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+						<execution>
+						<id>3</id>
+						<phase>install</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${basedir}/lib/edu.wlu.cs.levy.CG/levys_kd_tree-1.jar</file>
+							<groupId>edu.wlu.cs.levy.CG</groupId>
+							<artifactId>levys_kd_tree</artifactId>
+							<version>1</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>			
+		</plugins>
+	</build>
+	
+</project>

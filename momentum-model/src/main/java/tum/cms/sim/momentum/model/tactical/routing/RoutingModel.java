@@ -163,6 +163,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 		Vertex startVertex = null;
 		
 		if(pedestrian.getRoutingState() == null || // no routing behavior present, find new start
+		   pedestrian.getRoutingState().getNextVisit() == null || // re-routing because next visit is not visible
 		   pedestrian.getRoutingState().getNextToNextVisit() == null || // at the end of routing (shortcut)
 		   pedestrian.getRoutingState().getNextVisit().isTemporary()) { // old vertex was temporary
 

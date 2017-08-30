@@ -79,12 +79,15 @@ public class UserPreferenceHandler {
 			FileInputStream inputStream = new FileInputStream(System.getProperty("user.dir")+".properties");
 			properties.load(inputStream);
 			inputStream.close();
-		} catch (IOException e) {
+		}
+		 catch (IOException e) {
+			 
 			for(PropertyType type : PropertyType.values()) {
 				properties.setProperty(type.toString(), PropertyType.getDefaultValue(type));
 				writeProperties(properties);
 			}
 		}
+		
 		return properties;
 	}
 

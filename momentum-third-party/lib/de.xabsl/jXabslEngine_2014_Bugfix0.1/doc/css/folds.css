@@ -1,0 +1,22 @@
+/*
+    Foldable elements
+*/
+set,
+book,
+part,
+reference,
+chapter,
+preface,
+article,
+sect1,
+sect2,
+sect3,
+sect4,
+section,
+appendix,
+figure,
+example,
+table {
+    foldable:true;
+    not-foldable-child: info, title;
+}

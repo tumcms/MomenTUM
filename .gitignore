@@ -13,6 +13,18 @@ momentum-visualization-2D.properties
 *.iml
 *.iws
 
+# Android Studio
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+
+
 # Mac
 .DS_Store
 

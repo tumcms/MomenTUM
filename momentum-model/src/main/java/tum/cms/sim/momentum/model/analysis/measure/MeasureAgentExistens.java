@@ -55,6 +55,8 @@ public class MeasureAgentExistens extends Measure {
 	public void initialize() {
 		
 		this.inputTypes.add(AnalysisType.timeStep);
+		
+		this.outputTypes.add(AnalysisType.id);
 		this.outputTypes.add(AnalysisType.existensType);
 	}
 	

@@ -71,7 +71,10 @@ public class PedestrianModel extends ShapeModel {
 	private static Double pedestrianHeight = 3.0;
 	private static Point2D groundVector = new Point2D(1.0,0.0);
 	private static TrajectoryCubicCurve trajectoryCubicCurve= new TrajectoryCubicCurve();
-	private String id;
+	private String displayId;
+	private String identificationId;
+
+
 	private double positionX;
 	private double positionY;
 	private double headingX;
@@ -180,7 +183,11 @@ public class PedestrianModel extends ShapeModel {
 	public double getAngle() {
 		return angle;
 	}
-	
+
+	public String getDisplayId() {
+		return displayId;
+	}
+
 	private Group pedestrianShape = null;
 	
 	private Cylinder pedestrianBody  = null;
@@ -215,8 +222,9 @@ public class PedestrianModel extends ShapeModel {
 		return this.trajectory;
 	}
 	
-	public PedestrianModel(String id) {
-		this.id = id;
+	public PedestrianModel(String displayId, String hashId) {
+		this.displayId = displayId;
+		this.identificationId = hashId;
 	}
 
 	@Override
@@ -224,14 +232,14 @@ public class PedestrianModel extends ShapeModel {
 	 * returns the global unique id of this PedestrianModel
 	 */
 	public String getIdentification() {
-		return this.id;
+		return this.identificationId;
 	}
 	
 	/**
 	 * Returns the cluster-unique id
 	 */
 	public String getClusterIdentification() {
-		return this.id.split("\\.")[0];
+		return this.displayId.split("\\.")[0];
 	}
 	
 	
@@ -277,7 +285,7 @@ public class PedestrianModel extends ShapeModel {
 		
 		LinkedHashMap<String, String> details = new LinkedHashMap<>();
 		
-		details.put(ShapeModel.nameDetails, id);
+		details.put(ShapeModel.nameDetails, displayId);
 		details.put(ShapeModel.positionXDetails, Double.toString(this.positionX));
 		details.put(ShapeModel.positionYDetails, Double.toString(this.positionY));
 		details.put(ShapeModel.headingXDetails, Double.toString(this.headingX));
@@ -334,12 +342,12 @@ public class PedestrianModel extends ShapeModel {
 	
 	public void updateProperties(SimulationOutputCluster dataStep) {
 		
-		this.targetId = dataStep.getIntegerData(this.id, OutputType.targetID.name());
-		this.groupId = dataStep.getIntegerData(this.id, OutputType.groupID.name());
-		this.seedId = dataStep.getIntegerData(this.id, OutputType.seedID.name());
-		this.leader = dataStep.getBooleanData(this.id, OutputType.leader.name());
-		this.behavior = dataStep.getStringData(this.id, OutputType.behavior.name());
-		this.motoric = dataStep.getStringData(this.id, OutputType.motoric.name());
+		this.targetId = dataStep.getIntegerData(this.displayId, OutputType.targetID.name());
+		this.groupId = dataStep.getIntegerData(this.displayId, OutputType.groupID.name());
+		this.seedId = dataStep.getIntegerData(this.displayId, OutputType.seedID.name());
+		this.leader = dataStep.getBooleanData(this.displayId, OutputType.leader.name());
+		this.behavior = dataStep.getStringData(this.displayId, OutputType.behavior.name());
+		this.motoric = dataStep.getStringData(this.displayId, OutputType.motoric.name());
 	}
 	
 	public void createShape(double positionX, 
