@@ -169,7 +169,7 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 				this.herding,
 				this.rightHandSide,
 				this.decisionDuration,
-				UnifiedRoutingConstant.SallLegAngleThreshold * ((2.0 * FastMath.PI) / 360.0));
+				UnifiedRoutingConstant.SallLegAngleThreshold);
 	}
 
 	@Override

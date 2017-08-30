@@ -35,7 +35,6 @@ package tum.cms.sim.momentum.visualization.handler;
 import java.io.File;
 import java.util.ArrayList;
 
-import javafx.stage.FileChooser;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.enums.PropertyType;
 import tum.cms.sim.momentum.visualization.utility.CsvFile;
@@ -169,16 +168,19 @@ public class QuickloadHandler {
 			latestLayout = new File(layoutPath);
 			csvFiles = new ArrayList<>();
 			
-			for(int iter = 0; iter < quickPathDatafromProperties.length; iter += 2) {
+			if(quickPathDatafromProperties.length % 2 == 0) {
 				
-				CsvFile currentFile = new CsvFile(new File(quickPathDatafromProperties[iter]));
-				currentFile.setType(CsvFile.getCsvTypeFromFile(quickPathDatafromProperties[iter + 1]));
-				
-				csvFiles.add(currentFile);
+				for(int iter = 0; iter < quickPathDatafromProperties.length; iter += 2) {
+					
+					CsvFile currentFile = new CsvFile(new File(quickPathDatafromProperties[iter]));
+					currentFile.setType(CsvFile.getCsvTypeFromFile(quickPathDatafromProperties[iter + 1]));
+					
+					csvFiles.add(currentFile);
+				}
 			}
-			for(String path : quickPathDatafromProperties) {
+			else {
 				
-			
+				QuickloadHandler.resetCsvFiles();
 			}
 		}
 		catch (Exception e) {

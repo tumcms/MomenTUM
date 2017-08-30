@@ -1,28 +1,69 @@
-	<!-- The xtDensity analysis computes the pedestrian density on lattice=1. -->
+<!-- The xtDensity analysis computes the pedestrian density on lattice=1. -->
 		
-		<!-- ID relevant for output, unique id in all analysis models-->
-		<analysis id="1" name="xtDensityAnalysis"> 
+<!-- ID relevant for output, unique id in all analysis models-->
+<analysis id="1" name="xtDensityAnalysis"> 
+
+	<!-- Call defines the multiple of the time step this model computes a measurement -->
+	<property name="call" type="Integer" value="20"/> <!-- Every 1 seconds -->
+	<!-- The first time step to start the computation. -->
+	<property name="analysisStartStep" type="Integer" value="0"/>
+	<!-- The last time step to end the computation. -->
+	<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
 	
-			<!-- Call defines the multiple of the time step this model computes a measurement -->
-			<property name="call" type="Integer" value="20"/> <!-- Every 1 seconds -->
-			<!-- The first time step to start the computation. -->
-			<property name="analysisStartStep" type="Integer" value="0"/>
-			<!-- The last time step to end the computation. -->
-			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+	<!--Defines that this analysi models computes the density based on the XT method-->
+	<measure type="XtDensity">		
+		<!-- The lattice to use -->
+		<property name="latticeId" type="Integer" value="1"/>
+		<!-- For grid method set 1, set for XT method a non-even value. -->
+		<property name="timeRange" type="Integer" value="3"/>
+		<!-- Maximal in a cell. -->
+		<property name="maximalDensity" type="Double" value="5.0"/>
+	</measure>
+	
+	<!-- Use pedestrian data for the computation -->
+	<writerSource sourceType="Pedestrian"> 
+		<property name="x" type="Format" value="%.2f"/>
+		<property name="y" type="Format" value="%.2f"/>
+	</writerSource>
+</analysis>
+		
+<!-- The line crossing model checks if pedestrians crossed one or multiple lines and counts them -->
+<!-- The measurement is useful for wayfinding analysis -->
+<analysis name="CrossLineAnalysisSmall" id="3">
+
+	<!-- The first time step to start the computation. -->
+	<property name="analysisStartStep" type="Integer" value="0"/>
+	<!-- The last time step to end the computation. -->
+	<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
+	<!-- Call defines the multiple of the time step this model computes a masurement -->
+	<property name="call" type="Integer" value="1"/> <!-- Every 5 seconds -->
+
+	<!-- LineCorssing measurement type -->
+	<measure type="LineCrossing">		
+	
+		<!-- Each leftX leftY - rightX rightY pair defines a line to cross /to check -->
+		<!-- Each entry index corresponds to a line -->
+		<complexProperty name="leftX" type="List" valueType="Double">
+			<entry index="0" value="630.32739"/> 
+		</complexProperty>
 			
-			<!--Defines that this analysi models computes the density based on the XT method-->
-			<measure type="XtDensity">		
-				<!-- The lattice to use -->
-				<property name="latticeId" type="Integer" value="1"/>
-				<!-- For grid method set 1, set for XT method a non-even value. -->
-				<property name="timeRange" type="Integer" value="3"/>
-				<!-- Maximal in a cell. -->
-				<property name="maximalDensity" type="Double" value="5.0"/>
-			</measure>
-			
-			<!-- Use pedestrian data for the computation -->
-			<writerSource sourceType="Pedestrian"> 
-				<property name="x" type="Format" value="%.2f"/>
-				<property name="y" type="Format" value="%.2f"/>
-			</writerSource>
-		</analysis>
+		<complexProperty name="leftY" type="List" valueType="Double">
+			<entry index="0" value="71.84769999999999"/>
+		</complexProperty>
+		
+		<complexProperty name="rightX" type="List" valueType="Double">
+			<entry index="0" value="637.72739"/>
+		</complexProperty>
+		
+		<complexProperty name="rightY" type="List" valueType="Double">
+			<entry index="0" value="71.44769999999998"/>
+		</complexProperty>
+	</measure>
+
+	<!-- Use pedestrian data for the computation -->
+	<writerSource sourceType="Pedestrian"> 
+		<property name="id" type="Format" value="%d"/>
+		<property name="x" type="Format" value="%.2f"/>
+		<property name="y" type="Format" value="%.2f"/>
+	</writerSource>
+</analysis>

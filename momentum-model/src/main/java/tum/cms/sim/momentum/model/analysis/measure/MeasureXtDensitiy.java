@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.data.analysis.AnalysisElement;
 import tum.cms.sim.momentum.data.analysis.AnalysisElementSet;
 import tum.cms.sim.momentum.model.analysis.AnalysisType;
@@ -69,6 +70,8 @@ public class MeasureXtDensitiy extends Measure {
 		this.inputTypes.add(AnalysisType.xPositionType);
 		this.inputTypes.add(AnalysisType.yPositionType);
 		
+		this.outputTypes.add(AnalysisType.id);
+		this.outputTypes.add(AnalysisType.timeStep);
 		this.outputTypes.add(AnalysisType.cellCenterX);
 		this.outputTypes.add(AnalysisType.cellCenterY);
 		this.outputTypes.add(AnalysisType.cornerSize);

@@ -80,6 +80,7 @@ public class MeasureLineCrossing extends Measure {
 		this.inputTypes.add(AnalysisType.xPositionType);
 		this.inputTypes.add(AnalysisType.yPositionType);
 
+		this.outputTypes.add(AnalysisType.timeStep);
 		this.outputTypes.add(AnalysisType.crossedLineType);
 	}
 
@@ -141,21 +142,24 @@ public class MeasureLineCrossing extends Measure {
 				xPositionCurrent.getData().doubleValue(), 
 				yPositionCurrent.getData().doubleValue());
 
-		Segment2D workingSegment = GeometryFactory.createSegment(lastPosition, currentPosition);
-
-		// check if a line was crossed
-		this.measuringLineList.forEach(segment -> {
-
-			if(segment.getIntersection(workingSegment).size() > 0) {
-				
-				HashSet<String> crossedForSegment = linesCrossed.get(segment);
-				
-				if(!crossedForSegment.contains(xPositionLast.getId())) {
-				
-					crossedForSegment.add(xPositionLast.getId());
+		if(!lastPosition.equals(currentPosition)) {
+			
+			Segment2D workingSegment = GeometryFactory.createSegment(lastPosition, currentPosition);
+	
+			// check if a line was crossed
+			this.measuringLineList.forEach(segment -> {
+	
+				if(segment.getIntersection(workingSegment).size() > 0) {
+					
+					HashSet<String> crossedForSegment = linesCrossed.get(segment);
+					
+					if(!crossedForSegment.contains(xPositionLast.getId())) {
+					
+						crossedForSegment.add(xPositionLast.getId());
+					}
 				}
-			}
-		});
+			});
+		}
 		
 		int crossed = 0;
 		

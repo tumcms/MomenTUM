@@ -34,7 +34,6 @@ package tum.cms.sim.momentum.visualization;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javafx.application.Application;
@@ -48,7 +47,6 @@ import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.handler.ExitHandler;
 import tum.cms.sim.momentum.visualization.handler.QuickloadHandler;
 import tum.cms.sim.momentum.visualization.handler.UserPreferenceHandler;
-import tum.cms.sim.momentum.visualization.model.CoreModel;
 
 public class VisualizationKernel extends Application {
 	
