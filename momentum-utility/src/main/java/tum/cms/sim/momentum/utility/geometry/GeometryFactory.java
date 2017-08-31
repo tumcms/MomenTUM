@@ -204,6 +204,18 @@ public class GeometryFactory {
 	public static Rectangle2D createRectangle(Vector2D center, Vector2D direction, double width, double height) {
 		return new Rectangle2D(center, direction, width, height);
 	}
+
+	/**
+	 * Returns an Ellipse2D from a given center and direction vector, major and minor axis length
+	 * @param center
+	 * @param direction
+	 * @param majorAxis
+	 * @param minorAxis
+	 * @return
+	 */
+	public static Ellipse2D createEllipse(Vector2D center, Vector2D direction, double majorAxis, double minorAxis) {
+		return new Ellipse2D(center, direction, majorAxis, minorAxis);
+	}
 	
 	/**
 	 * Returns a Vector2D from the given local coordinates.

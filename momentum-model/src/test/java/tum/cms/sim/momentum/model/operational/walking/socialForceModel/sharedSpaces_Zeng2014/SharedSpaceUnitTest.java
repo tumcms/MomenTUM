@@ -177,26 +177,6 @@ public class SharedSpaceUnitTest {
 			
 			
 		}
-
-		@Test
-		public void testRectangle() {	
-			Vector2D center, direction, point;
-			double width, height;
-			
-			center = GeometryFactory.createVector(0, 0);
-			direction = GeometryFactory.createVector(1, 0);
-			width = 2; height = 6;
-			Rectangle2D rec = new Rectangle2D(center, direction, width, height);
-			point = GeometryFactory.createVector(3, 2);
-			Assert.assertEquals(1, rec.distanceBetween(point), PRECISION);
-			
-			point = GeometryFactory.createVector(-4, 2);
-			Assert.assertEquals(Math.sqrt(2), rec.distanceBetween(point), PRECISION);
-
-			point = GeometryFactory.createVector(3, 2);
-			Vector2D between = rec.vectorBetween(point);
-			
-		}
 		
 
 }
