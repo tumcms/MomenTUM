@@ -601,8 +601,18 @@ namespace MomenTumV2CadLayouting
                     createLayer(graphLayerName, graphColorCode, currentDocument, transaction);
                 }
 
+
+                if (!isLayerFilterExistent(taggedAreasLayerFilterName))
+                {
+                    // hidden feature at the moment, due to the introduction of a different concept
+                    //createLayerGroup(taggedAreasLayerFilterName, currentDocument, transaction);
+                }
+                
+
                 transaction.Commit();
             }
+
+            
         }
 
         #endregion Commands
@@ -948,6 +958,45 @@ namespace MomenTumV2CadLayouting
                 layers.Add(newLayer);
                 transaction.AddNewlyCreatedDBObject(newLayer, true);
             }   
+        }
+
+        private static void createLayerGroup(String layerGroupName, Document currentDocument, Transaction transaction)
+        {
+            Database currentDatabase = currentDocument.Database;
+            Editor editor = currentDocument.Editor;
+            try
+            {
+                using (DocumentLock docLock = currentDocument.LockDocument())
+                {
+                    LayerFilterTree lft = currentDatabase.LayerFilters;
+                    LayerFilterCollection lfc = lft.Root.NestedFilters;
+
+                    LayerGroup lg = new LayerGroup();
+                    lg.Name = layerGroupName;
+
+                    lfc.Add(lg);
+                    currentDatabase.LayerFilters = lft;
+                }
+
+
+            } catch (Autodesk.AutoCAD.Runtime.Exception ex)
+            {
+                editor.WriteMessage("\nException: Could not create LayerGroup: " + layerGroupName);
+            }
+        }
+
+        private static bool isLayerFilterExistent(String layerFilterName)
+        {
+            Document currentDocument = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
+            Database currentDatabase = currentDocument.Database;
+            LayerFilterCollection lfc = currentDatabase.LayerFilters.Root.NestedFilters;
+
+            foreach (LayerFilter curLayerFilter in lfc)
+            {
+                if (curLayerFilter.Name == layerFilterName)
+                    return true;
+            }
+            return false;
         }
 
         private static List<String> getLayersFromLayerFilter(String layerFilterName)
