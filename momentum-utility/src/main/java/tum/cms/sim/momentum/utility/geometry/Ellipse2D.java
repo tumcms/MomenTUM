@@ -32,7 +32,6 @@
 
 package tum.cms.sim.momentum.utility.geometry;
 
-
 import georegression.struct.shapes.EllipseRotated_F64;
 import georegression.fitting.ellipse.ClosestPointEllipseAngle_F64;
 import georegression.struct.point.Point2D_F64;
@@ -40,7 +39,7 @@ import georegression.struct.point.Point2D_F64;
 public class Ellipse2D {
 
 	private EllipseRotated_F64 ellipse = null;
-	private ClosestPointEllipseAngle_F64 closestPointCalculations = new ClosestPointEllipseAngle_F64(1e-8,100);
+	private ClosestPointEllipseAngle_F64 closestPointCalculations = new ClosestPointEllipseAngle_F64(1E-8,100);
 
 	public Ellipse2D(Vector2D center, Vector2D direction, double majorAxis, double minorAxis)
 	{
@@ -49,16 +48,43 @@ public class Ellipse2D {
 		this.ellipse = new EllipseRotated_F64(center.getXComponent(), center.getYComponent(), majorAxis, minorAxis, phi);
 	}
 
-	public Vector2D getClosestPoint(Vector2D point) {
+	/**
+	 * Returns the point, which is on the ellipse and closest to the given point
+	 * @param point given point
+	 * @return closest point
+	 */
+	public Vector2D closestPoint(Vector2D point) {
 
 		closestPointCalculations.setEllipse(ellipse);
+        Point2D_F64 pointConverted = new Point2D_F64(point.getXComponent(), point.getYComponent());
+		closestPointCalculations.process(pointConverted);
 		Point2D_F64 closestPoint = closestPointCalculations.getClosest();
 		return new Vector2D(closestPoint.x, closestPoint.y);
 	}
 
+	/**
+	 * Returns a vector from this figure to the given point
+	 * @param point given point
+	 * @return vector from closest point on ellipse to the given point
+	 */
+	public Vector2D vectorBetween(Vector2D point) {
+
+		Vector2D closestPoint = closestPoint(point);
+		return point.subtract(closestPoint);
+	}
+
+	public Vector2D normal(Vector2D point) {
+		return vectorBetween(point).getNormalized();
+	}
+
+
 	public Vector2D getCenter() {
 		return new Vector2D(ellipse.getCenter().x, ellipse.getCenter().y);
 	}
+
+	public void setCenter(Vector2D center) {
+	    this.ellipse.setCenter(new Point2D_F64(center.getXComponent(), center.getYComponent()));
+    }
 
 	public double getOrientation() {
 		return ellipse.getPhi();

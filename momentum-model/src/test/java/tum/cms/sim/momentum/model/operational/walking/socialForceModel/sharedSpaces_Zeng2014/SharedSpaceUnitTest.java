@@ -46,7 +46,7 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class SharedSpaceUnitTest {
 	
-	public static double PRECISION = 0.00000000000001;
+	private static double PRECISION = 1E-15;
 
 	@Test
 	public void testGetRelativeAngle() {
@@ -119,64 +119,5 @@ public class SharedSpaceUnitTest {
 		youVelocity = GeometryFactory.createVector(0, -1);
 		Assert.assertEquals(0.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity, youPosition, youVelocity), PRECISION);
 	}
-
-	@Test
-	public void testEllipse() {
-		Vector2D F1, F2, point, normal;
-		double lengthMinorAxis;
-		SharedSpacesComputations.Ellipse ellipse;
-		
-		F1 = GeometryFactory.createVector(0, 0);
-		F2 = GeometryFactory.createVector(2, 0);
-		lengthMinorAxis = 2;
-		ellipse = new SharedSpacesComputations.Ellipse(F1, F2, lengthMinorAxis);
-		point = GeometryFactory.createVector(1, 2);
-		normal = ellipse.getNormal(point).getNormalized();
-		Assert.assertEquals(0, normal.getXComponent(), PRECISION);
-		Assert.assertEquals(1, normal.getYComponent(), PRECISION);
-		
-		F1 = GeometryFactory.createVector(0, 0);
-		F2 = GeometryFactory.createVector(2, 2);
-		lengthMinorAxis = 1;
-		ellipse = new SharedSpacesComputations.Ellipse(F1, F2, lengthMinorAxis);
-		point = GeometryFactory.createVector(2, 2);
-		normal = ellipse.getNormal(point).getNormalized();
-		Assert.assertEquals(Math.sqrt(2)/2, normal.getXComponent(), PRECISION);
-		Assert.assertEquals(Math.sqrt(2)/2, normal.getYComponent(), PRECISION);
-		
-		F1 = GeometryFactory.createVector(0, 0);
-		F2 = GeometryFactory.createVector(2, 2);
-		lengthMinorAxis = 1;
-		ellipse = new SharedSpacesComputations.Ellipse(F1, F2, lengthMinorAxis);
-		point = GeometryFactory.createVector(0, 0);
-		normal = ellipse.getNormal(point).getNormalized();
-		Assert.assertEquals(-Math.sqrt(2)/2, normal.getXComponent(), PRECISION);
-		Assert.assertEquals(-Math.sqrt(2)/2, normal.getYComponent(), PRECISION);
-		
-		F1 = GeometryFactory.createVector(0, 0);
-		F2 = GeometryFactory.createVector(2, 2);
-		lengthMinorAxis = Math.sqrt(2);
-		ellipse = new SharedSpacesComputations.Ellipse(F1, F2, lengthMinorAxis);
-		point = GeometryFactory.createVector(0, 2);
-		normal = ellipse.getNormal(point).getNormalized();
-		Assert.assertEquals(-Math.sqrt(2)/2, normal.getXComponent(), PRECISION);
-		Assert.assertEquals(Math.sqrt(2)/2, normal.getYComponent(), PRECISION);
-		
-		}
-	
-		@Test
-		public void a() {
-			Vector2D abc = GeometryFactory.createVector(0, 0);
-			Vector2D abc2 = GeometryFactory.createVector(2, 3);
-			
-			abc = abc.sum(abc2);
-			System.out.println(abc.getXComponent() + "," + abc.getYComponent());
-			
-			Vector2D center, direction;
-			double width, height;
-			
-			
-		}
-		
 
 }

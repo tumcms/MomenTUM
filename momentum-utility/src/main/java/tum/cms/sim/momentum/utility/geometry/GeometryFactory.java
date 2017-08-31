@@ -207,16 +207,32 @@ public class GeometryFactory {
 
 	/**
 	 * Returns an Ellipse2D from a given center and direction vector, major and minor axis length
-	 * @param center
-	 * @param direction
-	 * @param majorAxis
-	 * @param minorAxis
+	 * @param center center of ellipse
+	 * @param direction direction vector
+	 * @param majorAxis length of major axis
+	 * @param minorAxis length of minor axis
 	 * @return
 	 */
 	public static Ellipse2D createEllipse(Vector2D center, Vector2D direction, double majorAxis, double minorAxis) {
 		return new Ellipse2D(center, direction, majorAxis, minorAxis);
 	}
-	
+
+	/**
+	 * Returns an Ellipse2D given it's focal po
+	 * @param F1 first focal point
+	 * @param F2 second focal point
+	 * @param minorAxis length of minor axis
+	 * @return
+	 */
+	public static Ellipse2D createEllipse(Vector2D F1, Vector2D F2, double minorAxis) {
+
+		Vector2D center = F1.sum(F2).multiply(1.0/2);
+		Vector2D direction = F2.subtract(F1);
+		double majorAxis = Math.sqrt( Math.pow(F2.subtract(F1).getMagnitude()/2,2) +
+				Math.pow(minorAxis, 2));
+		return new Ellipse2D(center, direction, majorAxis, minorAxis);
+	}
+
 	/**
 	 * Returns a Vector2D from the given local coordinates.
 	 * 
