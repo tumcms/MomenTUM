@@ -520,6 +520,7 @@ namespace MomenTumV2CadLayouting
         public void reset()
         {
             areaID = 0;
+            taggedAreaID = 0;
             obstacleID = 0;
             scenarioID = 0;
             graphID = 0;
