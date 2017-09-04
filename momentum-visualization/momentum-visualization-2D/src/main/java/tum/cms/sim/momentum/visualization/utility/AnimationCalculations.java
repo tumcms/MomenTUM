@@ -54,6 +54,7 @@ import tum.cms.sim.momentum.visualization.enums.SpeedUp;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.model.VisualizationModel;
+import tum.cms.sim.momentum.visualization.model.custom.CarModel;
 import tum.cms.sim.momentum.visualization.model.custom.DensityCellModel;
 import tum.cms.sim.momentum.visualization.model.custom.DensityEdgeModel;
 import tum.cms.sim.momentum.visualization.model.custom.TransitAreaModel;
@@ -193,6 +194,44 @@ public abstract class AnimationCalculations {
 								dataStep.getDoubleData(id, "maximalDensity"));
 					}
 					break;
+
+					case Car:
+
+
+						if (!customMap.containsKey(id)) {
+
+							customVisualization = getCustomShapeModel(type, id, customizationController);
+							customMap.put(id, customVisualization);
+
+							CarModel carModel = (CarModel) customVisualization;
+
+
+							double length = 5; //dataStep.getDoubleData(id, "length");
+                            double width = 5; //dataStep.getDoubleData(id, "width");
+
+                            carModel.createShape(coreController.getCoreModel(),
+                                    dataStep.getDoubleData(id, "x"),
+                                    dataStep.getDoubleData(id, "y"),
+                                    length,
+                                    width,
+                                    dataStep.getDoubleData(id, "xHeading"),
+                                    dataStep.getDoubleData(id, "yHeading"));
+
+
+							newCustomMap.put(id, carModel);
+						} else { // set position
+
+							customMap = visualizationModel.getSpecificCustomShapesMap(type);
+							CarModel carModel = (CarModel) customMap.get(id);
+
+                            carModel.placeShape(coreController.getCoreModel(),
+                                    dataStep.getDoubleData(id, "x"),
+                                    dataStep.getDoubleData(id, "y"),
+                                    dataStep.getDoubleData(id, "xHeading"),
+                                    dataStep.getDoubleData(id, "yHeading"));
+						}
+						break;
+
 				default:
 					break;
 				}
@@ -389,6 +428,9 @@ public abstract class AnimationCalculations {
 
 		case xtDensity:
 			ShapeModelToReturn = new DensityCellModel(id);
+
+		case Car:
+			ShapeModelToReturn = new CarModel(id);
 
 		default:
 			break;
