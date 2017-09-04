@@ -76,25 +76,26 @@ public class CarModel extends ShapeModel {
 
 
 	public void createShape(CoreModel coreModel,
-			double cellCenterX,
-			double cellCenterY,
+			double centerX,
+			double centerY,
 			double length,
 			double width,
 			double xHeading,
 			double yHeading) {
 
-		cell = new Rectangle(cellCenterX * coreModel.getResolution() -
+		cell = new Rectangle(centerX * coreModel.getResolution() -
 				coreModel.getResolution() * 0.5,
-				cellCenterY * coreModel.getResolution() -
+                centerY * coreModel.getResolution() -
 				coreModel.getResolution() * 0.5,
                 width * coreModel.getResolution(),
                 length * coreModel.getResolution());
 
-        //Create a Rotate Object
+
+
         Rotate rotate = new Rotate();
-        rotate.setPivotX(cellCenterX); //Pivot X Top-Left corner
-        rotate.setPivotY(cellCenterY); //Pivot Y
-        rotate.setAngle(Math.atan2(xHeading, yHeading)); //Angle degrees
+        rotate.setPivotX(centerX);
+        rotate.setPivotY(centerY);
+        rotate.setAngle(Math.atan2(xHeading, yHeading));
         cell.getTransforms().add(rotate);
 
 		cell.setTranslateZ(0.002 * coreModel.getResolution());
@@ -104,27 +105,44 @@ public class CarModel extends ShapeModel {
 		cell.setFill(densityColor);
 		
 		group.getChildren().add(cell);
+
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.length = length;
+        this.width = width;
+        this.xHeading = xHeading;
+        this.yHeading = yHeading;
 	}
 
-	public void placeShape(CoreModel coreModel, double cellCenterX, double cellCenterY, double xHeading,
+	public void placeShape(CoreModel coreModel,
+                           double centerX,
+                           double centerY,
+                           double xHeading,
                            double yHeading) {
 
-        cell.setX(cellCenterX * coreModel.getResolution() -
+        cell.setX(centerX * coreModel.getResolution() -
                 coreModel.getResolution() * 0.5);
-        cell.setY(cellCenterY * coreModel.getResolution() -
+        cell.setY(centerY * coreModel.getResolution() -
                 coreModel.getResolution() * 0.5);
 
-        //Create a Rotate Object
+        double oldAngle = getHeadingAngle();
+
         Rotate rotate = new Rotate();
-        rotate.setPivotX(cellCenterX); //Pivot X Top-Left corner
-        rotate.setPivotY(cellCenterY); //Pivot Y
-        rotate.setAngle(Math.atan2(xHeading, yHeading)); //Angle degrees
+        rotate.setPivotX(centerX);
+        rotate.setPivotY(centerY);
+        double newAngle = Math.atan2(xHeading, yHeading);
+        rotate.setAngle(newAngle - oldAngle);
         cell.getTransforms().add(rotate);
 
 
 
 		Paint densityColor = DensityColor.getColor(density, maximalDensity, 0.25, true);
 		cell.setFill(densityColor);
+
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.xHeading = xHeading;
+        this.yHeading = yHeading;
 	}
 	
 	public Group getShape() {
@@ -152,5 +170,9 @@ public class CarModel extends ShapeModel {
 		
 		return null;
 	}
+
+	private double getHeadingAngle() {
+	    return Math.atan2(xHeading, yHeading);
+    }
 
 }

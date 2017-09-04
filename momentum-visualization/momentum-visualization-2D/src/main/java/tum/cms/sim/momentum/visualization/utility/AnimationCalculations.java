@@ -195,19 +195,19 @@ public abstract class AnimationCalculations {
 					}
 					break;
 
-					case Car:
+                    case Pedestrian:
+                        break;
+                    case Car:
 
-
-						if (!customMap.containsKey(id)) {
-
+                        if (!customMap.containsKey(id)) {
+                            // create shape
 							customVisualization = getCustomShapeModel(type, id, customizationController);
 							customMap.put(id, customVisualization);
 
 							CarModel carModel = (CarModel) customVisualization;
 
-
 							double length = 5; //dataStep.getDoubleData(id, "length");
-                            double width = 5; //dataStep.getDoubleData(id, "width");
+                            double width = 2; //dataStep.getDoubleData(id, "width");
 
                             carModel.createShape(coreController.getCoreModel(),
                                     dataStep.getDoubleData(id, "x"),
@@ -230,6 +230,8 @@ public abstract class AnimationCalculations {
                                     dataStep.getDoubleData(id, "xHeading"),
                                     dataStep.getDoubleData(id, "yHeading"));
 						}
+
+
 						break;
 
 				default:
@@ -244,7 +246,18 @@ public abstract class AnimationCalculations {
 		}
 
 		for (ShapeModel customShape : customMap.values()) {
-			customShape.setVisibility(true);
+            switch (type) {
+                case Car:
+                    if(!dataStep.isEmpty() && !dataStep.containsIdentification(customShape.getIdentification())) {
+                        customShape.setVisibility(false);
+                    }
+                    break;
+
+                default:
+                    customShape.setVisibility(true);
+                    break;
+            }
+
 		}
 
 	}
@@ -418,19 +431,19 @@ public abstract class AnimationCalculations {
 
 		case TransitZones:
 			ShapeModelToReturn = new TransitAreaModel(id);
-
 			break;
 
 		case MacroscopicNetwork:
 			ShapeModelToReturn = new DensityEdgeModel(id, customizationController);
-
 			break;
 
 		case xtDensity:
 			ShapeModelToReturn = new DensityCellModel(id);
+			break;
 
 		case Car:
 			ShapeModelToReturn = new CarModel(id);
+			break;
 
 		default:
 			break;
