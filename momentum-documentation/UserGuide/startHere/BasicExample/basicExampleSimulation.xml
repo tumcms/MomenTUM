@@ -338,5 +338,6 @@
                <property name="timeStep" type="Format" value="%d"/>
                <property name="removedCount" type="Format" value="%d"/>
             </writerSource>
-	</outputWriter>
+	    </outputWriter>
+	</outputWriters>
 </simulator>
