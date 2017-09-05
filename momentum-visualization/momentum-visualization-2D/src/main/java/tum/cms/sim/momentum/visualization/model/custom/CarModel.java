@@ -32,12 +32,13 @@
 
 package tum.cms.sim.momentum.visualization.model.custom;
 
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.transform.Rotate;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
@@ -47,21 +48,24 @@ import java.util.List;
 
 public class CarModel extends ShapeModel {
 
+	private static Point2D groundVector = new Point2D(1.0,0.0);
 	private static Color diffuseColor = Color.DARKBLUE;
 	private static Color specularColor = Color.BLUE;
 
 	private Box box = null;
-	private Group group = new Group();
+	private Group carShape = new Group();
 	private String id = null;
 
 	// car properties
-    double centerX;
-    double centerY;
-    double length;
-    double width;
-    double height;
-    double xHeading;
-    double yHeading;
+	private double length;
+	private double width;
+	private double height;
+
+    private double positionX;	// center of the vehicle
+    private double positionY;	// center of the vehicle
+	private double headingX;
+	private double headingY;
+	private double angle;
 
 	@Override
 	public void setVisibility(boolean isVisible) {
@@ -76,53 +80,48 @@ public class CarModel extends ShapeModel {
 
 
 	public void createShape(CoreModel coreModel,
-			double centerX,
-			double centerY,
+			double positionX,
+			double positionY,
 			double length,
 			double width,
 			double height,
-			double xHeading,
-			double yHeading) {
+			double headingX,
+			double headingY) {
 
-		/* box = new Box(centerX * coreModel.getResolution() -
+		/* box = new Box(positionX * coreModel.getResolution() -
 				coreModel.getResolution() * 0.5,
-                centerY * coreModel.getResolution() -
+                positionY * coreModel.getResolution() -
 				coreModel.getResolution() * 0.5,
                 width * coreModel.getResolution(),
                 length * coreModel.getResolution());*/
 
-		box = new Box(width * coreModel.getResolution(),
-				height * coreModel.getResolution(),
-				length * coreModel.getResolution());
+		this.box = createBody(coreModel.getResolution(), width, height, length);
 
-		box.setTranslateX(centerX * coreModel.getResolution());
-		box.setTranslateY(centerY * coreModel.getResolution());
-		box.setTranslateZ(1.0 * height * coreModel.getResolution());
+		this.positionX = positionX;
+		this.positionY = positionY;
+		this.length = length;
+		this.width = width;
+		this.height = height;
+		this.headingX = this.headingX;
+		this.headingY = this.headingY;
 
-		/*
-        Rotate rotate = new Rotate();
-        rotate.setPivotX(centerX * coreModel.getResolution());
-        rotate.setPivotY(centerY * coreModel.getResolution());
-        rotate.setAngle(Math.atan2(xHeading, yHeading));
-        box.getTransforms().add(rotate);*/
+		this.angle = calculateAngle(headingX, headingY);
 
-        // adjust color
-		box.materialProperty().unbind();
-		PhongMaterial material = new PhongMaterial();
-		material.setDiffuseColor(diffuseColor);
-		material.setSpecularColor(specularColor);
-		box.setMaterial(material);
+		if(!Double.isNaN(this.angle)) {
+
+			this.angle = 0.0;
+		}
 
 
-		group.getChildren().add(box);
+		carShape.getChildren().add(this.box);
 
-        this.centerX = centerX;
-        this.centerY = centerY;
-        this.length = length;
-        this.width = width;
-        this.height = height;
-        this.xHeading = xHeading;
-        this.yHeading = yHeading;
+		// set to position
+		carShape.setTranslateX(positionX * coreModel.getResolution());
+		carShape.setTranslateY(positionY * coreModel.getResolution());
+		carShape.setTranslateZ(1.0 * height * coreModel.getResolution());
+
+		carShape.setRotate(this.angle);
+
 	}
 
 	public void placeShape(CoreModel coreModel,
@@ -131,38 +130,29 @@ public class CarModel extends ShapeModel {
                            double xHeading,
                            double yHeading) {
 
-		box.setTranslateX(centerX * coreModel.getResolution());
-		box.setTranslateY(centerY * coreModel.getResolution());
+		carShape.setTranslateX(centerX * coreModel.getResolution());
+		carShape.setTranslateY(centerY * coreModel.getResolution());
 
-        /* box.setX(centerX * coreModel.getResolution() -
-                coreModel.getResolution() * 0.5);
-        box.setY(centerY * coreModel.getResolution() -
-                coreModel.getResolution() * 0.5);*/
+		double angle = calculateAngle(headingX, headingY);
+		if(!Double.isNaN(angle)) {
+			this.angle = angle;
+		}
+		else {
+			angle = this.angle;
+		}
 
-
-
-        /*
-        double xx = box.getLocalToSceneTransform().getMxx();
-        double xy = box.getLocalToSceneTransform().getMxy();
-        double oldAngle = Math.atan2(-xy, xx);
-
-        Rotate rotate = new Rotate();
-        rotate.setPivotX(centerX * coreModel.getResolution());
-        rotate.setPivotY(centerY * coreModel.getResolution());
-        double newAngle = Math.atan2(xHeading, yHeading);
-        rotate.setAngle(newAngle - oldAngle);
-        box.getTransforms().add(rotate);*/
+		this.carShape.setRotate(this.angle);
 
 
-        this.centerX = centerX;
-        this.centerY = centerY;
-        this.xHeading = xHeading;
-        this.yHeading = yHeading;
+        this.positionX = centerX;
+        this.positionY = centerY;
+        this.headingX = xHeading;
+        this.headingY = yHeading;
 	}
 	
 	public Group getShape() {
 		
-		return group;
+		return carShape;
 	}
 	
 	@Override
@@ -187,7 +177,44 @@ public class CarModel extends ShapeModel {
 	}
 
 	private double getHeadingAngle() {
-	    return Math.atan2(xHeading, yHeading);
+	    return Math.atan2(headingX, headingY);
     }
 
+    private Box createBody(double resolution,
+						   double width,
+						   double height,
+						   double length)
+	{
+		Box body = new Box(width * resolution,
+				height * resolution,
+				length * resolution);
+
+		// adjust color
+		body.materialProperty().unbind();
+		PhongMaterial material = new PhongMaterial();
+		material.setDiffuseColor(diffuseColor);
+		material.setSpecularColor(specularColor);
+		body.setMaterial(material);
+
+		body.getTransforms().add(new Rotate(90, Rotate.X_AXIS));
+
+		return body;
+	}
+
+	private double calculateAngle(double headingX, double headingY) {
+
+		double angle = CarModel.groundVector.angle(headingX, headingY);
+
+		if(headingX <= 0 && headingY < 0) {
+			angle *= -1;//angle += 90;
+		}
+		else if(headingX > 0 && headingY < 0) {
+			angle *= -1;//angle += 270;
+		}
+
+		// + 90 because looks at Y zero if 0 degree
+		angle += 90;
+
+		return angle;
+	}
 }
