@@ -206,14 +206,24 @@ public abstract class AnimationCalculations {
 
 							CarModel carModel = (CarModel) customVisualization;
 
-							double length = 5; //dataStep.getDoubleData(id, "length");
-                            double width = 2; //dataStep.getDoubleData(id, "width");
+							// use default values, if no other are available
+							double length = 5;
+							if(dataStep.getDoubleData(id, "length") != null)
+								length = dataStep.getDoubleData(id, "length");
+							double width = 2;
+							if(dataStep.getDoubleData(id, "width") != null)
+								length = dataStep.getDoubleData(id, "width");
+							double height = 1.4;
+							if(dataStep.getDoubleData(id, "height") != null)
+								length = dataStep.getDoubleData(id, "height");
+
 
                             carModel.createShape(coreController.getCoreModel(),
                                     dataStep.getDoubleData(id, "x"),
                                     dataStep.getDoubleData(id, "y"),
                                     length,
                                     width,
+                                    height,
                                     dataStep.getDoubleData(id, "xHeading"),
                                     dataStep.getDoubleData(id, "yHeading"));
 

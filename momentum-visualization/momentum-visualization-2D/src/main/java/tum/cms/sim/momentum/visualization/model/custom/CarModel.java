@@ -34,10 +34,10 @@ package tum.cms.sim.momentum.visualization.model.custom;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Rotate;
-import tum.cms.sim.momentum.visualization.calculation.DensityColor;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
@@ -47,26 +47,26 @@ import java.util.List;
 
 public class CarModel extends ShapeModel {
 
-	private Rectangle cell = null;
+	private static Color diffuseColor = Color.DARKBLUE;
+	private static Color specularColor = Color.BLUE;
+
+	private Box box = null;
 	private Group group = new Group();
 	private String id = null;
-
-	// temporary
-	private double density = 0.5;
-	private double maximalDensity = 1;
 
 	// car properties
     double centerX;
     double centerY;
     double length;
     double width;
+    double height;
     double xHeading;
     double yHeading;
 
 	@Override
 	public void setVisibility(boolean isVisible) {
 
-		cell.setVisible(isVisible);
+		box.setVisible(isVisible);
 	}
 
 	public CarModel(String rowColumnId) {
@@ -80,36 +80,47 @@ public class CarModel extends ShapeModel {
 			double centerY,
 			double length,
 			double width,
+			double height,
 			double xHeading,
 			double yHeading) {
 
-		cell = new Rectangle(centerX * coreModel.getResolution() -
+		/* box = new Box(centerX * coreModel.getResolution() -
 				coreModel.getResolution() * 0.5,
                 centerY * coreModel.getResolution() -
 				coreModel.getResolution() * 0.5,
                 width * coreModel.getResolution(),
-                length * coreModel.getResolution());
+                length * coreModel.getResolution());*/
 
+		box = new Box(width * coreModel.getResolution(),
+				height * coreModel.getResolution(),
+				length * coreModel.getResolution());
 
+		box.setTranslateX(centerX * coreModel.getResolution());
+		box.setTranslateY(centerY * coreModel.getResolution());
+		box.setTranslateZ(1.0 * height * coreModel.getResolution());
 
+		/*
         Rotate rotate = new Rotate();
-        rotate.setPivotX(centerX);
-        rotate.setPivotY(centerY);
+        rotate.setPivotX(centerX * coreModel.getResolution());
+        rotate.setPivotY(centerY * coreModel.getResolution());
         rotate.setAngle(Math.atan2(xHeading, yHeading));
-        cell.getTransforms().add(rotate);
+        box.getTransforms().add(rotate);*/
 
-		cell.setTranslateZ(0.002 * coreModel.getResolution());
-		cell.setStrokeWidth(0.0);
+        // adjust color
+		box.materialProperty().unbind();
+		PhongMaterial material = new PhongMaterial();
+		material.setDiffuseColor(diffuseColor);
+		material.setSpecularColor(specularColor);
+		box.setMaterial(material);
 
-		Paint densityColor = DensityColor.getColor(density, maximalDensity, 0.25, true);
-		cell.setFill(densityColor);
-		
-		group.getChildren().add(cell);
+
+		group.getChildren().add(box);
 
         this.centerX = centerX;
         this.centerY = centerY;
         this.length = length;
         this.width = width;
+        this.height = height;
         this.xHeading = xHeading;
         this.yHeading = yHeading;
 	}
@@ -120,24 +131,28 @@ public class CarModel extends ShapeModel {
                            double xHeading,
                            double yHeading) {
 
-        cell.setX(centerX * coreModel.getResolution() -
-                coreModel.getResolution() * 0.5);
-        cell.setY(centerY * coreModel.getResolution() -
-                coreModel.getResolution() * 0.5);
+		box.setTranslateX(centerX * coreModel.getResolution());
+		box.setTranslateY(centerY * coreModel.getResolution());
 
-        double oldAngle = getHeadingAngle();
+        /* box.setX(centerX * coreModel.getResolution() -
+                coreModel.getResolution() * 0.5);
+        box.setY(centerY * coreModel.getResolution() -
+                coreModel.getResolution() * 0.5);*/
+
+
+
+        /*
+        double xx = box.getLocalToSceneTransform().getMxx();
+        double xy = box.getLocalToSceneTransform().getMxy();
+        double oldAngle = Math.atan2(-xy, xx);
 
         Rotate rotate = new Rotate();
-        rotate.setPivotX(centerX);
-        rotate.setPivotY(centerY);
+        rotate.setPivotX(centerX * coreModel.getResolution());
+        rotate.setPivotY(centerY * coreModel.getResolution());
         double newAngle = Math.atan2(xHeading, yHeading);
         rotate.setAngle(newAngle - oldAngle);
-        cell.getTransforms().add(rotate);
+        box.getTransforms().add(rotate);*/
 
-
-
-		Paint densityColor = DensityColor.getColor(density, maximalDensity, 0.25, true);
-		cell.setFill(densityColor);
 
         this.centerX = centerX;
         this.centerY = centerY;
