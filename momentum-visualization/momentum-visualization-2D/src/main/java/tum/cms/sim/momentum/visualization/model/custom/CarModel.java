@@ -32,6 +32,8 @@
 
 package tum.cms.sim.momentum.visualization.model.custom;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -43,6 +45,7 @@ import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStat
 import tum.cms.sim.momentum.visualization.model.CoreModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -52,7 +55,10 @@ public class CarModel extends ShapeModel {
 	private static Color diffuseColor = Color.DARKBLUE;
 	private static Color specularColor = Color.BLUE;
 
-	private Box box = null;
+	private final ObjectProperty<PhongMaterial> carBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "carBodyMaterial",  new PhongMaterial(Color.DARKBLUE));
+	private final ObjectProperty<PhongMaterial> selectedCarBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "selectedCarBodyMaterial", new PhongMaterial(Color.RED));
+
+	private Box body = null;
 	private Group carShape = new Group();
 	private String id = null;
 
@@ -70,12 +76,12 @@ public class CarModel extends ShapeModel {
 	@Override
 	public void setVisibility(boolean isVisible) {
 
-		box.setVisible(isVisible);
+		body.setVisible(isVisible);
 	}
 
-	public CarModel(String rowColumnId) {
+	public CarModel(String id) {
 		
-		id = rowColumnId;
+		this.id = id;
 	}
 
 
@@ -88,50 +94,24 @@ public class CarModel extends ShapeModel {
 			double headingX,
 			double headingY) {
 
-		/* box = new Box(positionX * coreModel.getResolution() -
-				coreModel.getResolution() * 0.5,
-                positionY * coreModel.getResolution() -
-				coreModel.getResolution() * 0.5,
-                width * coreModel.getResolution(),
-                length * coreModel.getResolution());*/
-
-		this.box = createBody(coreModel.getResolution(), width, height, length);
-
-		this.positionX = positionX;
-		this.positionY = positionY;
 		this.length = length;
 		this.width = width;
 		this.height = height;
-		this.headingX = this.headingX;
-		this.headingY = this.headingY;
 
-		this.angle = calculateAngle(headingX, headingY);
+		this.body = createBody(coreModel.getResolution(), width, height, length);
+		carShape.getChildren().add(this.body);
 
-		if(!Double.isNaN(this.angle)) {
-
-			this.angle = 0.0;
-		}
-
-
-		carShape.getChildren().add(this.box);
-
-		// set to position
-		carShape.setTranslateX(positionX * coreModel.getResolution());
-		carShape.setTranslateY(positionY * coreModel.getResolution());
-		carShape.setTranslateZ(1.0 * height * coreModel.getResolution());
-
-		carShape.setRotate(this.angle);
-
+		placeShape(coreModel, positionX, positionY, headingX, headingY);
 	}
 
 	public void placeShape(CoreModel coreModel,
-                           double centerX,
-                           double centerY,
-                           double xHeading,
-                           double yHeading) {
+                           double positionX,
+                           double positionY,
+                           double headingX,
+                           double headingY) {
 
-		carShape.setTranslateX(centerX * coreModel.getResolution());
-		carShape.setTranslateY(centerY * coreModel.getResolution());
+		carShape.setTranslateX(positionX * coreModel.getResolution());
+		carShape.setTranslateY(positionY * coreModel.getResolution());
 
 		double angle = calculateAngle(headingX, headingY);
 		if(!Double.isNaN(angle)) {
@@ -144,10 +124,10 @@ public class CarModel extends ShapeModel {
 		this.carShape.setRotate(this.angle);
 
 
-        this.positionX = centerX;
-        this.positionY = centerY;
-        this.headingX = xHeading;
-        this.headingY = yHeading;
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.headingX = headingX;
+        this.headingY = headingY;
 	}
 	
 	public Group getShape() {
@@ -156,7 +136,30 @@ public class CarModel extends ShapeModel {
 	}
 	
 	@Override
-	public void changeSelectionMode(SelectionStates selectionState) { }
+	public void changeSelectionMode(SelectionStates selectionState) {
+		this.body.materialProperty().unbind();
+
+		switch(selectionState) {
+			case NotSelected:
+
+				this.body.materialProperty().bind(this.carBodyMaterial);
+
+				/*if(this.trajectory != null) {
+
+					this.trajectory.setVisible(false);
+				}*/
+				break;
+			case Selected:
+
+				this.body.materialProperty().bind(this.selectedCarBodyMaterial);
+
+				/*if(this.trajectory != null) {
+
+					this.trajectory.setVisible(true);
+				}*/
+				break;
+		}
+	}
 
 	@Override
 	public String getIdentification() {
@@ -166,19 +169,27 @@ public class CarModel extends ShapeModel {
 
 	@Override
 	public List<Node> getClickableShapes() {
-		
-		return null;
+
+		ArrayList<Node> clickableShapes = new ArrayList<Node>();
+		clickableShapes.add(this.body);
+
+		return clickableShapes;
 	}
 
 	@Override
 	public LinkedHashMap<String, String> getDataProperties() {
-		
-		return null;
-	}
 
-	private double getHeadingAngle() {
-	    return Math.atan2(headingX, headingY);
-    }
+		LinkedHashMap<String, String> details = new LinkedHashMap<>();
+
+		details.put(ShapeModel.nameDetails, this.id);
+		details.put(ShapeModel.positionXDetails, Double.toString(this.positionX));
+		details.put(ShapeModel.positionYDetails, Double.toString(this.positionY));
+		details.put(ShapeModel.headingXDetails, Double.toString(this.headingX));
+		details.put(ShapeModel.headingYDetails, Double.toString(this.headingY));
+
+
+		return details;
+	}
 
     private Box createBody(double resolution,
 						   double width,
