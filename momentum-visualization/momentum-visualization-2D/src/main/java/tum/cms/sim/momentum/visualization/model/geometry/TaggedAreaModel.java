@@ -134,9 +134,6 @@ public class TaggedAreaModel extends ShapeModel {
 		taggedAreaShape.setStrokeWidth(0.5);
 		taggedAreaShape.setStrokeLineJoin(StrokeLineJoin.MITER);
 
-
-		System.out.println(taggedAreaConfiguration.getName() + " " + getType().ordinal());
-
 		taggedAreaShape.fillProperty().bind(this.getTypedColor());
 		taggedAreaShape.strokeProperty().bind(this.getTypedColor());
 
