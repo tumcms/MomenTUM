@@ -32,11 +32,15 @@
 
 package tum.cms.sim.momentum.visualization.model.geometry;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineJoin;
-import tum.cms.sim.momentum.configuration.scenario.AreaConfiguration.AreaType;
 import tum.cms.sim.momentum.configuration.scenario.TaggedAreaConfiguration;
+import tum.cms.sim.momentum.configuration.scenario.TaggedAreaConfiguration.TaggedAreaType;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
@@ -46,6 +50,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class TaggedAreaModel extends ShapeModel {
+
+	private final static double layerOffsetZ = 0.0005;
+	private final static double layerOffsetZStep = 0.0001;
+	private final static double opacityFactor = 0.5;
 
 	private CustomizationModel customizationModel = null;
 	private Polygon taggedAreaShape = null;
@@ -71,10 +79,9 @@ public class TaggedAreaModel extends ShapeModel {
 		return this.taggedAreaConfiguration.getId().toString();
 	}
 
-	public AreaType getType() {
+	public TaggedAreaType getType() {
 
-		//return this.taggedAreaConfiguration.getType();
-		return AreaType.Information;
+		return this.taggedAreaConfiguration.getType();
 	}
 
 	@Override
@@ -85,27 +92,9 @@ public class TaggedAreaModel extends ShapeModel {
 
 		switch(selectionState) {
 		case NotSelected:
-			taggedAreaShape.fillProperty().bind(customizationModel.destinationColorProperty());
-			taggedAreaShape.strokeProperty().bind(customizationModel.destinationColorProperty());
-			/*switch(taggedAreaConfiguration.getType()) {
-			case Destination:
-				taggedAreaShape.fillProperty().bind(customizationModel.destinationColorProperty());
-				taggedAreaShape.strokeProperty().bind(customizationModel.destinationColorProperty());
-				break;
-			case Intermediate:
-				taggedAreaShape.fillProperty().bind(customizationModel.intermediateColorProperty());
-				taggedAreaShape.strokeProperty().bind(customizationModel.intermediateColorProperty());
-				break;
-			case Origin:
-				taggedAreaShape.fillProperty().bind(customizationModel.originColorProperty());
-				taggedAreaShape.strokeProperty().bind(customizationModel.originColorProperty());
-				break;
-			case Information:
-				taggedAreaShape.fillProperty().bind(customizationModel.informationColorProperty());
-				taggedAreaShape.strokeProperty().bind(customizationModel.informationColorProperty());
-			default:
-				break;
-			}*/
+
+			taggedAreaShape.fillProperty().bind(this.getTypedColor());
+			taggedAreaShape.strokeProperty().bind(this.getTypedColor());
 			break;
 		case Selected:
 
@@ -146,39 +135,39 @@ public class TaggedAreaModel extends ShapeModel {
 		taggedAreaShape.setStrokeLineJoin(StrokeLineJoin.MITER);
 
 
-		taggedAreaShape.fillProperty().bind(customizationModel.destinationColorProperty());
-		taggedAreaShape.strokeProperty().bind(customizationModel.destinationColorProperty());
-		taggedAreaShape.setTranslateZ(0.0005);
+		System.out.println(taggedAreaConfiguration.getName() + " " + getType().ordinal());
 
-		/*switch(taggedAreaConfiguration.getType()) {
-		
-		case Information:
-			taggedAreaShape.fillProperty().bind(customizationModel.informationColorProperty());
-			taggedAreaShape.strokeProperty().bind(customizationModel.informationColorProperty());
-			taggedAreaShape.setTranslateZ(0.0004);
-		case Destination:
-			taggedAreaShape.fillProperty().bind(customizationModel.destinationColorProperty());
-			taggedAreaShape.strokeProperty().bind(customizationModel.destinationColorProperty());
-			taggedAreaShape.setTranslateZ(0.0003);
-			break;
-		case Intermediate:
-			taggedAreaShape.fillProperty().bind(customizationModel.intermediateColorProperty());
-			taggedAreaShape.strokeProperty().bind(customizationModel.intermediateColorProperty());
-			taggedAreaShape.setTranslateZ(0.0002);
-			break;
-		case Origin:
-			taggedAreaShape.fillProperty().bind(customizationModel.originColorProperty());
-			taggedAreaShape.strokeProperty().bind(customizationModel.originColorProperty());
-			taggedAreaShape.setTranslateZ(0.0001);
-			break;
-		default:
-			break;
-		}*/
+		taggedAreaShape.fillProperty().bind(this.getTypedColor());
+		taggedAreaShape.strokeProperty().bind(this.getTypedColor());
+
+		taggedAreaShape.setTranslateZ(TaggedAreaModel.layerOffsetZ
+				+ TaggedAreaModel.layerOffsetZStep * this.taggedAreaConfiguration.getType().ordinal());
+
+
 	}
 
 	@Override
 	public void setVisibility(boolean isVisible) {
 		
 		this.taggedAreaShape.setVisible(isVisible);
+	}
+
+	/**
+	 * Calculates a color for each enum type of tagged area
+	 * @return specific type color
+	 */
+	private ObjectProperty<Color> getTypedColor() {
+
+		// color gradient factor
+		double colorGradientFactor = (double) this.taggedAreaConfiguration.getType().ordinal() / ((double) TaggedAreaType.values().length - 1);
+
+		Color color = customizationModel.getTaggedAreaGradientStartColor()
+				.interpolate(customizationModel.getTaggedAreaGradientEndColor(), colorGradientFactor);
+
+		color = color.deriveColor(1.0D, 1.0D, 1.0D, TaggedAreaModel.opacityFactor);
+
+		ObjectProperty<Color> adjustedColorObjectProperty = new SimpleObjectProperty<Color>(this, "taggedArea" + this.taggedAreaConfiguration.getType() + "Color", color);
+
+		return adjustedColorObjectProperty;
 	}
 }

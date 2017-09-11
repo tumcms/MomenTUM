@@ -57,6 +57,8 @@ public class CustomizationModel {
 	private final ObjectProperty<Color> originColor = new SimpleObjectProperty<Color>(this, "originColor", Color.LIGHTCYAN);
 	private final ObjectProperty<Color> intermediateColor = new SimpleObjectProperty<Color>(this, "intermediateColor", Color.VIOLET);
 	private final ObjectProperty<Color> informationColor = new SimpleObjectProperty<Color>(this, "informationColor", Color.BROWN);
+	private final ObjectProperty<Color> taggedAreaGradientStartColor = new SimpleObjectProperty<Color>(this, "taggedAreaGradientStartColor", Color.LIGHTSKYBLUE);
+	private final ObjectProperty<Color> taggedAreaGradientEndColor = new SimpleObjectProperty<Color>(this, "taggedAreaGradientEndColor", Color.DEEPSKYBLUE);
 	private final ObjectProperty<Color> obstacleColor = new SimpleObjectProperty<Color>(this, "obstacleColor", Color.DARKGRAY);
 	private final ObjectProperty<Color> virutalObstacleColor = new SimpleObjectProperty<Color>(this, "virutalObstacleColor", Color.BLUEVIOLET);
 	private final ObjectProperty<Paint> trajectoryPaint = new SimpleObjectProperty<Paint>(this, "trajectoryColor", Color.GRAY);
@@ -245,6 +247,32 @@ public class CustomizationModel {
 	public void setInformationColor(Color color) {
 		informationColor.set(color);
 		UserPreferenceHandler.putProperty(PropertyType.informationColor, color.toString());
+	}
+
+	public ObjectProperty<Color> taggedAreaGradientStartColor() {
+		return taggedAreaGradientStartColor;
+	}
+
+	public Color getTaggedAreaGradientStartColor() {
+		return taggedAreaGradientStartColor.get();
+	}
+
+	public void setTaggedAreaGradientStartColor(Color color) {
+		taggedAreaGradientStartColor.set(color);
+		UserPreferenceHandler.putProperty(PropertyType.taggedAreaGradientStartColor, color.toString());
+	}
+
+	public ObjectProperty<Color> taggedAreaGradientEndColor() {
+		return taggedAreaGradientEndColor;
+	}
+
+	public Color getTaggedAreaGradientEndColor() {
+		return taggedAreaGradientEndColor.get();
+	}
+
+	public void setTaggedAreaGradientEndColor(Color color) {
+		taggedAreaGradientEndColor.set(color);
+		UserPreferenceHandler.putProperty(PropertyType.taggedAreaGradientEndColor, color.toString());
 	}
 	
 	public ObjectProperty<Color> obstacleColorProperty() {
