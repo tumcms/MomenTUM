@@ -116,6 +116,7 @@ public class VisualizationController implements Initializable {
 	public void clearAll() {
 
 		visualizationModel.getAreaShapes().clear();
+		visualizationModel.getTaggedAreaShapes().clear();
 		visualizationModel.getObstacleShapes().clear();
 		visualizationModel.getVertexShapes().clear();
 		visualizationModel.getEdgeShapes().clear();
@@ -218,6 +219,7 @@ public class VisualizationController implements Initializable {
 		playBackPane.setOnKeyPressed(onKey3DViewKeyEventHandler);
 
 		visualizationModel.areaShapesProperty().addListener(onAreaShapesListChangedListener);
+		visualizationModel.taggedAreaShapesProperty().addListener();
 		visualizationModel.obstacleShapesProperty().addListener(onObstracleShapesListChangedListener);
 		visualizationModel.pedestrianShapesProperty().addListener(onPedestrianShapesListChangedListener);
 
