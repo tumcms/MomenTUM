@@ -202,7 +202,6 @@ public abstract class AnimationCalculations {
                         if (!customMap.containsKey(id)) {
                             // create shape
 							customVisualization = getCustomShapeModel(type, id, customizationController);
-							customMap.put(id, customVisualization);
 
 							CarModel carModel = (CarModel) customVisualization;
 
@@ -226,6 +225,8 @@ public abstract class AnimationCalculations {
                                     height,
                                     dataStep.getDoubleData(id, "xHeading"),
                                     dataStep.getDoubleData(id, "yHeading"));
+
+							customMap.put(id, customVisualization);
 
 
 							newCustomMap.put(id, carModel);

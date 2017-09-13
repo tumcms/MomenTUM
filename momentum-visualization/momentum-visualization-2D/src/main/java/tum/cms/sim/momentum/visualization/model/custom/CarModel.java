@@ -51,6 +51,11 @@ import java.util.List;
 
 public class CarModel extends ShapeModel {
 
+	protected static final String stringHeadingAngle = "headingAngle";
+	protected static final String stringLength = "length";
+	protected static final String stringWidth = "width";
+	protected static final String stringHeight = "height";
+
 	private static Point2D groundVector = new Point2D(1.0,0.0);
 	private static Color diffuseColor = Color.DARKBLUE;
 	private static Color specularColor = Color.BLUE;
@@ -59,7 +64,7 @@ public class CarModel extends ShapeModel {
 	private final ObjectProperty<PhongMaterial> selectedCarBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "selectedCarBodyMaterial", new PhongMaterial(Color.RED));
 
 	private Box body = null;
-	private Group carShape = new Group();
+	private Group carShape = null;
 	private String id = null;
 
 	// car properties
@@ -99,7 +104,7 @@ public class CarModel extends ShapeModel {
 		this.height = height;
 
 		this.body = createBody(coreModel.getResolution(), width, height, length);
-		carShape.getChildren().add(this.body);
+		carShape = new Group(this.body);
 
 		placeShape(coreModel, positionX, positionY, headingX, headingY);
 	}
@@ -129,9 +134,9 @@ public class CarModel extends ShapeModel {
         this.headingX = headingX;
         this.headingY = headingY;
 	}
-	
+
+	@Override
 	public Group getShape() {
-		
 		return carShape;
 	}
 	
@@ -144,19 +149,11 @@ public class CarModel extends ShapeModel {
 
 				this.body.materialProperty().bind(this.carBodyMaterial);
 
-				/*if(this.trajectory != null) {
-
-					this.trajectory.setVisible(false);
-				}*/
 				break;
 			case Selected:
 
 				this.body.materialProperty().bind(this.selectedCarBodyMaterial);
 
-				/*if(this.trajectory != null) {
-
-					this.trajectory.setVisible(true);
-				}*/
 				break;
 		}
 	}
@@ -186,7 +183,10 @@ public class CarModel extends ShapeModel {
 		details.put(ShapeModel.positionYDetails, Double.toString(this.positionY));
 		details.put(ShapeModel.headingXDetails, Double.toString(this.headingX));
 		details.put(ShapeModel.headingYDetails, Double.toString(this.headingY));
-
+		details.put(CarModel.stringHeadingAngle, Double.toString(this.angle));
+		details.put(CarModel.stringLength, Double.toString(this.length));
+		details.put(CarModel.stringWidth, Double.toString(this.width));
+		details.put(CarModel.stringHeight, Double.toString(this.height));
 
 		return details;
 	}
@@ -196,7 +196,7 @@ public class CarModel extends ShapeModel {
 						   double height,
 						   double length)
 	{
-		Box body = new Box(width * resolution,
+		body = new Box(width * resolution,
 				height * resolution,
 				length * resolution);
 

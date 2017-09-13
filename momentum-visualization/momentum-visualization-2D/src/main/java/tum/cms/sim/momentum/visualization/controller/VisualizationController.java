@@ -143,6 +143,7 @@ public class VisualizationController implements Initializable {
 					public void onChanged(MapChangeListener.Change<? extends String, ? extends ShapeModel> changed) {
 						if (changed.getMap().size() > 0) {
 							if (!changed.wasRemoved()) {
+								changed.getValueAdded().registerSelectable(VisualizationController.selectionHandler);
 								playbackObjectsPane.getChildren().add(changed.getValueAdded().getShape());
 							}
 						} else {
