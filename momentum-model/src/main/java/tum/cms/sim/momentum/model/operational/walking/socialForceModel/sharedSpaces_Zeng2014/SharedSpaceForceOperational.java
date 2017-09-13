@@ -37,9 +37,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.codehaus.jackson.map.introspect.BasicClassIntrospector.GetterMethodFilter;
-
 import tum.cms.sim.momentum.data.agent.car.CarManager;
+import tum.cms.sim.momentum.data.agent.car.types.IRichCar;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
@@ -50,9 +49,8 @@ import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForce;
-import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForcePedestrianExtension;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
-import tum.cms.sim.momentum.utility.geometry.Segment2D;
+import tum.cms.sim.momentum.utility.geometry.Rectangle2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class SharedSpaceForceOperational extends WalkingModel {
@@ -158,7 +156,7 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		Vector2D drivingForce = this.computeDrivingForce(pedestrian);
 		Vector2D repulsiveForceConflictingPedestrians = this.computeRepulsiveConflictingPedestrians(pedestrian, otherPedestrians, timeStepDuration);
 		Vector2D attractiveForceLeadingPedestrians = this.computeAttractiveForceLeadingPedestrians();
-		Vector2D repulsiveForceConflictingVehicle = this.computeRepulsiveForceConflictingVehicle();
+		Vector2D repulsiveForceConflictingVehicle = this.computeRepulsiveForceConflictingVehicle(pedestrian);
 		Vector2D forceCrosswalkBoundary = this.computeForceCrosswalkBoundary();
 
 		Vector2D newAcceleration = drivingForce.sum(repulsiveForceConflictingPedestrians)
@@ -210,11 +208,38 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		Vector2D force = GeometryFactory.createVector(0, 0);
 		return force;
 	}
-	
-	private Vector2D computeRepulsiveForceConflictingVehicle()
+
+	private Vector2D computeRepulsiveForceConflictingVehicle(IOperationalPedestrian pedestrian)
 	{
 		// repulsive force from conflicting vehicle
+
+		Collection<IRichCar> allCars = carManager.getAllCars();
+		List<IRichCar> carsInVisualRange =  allCars.stream()
+				.filter(o -> SharedSpacesComputations.inVisualRange(pedestrian.getPosition(),
+						pedestrian.getVelocity(), modelVariables.getVisualRangeRadius(),
+						modelVariables.getVisualRangeAngle(), o.getRectangle().getVertices()))
+				.collect(Collectors.toList());
+
+
 		Vector2D force = GeometryFactory.createVector(0, 0);
+		for(IRichCar car : carsInVisualRange) {
+			Rectangle2D carRectangle = car.getRectangle();
+
+			Vector2D carToPedestrianVector = carRectangle.vectorBetween(pedestrian.getPosition());
+			if ( pedestrian.getVelocity().dot(carToPedestrianVector) > 0) {
+				Vector2D closestPoint = carRectangle.getPointClosestToVector(pedestrian.getPosition());
+
+				double mulitplier = modelVariables.getInteractionStrengthRepulsiveForceFromConflictingVehicle() *
+						Math.exp(-modelVariables.getInteractionRangeForRepulsiveForceFromConflictingVehicle() *
+								pedestrian.getPosition().subtract(closestPoint).getMagnitude());
+
+				Vector2D forceFromCurrentVehicle = carToPedestrianVector.getNormalized().multiply(mulitplier);
+				force = force.sum(forceFromCurrentVehicle);
+			}
+
+		}
+
+
 		return force;
 	}
 	
