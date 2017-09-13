@@ -52,6 +52,8 @@ public class CustomizationModel {
 	private final ObjectProperty<PhongMaterial> pedestrianBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "pedestrianBodyMaterial",  new PhongMaterial(Color.GREEN));
 	private final ObjectProperty<PhongMaterial> selectedPedestrianBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "selectedPedestrianBodyMaterial", new PhongMaterial(Color.RED));
 	private final ObjectProperty<Color> pedestrianDirectionColor = new SimpleObjectProperty<Color>(this, "pedestrianDirectionColor", Color.RED);
+	private final ObjectProperty<PhongMaterial> carBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "carBodyMaterial",  new PhongMaterial(Color.DARKBLUE));
+	private final ObjectProperty<PhongMaterial> selectedCarBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "selectedCarBodyMaterial",  new PhongMaterial(Color.RED));
 	private final ObjectProperty<Color> graphColor = new SimpleObjectProperty<Color>(this, "graphColor", Color.ORANGE);
 	private final ObjectProperty<Color> destinationColor = new SimpleObjectProperty<Color>(this, "destinationColor", Color.LIGHTSALMON);
 	private final ObjectProperty<Color> originColor = new SimpleObjectProperty<Color>(this, "originColor", Color.LIGHTCYAN);
@@ -63,6 +65,7 @@ public class CustomizationModel {
 	private final ObjectProperty<Color> virutalObstacleColor = new SimpleObjectProperty<Color>(this, "virutalObstacleColor", Color.BLUEVIOLET);
 	private final ObjectProperty<Paint> trajectoryPaint = new SimpleObjectProperty<Paint>(this, "trajectoryColor", Color.GRAY);
 	private final ObjectProperty<Boolean> trajectoryIsRandomColor = new SimpleObjectProperty<Boolean>(this, "trajectoryIsRandomColor", false);
+
 	private final ObjectProperty<Double> trajectoryThickness = new SimpleObjectProperty<Double>(this, "trajectoryThickness", 0.5);
 	private final ObjectProperty<Double> edgeThickness = new SimpleObjectProperty<Double>(this, "edgeThickness", 1.);
 	private final ObjectProperty<Double> vertexSize = new SimpleObjectProperty<Double>(this, "vertexSize", 3.);
@@ -143,6 +146,32 @@ public class CustomizationModel {
 	public void setPedestrianDirectionColor(Color color) {
 		pedestrianDirectionColor.set(color);
 		UserPreferenceHandler.putProperty(PropertyType.pedestrianDirectionColor, color.toString());
+	}
+
+	public ObjectProperty<PhongMaterial> carBodyMaterialProperty() {
+		return carBodyMaterial;
+	}
+
+	public PhongMaterial getCarBodyMaterial() {
+		return carBodyMaterial.get();
+	}
+
+	public void setCarBodyMaterial(PhongMaterial material) {
+		carBodyMaterial.set(material);
+		UserPreferenceHandler.putProperty(PropertyType.phongMaterialColor, material.getDiffuseColor().toString());
+	}
+
+	public ObjectProperty<PhongMaterial> selectedCarBodyMaterialProperty() {
+		return selectedCarBodyMaterial;
+	}
+
+	public PhongMaterial getSelectedCarBodyMaterial() {
+		return selectedCarBodyMaterial.get();
+	}
+
+	public void setSelectedCarBodyMaterial(PhongMaterial material) {
+		selectedCarBodyMaterial.set(material);
+		UserPreferenceHandler.putProperty(PropertyType.phongMaterialColor, material.getDiffuseColor().toString());
 	}
 	
 	public ObjectProperty<Paint> trajectoryColorProperty() {

@@ -32,17 +32,14 @@
 
 package tum.cms.sim.momentum.visualization.model.custom;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
+import tum.cms.sim.momentum.visualization.model.CustomizationModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
 
 import java.util.ArrayList;
@@ -57,11 +54,8 @@ public class CarModel extends ShapeModel {
 	protected static final String stringHeight = "height";
 
 	private static Point2D groundVector = new Point2D(1.0,0.0);
-	private static Color diffuseColor = Color.DARKBLUE;
-	private static Color specularColor = Color.BLUE;
 
-	private final ObjectProperty<PhongMaterial> carBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "carBodyMaterial",  new PhongMaterial(Color.DARKBLUE));
-	private final ObjectProperty<PhongMaterial> selectedCarBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "selectedCarBodyMaterial", new PhongMaterial(Color.RED));
+    private CustomizationModel customizationModel = null;
 
 	private Box body = null;
 	private Group carShape = null;
@@ -97,7 +91,10 @@ public class CarModel extends ShapeModel {
 			double width,
 			double height,
 			double headingX,
-			double headingY) {
+			double headingY,
+            CustomizationModel customizationModel) {
+
+	    this.customizationModel = customizationModel;
 
 		this.length = length;
 		this.width = width;
@@ -147,12 +144,13 @@ public class CarModel extends ShapeModel {
 		switch(selectionState) {
 			case NotSelected:
 
-				this.body.materialProperty().bind(this.carBodyMaterial);
+
+				this.body.materialProperty().bind(this.customizationModel.carBodyMaterialProperty());
 
 				break;
 			case Selected:
 
-				this.body.materialProperty().bind(this.selectedCarBodyMaterial);
+				this.body.materialProperty().bind(this.customizationModel.selectedCarBodyMaterialProperty());
 
 				break;
 		}
@@ -196,20 +194,14 @@ public class CarModel extends ShapeModel {
 						   double height,
 						   double length)
 	{
-		body = new Box(width * resolution,
+		Box createdBody = new Box(width * resolution,
 				height * resolution,
 				length * resolution);
 
-		// adjust color
-		body.materialProperty().unbind();
-		PhongMaterial material = new PhongMaterial();
-		material.setDiffuseColor(diffuseColor);
-		material.setSpecularColor(specularColor);
-		body.setMaterial(material);
+        createdBody.materialProperty().bind(this.customizationModel.carBodyMaterialProperty());
+        createdBody.getTransforms().add(new Rotate(90, Rotate.X_AXIS));
 
-		body.getTransforms().add(new Rotate(90, Rotate.X_AXIS));
-
-		return body;
+		return createdBody;
 	}
 
 	private double calculateAngle(double headingX, double headingY) {

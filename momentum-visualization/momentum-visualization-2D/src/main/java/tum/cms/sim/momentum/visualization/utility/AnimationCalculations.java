@@ -224,7 +224,8 @@ public abstract class AnimationCalculations {
                                     width,
                                     height,
                                     dataStep.getDoubleData(id, "xHeading"),
-                                    dataStep.getDoubleData(id, "yHeading"));
+                                    dataStep.getDoubleData(id, "yHeading"),
+                                    customizationController.getCustomizationModel());
 
 							customMap.put(id, customVisualization);
 

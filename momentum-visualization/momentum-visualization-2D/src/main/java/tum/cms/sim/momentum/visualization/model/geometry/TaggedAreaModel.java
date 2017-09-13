@@ -36,7 +36,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.StrokeLineJoin;
 import tum.cms.sim.momentum.configuration.scenario.TaggedAreaConfiguration;
