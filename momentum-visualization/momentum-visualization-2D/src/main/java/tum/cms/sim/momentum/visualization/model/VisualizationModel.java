@@ -50,14 +50,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import tum.cms.sim.momentum.utility.csvData.CsvType;
-import tum.cms.sim.momentum.visualization.model.geometry.AreaModel;
-import tum.cms.sim.momentum.visualization.model.geometry.EdgeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.LatticeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
-import tum.cms.sim.momentum.visualization.model.geometry.PedestrianModel;
-import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
-import tum.cms.sim.momentum.visualization.model.geometry.VertexModel;
+import tum.cms.sim.momentum.visualization.model.geometry.*;
 
 public class VisualizationModel {
 
@@ -68,6 +61,8 @@ public class VisualizationModel {
 	private final DoubleProperty maxSizeY = new SimpleDoubleProperty(this, "maxSizeY", 1.0);
 	private final MapProperty<String, AreaModel> areaShapes = new SimpleMapProperty<String, AreaModel>(this,
 			"areaShapes", FXCollections.observableHashMap());
+	private final MapProperty<String, TaggedAreaModel> taggedAreaShapes = new SimpleMapProperty<String, TaggedAreaModel>(this,
+			"taggedAreaShapes", FXCollections.observableHashMap());
 	private final MapProperty<Integer, VertexModel> vertexShapes = new SimpleMapProperty<Integer, VertexModel>(this,
 			"vertexShapes", FXCollections.observableHashMap());
 	private final MapProperty<String, EdgeModel> edgeShapes = new SimpleMapProperty<String, EdgeModel>(this,
@@ -138,6 +133,18 @@ public class VisualizationModel {
 
 	public void putAreaShapes(Map<String, AreaModel> areaShapes) {
 		this.areaShapes.putAll(FXCollections.observableMap(areaShapes));
+	}
+
+	public MapProperty<String, TaggedAreaModel> taggedAreaShapesProperty() {
+		return taggedAreaShapes;
+	}
+
+	public Map<String, TaggedAreaModel> getTaggedAreaShapes() {
+		return taggedAreaShapes.get();
+	}
+
+	public void putTaggedAreaShapes(Map<String, TaggedAreaModel> taggedAreaShapes) {
+		this.taggedAreaShapes.putAll(FXCollections.observableMap(taggedAreaShapes));
 	}
 
 	public MapProperty<Integer, VertexModel> vertexShapesProperty() {

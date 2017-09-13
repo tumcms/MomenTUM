@@ -71,19 +71,23 @@ public abstract class ShapeModel {
 			
 			this.selectionHandler = selectionHandler;
 			this.selectionHandler.registerClickableObject(this);
-	
-			this.getClickableShapes().forEach(shape -> shape.setOnMouseClicked(new EventHandler<MouseEvent>() {
-	
-				@Override
-				public void handle(MouseEvent mouseEvent) {
-					
-					if(mouseEvent.getButton() == MouseButton.PRIMARY) {
-					
-						DetailsModel details = new DetailsModel(ShapeModel.this.getDataProperties());
-						ShapeModel.this.selectionHandler.setSelection(ShapeModel.this, mouseEvent.isControlDown(), details);
-					}	
-				}
-			}));
+
+			if(this.getClickableShapes() != null) {
+				this.getClickableShapes().stream()
+						.filter(shape -> shape != null)
+						.forEach(shape -> shape.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+
+						if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+
+							DetailsModel details = new DetailsModel(ShapeModel.this.getDataProperties());
+							ShapeModel.this.selectionHandler.setSelection(ShapeModel.this, mouseEvent.isControlDown(), details);
+						}
+					}
+				}));
+			}
 		}
 	}
 	

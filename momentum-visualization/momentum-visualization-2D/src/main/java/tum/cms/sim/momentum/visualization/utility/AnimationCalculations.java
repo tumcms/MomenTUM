@@ -54,6 +54,7 @@ import tum.cms.sim.momentum.visualization.enums.SpeedUp;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.model.VisualizationModel;
+import tum.cms.sim.momentum.visualization.model.custom.CarModel;
 import tum.cms.sim.momentum.visualization.model.custom.DensityCellModel;
 import tum.cms.sim.momentum.visualization.model.custom.DensityEdgeModel;
 import tum.cms.sim.momentum.visualization.model.custom.TransitAreaModel;
@@ -193,6 +194,58 @@ public abstract class AnimationCalculations {
 								dataStep.getDoubleData(id, "maximalDensity"));
 					}
 					break;
+
+                    case Pedestrian:
+                        break;
+                    case Car:
+
+                        if (!customMap.containsKey(id)) {
+                            // create shape
+							customVisualization = getCustomShapeModel(type, id, customizationController);
+
+							CarModel carModel = (CarModel) customVisualization;
+
+							// use default values, if no other are available
+							double length = 5;
+							if(dataStep.getDoubleData(id, "length") != null)
+								length = dataStep.getDoubleData(id, "length");
+							double width = 2;
+							if(dataStep.getDoubleData(id, "width") != null)
+								length = dataStep.getDoubleData(id, "width");
+							double height = 1.4;
+							if(dataStep.getDoubleData(id, "height") != null)
+								length = dataStep.getDoubleData(id, "height");
+
+
+                            carModel.createShape(coreController.getCoreModel(),
+                                    dataStep.getDoubleData(id, "x"),
+                                    dataStep.getDoubleData(id, "y"),
+                                    length,
+                                    width,
+                                    height,
+                                    dataStep.getDoubleData(id, "xHeading"),
+                                    dataStep.getDoubleData(id, "yHeading"),
+                                    customizationController.getCustomizationModel());
+
+							customMap.put(id, customVisualization);
+
+
+							newCustomMap.put(id, carModel);
+						} else { // set position
+
+							customMap = visualizationModel.getSpecificCustomShapesMap(type);
+							CarModel carModel = (CarModel) customMap.get(id);
+
+                            carModel.placeShape(coreController.getCoreModel(),
+                                    dataStep.getDoubleData(id, "x"),
+                                    dataStep.getDoubleData(id, "y"),
+                                    dataStep.getDoubleData(id, "xHeading"),
+                                    dataStep.getDoubleData(id, "yHeading"));
+						}
+
+
+						break;
+
 				default:
 					break;
 				}
@@ -205,7 +258,18 @@ public abstract class AnimationCalculations {
 		}
 
 		for (ShapeModel customShape : customMap.values()) {
-			customShape.setVisibility(true);
+            switch (type) {
+                case Car:
+                    if(!dataStep.isEmpty() && !dataStep.containsIdentification(customShape.getIdentification())) {
+                        customShape.setVisibility(false);
+                    }
+                    break;
+
+                default:
+                    customShape.setVisibility(true);
+                    break;
+            }
+
 		}
 
 	}
@@ -379,16 +443,19 @@ public abstract class AnimationCalculations {
 
 		case TransitZones:
 			ShapeModelToReturn = new TransitAreaModel(id);
-
 			break;
 
 		case MacroscopicNetwork:
 			ShapeModelToReturn = new DensityEdgeModel(id, customizationController);
-
 			break;
 
 		case xtDensity:
 			ShapeModelToReturn = new DensityCellModel(id);
+			break;
+
+		case Car:
+			ShapeModelToReturn = new CarModel(id);
+			break;
 
 		default:
 			break;

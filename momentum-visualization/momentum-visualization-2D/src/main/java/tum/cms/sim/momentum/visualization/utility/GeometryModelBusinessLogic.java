@@ -42,11 +42,7 @@ import tum.cms.sim.momentum.configuration.scenario.VertexConfiguration;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.controller.VisualizationController;
-import tum.cms.sim.momentum.visualization.model.geometry.AreaModel;
-import tum.cms.sim.momentum.visualization.model.geometry.EdgeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.LatticeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
-import tum.cms.sim.momentum.visualization.model.geometry.VertexModel;
+import tum.cms.sim.momentum.visualization.model.geometry.*;
 
 public abstract class GeometryModelBusinessLogic {
 
@@ -85,6 +81,20 @@ public abstract class GeometryModelBusinessLogic {
 
 		visualizationController.getVisualizationModel().getAreaShapes().clear();
 		visualizationController.getVisualizationModel().putAreaShapes(tempAreaMap);
+
+        // 2.5 tagged areas
+        HashMap<String, TaggedAreaModel> tempTaggedAreaMap = new HashMap<String, TaggedAreaModel>();
+
+        if (scenarioConfiguration.getTaggedAreas() != null) {
+
+            scenarioConfiguration.getTaggedAreas().forEach(taggedAreaConfiguration -> {
+                TaggedAreaModel currentTaggedAreaModel = new TaggedAreaModel(taggedAreaConfiguration, coreController, customizationController);
+                tempTaggedAreaMap.put(currentTaggedAreaModel.getIdentification(), currentTaggedAreaModel);
+            });
+        }
+
+        visualizationController.getVisualizationModel().getTaggedAreaShapes().clear();
+        visualizationController.getVisualizationModel().putTaggedAreaShapes(tempTaggedAreaMap);
 
 		// 3. graph
 		if (scenarioConfiguration.getGraphs() != null) {

@@ -79,6 +79,7 @@ public class LayerConfigurationController implements Initializable {
 	@FXML CheckBox showOriginsCheckBox;
 	@FXML CheckBox showIntermediatesCheckBox;
 	@FXML CheckBox showDestinationsCheckBox;
+	@FXML CheckBox showTaggedAreasCheckBox;
 	@FXML CheckBox showDensityEdgeCheckBox;
 	@FXML CheckBox showGroupColoring;
 	@FXML CheckBox showSeedColoring;
@@ -137,6 +138,13 @@ public class LayerConfigurationController implements Initializable {
 		coreController.getVisualizationModel()
 			.getAreaShapes().values().stream().filter(area -> area.getType() == AreaType.Destination)
 			.forEach(destinationShape -> destinationShape.setVisibility(showDestinationsCheckBox.isSelected()));
+	}
+
+	@FXML void onCheckShowTaggedArea(ActionEvent actionEvent) {
+
+		coreController.getVisualizationModel()
+				.getTaggedAreaShapes().values()
+				.forEach(taggedAreaShape -> taggedAreaShape.setVisibility(showTaggedAreasCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowDensityEdge(ActionEvent actionEvent) {
