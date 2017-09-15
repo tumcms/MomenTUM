@@ -80,7 +80,7 @@ public abstract class AnimationCalculations {
 	 */
 	public static ParallelTransition calculateVisualizationOfTimeStep(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {
 		coreController.waitUntilActiveSimulationOutputReadersAreLoaded(timeStep);
-		ParallelTransition concurrentMovementsOfPedestrians = createConcurrentAnimation();
+		ParallelTransition concurrentMovements = createConcurrentAnimation();
 		
 		for(SimulationOutputReader simReader : coreController.getActiveSimulationOutputReaderList()) {
 			
@@ -93,12 +93,20 @@ public abstract class AnimationCalculations {
 				
 				if(simReader.getCsvType().equals(CsvType.Pedestrian)) {
 					
-					concurrentMovementsOfPedestrians.getChildren().add(createPedestrianAtTimeStep(timeStep, coreController, simReader));
+					concurrentMovements.getChildren().addAll(createPedestrianAtTimeStep(timeStep, coreController, simReader));
 				}
 			}
 		}
+
+
+		if (concurrentMovements.getTotalDuration().equals(Duration.ZERO)
+				&& coreController.getInteractionViewController().getTimeLineModel().getPlaying()) {
+			double animationDurationInSecond = calculateAnimationDuration(coreController);
+			PauseTransition waitTransition = new PauseTransition(Duration.seconds(animationDurationInSecond));
+			concurrentMovements.getChildren().add(waitTransition);
+		}
 		
-		return concurrentMovementsOfPedestrians;
+		return concurrentMovements;
 	}
 
 	private static void updateCustomData(CsvType type, SimulationOutputCluster dataStep, CoreController coreController) {
@@ -376,13 +384,6 @@ public abstract class AnimationCalculations {
 			}
 		}
 
-		if (concurrentMovementAnimation.getChildren().size() == 0
-				&& coreController.getInteractionViewController().getTimeLineModel().getPlaying()) {
-
-			PauseTransition waitTransition = new PauseTransition(Duration.seconds(animationDurationInSecond));
-			concurrentMovementAnimation.getChildren().add(waitTransition);
-		}
-
 		return concurrentMovementAnimation;
 	}
 
@@ -408,7 +409,7 @@ public abstract class AnimationCalculations {
 	
 	private static double calculateAnimationDuration(CoreController coreController) {
 
-		// important: the animation duration describes if a continous playback
+		// important: the animation duration describes if a continuous playback
 		// is running.
 		// if it is > 0 the concurrent movement animation will call the next
 		// playback step by
