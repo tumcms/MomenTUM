@@ -302,25 +302,25 @@ public class InteractionController implements Initializable {
 		
 		for (SimulationOutputReader simReader : coreController.getActiveSimulationOutputReaderList()) {
 
-		try {
+			try {
 
-			walkingAnimation = AnimationCalculations.calculateVisualizationOfTimeStep(timeStep, coreController, simReader);
+				walkingAnimation = AnimationCalculations.calculateVisualizationOfTimeStep(timeStep, coreController, simReader);
 
-		} catch (Exception e) {
+			} catch (Exception e) {
 
-			e.printStackTrace();
-		}
+				e.printStackTrace();
+			}
 
-		if (timeLineModel.getPlaying()) {
+			if (timeLineModel.getPlaying()) {
 
-			walkingAnimation.setOnFinished(playbackHandler);
+				walkingAnimation.setOnFinished(playbackHandler);
 
-			timeLineModel.setIsAnimating(true);
-		}
+				timeLineModel.setIsAnimating(true);
+			}
 
-		spinner.setVisible(false);
+			spinner.setVisible(false);
 
-		walkingAnimation.play();
+			walkingAnimation.play();
 		}
 	}
 

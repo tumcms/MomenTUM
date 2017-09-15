@@ -207,24 +207,24 @@ public abstract class AnimationCalculations {
 
 							// use default values, if no other are available
 							double length = 5;
-							if(dataStep.getDoubleData(id, "length") != null)
-								length = dataStep.getDoubleData(id, "length");
+							if(dataStep.getDoubleData(id, OutputType.length.name()) != null)
+								length = dataStep.getDoubleData(id, OutputType.length.name());
 							double width = 2;
-							if(dataStep.getDoubleData(id, "width") != null)
-								length = dataStep.getDoubleData(id, "width");
+							if(dataStep.getDoubleData(id, OutputType.width.name()) != null)
+								width = dataStep.getDoubleData(id, OutputType.width.name());
 							double height = 1.4;
-							if(dataStep.getDoubleData(id, "height") != null)
-								length = dataStep.getDoubleData(id, "height");
+							if(dataStep.getDoubleData(id, OutputType.height.name()) != null)
+								height = dataStep.getDoubleData(id, OutputType.height.name());
 
 
                             carModel.createShape(coreController.getCoreModel(),
-                                    dataStep.getDoubleData(id, "x"),
-                                    dataStep.getDoubleData(id, "y"),
+                                    dataStep.getDoubleData(id, OutputType.x.name()),
+                                    dataStep.getDoubleData(id, OutputType.y.name()),
                                     length,
                                     width,
                                     height,
-                                    dataStep.getDoubleData(id, "xHeading"),
-                                    dataStep.getDoubleData(id, "yHeading"),
+                                    dataStep.getDoubleData(id, OutputType.xHeading.name()),
+                                    dataStep.getDoubleData(id, OutputType.yHeading.name()),
                                     customizationController.getCustomizationModel());
 
 							customMap.put(id, customVisualization);
@@ -236,11 +236,12 @@ public abstract class AnimationCalculations {
 							customMap = visualizationModel.getSpecificCustomShapesMap(type);
 							CarModel carModel = (CarModel) customMap.get(id);
 
+
                             carModel.placeShape(coreController.getCoreModel(),
-                                    dataStep.getDoubleData(id, "x"),
-                                    dataStep.getDoubleData(id, "y"),
-                                    dataStep.getDoubleData(id, "xHeading"),
-                                    dataStep.getDoubleData(id, "yHeading"));
+                                    dataStep.getDoubleData(id, OutputType.x.name()),
+                                    dataStep.getDoubleData(id, OutputType.y.name()),
+                                    dataStep.getDoubleData(id, OutputType.xHeading.name()),
+                                    dataStep.getDoubleData(id, OutputType.yHeading.name()));
 						}
 
 
