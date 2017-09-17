@@ -105,8 +105,7 @@ public class LoadCsvHandler extends LoadHandler {
 
 				if (!CsvType.isCustomType(csvFile.getType())) {
 					
-					AnimationCalculations.calculateVisualizationOfTimeStep(0d,
-							coreController, simulationOutputReader);
+					AnimationCalculations.calculateVisualizationOfTimeStep(0d, coreController);
 					
 					coreController.getInteractionViewController().getTimeLineModel()
 							.setTimeStepMultiplicator(simulationOutputReader.getTimeStepDifference());

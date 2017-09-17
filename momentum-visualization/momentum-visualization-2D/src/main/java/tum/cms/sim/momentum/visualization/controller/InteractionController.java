@@ -299,29 +299,27 @@ public class InteractionController implements Initializable {
 	}
 
 	private void startPlaying(double timeStep) {
-		
-		for (SimulationOutputReader simReader : coreController.getActiveSimulationOutputReaderList()) {
 
-			try {
+		try {
 
-				walkingAnimation = AnimationCalculations.calculateVisualizationOfTimeStep(timeStep, coreController, simReader);
+			walkingAnimation = AnimationCalculations.calculateVisualizationOfTimeStep(timeStep, coreController);
 
-			} catch (Exception e) {
+		} catch (Exception e) {
 
-				e.printStackTrace();
-			}
-
-			if (timeLineModel.getPlaying()) {
-
-				walkingAnimation.setOnFinished(playbackHandler);
-
-				timeLineModel.setIsAnimating(true);
-			}
-
-			spinner.setVisible(false);
-
-			walkingAnimation.play();
+			e.printStackTrace();
 		}
+
+		if (timeLineModel.getPlaying()) {
+
+			walkingAnimation.setOnFinished(playbackHandler);
+
+			timeLineModel.setIsAnimating(true);
+		}
+
+		spinner.setVisible(false);
+
+		walkingAnimation.play();
+
 	}
 
 	public void startRecording() {

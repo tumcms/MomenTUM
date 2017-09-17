@@ -78,7 +78,7 @@ public abstract class AnimationCalculations {
 	 * and performs visualization of custom data types. 
 	 * @return 
 	 */
-	public static ParallelTransition calculateVisualizationOfTimeStep(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {
+	public static ParallelTransition calculateVisualizationOfTimeStep(Double timeStep, CoreController coreController) throws Exception {
 		coreController.waitUntilActiveSimulationOutputReadersAreLoaded(timeStep);
 		ParallelTransition concurrentMovements = createConcurrentAnimation();
 		
@@ -97,7 +97,6 @@ public abstract class AnimationCalculations {
 				}
 			}
 		}
-
 
 		if (concurrentMovements.getTotalDuration().equals(Duration.ZERO)
 				&& coreController.getInteractionViewController().getTimeLineModel().getPlaying()) {
