@@ -32,13 +32,19 @@
 
 package tum.cms.sim.momentum.visualization.model.custom;
 
+import javafx.animation.Interpolator;
+import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.Transition;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.shape.Box;
+import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
+import tum.cms.sim.momentum.visualization.enums.Smoothness;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
 import tum.cms.sim.momentum.visualization.model.CustomizationModel;
@@ -138,6 +144,53 @@ public class CarModel extends ShapeModel {
         this.headingY = headingY;
 	}
 
+	public void animateShape(ArrayList<Transition> movingTransitions,
+                             double positionX,
+                             double positionY,
+                             double headingX,
+                             double headingY,
+                             double durationInSeconds,
+                             Smoothness smoothness,
+                             double resolution) {
+
+        double angle = calculateAngle(headingX, headingY);
+        if(!Double.isNaN(angle)) {
+            this.angle = angle;
+        }
+        else {
+            angle = this.angle;
+        }
+
+        Transition movingBodyTransition = this.createMovingTransition(resolution,
+                durationInSeconds,
+                this.positionX,
+                this.positionY,
+                positionX,
+                positionY,
+                smoothness,
+                this.carShape);
+        movingTransitions.add(movingBodyTransition);
+
+        RotateTransition bodyRotationTransition = this.createHeadingTransition(durationInSeconds,
+                this.angle,
+                angle,
+                this.carShape);
+        movingTransitions.add(bodyRotationTransition);
+
+		this.positionX = positionX;
+		this.positionY = positionY;
+		this.headingX = headingX;
+		this.headingY = headingY;
+    }
+
+    public double getPositionX() {
+	    return this.positionX;
+    }
+
+    public double getPositionY() {
+	    return this.positionY;
+    }
+
 	@Override
 	public Group getShape() {
 		return carShape;
@@ -226,4 +279,74 @@ public class CarModel extends ShapeModel {
 
 		return angle;
 	}
+
+    private Transition createMovingTransition(double resolution,
+                                              double durationInSeconds,
+                                              double oldX,
+                                              double oldY,
+                                              double newX,
+                                              double newY,
+                                              Smoothness smoothness,
+                                              Node movingShape) {
+
+        Interpolator durationInterpolator = Interpolator.LINEAR;
+        Path animation = new Path();
+
+        if(durationInSeconds > 0.0) {
+
+            durationInSeconds -= 0.001;
+        }
+        else {
+
+            durationInSeconds = 0.005; // minmal timestep
+        }
+
+        switch(smoothness) {
+
+            case Cubic:
+
+                //break;
+
+            case Linear:
+
+                durationInterpolator = Interpolator.LINEAR;
+                animation.getElements().add(new MoveTo(oldX * resolution, oldY * resolution));
+                animation.getElements().add(new LineTo(newX * resolution, newY * resolution));
+                break;
+
+            case None:
+
+                durationInterpolator = Interpolator.DISCRETE;
+                animation.getElements().add(new MoveTo(oldX * resolution, oldY * resolution));
+                animation.getElements().add(new LineTo(newX * resolution, newY * resolution));
+                break;
+
+            default:
+                break;
+        }
+
+        PathTransition pathTransition = new PathTransition(Duration.seconds(durationInSeconds), animation);
+        pathTransition.setInterpolator(durationInterpolator);
+        pathTransition.setAutoReverse(true);
+        pathTransition.setOrientation(PathTransition.OrientationType.NONE);
+        pathTransition.setNode(movingShape);
+
+        return pathTransition;
+    }
+
+    private RotateTransition createHeadingTransition(double durationInSeconds,
+                                                     double oldAngle,
+                                                     double newAngle,
+                                                     Node rotatingShape) {
+
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(durationInSeconds - 0.001));
+
+        rotateTransition.setInterpolator(Interpolator.LINEAR);
+        rotateTransition.setFromAngle(oldAngle);
+        rotateTransition.setToAngle(newAngle);
+        rotateTransition.setAutoReverse(true);
+        rotateTransition.setNode(rotatingShape);
+
+        return rotateTransition;
+    }
 }

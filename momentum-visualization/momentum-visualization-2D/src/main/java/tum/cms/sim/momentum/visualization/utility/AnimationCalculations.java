@@ -87,8 +87,8 @@ public abstract class AnimationCalculations {
 			if(simReader.containsTimeStep(timeStep)) {
 				
 				if(CsvType.isCustomType(simReader.getCsvType())) {
-					
-					createDynamicAtTimeStep(simReader, timeStep, coreController);
+
+                    concurrentMovements.getChildren().addAll(createDynamicAtTimeStep(simReader, timeStep, coreController));
 				}
 				
 				if(simReader.getCsvType().equals(CsvType.Pedestrian)) {
@@ -119,6 +119,8 @@ public abstract class AnimationCalculations {
 
 		double animationDurationInSecond = calculateAnimationDuration(coreController);
 		ParallelTransition concurrentMovementAnimation = createConcurrentAnimation();
+        ArrayList<Transition> customShapesAnimations = new ArrayList<Transition>(
+                dataStep.getIdentifications().size() * 2);
 
 		if (!dataStep.isEmpty()) {
 
@@ -248,16 +250,26 @@ public abstract class AnimationCalculations {
 							CarModel carModel = (CarModel) customMap.get(id);
 
 
-							//if(animationDurationInSecond > 0 && carModel.isVisible()) {
+							if(animationDurationInSecond > 0 && carModel.isVisible() &&
+                                    animationNeeded(carModel.getIdentification(), carModel.getPositionX(), carModel.getPositionY(),
+                                            dataStep, visualizationModel)) {
+                                carModel.animateShape(customShapesAnimations,
+                                        dataStep.getDoubleData(id, OutputType.x.name()),
+                                        dataStep.getDoubleData(id, OutputType.y.name()),
+                                        dataStep.getDoubleData(id, OutputType.xHeading.name()),
+                                        dataStep.getDoubleData(id, OutputType.yHeading.name()),
+                                        animationDurationInSecond,
+                                        coreController.getInteractionViewController()
+                                                .getTimeLineModel().getSelectedSmoothness(),
+                                        coreController.getCoreModel().getResolution());
 
-
-							//} else {
+							} else {
 								carModel.placeShape(coreController.getCoreModel(),
 										dataStep.getDoubleData(id, OutputType.x.name()),
 										dataStep.getDoubleData(id, OutputType.y.name()),
 										dataStep.getDoubleData(id, OutputType.xHeading.name()),
 										dataStep.getDoubleData(id, OutputType.yHeading.name()));
-							//}
+							}
 
 						}
 
@@ -269,6 +281,8 @@ public abstract class AnimationCalculations {
 				}
 			}
 		}
+
+        concurrentMovementAnimation.getChildren().addAll(customShapesAnimations);
 
 		if (newCustomMap.size() > 0) {
 
@@ -335,7 +349,9 @@ public abstract class AnimationCalculations {
 					pedestrianVisualization = visualizationModel.getPedestrianShapes().get(hashId);
 
 					if (animationDurationInSecond > 0.0 && pedestrianVisualization.isVisible()
-							&& animationNeeded(pedestrianVisualization, dataStep, visualizationModel)) {
+							&& animationNeeded(pedestrianVisualization.getDisplayId(),
+                            pedestrianVisualization.getPositionX(), pedestrianVisualization.getPositionY(),
+                            dataStep, visualizationModel)) {
 
 						Point2D prevPoint = null;
 						Point2D nextPoint = null;
@@ -400,19 +416,19 @@ public abstract class AnimationCalculations {
 		return concurrentMovementAnimation;
 	}
 
-	private static boolean animationNeeded(PedestrianModel pedestrianVisualization, SimulationOutputCluster dataStep, VisualizationModel visualizationModel) {
+	private static boolean animationNeeded(String displayId, double positionXOld, double positionYOld, SimulationOutputCluster dataStep, VisualizationModel visualizationModel) {
 
 		boolean animation = false;
 
-		double xPosition = dataStep.getDoubleData(pedestrianVisualization.getDisplayId(), OutputType.x.name());
-		double yPosition = dataStep.getDoubleData(pedestrianVisualization.getDisplayId(), OutputType.y.name());
+		double positionXNew = dataStep.getDoubleData(displayId, OutputType.x.name());
+		double positionYNew = dataStep.getDoubleData(displayId, OutputType.y.name());
 
-		if ((FastMath.abs(pedestrianVisualization.getPositionX() - xPosition) > visualizationModel.getMiniForAnimation()
-				|| FastMath.abs(pedestrianVisualization.getPositionY() - yPosition) > visualizationModel
+		if ((FastMath.abs(positionXOld - positionXNew) > visualizationModel.getMiniForAnimation()
+				|| FastMath.abs(positionYOld - positionYNew) > visualizationModel
 						.getMiniForAnimation())
-				&& (FastMath.abs(pedestrianVisualization.getPositionX() - xPosition) < visualizationModel
+				&& (FastMath.abs(positionXOld - positionXNew) < visualizationModel
 						.getMaxForAnimation()
-						|| FastMath.abs(pedestrianVisualization.getPositionY() - yPosition) < visualizationModel
+						|| FastMath.abs(positionYOld - positionYNew) < visualizationModel
 								.getMaxForAnimation())) {
 			animation = true;
 		}
@@ -527,7 +543,7 @@ public abstract class AnimationCalculations {
 		return AnimationCalculations.updatePedestrianShapes(simulationOutputReader, dataStepCurrent, coreController);
 	}
 	
-	private static void createDynamicAtTimeStep(SimulationOutputReader simulationOutputReader, Double timeStep, CoreController coreController) throws Exception {
+	private static ParallelTransition createDynamicAtTimeStep(SimulationOutputReader simulationOutputReader, Double timeStep, CoreController coreController) throws Exception {
 
 		SimulationOutputCluster dataStepCurrent = null;
 
@@ -542,7 +558,7 @@ public abstract class AnimationCalculations {
 			}
 		}
 
-		updateCustomData(simulationOutputReader.getCsvType(), dataStepCurrent, coreController);
+		return AnimationCalculations.updateCustomData(simulationOutputReader.getCsvType(), dataStepCurrent, coreController);
 	}
 	
 	private static void bufferPreviousPedestrian(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {
