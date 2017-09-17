@@ -106,6 +106,8 @@ public abstract class ShapeModel {
 	}
 	
 	public abstract void setVisibility(boolean isVisible);
+
+	//public abstract boolean isVisible();
 	
 	public abstract void changeSelectionMode(SelectionStates selectionState);
 	

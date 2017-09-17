@@ -75,8 +75,9 @@ public class VisualizationModel {
 			FXCollections.observableArrayList());
 	private HashSet<Double> redPedestrianGroupColor = new HashSet<Double>();
 	private HashSet<Double> bluePedestrianGroupColor = new HashSet<Double>();
-	private HashMap<String, Point2D> previousPedestrianPoints = new HashMap<String, Point2D>();
-	private HashMap<String, Point2D> overNextPedestrianPoints = new HashMap<String, Point2D>();
+	private HashMap<CsvType, HashMap<String, Point2D>> previousShapePositionPoints = new HashMap<CsvType, HashMap<String, Point2D>> ();
+	private HashMap<CsvType, HashMap<String, Point2D>> nextShapePositionPoints = new HashMap<CsvType, HashMap<String, Point2D>>();
+
 	private final MapProperty<CsvType, ObservableMap<String, ShapeModel>> customShapesMap = new SimpleMapProperty<CsvType, ObservableMap<String, ShapeModel>>(
 			this, "customShapes", FXCollections.observableHashMap());
 	private final MapProperty<String, PedestrianModel> pedestrianShapes = new SimpleMapProperty<String, PedestrianModel>(
@@ -243,20 +244,28 @@ public class VisualizationModel {
 		customShapesMap.clear();
 	}
 
-	public HashMap<String, Point2D> getPreviousPedestrianPoints() {
-		return previousPedestrianPoints;
+	public HashMap<CsvType, HashMap<String, Point2D>> getPreviousShapePositionPoints() {
+		return previousShapePositionPoints;
 	}
 
-	public void setPreviousPedestrianPoints(HashMap<String, Point2D> previousPedestrianPoints) {
-		this.previousPedestrianPoints = previousPedestrianPoints;
+	public HashMap<String, Point2D> getPreviousSpecificShapePositionPoints(CsvType type) {
+		return previousShapePositionPoints.get(type);
 	}
 
-	public HashMap<String, Point2D> getOverNextPedestrianPoints() {
-		return overNextPedestrianPoints;
+	public void setPreviousSpecificShapePositionPoints(CsvType type, HashMap<String, Point2D> previousPedestrianPoints) {
+		this.previousShapePositionPoints.put(type, previousPedestrianPoints);
 	}
 
-	public void setOverNextPedestrianPoints(HashMap<String, Point2D> overNextPedestrianPoints) {
-		this.overNextPedestrianPoints = overNextPedestrianPoints;
+	public HashMap<CsvType, HashMap<String, Point2D>> getNextShapePositionPoints() {
+		return nextShapePositionPoints;
+	}
+
+	public HashMap<String, Point2D> getNextSpecificShapePositionPoints(CsvType type) {
+		return nextShapePositionPoints.get(type);
+	}
+
+	public void setNextSpecificShapePositionPoints(CsvType type, HashMap<String, Point2D> overNextPedestrianPoints) {
+		this.nextShapePositionPoints.put(type, overNextPedestrianPoints);
 	}
 
 	public double getMiniForAnimation() {

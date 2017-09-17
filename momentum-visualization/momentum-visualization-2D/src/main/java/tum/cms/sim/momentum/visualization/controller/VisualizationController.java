@@ -119,14 +119,14 @@ public class VisualizationController implements Initializable {
 		visualizationModel.getRedPedestrianGroupColor().clear();
 		visualizationModel.getBluePedestrianGroupColor().clear();
 
-		if (visualizationModel.getPreviousPedestrianPoints() != null) {
+		if (visualizationModel.getPreviousShapePositionPoints() != null) {
 
-			visualizationModel.getPreviousPedestrianPoints().clear();
+			visualizationModel.getPreviousShapePositionPoints().clear();
 		}
 
-		if (visualizationModel.getOverNextPedestrianPoints() != null) {
+		if (visualizationModel.getNextShapePositionPoints() != null) {
 
-			visualizationModel.getOverNextPedestrianPoints().clear();
+			visualizationModel.getNextShapePositionPoints().clear();
 		}
 
 		visualizationModel.is3DViewProperty().set(false);

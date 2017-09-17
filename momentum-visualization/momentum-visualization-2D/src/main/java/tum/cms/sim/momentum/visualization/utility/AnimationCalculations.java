@@ -108,7 +108,7 @@ public abstract class AnimationCalculations {
 		return concurrentMovements;
 	}
 
-	private static void updateCustomData(CsvType type, SimulationOutputCluster dataStep, CoreController coreController) {
+	private static ParallelTransition updateCustomData(CsvType type, SimulationOutputCluster dataStep, CoreController coreController) {
 		
 		ShapeModel customVisualization = null;
 		VisualizationModel visualizationModel = coreController.getVisualizationController().getVisualizationModel();
@@ -116,6 +116,9 @@ public abstract class AnimationCalculations {
 		
 		Map<String, ShapeModel> customMap = visualizationModel.getSpecificCustomShapesMap(type);
 		Map<String, ShapeModel> newCustomMap = new HashMap<String, ShapeModel>();
+
+		double animationDurationInSecond = calculateAnimationDuration(coreController);
+		ParallelTransition concurrentMovementAnimation = createConcurrentAnimation();
 
 		if (!dataStep.isEmpty()) {
 
@@ -204,6 +207,7 @@ public abstract class AnimationCalculations {
 
                     case Pedestrian:
                         break;
+
                     case Car:
 
                         if (!customMap.containsKey(id)) {
@@ -244,11 +248,17 @@ public abstract class AnimationCalculations {
 							CarModel carModel = (CarModel) customMap.get(id);
 
 
-                            carModel.placeShape(coreController.getCoreModel(),
-                                    dataStep.getDoubleData(id, OutputType.x.name()),
-                                    dataStep.getDoubleData(id, OutputType.y.name()),
-                                    dataStep.getDoubleData(id, OutputType.xHeading.name()),
-                                    dataStep.getDoubleData(id, OutputType.yHeading.name()));
+							//if(animationDurationInSecond > 0 && carModel.isVisible()) {
+
+
+							//} else {
+								carModel.placeShape(coreController.getCoreModel(),
+										dataStep.getDoubleData(id, OutputType.x.name()),
+										dataStep.getDoubleData(id, OutputType.y.name()),
+										dataStep.getDoubleData(id, OutputType.xHeading.name()),
+										dataStep.getDoubleData(id, OutputType.yHeading.name()));
+							//}
+
 						}
 
 
@@ -279,6 +289,8 @@ public abstract class AnimationCalculations {
             }
 
 		}
+
+		return concurrentMovementAnimation;
 
 	}
 	
@@ -328,14 +340,16 @@ public abstract class AnimationCalculations {
 						Point2D prevPoint = null;
 						Point2D nextPoint = null;
 
-						if (visualizationModel.getPreviousPedestrianPoints() != null) {
+						if (visualizationModel.getPreviousShapePositionPoints() != null) {
 
-							prevPoint = visualizationModel.getPreviousPedestrianPoints().get(id);
+							prevPoint = visualizationModel.getPreviousSpecificShapePositionPoints(
+									simulationOutputReader.getCsvType()).get(id);
 						}
 
-						if (visualizationModel.getOverNextPedestrianPoints() != null) {
+						if (visualizationModel.getNextShapePositionPoints() != null) {
 
-							nextPoint = visualizationModel.getOverNextPedestrianPoints().get(id);
+							nextPoint = visualizationModel.getNextSpecificShapePositionPoints(
+									simulationOutputReader.getCsvType()).get(id);
 						}
 
 						pedestrianVisualization.setAdjacentPlacements(prevPoint, nextPoint);
@@ -537,7 +551,7 @@ public abstract class AnimationCalculations {
 		SimulationOutputCluster dataStepAdjacent = null;
 		double previousTimeStep = timeStep - simulationOutputReader.getTimeStepDifference();
 		dataStepAdjacent = simulationOutputReader.asyncReadDataSet(previousTimeStep);
-		visualizationModel.setPreviousPedestrianPoints(AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
+		visualizationModel.setPreviousSpecificShapePositionPoints(simulationOutputReader.getCsvType(), AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
 	}
 
 
@@ -552,7 +566,7 @@ public abstract class AnimationCalculations {
 		if (dataStepAdjacent != null) { // may be possible if not end and
 										// current is last data
 
-			visualizationModel.setOverNextPedestrianPoints(AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
+			visualizationModel.setNextSpecificShapePositionPoints(simulationOutputReader.getCsvType(), AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
 		}
 	}
 	

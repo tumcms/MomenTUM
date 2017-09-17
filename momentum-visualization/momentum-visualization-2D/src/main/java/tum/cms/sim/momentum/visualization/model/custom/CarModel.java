@@ -37,6 +37,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
+import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration;
+import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
 import tum.cms.sim.momentum.visualization.model.CustomizationModel;
@@ -76,6 +78,10 @@ public class CarModel extends ShapeModel {
 	public void setVisibility(boolean isVisible) {
 
 		body.setVisible(isVisible);
+	}
+
+	public boolean isVisible() {
+		return body.isVisible();
 	}
 
 	public CarModel(String id) {
