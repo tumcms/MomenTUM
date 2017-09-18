@@ -42,8 +42,10 @@ import java.util.Map;
  */
 public class MessageState {
 
-	private static String messageSeparatorString = "|";
-	private static String topicSeparatorString = ": ";
+	private static String messageSeparatorString = "MSGSEP";
+	private static String topicSeparatorString = "TOPSEP";
+
+	private static String contentSeparatorString = ", ";
 
 	private HashMap<String, String> messages = new HashMap<String, String>();
 
@@ -51,8 +53,18 @@ public class MessageState {
 		this.messages.clear();
 	}
 
+	public void clearTopic(String topic) {
+		this.messages.remove(topic);
+	}
+
 	public void addMessage(String topic, String messageContent) {
 		this.messages.put(topic, messageContent);
+	}
+
+	public void appendMessage(String topic, String messageAppendance) {
+
+		String existing = messages.get(topic);
+		messages.put(topic, existing == null ? messageAppendance : existing + contentSeparatorString + messageAppendance);
 	}
 
 	public HashMap<String, String> getAllMessages() {

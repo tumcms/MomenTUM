@@ -92,10 +92,13 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	@Override
 	public void callPedestrianBehavior(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 
-		pedestrian.getMessageState().addMessage("hellooo", "trello");
-
-
         List<IPedestrian> otherPedestriansInVisualRange = perception.getPerceptedPedestrians(pedestrian, simulationState);
+
+        pedestrian.getMessageState().clearTopic("percepted pedestrians");
+		for (IPedestrian other : otherPedestriansInVisualRange) {
+
+			pedestrian.getMessageState().appendMessage("percepted pedestrians", other.getName());
+		}
 
 		Vector2D acceleration = computeSharedSpaceAcceleration(pedestrian, otherPedestriansInVisualRange, simulationState.getTimeStepDuration());
 		

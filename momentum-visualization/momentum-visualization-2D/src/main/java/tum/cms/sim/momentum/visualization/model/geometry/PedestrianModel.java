@@ -36,6 +36,8 @@ import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Arrays;
 
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
@@ -73,6 +75,8 @@ public class PedestrianModel extends ShapeModel {
 	private static TrajectoryCubicCurve trajectoryCubicCurve= new TrajectoryCubicCurve();
 	private String displayId;
 	private String identificationId;
+
+	private String message;
 
 
 	private double positionX;
@@ -298,6 +302,17 @@ public class PedestrianModel extends ShapeModel {
 		details.put(ShapeModel.leader, this.leader != null ? Boolean.toString(this.leader) : null);
 		details.put(ShapeModel.behavior, this.behavior != null ? this.behavior : null);
 		details.put(ShapeModel.motoric, this.motoric !=  null ? this.motoric : null);
+
+		if(this.message != null) {
+			List<String> messageElements = Arrays.asList(this.message.split("MSGSEP"));
+			for (String element : messageElements) {
+				if(!element.isEmpty()) {
+					List<String> dividedElement = Arrays.asList(element.split("TOPSEP"));
+					details.put(ShapeModel.message + ": " + dividedElement.get(0), dividedElement.get(1));
+				}
+			}
+
+		}
 		
 		return details;
 	}
@@ -348,6 +363,7 @@ public class PedestrianModel extends ShapeModel {
 		this.leader = dataStep.getBooleanData(this.displayId, OutputType.leader.name());
 		this.behavior = dataStep.getStringData(this.displayId, OutputType.behavior.name());
 		this.motoric = dataStep.getStringData(this.displayId, OutputType.motoric.name());
+		this.message = dataStep.getStringData(this.displayId, OutputType.message.name());
 	}
 	
 	public void createShape(double positionX, 

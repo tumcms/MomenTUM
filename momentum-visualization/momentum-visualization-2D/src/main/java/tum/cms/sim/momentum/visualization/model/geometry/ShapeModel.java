@@ -62,6 +62,7 @@ public abstract class ShapeModel {
 	protected static final String leftVertex = "Left Vertex";
 	protected static final String rightVertex = "Right Vertex";
 	protected static final String adjacent = "Adjacent";
+	protected static final String message = "msg";
 	
 	protected SelectionHandler selectionHandler = null;
 	
