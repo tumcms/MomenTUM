@@ -44,13 +44,11 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class SharedSpacesComputations {
 
-
-
-
 	public static Vector2D computeRepulsiveForceConflictingPedestrians(IOperationalPedestrian pedestrian, Collection<IPedestrian> otherPedestrians, double timeStepDuration,
 																	   double interaction_strength_for_repulsive_force_from_surrounding_pedestrians, double interaction_range_for_relative_distance, double range_for_relative_conflicting_time, double precision)
 	{
         // repulsive force from conflicting pedestrian
+
 
 		Vector2D force = GeometryFactory.createVector(0, 0);
 

@@ -30,65 +30,48 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.data.agent.pedestrian.types;
+package tum.cms.sim.momentum.data.agent.pedestrian.state.other;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.IExtendsPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MessageState;
-import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MetaState;
-import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
-import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
-import tum.cms.sim.momentum.data.layout.area.Area;
-import tum.cms.sim.momentum.utility.generic.IUnique;
-import tum.cms.sim.momentum.utility.geometry.Vector2D;
-import tum.cms.sim.momentum.utility.graph.Vertex;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-public interface IPedestrian extends IUnique {
-	
-	public MetaState getMetaState();
+/**
+ * Save a message as state and export it the csv for the visualizer
+ *
+ */
+public class MessageState {
 
-	public boolean isLeader();
-	
-	public double getBodyRadius();
-	
-	public double getMass();
-	
-	public int getGroupId();
-	
-	public int getGroupSize();
-	
-	public int getStartLocationId();
-	
-	public int getSeedId();
-	
-	
-	public double getDesiredVelocity();
-	
-	public double getMaximalVelocity();
+	private static String messageSeparatorString = "|";
+	private static String topicSeparatorString = ": ";
 
-	public Behavior getBehavior();
-	
-	public Vector2D getPosition();
-	
-	public Vector2D getHeading();
-	
-	public Vector2D getVelocity();
-	
-	
-	public Motoric getMotoricTask();
-	
-	public Vector2D getNextHeading();
-	
-	public Vertex getLastWalkingTarget();
-	
-	public Vector2D getNextWalkingTarget();
-	
-	
-	public Behavior getBehaviorTask();
+	private HashMap<String, String> messages = new HashMap<String, String>();
 
-	public Area getNextNavigationTarget();
-	
-	public IPedestrianExtension getExtensionState(IExtendsPedestrian modelReference);
+	public void clear() {
+		this.messages.clear();
+	}
 
-	public MessageState getMessageState();
+	public void addMessage(String topic, String messageContent) {
+		this.messages.put(topic, messageContent);
+	}
 
+	public HashMap<String, String> getAllMessages() {
+		return messages;
+	}
+
+	public String getMessageString() {
+		String messageString = "";
+
+		Iterator it = messages.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry)it.next();
+			messageString += pair.getKey() + topicSeparatorString + pair.getValue();
+			if(it.hasNext()) {
+				messageString += messageSeparatorString;
+			}
+			it.remove();
+		}
+
+		return messageString;
+	}
 }

@@ -35,7 +35,7 @@ package tum.cms.sim.momentum.model.tactical.routing.noRoutingModel;
 import java.util.Collection;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -47,7 +47,7 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 public class NoRoutingTacticalModel extends RoutingModel {
 
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 
 		return null;
 	}

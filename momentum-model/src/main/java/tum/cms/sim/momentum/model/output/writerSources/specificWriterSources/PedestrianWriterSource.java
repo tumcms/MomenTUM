@@ -203,6 +203,11 @@ public class PedestrianWriterSource extends SingleSetWriterSource {
 		return String.format(format, currentPedestrian.getMotoricTask().name());
 	}
 
+	private String getCurrentMessage(String format) {
+
+		return String.format(format, currentPedestrian.getMessageState().getMessageString());
+	}
+
 	public String getStartLocationId(String format) {
 		return String.format(format, currentPedestrian.getStartLocationId());
 	}
@@ -282,6 +287,9 @@ public class PedestrianWriterSource extends SingleSetWriterSource {
 			break;
 		case motoric:
 			result = this.getCurrentMotoric(format);
+			break;
+		case message:
+			result = this.getCurrentMessage(format);
 			break;
 		default:
 			break;	

@@ -39,7 +39,7 @@ import java.util.List;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
 import tum.cms.sim.momentum.data.layout.area.DestinationArea;
@@ -47,7 +47,7 @@ import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.strategical.interestModel.InterestConstant.InterestState;
 import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
 
-public class InterestExtension implements IPedestrianExtansion {
+public class InterestExtension implements IPedestrianExtension {
 
 	private ArrayList<InterestCalculator> interestModels = new ArrayList<InterestCalculator>();
 	private LinkedList<Area> goalQueue = new LinkedList<Area>();

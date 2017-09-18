@@ -32,6 +32,6 @@
 
 package tum.cms.sim.momentum.data.agent.pedestrian.types;
 
-public interface IPedestrianExtansion {
+public interface IPedestrianExtension {
 
 }

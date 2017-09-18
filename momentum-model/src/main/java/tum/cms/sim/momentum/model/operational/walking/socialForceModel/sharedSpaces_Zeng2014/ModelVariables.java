@@ -45,17 +45,7 @@ public class ModelVariables {
 	 * Relaxation time [s] (necessary for acceleration).
 	 */
 	private double relaxationTime;
-	
-	/**
-	 * Radius of the visual range [m]
-	 */
-	private double visualRangeRadius = 30.0;
-	
-	/**
-	 * Angle of the visual range [deg]
-	 */
-	private double visualRangeAngle = 120;
-	
+
 	/**
 	 * A^r_beta [m/s^2], range: 0.1-2.0
 	 */
@@ -118,14 +108,6 @@ public class ModelVariables {
 
 	public double getRelaxationTime() {
 		return relaxationTime;
-	}
-
-	public double getVisualRangeRadius() {
-		return visualRangeRadius;
-	}
-
-	public double getVisualRangeAngle() {
-		return visualRangeAngle;
 	}
 
 	public double getInteractionStrengthForRepulsiveForceFromSurroundingPedestrians() {

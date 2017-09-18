@@ -44,7 +44,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.state.other.StaticState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.infrastructure.execute.IUpdateState;
@@ -184,7 +184,7 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 			
 			for(IExtendsPedestrian extender : extenders) {
 				
-				IPedestrianExtansion extension = extender.onPedestrianGeneration(pedestrian);
+				IPedestrianExtension extension = extender.onPedestrianGeneration(pedestrian);
 				pedestrian.setExtensionState(extension, extender);
 				afterImage.setExtensionState(extension, extender);
 			}

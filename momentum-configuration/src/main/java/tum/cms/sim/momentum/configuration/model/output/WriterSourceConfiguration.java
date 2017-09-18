@@ -79,7 +79,9 @@ public class WriterSourceConfiguration extends PropertyContainerNode {
 		
 		width,
 		length,
-		height
+		height,
+
+		message
 	}
 	
 	public enum SourceType {

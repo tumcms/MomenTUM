@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
@@ -62,7 +62,7 @@ import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.proces
 import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
 
-public class CognitiveSpatialChoiceStrategicExtension implements IPedestrianExtansion {
+public class CognitiveSpatialChoiceStrategicExtension implements IPedestrianExtension {
 
 	private CognitiveParameterLoader cognitiveBoundary = null;
 	
