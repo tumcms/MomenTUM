@@ -46,15 +46,18 @@ public class PerceptualModelConfiguration extends PropertyContainerNode {
 	public enum PerceptualModelType {
 		
 		WorldKnowledge,
-		BlockingGeometries
+		BlockingGeometries,
+		SightCone
 	}
 	
 	@SuppressWarnings("rawtypes")
 	public static EnumToStringConverter getTypeConverter() {
 		
 		HashMap<String, PerceptualModelType> map = new HashMap<>();
-		map.put(PerceptualModelType.WorldKnowledge.toString(), PerceptualModelType.WorldKnowledge);
-		map.put(PerceptualModelType.BlockingGeometries.toString(), PerceptualModelType.BlockingGeometries);
+
+		for(PerceptualModelType currentType : PerceptualModelType.values()) {
+			map.put(currentType.toString(), currentType);
+		}
 		
 		return new EnumToStringConverter<>(PerceptualModelType.class, map);
 	}

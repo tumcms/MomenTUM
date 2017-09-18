@@ -36,13 +36,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import tum.cms.sim.momentum.data.agent.car.Car;
 import tum.cms.sim.momentum.data.agent.car.state.operational.MovementState;
 import tum.cms.sim.momentum.data.agent.car.state.other.StaticState;
 import tum.cms.sim.momentum.data.agent.car.types.IRichCar;
-import tum.cms.sim.momentum.data.agent.pedestrian.IExtendsPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.Pedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class CarManager {

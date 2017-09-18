@@ -384,6 +384,12 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 		
 		return hitTarget;
 	}
+
+	@Override
+	public boolean isVisible(IPedestrian currentPedestrian, List<Vector2D> positionList) {
+		// TODO
+		return true;
+	}
 	
 //	@Override
 //	public boolean isVisible(Vector2D viewPort, Area area) {

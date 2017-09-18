@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.dyn4j.geometry.Vector2;
 import tum.cms.sim.momentum.data.agent.car.CarManager;
 import tum.cms.sim.momentum.data.agent.car.types.IRichCar;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
@@ -93,22 +94,10 @@ public class SharedSpaceForceOperational extends WalkingModel {
 
 	@Override
 	public void callPedestrianBehavior(IOperationalPedestrian pedestrian, SimulationState simulationState) {
-		// TODO Auto-generated method stub
-		
-		List<IPedestrian> otherPedestrians =  perception.getAllPedestrians(pedestrian); // perception.getNearestPedestrians(pedestrian, 3.0);
-	
-		List<TaggedArea> taggedAreas = this.scenarioManager.getTaggedAreas(TaggedArea.Type.Crosswalk);
-		
-		List<Obstacle> obstacles = this.scenarioManager.getObstacles()
-				.stream()
-				.filter(obstacle -> obstacle.getGeometry().distanceBetween(pedestrian.getPosition()) < 5.0)
-				.collect(Collectors.toList());
-		
-		/*Vector2D acceleration = socialForce.computeNewAcceleration(pedestrian, 
-																	otherPedestrians,
-																	obstacles);*/
-		
-		Vector2D acceleration = computeSharedSpaceAcceleration(pedestrian, otherPedestrians, simulationState.getTimeStepDuration());
+
+        List<IPedestrian> otherPedestriansInVisualRange = perception.getPerceptedPedestrians(pedestrian, simulationState);
+
+		Vector2D acceleration = computeSharedSpaceAcceleration(pedestrian, otherPedestriansInVisualRange, simulationState.getTimeStepDuration());
 		
 		Vector2D deltaVelocity = acceleration.multiply(simulationState.getTimeStepDuration());
 		Vector2D velocity = pedestrian.getVelocity().sum(deltaVelocity);
@@ -131,10 +120,8 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 
-		
 		socialForce = new SocialForce(this);
 		modelVariables = new ModelVariables(properties);
-
 	}
 
 	private Vector2D computeHeading(IOperationalPedestrian me, Vector2D target) {
@@ -183,7 +170,6 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		if(newVersion)
 		{
 			repulsiveForceConflictingPedestrians = SharedSpacesComputations.computeRepulsiveForceConflictingPedestrians(pedestrian, otherPedestrians, timeStepDuration,
-					modelVariables.getVisualRangeRadius(), modelVariables.getVisualRangeAngle(),
 					modelVariables.getInteractionStrengthForRepulsiveForceFromSurroundingPedestrians(), modelVariables.getInteractionRangeForRelativeDistance(),
 					modelVariables.getInteractionRangForRelativeConflictingTime(), modelVariables.getComputationalPrecision());
 		}
@@ -212,9 +198,7 @@ public class SharedSpaceForceOperational extends WalkingModel {
 
 		Collection<IRichCar> allCars = carManager.getAllCars();
 		List<IRichCar> carsInVisualRange =  allCars.stream()
-				.filter(o -> SharedSpacesComputations.inVisualRange(pedestrian.getPosition(),
-						pedestrian.getVelocity(), modelVariables.getVisualRangeRadius(),
-						modelVariables.getVisualRangeAngle(), o.getRectangle().getVertices()))
+				.filter(currentCar -> this.perception.isVisible(pedestrian, currentCar.getRectangle().getVertices()))
 				.collect(Collectors.toList());
 
 
@@ -236,13 +220,15 @@ public class SharedSpaceForceOperational extends WalkingModel {
 
 		}
 
-
 		return force;
 	}
 	
 	private Vector2D computeForceCrosswalkBoundary()
 	{
 		// repulsive force or attractive force from the crosswalk boundary
+
+        List<TaggedArea> taggedAreas = this.scenarioManager.getTaggedAreas(TaggedArea.Type.Crosswalk);
+
 		Vector2D force = GeometryFactory.createVector(0, 0);
 		return force;
 	}

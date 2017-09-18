@@ -35,6 +35,7 @@ package tum.cms.sim.momentum.simulator.factory.supportModelFactory;
 import tum.cms.sim.momentum.configuration.model.other.PerceptualModelConfiguration;
 import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.support.perceptional.blockingGeometriesModel.BlockingGeometriesPerception;
+import tum.cms.sim.momentum.model.support.perceptional.sightConeModel.SightConePerception;
 import tum.cms.sim.momentum.model.support.perceptional.worldKnowledgeModel.WorldKnowledgePerception;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
@@ -57,6 +58,11 @@ public class PerceptionalModelFactory extends ModelFactory<PerceptualModelConfig
 			
 		case BlockingGeometries:
 			perceptualModel = new BlockingGeometriesPerception();
+			break;
+
+		case SightCone:
+			perceptualModel = new SightConePerception();
+
 		default:
 			break;
 		}

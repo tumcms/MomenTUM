@@ -175,8 +175,6 @@ public class ModelVariables {
 	
 	public ModelVariables(PropertyBackPack properties) {
 		relaxationTime = properties.getDoubleProperty("relaxation_time");
-		visualRangeRadius = properties.getDoubleProperty("visual_range_radius");
-		visualRangeAngle = properties.getDoubleProperty("visual_range_angle");
 		
 		// TODO: add all variables
 	}

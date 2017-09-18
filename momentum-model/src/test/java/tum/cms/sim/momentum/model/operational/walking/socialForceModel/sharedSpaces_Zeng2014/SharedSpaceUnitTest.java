@@ -47,41 +47,6 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 public class SharedSpaceUnitTest {
 	
 	private static double PRECISION = 1E-15;
-
-	@Test
-	public void testGetRelativeAngle() {
-		Vector2D mePos, meDirection, youPos;
-		
-		mePos = GeometryFactory.createVector(0, 0);
-		meDirection = GeometryFactory.createVector(0, 0);
-		youPos = GeometryFactory.createVector(0, 0);
-        Assert.assertEquals(0.0, SharedSpacesComputations.getRelativeAngle(mePos, meDirection, youPos), PRECISION);
-        
-        mePos = GeometryFactory.createVector(0, 1);
-        meDirection = GeometryFactory.createVector(-1, 0);
-        youPos = GeometryFactory.createVector(1, 2);
-        Assert.assertEquals(135.0, SharedSpacesComputations.getRelativeAngle(mePos, meDirection, youPos), PRECISION);
-        
-        mePos = GeometryFactory.createVector(0, 1);
-        meDirection = GeometryFactory.createVector(0, 1);
-        youPos = GeometryFactory.createVector(1, 2);
-        Assert.assertEquals(45.0, SharedSpacesComputations.getRelativeAngle(mePos, meDirection, youPos), PRECISION);
-        
-        mePos = GeometryFactory.createVector(2, 1);
-        meDirection = GeometryFactory.createVector(0, 1);
-        youPos = GeometryFactory.createVector(1, 2);
-        Assert.assertEquals(-45.0, SharedSpacesComputations.getRelativeAngle(mePos, meDirection, youPos), PRECISION);
-        
-        mePos = GeometryFactory.createVector(2, 1);
-        meDirection = GeometryFactory.createVector(0, 1);
-        youPos = GeometryFactory.createVector(2, 0);
-        Assert.assertEquals(180.0, SharedSpacesComputations.getRelativeAngle(mePos, meDirection, youPos), PRECISION);
-        
-        mePos = GeometryFactory.createVector(-1, -1);
-        meDirection = GeometryFactory.createVector(-1, -1);
-        youPos = GeometryFactory.createVector(-1, 0);
-        Assert.assertEquals(135.0, SharedSpacesComputations.getRelativeAngle(mePos, meDirection, youPos), PRECISION);
-	}
 	
 	@Test
 	public void testGetTimeToConflictPoint() {
