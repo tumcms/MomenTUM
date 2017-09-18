@@ -43,8 +43,6 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class SharedSpacesComputations {
 
-	//TODO: global precision?
-	public static double PRECISION = 0.000000001;
 
 	public static boolean inVisualRange(Vector2D position, Vector2D direction, double visual_range_radius, double visual_range_angle, List<Vector2D> points) {
 		for(Vector2D point : points) {
@@ -65,7 +63,7 @@ public class SharedSpacesComputations {
 
 
 	public static Vector2D computeRepulsiveForceConflictingPedestrians(IOperationalPedestrian pedestrian, Collection<IPedestrian> otherPedestrians, double timeStepDuration, double visual_range_radius, double visual_range_angle,
-																	   double interaction_strength_for_repulsive_force_from_surrounding_pedestrians, double interaction_range_for_relative_distance, double range_for_relative_conflicting_time)
+																	   double interaction_strength_for_repulsive_force_from_surrounding_pedestrians, double interaction_range_for_relative_distance, double range_for_relative_conflicting_time, double precision)
 	{
 		List<IPedestrian> otherPedestriansInVisualRange = otherPedestrians.stream()
 				.filter(o ->  inVisualRange(pedestrian.getPosition(), pedestrian.getVelocity(), visual_range_radius, visual_range_angle, o.getPosition()))
@@ -75,7 +73,7 @@ public class SharedSpacesComputations {
 
 		for(IPedestrian otherPedestrian : otherPedestriansInVisualRange)
 		{
-			double timeToConflictPoint = SharedSpacesComputations.getTimeToConflictPoint(pedestrian.getPosition(), pedestrian.getVelocity(), otherPedestrian.getPosition(), otherPedestrian.getVelocity());
+			double timeToConflictPoint = SharedSpacesComputations.getTimeToConflictPoint(pedestrian.getPosition(), pedestrian.getVelocity(), otherPedestrian.getPosition(), otherPedestrian.getVelocity(), precision);
 
 			Vector2D distanceVector = pedestrian.getPosition().subtract(otherPedestrian.getPosition());
 			double b = 0.5 * Math.sqrt(
@@ -128,7 +126,7 @@ public class SharedSpacesComputations {
 		return rel_angle;
 	}
 
-	public static double getTimeToConflictPoint(Vector2D mePosition, Vector2D meVelocity, Vector2D youPosition, Vector2D youVelocity)
+	public static double getTimeToConflictPoint(Vector2D mePosition, Vector2D meVelocity, Vector2D youPosition, Vector2D youVelocity, double precision)
 	{
 
 		double x12 = mePosition.getXComponent() - mePosition.sum(meVelocity).getXComponent();
@@ -137,7 +135,7 @@ public class SharedSpacesComputations {
 		double y34 = youPosition.getYComponent() - youPosition.sum(youVelocity).getYComponent();
 
 		double c = x12 * y34 - y12 * x34;
-		if (Math.abs(c) < PRECISION)
+		if (Math.abs(c) < precision)
 		{
 			// lines are parallel
 
@@ -149,8 +147,8 @@ public class SharedSpacesComputations {
 
 			double distance_mePos_youPos = mePosition.distance(youPosition);
 
-			if( Math.abs(distance_mePos_meVel + distance_meVel_youPos - distance_mePos_youPos) < PRECISION &&
-					Math.abs(distance_mePos_youVel + distance_youPos_youVel - distance_mePos_youPos) < PRECISION)
+			if( Math.abs(distance_mePos_meVel + distance_meVel_youPos - distance_mePos_youPos) < precision &&
+					Math.abs(distance_mePos_youVel + distance_youPos_youVel - distance_mePos_youPos) < precision)
 			{
 				// lines are identical, and velocity vectors point to each other
 				return 0.0;

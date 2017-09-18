@@ -58,11 +58,7 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	private SocialForce socialForce;
 	private CarManager carManager = null;
 	private ModelVariables modelVariables = null;
-	
-	//TODO: global precision?
-	public static double PRECISION = 0.000000001;
 
-	
 	public CarManager getCarManager() {
 		return carManager;
 	}
@@ -188,7 +184,8 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		{
 			repulsiveForceConflictingPedestrians = SharedSpacesComputations.computeRepulsiveForceConflictingPedestrians(pedestrian, otherPedestrians, timeStepDuration,
 					modelVariables.getVisualRangeRadius(), modelVariables.getVisualRangeAngle(),
-					modelVariables.getInteractionStrengthForRepulsiveForceFromSurroundingPedestrians(), modelVariables.getInteractionRangeForRelativeDistance(), modelVariables.getInteractionRangForRelativeConflictingTime());
+					modelVariables.getInteractionStrengthForRepulsiveForceFromSurroundingPedestrians(), modelVariables.getInteractionRangeForRelativeDistance(),
+					modelVariables.getInteractionRangForRelativeConflictingTime(), modelVariables.getComputationalPrecision());
 		}
 		else {
 			Vector2D pedestrianInteractionForce = null;

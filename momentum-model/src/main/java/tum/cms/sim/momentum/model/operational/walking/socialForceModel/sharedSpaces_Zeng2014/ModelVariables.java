@@ -37,6 +37,11 @@ import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 public class ModelVariables {
 
 	/**
+	 * Computational precision
+	 */
+	public double computationalPrecision = 1E-9;
+
+	/**
 	 * Relaxation time [s] (necessary for acceleration).
 	 */
 	private double relaxationTime;
@@ -99,7 +104,7 @@ public class ModelVariables {
 	/**
 	 * A^a_b [m/s^2], range: 0.1-0.45
 	 */
-	private double interaction_strength_for_attractive_force_from_crosswalk_boundary = 0.25;
+	private double interactionStrengthForAttractiveForceFromCrosswalkBoundary = 0.25;
 	
 	/**
 	 * B^a_b [m^-1], range: 0.1-0.7
@@ -107,7 +112,10 @@ public class ModelVariables {
 	private double interactionRangeForAttractiveForceFromCrosswalkBoundary = 0.46;
 	
 	
-	
+	public double getComputationalPrecision() {
+		return computationalPrecision;
+	}
+
 	public double getRelaxationTime() {
 		return relaxationTime;
 	}
@@ -156,8 +164,8 @@ public class ModelVariables {
 		return interactionRangeForRepulsiveForceFromCrosswalkBoundary;
 	}
 
-	public double getInteraction_strength_for_attractive_force_from_crosswalk_boundary() {
-		return interaction_strength_for_attractive_force_from_crosswalk_boundary;
+	public double getInteractionStrengthForAttractiveForceFromCrosswalkBoundary() {
+		return interactionStrengthForAttractiveForceFromCrosswalkBoundary;
 	}
 
 	public double getInteractionRangeForAttractiveForceFromCrosswalkBoundary() {

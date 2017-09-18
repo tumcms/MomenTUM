@@ -86,38 +86,44 @@ public class SharedSpaceUnitTest {
 	@Test
 	public void testGetTimeToConflictPoint() {
 		Vector2D mePosition, meVelocity, youPosition, youVelocity;
+		double modelComputationalPrecision = 1E-9;
 		
 		// vertical velocity test
 		mePosition = GeometryFactory.createVector(0, 0);
 		meVelocity = GeometryFactory.createVector(0, 1);
 		youPosition = GeometryFactory.createVector(2, 2);
 		youVelocity = GeometryFactory.createVector(-1, 0);
-		Assert.assertEquals(0.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity, youPosition, youVelocity), PRECISION);
+		Assert.assertEquals(0.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity,
+				youPosition, youVelocity, modelComputationalPrecision), PRECISION);
 		
 		mePosition = GeometryFactory.createVector(0, 0);
 		meVelocity = GeometryFactory.createVector(1, 1);
 		youPosition = GeometryFactory.createVector(2, 0);
 		youVelocity = GeometryFactory.createVector(-1, 1);
-		Assert.assertEquals(0.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity, youPosition, youVelocity), PRECISION);
+		Assert.assertEquals(0.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity,
+				youPosition, youVelocity, modelComputationalPrecision), PRECISION);
 		
 		mePosition = GeometryFactory.createVector(0, 0);
 		meVelocity = GeometryFactory.createVector(0, 1);
 		youPosition = GeometryFactory.createVector(1, 0);
 		youVelocity = GeometryFactory.createVector(-1, -1);
-		Assert.assertEquals(Double.POSITIVE_INFINITY, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity, youPosition, youVelocity), PRECISION);
+		Assert.assertEquals(Double.POSITIVE_INFINITY, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity,
+				youPosition, youVelocity, modelComputationalPrecision), PRECISION);
 		
 		// collision point, which you reach after 1 and i reach after 11
 		mePosition = GeometryFactory.createVector(0, 0);
 		meVelocity = GeometryFactory.createVector(1, 0);
 		youPosition = GeometryFactory.createVector(11, 1);
 		youVelocity = GeometryFactory.createVector(0, -1);
-		Assert.assertEquals(10.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity, youPosition, youVelocity), PRECISION);
+		Assert.assertEquals(10.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity,
+				youPosition, youVelocity, modelComputationalPrecision), PRECISION);
 		
 		mePosition = GeometryFactory.createVector(0, 0);
 		meVelocity = GeometryFactory.createVector(0, 1);
 		youPosition = GeometryFactory.createVector(0, 10);
 		youVelocity = GeometryFactory.createVector(0, -1);
-		Assert.assertEquals(0.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity, youPosition, youVelocity), PRECISION);
+		Assert.assertEquals(0.0, SharedSpacesComputations.getTimeToConflictPoint(mePosition, meVelocity,
+				youPosition, youVelocity, modelComputationalPrecision), PRECISION);
 	}
 
 }
