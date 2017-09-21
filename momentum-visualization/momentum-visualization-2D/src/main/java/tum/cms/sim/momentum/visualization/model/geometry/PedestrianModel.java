@@ -363,7 +363,8 @@ public class PedestrianModel extends ShapeModel {
 		this.leader = dataStep.getBooleanData(this.displayId, OutputType.leader.name());
 		this.behavior = dataStep.getStringData(this.displayId, OutputType.behavior.name());
 		this.motoric = dataStep.getStringData(this.displayId, OutputType.motoric.name());
-		this.message = dataStep.getStringData(this.displayId, OutputType.message.name());
+		if(dataStep.getStringData(this.displayId, OutputType.message.name()) != null)
+			this.message = dataStep.getStringData(this.displayId, OutputType.message.name());
 	}
 	
 	public void createShape(double positionX, 

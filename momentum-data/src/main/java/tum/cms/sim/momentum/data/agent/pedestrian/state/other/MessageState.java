@@ -32,9 +32,8 @@
 
 package tum.cms.sim.momentum.data.agent.pedestrian.state.other;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Save a message as state and export it the csv for the visualizer
@@ -74,7 +73,13 @@ public class MessageState {
 	public String getMessageString() {
 		String messageString = "";
 
-		Iterator it = messages.entrySet().iterator();
+		Map<String, String> sortedMap =
+				messages.entrySet().stream()
+						.sorted(Map.Entry.comparingByValue())
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+								(e1, e2) -> e1, LinkedHashMap::new));
+
+		Iterator it = sortedMap.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry)it.next();
 			messageString += pair.getKey() + topicSeparatorString + pair.getValue();

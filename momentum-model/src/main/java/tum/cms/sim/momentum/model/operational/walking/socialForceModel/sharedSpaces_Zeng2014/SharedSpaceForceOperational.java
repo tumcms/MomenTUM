@@ -145,6 +145,15 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		Vector2D repulsiveForceConflictingVehicle = this.computeRepulsiveForceConflictingVehicle(pedestrian);
 		Vector2D forceCrosswalkBoundary = this.computeForceCrosswalkBoundary();
 
+		Vector2D xAxis = GeometryFactory.createVector(1, 0);
+
+		pedestrian.getMessageState().addMessage("force driving", drivingForce.getMagnitude() +
+				", " + drivingForce.getAngleBetween(xAxis));
+		pedestrian.getMessageState().addMessage("force confl oth", repulsiveForceConflictingPedestrians.getMagnitude() + ", " +
+				repulsiveForceConflictingPedestrians.getAngleBetween(xAxis));
+		pedestrian.getMessageState().addMessage("force conf veh", repulsiveForceConflictingVehicle.getMagnitude() + ", " +
+				repulsiveForceConflictingVehicle.getAngleBetween(xAxis));
+
 		Vector2D newAcceleration = drivingForce.sum(repulsiveForceConflictingPedestrians)
 				.sum(attractiveForceLeadingPedestrians).sum(repulsiveForceConflictingVehicle)
 				.sum(forceCrosswalkBoundary);
