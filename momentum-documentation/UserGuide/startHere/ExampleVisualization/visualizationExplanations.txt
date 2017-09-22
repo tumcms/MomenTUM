@@ -1,0 +1,2 @@
+strg + y -> load a xml configuration that contains the layout
+strg + s -> select the pedestrian csv output data (including: id, timeStep, x, y, xHeading, yHeading)

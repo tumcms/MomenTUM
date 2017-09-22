@@ -36,7 +36,6 @@ target/
 *.jar
 
 # JavaFX
-*.fxml
 *.fxbuild
 
 ####
