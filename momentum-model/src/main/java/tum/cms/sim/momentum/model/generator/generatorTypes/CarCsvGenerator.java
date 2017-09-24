@@ -182,7 +182,11 @@ public class CarCsvGenerator extends Generator {
 							dataStepCeil.getDoubleData(id, VariableHeadingY) * weightCeil;
 					Vector2D heading = GeometryFactory.createVector(headingX, headingY);
 
-					Vector2D velocity = GeometryFactory.createVector(0, 0);
+					double velocityX = (dataStepCeil.getDoubleData(id, VariablePositionX) -
+							dataStepFloor.getDoubleData(id, VariablePositionX)) / this.timeStepDuration;
+					double velocityY = (dataStepCeil.getDoubleData(id, VariablePositionY) -
+							dataStepFloor.getDoubleData(id, VariablePositionY)) / this.timeStepDuration;
+					Vector2D velocity = GeometryFactory.createVector(velocityX, velocityY);
 
 					carManager.updateState(idInteger, position, velocity, heading, currentSimulationTime);
 				}

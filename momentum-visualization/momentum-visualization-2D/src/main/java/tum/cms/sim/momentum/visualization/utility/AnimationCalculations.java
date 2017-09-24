@@ -88,7 +88,7 @@ public abstract class AnimationCalculations {
 				
 				if(CsvType.isCustomType(simReader.getCsvType())) {
 
-                    concurrentMovements.getChildren().addAll(createDynamicAtTimeStep(simReader, timeStep, coreController));
+                    concurrentMovements.getChildren().addAll(createDynamicAtTimeStep(timeStep, coreController, simReader));
 				}
 				
 				if(simReader.getCsvType().equals(CsvType.Pedestrian)) {
@@ -119,8 +119,9 @@ public abstract class AnimationCalculations {
 
 		double animationDurationInSecond = calculateAnimationDuration(coreController);
 		ParallelTransition concurrentMovementAnimation = createConcurrentAnimation();
-        ArrayList<Transition> customShapesAnimations = new ArrayList<Transition>(
-                dataStep.getIdentifications().size() * 2);
+
+		int arraySize = dataStep.isEmpty() ? 1 : dataStep.getIdentifications().size();
+		ArrayList<Transition> customShapesAnimations = customShapesAnimations = new ArrayList<Transition>(arraySize * 2);
 
 		if (!dataStep.isEmpty()) {
 
@@ -543,7 +544,7 @@ public abstract class AnimationCalculations {
 		return AnimationCalculations.updatePedestrianShapes(simulationOutputReader, dataStepCurrent, coreController);
 	}
 	
-	private static ParallelTransition createDynamicAtTimeStep(SimulationOutputReader simulationOutputReader, Double timeStep, CoreController coreController) throws Exception {
+	private static ParallelTransition createDynamicAtTimeStep(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {
 
 		SimulationOutputCluster dataStepCurrent = null;
 
