@@ -48,12 +48,27 @@ public class StaticState extends Unique {
 		return sizeWidth;
 	}
 
+	private double sizeHeight = 0;
+
+	public double getSizeHeight() {
+		return sizeHeight;
+	}
+
 
 	public StaticState(double sizeLength, 
 			double sizeWidth) {
 		
 		this.sizeLength = sizeLength;
 		this.sizeWidth = sizeWidth;
+	}
+
+	public StaticState(double sizeLength,
+					   double sizeWidth,
+					   double sizeHeight) {
+
+		this.sizeLength = sizeLength;
+		this.sizeWidth = sizeWidth;
+		this.sizeHeight = sizeHeight;
 	}
 	
 }

@@ -56,6 +56,8 @@ public class SharedSpacesComputations {
 		{
 			double timeToConflictPoint = SharedSpacesComputations.getTimeToConflictPoint(pedestrian.getPosition(), pedestrian.getVelocity(), otherPedestrian.getPosition(), otherPedestrian.getVelocity(), precision);
 
+
+			//System.out.println("pos " + pedestrian.getPosition() + " oPos" + otherPedestrian.getPosition());
 			Vector2D distanceVector = pedestrian.getPosition().subtract(otherPedestrian.getPosition());
 			double b = 0.5 * Math.sqrt(
 					Math.pow(distanceVector.getMagnitude() + distanceVector.subtract(otherPedestrian.getVelocity().multiply(timeStepDuration)).getMagnitude(),2) -

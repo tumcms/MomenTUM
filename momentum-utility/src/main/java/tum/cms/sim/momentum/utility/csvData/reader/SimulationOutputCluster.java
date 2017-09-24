@@ -123,7 +123,7 @@ public class SimulationOutputCluster {
 	}
 	
 	public boolean isEmpty() {
-		return dataStep == null ? true : false;
+		return dataStep == null;
 	}
 	
 	public boolean containsIdentification(String id) {

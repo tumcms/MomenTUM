@@ -82,7 +82,7 @@ public class NetworkWriterTarget extends WriterTarget {
 	@Override
 	public void writeData(WriterData writerData) {
 		String writerDataString = writerData.getData();
-		
+
 		try {
         	TextMessage message = session.createTextMessage(writerDataString);
         	messageProducer.send(message);
