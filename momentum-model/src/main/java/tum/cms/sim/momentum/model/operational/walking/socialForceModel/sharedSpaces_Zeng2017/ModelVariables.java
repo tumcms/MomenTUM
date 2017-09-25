@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2014;
+package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2017;
 
 import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 

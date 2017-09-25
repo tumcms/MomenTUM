@@ -276,4 +276,8 @@ public class GeometryFactory {
 		
 		return new Line2D(referencePoint, gradientVector);
 	}
+
+	public static Ray2D createRay2D(Vector2D start, Vector2D direction) {
+		return new Ray2D(start, direction);
+	}
 }

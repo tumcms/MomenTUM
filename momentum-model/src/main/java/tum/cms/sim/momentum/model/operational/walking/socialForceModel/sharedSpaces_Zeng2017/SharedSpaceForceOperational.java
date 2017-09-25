@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2014;
+package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2017;
 
 import java.util.Collection;
 import java.util.List;
@@ -60,10 +60,11 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	public CarManager getCarManager() {
 		return carManager;
 	}
-
 	public void setCarManager(CarManager carManager) {
 		this.carManager = carManager;
 	}
+
+	private boolean verboseMode = true;
 
 	@Override
 	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
@@ -94,10 +95,11 @@ public class SharedSpaceForceOperational extends WalkingModel {
 
         List<IPedestrian> otherPedestriansInVisualRange = perception.getPerceptedPedestrians(pedestrian, simulationState);
 
-        pedestrian.getMessageState().clearTopic("percepted pedestrians");
-		for (IPedestrian other : otherPedestriansInVisualRange) {
-
-			pedestrian.getMessageState().appendMessage("percepted pedestrians", other.getName());
+        if (verboseMode) {
+			pedestrian.getMessageState().clearTopic("percepted pedestrians");
+			for (IPedestrian other : otherPedestriansInVisualRange) {
+				pedestrian.getMessageState().appendMessage("percepted pedestrians", other.getName());
+			}
 		}
 
 		Vector2D acceleration = computeSharedSpaceAcceleration(pedestrian, otherPedestriansInVisualRange, simulationState.getTimeStepDuration());
@@ -147,12 +149,14 @@ public class SharedSpaceForceOperational extends WalkingModel {
 
 		Vector2D xAxis = GeometryFactory.createVector(1, 0);
 
-		pedestrian.getMessageState().addMessage("force driving", drivingForce.getMagnitude() +
-				", " + drivingForce.getAngleBetween(xAxis));
-		pedestrian.getMessageState().addMessage("force confl oth", repulsiveForceConflictingPedestrians.getMagnitude() + ", " +
-				repulsiveForceConflictingPedestrians.getAngleBetween(xAxis));
-		pedestrian.getMessageState().addMessage("force conf veh", repulsiveForceConflictingVehicle.getMagnitude() + ", " +
-				repulsiveForceConflictingVehicle.getAngleBetween(xAxis));
+		if (verboseMode) {
+			pedestrian.getMessageState().addMessage("force driving", drivingForce.getMagnitude() +
+					", " + drivingForce.getAngleBetween(xAxis));
+			pedestrian.getMessageState().addMessage("force confl oth", repulsiveForceConflictingPedestrians.getMagnitude() + ", " +
+					repulsiveForceConflictingPedestrians.getAngleBetween(xAxis));
+			pedestrian.getMessageState().addMessage("force conf veh", repulsiveForceConflictingVehicle.getMagnitude() + ", " +
+					repulsiveForceConflictingVehicle.getAngleBetween(xAxis));
+		}
 
 		Vector2D newAcceleration = drivingForce.sum(repulsiveForceConflictingPedestrians)
 				.sum(attractiveForceLeadingPedestrians).sum(repulsiveForceConflictingVehicle)

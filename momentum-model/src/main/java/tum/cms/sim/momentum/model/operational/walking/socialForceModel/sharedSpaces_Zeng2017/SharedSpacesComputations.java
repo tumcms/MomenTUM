@@ -30,17 +30,13 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2014;
+package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2017;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.utility.geometry.Ellipse2D;
-import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
-import tum.cms.sim.momentum.utility.geometry.Vector2D;
+import tum.cms.sim.momentum.utility.geometry.*;
 
 public class SharedSpacesComputations {
 
@@ -49,12 +45,11 @@ public class SharedSpacesComputations {
 	{
         // repulsive force from conflicting pedestrian
 
-
 		Vector2D force = GeometryFactory.createVector(0, 0);
 
 		for(IPedestrian otherPedestrian : otherPedestrians)
 		{
-			double timeToConflictPoint = SharedSpacesComputations.getTimeToConflictPoint(pedestrian.getPosition(), pedestrian.getVelocity(), otherPedestrian.getPosition(), otherPedestrian.getVelocity(), precision);
+			double timeToConflictPoint = SharedSpacesComputations.calculateTimeToConflictPoint(pedestrian.getPosition(), pedestrian.getVelocity(), otherPedestrian.getPosition(), otherPedestrian.getVelocity());
 
 
 			//System.out.println("pos " + pedestrian.getPosition() + " oPos" + otherPedestrian.getPosition());
@@ -88,63 +83,40 @@ public class SharedSpacesComputations {
 	}
 
 
-	public static double getTimeToConflictPoint(Vector2D mePosition, Vector2D meVelocity, Vector2D youPosition, Vector2D youVelocity, double precision)
+	public static Double calculateTimeToConflictPoint(Vector2D currentPosition, Vector2D currentVelocity, Vector2D otherPosition, Vector2D otherVelocity)
 	{
+		if(currentVelocity.isZero() || otherVelocity.isZero()) {
+			return Double.POSITIVE_INFINITY;
+		}
 
-		double x12 = mePosition.getXComponent() - mePosition.sum(meVelocity).getXComponent();
-		double x34 = youPosition.getXComponent() - youPosition.sum(youVelocity).getXComponent();
-		double y12 = mePosition.getYComponent() - mePosition.sum(meVelocity).getYComponent();
-		double y34 = youPosition.getYComponent() - youPosition.sum(youVelocity).getYComponent();
+		Ray2D currentRay = GeometryFactory.createRay2D(currentPosition, currentVelocity);
+		Ray2D otherRay = GeometryFactory.createRay2D(otherPosition, otherVelocity);
 
-		double c = x12 * y34 - y12 * x34;
-		if (Math.abs(c) < precision)
-		{
-			// lines are parallel
+		Vector2D conflictPoint = currentRay.intersectionPoint(otherRay);
+		if(conflictPoint != null) {
+			double curCos = currentVelocity.getNormalized().dot(conflictPoint.subtract(currentPosition).getNormalized());
+			double othCos = otherVelocity.getNormalized().dot(conflictPoint.subtract(otherPosition).getNormalized());
+			double curTimeToConflictPoint = (conflictPoint.subtract(currentPosition).getMagnitude() / currentVelocity.getMagnitude()) * curCos;
+			double othTimeToConflictPoint = (conflictPoint.subtract(otherPosition).getMagnitude() / otherVelocity.getMagnitude()) * othCos;
 
-			// mePos-->meVel-----youVel<--youPos
-			double distance_mePos_meVel = meVelocity.getMagnitude();
-			double distance_mePos_youVel = mePosition.distance(youPosition.sum(youVelocity));
-			double distance_youPos_youVel = youVelocity.getMagnitude();
-			double distance_meVel_youPos = mePosition.sum(meVelocity).distance(youPosition);
-
-			double distance_mePos_youPos = mePosition.distance(youPosition);
-
-			if( Math.abs(distance_mePos_meVel + distance_meVel_youPos - distance_mePos_youPos) < precision &&
-					Math.abs(distance_mePos_youVel + distance_youPos_youVel - distance_mePos_youPos) < precision)
-			{
-				// lines are identical, and velocity vectors point to each other
-				return 0.0;
-			}
-			else
-			{
-				// lines are parallel, and either not identical or the velocity vectors do not point to each other
+			if (curTimeToConflictPoint > 0 && othTimeToConflictPoint > 0) {
+				return Math.abs(curTimeToConflictPoint - othTimeToConflictPoint);
+			} else {
 				return Double.POSITIVE_INFINITY;
 			}
-
 		}
-		double a = mePosition.getXComponent() * mePosition.sum(meVelocity).getYComponent() - mePosition.getYComponent() * mePosition.sum(meVelocity).getXComponent();
-		double b = youPosition.getXComponent() * youPosition.sum(youVelocity).getYComponent() - youPosition.getYComponent() * youPosition.sum(youVelocity).getXComponent();
 
-		double conflictX = (a * x34 - b * x12) / c;
-		double conflictY = (a * y34 - b * y12) / c;
-
-		Vector2D conflictPoint = GeometryFactory.createVector(conflictX , conflictY);
-
-		double meCos = Math.cos(meVelocity.getAngleBetween(conflictPoint.subtract(mePosition)));
-		double youCos = Math.cos(youVelocity.getAngleBetween(conflictPoint.subtract(youPosition)));
-		double meTimeToConflictPoint = (conflictPoint.subtract(mePosition).getMagnitude() / meVelocity.getMagnitude()) * meCos;
-		double youTimeToConflictPoint = (conflictPoint.subtract(youPosition).getMagnitude() / youVelocity.getMagnitude()) * youCos;
-
-		if (meTimeToConflictPoint > 0 && youTimeToConflictPoint > 0) {
-			return Math.abs(meTimeToConflictPoint - youTimeToConflictPoint);
-		} else if(Double.isNaN(meTimeToConflictPoint) || Double.isNaN(youTimeToConflictPoint))
-		{
-			// this is the case, if no velocity or parallel trajectories
-			return Double.POSITIVE_INFINITY;
-		} else {
-			// this is the case, if pedestrian already passed the conflict point
-			return Double.POSITIVE_INFINITY;
+		Segment2D conflictSegment = currentRay.intersectionSegment(otherRay);
+		if(conflictSegment != null) {
+			return 0.0;
 		}
+
+		Ray2D conflictRay = currentRay.intersectionRay(otherRay);
+		if(conflictRay != null) {
+			return 0.0;
+		}
+
+		return Double.POSITIVE_INFINITY;
 	}
 	
 }
