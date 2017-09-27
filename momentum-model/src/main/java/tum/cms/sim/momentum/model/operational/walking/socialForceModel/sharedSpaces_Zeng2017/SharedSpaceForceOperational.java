@@ -145,17 +145,19 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		Vector2D repulsiveForceConflictingPedestrians = this.computeRepulsiveConflictingPedestrians(pedestrian, otherPedestrians, timeStepDuration);
 		Vector2D attractiveForceLeadingPedestrians = this.computeAttractiveForceLeadingPedestrians();
 		Vector2D repulsiveForceConflictingVehicle = this.computeRepulsiveForceConflictingVehicle(pedestrian);
-		Vector2D forceCrosswalkBoundary = this.computeForceCrosswalkBoundary();
-
-		Vector2D xAxis = GeometryFactory.createVector(1, 0);
+		Vector2D forceCrosswalkBoundary = this.computeForceCrosswalkBoundary(pedestrian);
 
 		if (verboseMode) {
-			pedestrian.getMessageState().addMessage("force driving", drivingForce.getMagnitude() +
-					", " + drivingForce.getAngleBetween(xAxis));
-			pedestrian.getMessageState().addMessage("force confl oth", repulsiveForceConflictingPedestrians.getMagnitude() + ", " +
-					repulsiveForceConflictingPedestrians.getAngleBetween(xAxis));
-			pedestrian.getMessageState().addMessage("force conf veh", repulsiveForceConflictingVehicle.getMagnitude() + ", " +
-					repulsiveForceConflictingVehicle.getAngleBetween(xAxis));
+			Vector2D xAxis = GeometryFactory.createVector(1, 0);
+
+			pedestrian.getMessageState().addMessage("force driving", String.format("%.5f", drivingForce.getMagnitude()) +
+					", " + String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(drivingForce))));
+			pedestrian.getMessageState().addMessage("force confl oth", String.format("%.5f", repulsiveForceConflictingPedestrians.getMagnitude()) + ", " +
+					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(repulsiveForceConflictingPedestrians))));
+			pedestrian.getMessageState().addMessage("force confl veh", String.format("%.5f", repulsiveForceConflictingVehicle.getMagnitude()) + ", " +
+					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(repulsiveForceConflictingVehicle))));
+			pedestrian.getMessageState().addMessage("force crosswal", String.format("%.5f", forceCrosswalkBoundary.getMagnitude()) + ", " +
+					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(forceCrosswalkBoundary))));
 		}
 
 		Vector2D newAcceleration = drivingForce.sum(repulsiveForceConflictingPedestrians)
@@ -187,10 +189,10 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		{
 			repulsiveForceConflictingPedestrians = SharedSpacesComputations.computeRepulsiveForceConflictingPedestrians(pedestrian, otherPedestrians, timeStepDuration,
 					modelVariables.getInteractionStrengthForRepulsiveForceFromSurroundingPedestrians(), modelVariables.getInteractionRangeForRelativeDistance(),
-					modelVariables.getInteractionRangForRelativeConflictingTime(), modelVariables.getComputationalPrecision());
+					modelVariables.getInteractionRangForRelativeConflictingTime(), modelVariables.getStrengthOfForcesExertedFromOtherPedestrians());
 		}
 		else {
-			Vector2D pedestrianInteractionForce = null;
+			Vector2D pedestrianInteractionForce;
 			for(IPedestrian other : otherPedestrians) {
 				pedestrianInteractionForce = this.socialForce.computePedestrianInteractionForce(pedestrian, other);
 				repulsiveForceConflictingPedestrians = repulsiveForceConflictingPedestrians.sum(pedestrianInteractionForce);				
@@ -216,7 +218,12 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		List<IRichCar> carsInVisualRange =  allCars.stream()
 				.filter(currentCar -> this.perception.isVisible(pedestrian, currentCar.getRectangle().getVertices()))
 				.collect(Collectors.toList());
-
+		if (verboseMode) {
+			pedestrian.getMessageState().clearTopic("percepted cars");
+			for (IRichCar car : carsInVisualRange) {
+				pedestrian.getMessageState().appendMessage("percepted cars", car.getName());
+			}
+		}
 
 		Vector2D force = GeometryFactory.createVector(0, 0);
 		for(IRichCar car : carsInVisualRange) {
@@ -226,11 +233,11 @@ public class SharedSpaceForceOperational extends WalkingModel {
 			if ( pedestrian.getVelocity().dot(carToPedestrianVector) > 0) {
 				Vector2D closestPoint = carRectangle.getPointClosestToVector(pedestrian.getPosition());
 
-				double mulitplier = modelVariables.getInteractionStrengthRepulsiveForceFromConflictingVehicle() *
+				double multiplier = modelVariables.getInteractionStrengthRepulsiveForceFromConflictingVehicle() *
 						Math.exp(-modelVariables.getInteractionRangeForRepulsiveForceFromConflictingVehicle() *
 								pedestrian.getPosition().subtract(closestPoint).getMagnitude());
 
-				Vector2D forceFromCurrentVehicle = carToPedestrianVector.getNormalized().multiply(mulitplier);
+				Vector2D forceFromCurrentVehicle = carToPedestrianVector.getNormalized().multiply(multiplier);
 				force = force.sum(forceFromCurrentVehicle);
 			}
 
@@ -239,14 +246,45 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		return force;
 	}
 	
-	private Vector2D computeForceCrosswalkBoundary()
+	private Vector2D computeForceCrosswalkBoundary(IOperationalPedestrian pedestrian)
 	{
 		// repulsive force or attractive force from the crosswalk boundary
+        List<TaggedArea> crosswalkAreas = this.scenarioManager.getTaggedAreas(TaggedArea.Type.Crosswalk);
 
-        List<TaggedArea> taggedAreas = this.scenarioManager.getTaggedAreas(TaggedArea.Type.Crosswalk);
+        TaggedArea nextCrosswalk = SharedSpacesComputations.findCorrespondingCrosswalk(pedestrian, crosswalkAreas);
+		Vector2D nearestCrosswalkBoundaryPoint = SharedSpacesComputations.findNearestCorsswalkBoundaryPoint(pedestrian, nextCrosswalk, modelVariables.getComputationalPrecision());
 
-		Vector2D force = GeometryFactory.createVector(0, 0);
-		return force;
+		if (verboseMode) {
+			if (nearestCrosswalkBoundaryPoint == null) {
+				pedestrian.getMessageState().addMessage("nearest crossw point", "null");
+			} else {
+				pedestrian.getMessageState().addMessage("nearest crossw point", nearestCrosswalkBoundaryPoint.toString());
+			}
+		}
+
+		if(nearestCrosswalkBoundaryPoint == null) {
+			return GeometryFactory.createVector(0.0, 0.0);
+		}
+
+		double distancePedestrianToCrosswalkPoint = pedestrian.getPosition().subtract(nearestCrosswalkBoundaryPoint).getMagnitude();
+		double multiplier;
+		Vector2D forceNormal;
+
+		if(nextCrosswalk.getGeometry().contains(pedestrian.getPosition())) {
+			// pedestrian inside the crosswalk
+			multiplier = modelVariables.getInteractionStrengthForRepulsiveForceFromCrosswalkBoundary() *
+					Math.exp(-modelVariables.getInteractionRangeForRepulsiveForceFromCrosswalkBoundary() * distancePedestrianToCrosswalkPoint);
+			forceNormal = pedestrian.getPosition().subtract(nearestCrosswalkBoundaryPoint);
+
+		} else {
+			// pedestrian outside the crosswalk
+			multiplier = modelVariables.getInteractionStrengthForAttractiveForceFromCrosswalkBoundary() *
+					Math.exp(-modelVariables.getInteractionRangeForAttractiveForceFromCrosswalkBoundary() * distancePedestrianToCrosswalkPoint);
+
+			forceNormal = nearestCrosswalkBoundaryPoint.subtract(pedestrian.getPosition());
+		}
+
+		return forceNormal.multiply(multiplier);
 	}
 	
 }

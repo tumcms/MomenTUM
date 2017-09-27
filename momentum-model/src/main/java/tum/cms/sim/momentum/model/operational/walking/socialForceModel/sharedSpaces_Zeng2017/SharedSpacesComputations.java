@@ -33,15 +33,19 @@
 package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2017;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
+import tum.cms.sim.momentum.data.layout.area.TaggedArea;
 import tum.cms.sim.momentum.utility.geometry.*;
 
 public class SharedSpacesComputations {
 
 	public static Vector2D computeRepulsiveForceConflictingPedestrians(IOperationalPedestrian pedestrian, Collection<IPedestrian> otherPedestrians, double timeStepDuration,
-																	   double interaction_strength_for_repulsive_force_from_surrounding_pedestrians, double interaction_range_for_relative_distance, double range_for_relative_conflicting_time, double precision)
+																	   double interaction_strength_for_repulsive_force_from_surrounding_pedestrians, double interaction_range_for_relative_distance,
+																	   double range_for_relative_conflicting_time, double strength_of_forces_exerted_from_other_pedestrians)
 	{
         // repulsive force from conflicting pedestrian
 
@@ -51,15 +55,13 @@ public class SharedSpacesComputations {
 		{
 			double timeToConflictPoint = SharedSpacesComputations.calculateTimeToConflictPoint(pedestrian.getPosition(), pedestrian.getVelocity(), otherPedestrian.getPosition(), otherPedestrian.getVelocity());
 
-
-			//System.out.println("pos " + pedestrian.getPosition() + " oPos" + otherPedestrian.getPosition());
 			Vector2D distanceVector = pedestrian.getPosition().subtract(otherPedestrian.getPosition());
 			double b = 0.5 * Math.sqrt(
 					Math.pow(distanceVector.getMagnitude() + distanceVector.subtract(otherPedestrian.getVelocity().multiply(timeStepDuration)).getMagnitude(),2) -
 							Math.pow(otherPedestrian.getVelocity().multiply(timeStepDuration).getMagnitude(),2));
 
 			// interaction angle factor that explains the anisotropic behavior
-			double omega = 1;
+			double omega = calculateInteractionAngleFactor(pedestrian.getVelocity(), distanceVector, strength_of_forces_exerted_from_other_pedestrians);
 
 			// normalized vector perpendicular to the tangent line of the elliptical force field of pedestrian b_i
             Ellipse2D forceEllipse = GeometryFactory.createEllipse(otherPedestrian.getPosition(),
@@ -118,5 +120,81 @@ public class SharedSpacesComputations {
 
 		return Double.POSITIVE_INFINITY;
 	}
-	
+
+
+	public static double calculateInteractionAngleFactor(Vector2D currentVelocity, Vector2D distance, double influenceStrength) {
+		// interaction angle factor that explains the anisotropic behavior
+
+		double phi = currentVelocity.getAngleBetween(distance);
+		double cosPhi = currentVelocity.getNormalized().dot(distance.getNormalized());
+
+		double q = 0.0;
+		if( -Math.PI <= phi && phi <= Math.PI ) {
+			q = 1.0;
+		}
+
+		return q * (influenceStrength + (1-influenceStrength) * (1+cosPhi) / 2.0);
+	}
+
+	public static TaggedArea findCorrespondingCrosswalk(IOperationalPedestrian pedestrian, List<TaggedArea> crosswalkAreas) {
+
+		pedestrian.getMessageState().clearTopic("crosswalk in");
+		pedestrian.getMessageState().clearTopic("crosswalk out");
+
+		Double currentMinDistance = Double.POSITIVE_INFINITY;
+		double currentDistance = 0;
+		TaggedArea closestCrosswalk = null;
+
+		for(TaggedArea crosswalkArea : crosswalkAreas) {
+
+			if(crosswalkArea.getGeometry().contains(pedestrian.getPosition())) {
+				pedestrian.getMessageState().appendMessage("crosswalk in", crosswalkArea.getName());
+				return crosswalkArea;
+			} else {
+				pedestrian.getMessageState().appendMessage("crosswalk out", crosswalkArea.getName());
+				currentDistance = crosswalkArea.getGeometry().distanceBetween(pedestrian.getPosition());
+
+				if(currentDistance < currentMinDistance) {
+					closestCrosswalk = crosswalkArea;
+					currentMinDistance = currentDistance;
+				}
+
+			}
+		}
+
+		return closestCrosswalk;
+	}
+
+	public static Vector2D findNearestCorsswalkBoundaryPoint(IOperationalPedestrian pedestrian, TaggedArea nextCrosswalk, double epsilon) {
+
+		List<Segment2D> segments = nextCrosswalk.getGeometry().getSegments();
+		List<Segment2D> longestSegments = segments.stream()
+				.sorted((f1, f2) -> Double.compare(f2.getLenghtDistance(), f1.getLenghtDistance()))
+				.limit(2)
+				.collect(Collectors.toList());
+
+		Vector2D currentPoint = null;
+		Vector2D closestPoint = null;
+		double currentDistance = 0;
+		double minDistance = Double.POSITIVE_INFINITY;
+
+		for (Segment2D seg : longestSegments) {
+			List<Vector2D> segmentVertices = seg.getVertices();
+			Vector2D segmentDirection = segmentVertices.get(0).subtract(segmentVertices.get(1));
+
+			currentPoint = seg.getPointClosestToVector(pedestrian.getPosition());
+			Vector2D currentDistanceVector = currentPoint.subtract(pedestrian.getPosition());
+			currentDistance = currentDistanceVector.getMagnitude();
+
+			boolean isOrthogonal = Math.abs(segmentDirection.getNormalized().dot(currentDistanceVector.getNormalized())) < epsilon;
+
+			if(currentDistance < minDistance && isOrthogonal) {
+				closestPoint = currentPoint;
+				minDistance = currentDistance;
+			}
+		}
+
+		return closestPoint;
+	}
+
 }

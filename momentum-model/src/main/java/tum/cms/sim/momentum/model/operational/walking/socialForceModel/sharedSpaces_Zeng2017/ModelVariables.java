@@ -47,6 +47,12 @@ public class ModelVariables {
 	private double relaxationTime;
 
 	/**
+	 * Lambda_alpha, range: 0.0 - 1.0
+	 * Strength of the influence of forces exerted from other pedestrians.
+	 */
+	private double strengthOfForcesExertedFromOtherPedestrians = 0.7;
+
+	/**
 	 * A^r_beta [m/s^2], range: 0.1-2.0
 	 */
 	private double interactionStrengthForRepulsiveForceFromSurroundingPedestrians = 1.28;
@@ -110,6 +116,10 @@ public class ModelVariables {
 		return relaxationTime;
 	}
 
+	public double getStrengthOfForcesExertedFromOtherPedestrians() {
+		return strengthOfForcesExertedFromOtherPedestrians;
+	}
+
 	public double getInteractionStrengthForRepulsiveForceFromSurroundingPedestrians() {
 		return interactionStrengthForRepulsiveForceFromSurroundingPedestrians;
 	}
@@ -160,5 +170,4 @@ public class ModelVariables {
 		
 		// TODO: add all variables
 	}
-	
 }
