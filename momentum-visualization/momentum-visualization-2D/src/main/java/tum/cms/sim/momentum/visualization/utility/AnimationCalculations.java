@@ -219,6 +219,7 @@ public abstract class AnimationCalculations {
 
 							CarModel carModel = (CarModel) customVisualization;
 
+
 							// use default values, if no other are available
 							double length = 5;
 							if(dataStep.getDoubleData(id, OutputType.length.name()) != null)
@@ -241,15 +242,15 @@ public abstract class AnimationCalculations {
                                     dataStep.getDoubleData(id, OutputType.yHeading.name()),
                                     customizationController.getCustomizationModel());
 
+                            carModel.setVisibility(true);
 							customMap.put(id, customVisualization);
-
 
 							newCustomMap.put(id, carModel);
 						} else { // set position
 
 							customMap = visualizationModel.getSpecificCustomShapesMap(type);
 							CarModel carModel = (CarModel) customMap.get(id);
-
+							carModel.setVisibility(true);
 
 							if(animationDurationInSecond > 0 && carModel.isVisible() &&
                                     animationNeeded(carModel.getIdentification(), carModel.getPositionX(), carModel.getPositionY(),
@@ -293,7 +294,7 @@ public abstract class AnimationCalculations {
 		for (ShapeModel customShape : customMap.values()) {
             switch (type) {
                 case Car:
-                    if(!dataStep.isEmpty() && !dataStep.containsIdentification(customShape.getIdentification())) {
+                    if(dataStep.isEmpty() || !dataStep.isEmpty() && !dataStep.containsIdentification(customShape.getIdentification())) {
                         customShape.setVisibility(false);
                     }
                     break;
