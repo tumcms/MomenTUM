@@ -56,6 +56,10 @@ public class TreeKD<T> {
 		this.dimension = dimension;
 	}
 	
+	public int size() {
+		
+		return kdTree.size();
+	}
 	/**
 	 * This method adds new elements into the tree.
 	 * 
@@ -70,7 +74,7 @@ public class TreeKD<T> {
 			double[] simplePosition = new double[this.dimension];
 			simplePosition[0] = position.getXComponent();
 			simplePosition[1] = position.getYComponent();
-			
+	
 			kdTree.insert(simplePosition, element);
 		} 
 		catch (Exception exception) {
@@ -91,23 +95,54 @@ public class TreeKD<T> {
 	public List<T> computeNearestEuclidean(Vector2D position, double distance) throws Exception {
 		
 		List<T> results = null;
+	
+		double[] simplePosition = new double[this.dimension];
+		simplePosition[0] = position.getXComponent();
+		simplePosition[1] = position.getYComponent();
 		
-		try {
-			
-			double[] simplePosition = new double[this.dimension];
-			simplePosition[0] = position.getXComponent();
-			simplePosition[1] = position.getYComponent();
-			
-			results = kdTree.nearestEuclidean(simplePosition, distance);
-		} 
-		catch (Exception exception) {
-			
-			throw exception;
-		}
+		results = kdTree.nearestEuclidean(simplePosition, distance);
 		
 		return results;
 	}
 	
+	/**
+	 * This method finds the number nearest neighbors of the position
+	 * @param position, origin regarding the distance check
+	 * @param number, how many neighbors
+	 * @return the list of found objects
+	 * @throws If the operation failed the exception underlying tree implementation is throw
+	 */
+	public List<T> computeNearestNeighbor(Vector2D position, int number) throws Exception {
+
+		double[] simplePosition = new double[this.dimension];
+		simplePosition[0] = position.getXComponent();
+		simplePosition[1] = position.getYComponent();
+
+		return this.kdTree.nearest(simplePosition, number);
+	}
+	
+	/**
+	 * Wraps insert and does it for a list.
+	 * The index of positions correspond to the index of objects
+	 * 
+	 * @param positions, insert elements
+	 * @param objects, the objects to insert
+	 * @throws Exception 
+	 */
+	public void insertAll(List<Vector2D> positions, List<T> objects) throws Exception {
+		
+		for(int iter = 0; iter < positions.size(); iter++) {
+			
+			double[] simplePosition = new double[2];
+			simplePosition[0] = positions.get(iter).getXComponent();
+			simplePosition[1] = positions.get(iter).getYComponent();
+			
+			if(kdTree.search(simplePosition) == null) {
+			
+				this.insert(positions.get(iter), objects.get(iter));
+			}
+		}
+	}
 	/**
 	 * This method removes an element from the tree based on the element's position.
 	 * However, the element is only marked as deleted for performance reasons.
@@ -117,17 +152,10 @@ public class TreeKD<T> {
 	 */
 	public void remove(Vector2D elementsPosition) throws Exception {
 		
-		try {
-
-			double[] simplePosition = new double[2];
-			simplePosition[0] = elementsPosition.getXComponent();
-			simplePosition[1] = elementsPosition.getYComponent();
-			
-			kdTree.delete(simplePosition);
+		double[] simplePosition = new double[2];
+		simplePosition[0] = elementsPosition.getXComponent();
+		simplePosition[1] = elementsPosition.getYComponent();
 		
-		} catch (Exception exception) {
-			
-			throw exception;
-		}
+		kdTree.delete(simplePosition);
 	}
 }
