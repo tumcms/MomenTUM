@@ -1,6 +1,8 @@
 # MomenTUM
 momentum-visualization-2D.properties
 
+#AutoCAD
+*.bkp
 # Eclipse
 .classpath
 .project
