@@ -221,11 +221,15 @@ public class DynamicFloorfieldOperational extends WalkingModel {
 				
 			if (currentStock >= cellEdgeSize * FastMath.sqrt(2.0) && layoutLattice.getNeighborhoodType() == NeighbourhoodType.Touching) {
 				
-				reachableCells = QuadraticLatticCalculation.getAllMooreNeighborIndices(currentCellIndex);
+				reachableCells = QuadraticLatticCalculation.getAllMooreNeighborIndices(currentCellIndex,
+						layoutLattice.getNumberOfColumns(),
+						layoutLattice.getNumberOfRows());
 			}
 			else if (currentStock >= cellEdgeSize) {
 				
-				reachableCells = QuadraticLatticCalculation.getAllNeumannNeighborIndices(currentCellIndex);
+				reachableCells =  QuadraticLatticCalculation.getAllNeumannNeighborIndices(currentCellIndex,
+						layoutLattice.getNumberOfColumns(),
+						layoutLattice.getNumberOfRows());
 			}
 
 			break;

@@ -292,25 +292,25 @@ public class StockOperational extends WalkingModel {
 		if (walkPotential == WalkPotentialType.None) {
 			return reachableCells;
 		}
-		
-		switch (lattice.getType()) {
-		
-		case Hexagon:
-			break;
-			
-		case Quadratic:
-				
-			if (walkPotential == WalkPotentialType.EdgeNeighbour) {
-				reachableCells = QuadraticLatticCalculation.getAllNeumannNeighborIndices(cellIndexPedestrian);
-			}
-			if (walkPotential == WalkPotentialType.TouchingNeighbour) {
-				reachableCells = QuadraticLatticCalculation.getAllMooreNeighborIndices(cellIndexPedestrian);
-			}
-			break;
-			
-		default:
-			break;		
-		}
+		reachableCells = lattice.getAllNeighborIndices(cellIndexPedestrian);
+//		switch (lattice.getType()) {
+//		
+//		case Hexagon:
+//			break;
+//			
+//		case Quadratic:
+//				
+//			//if (walkPotential == WalkPotentialType.EdgeNeighbour) {
+//				reachableCells = lattice.getAllNeighborIndices(cellIndexPedestrian);
+//			//}
+//			//if (walkPotential == WalkPotentialType.TouchingNeighbour) {
+//				//reachableCells = QuadraticLatticCalculation.getAllMooreNeighborIndices(cellIndexPedestrian);
+//			//}
+//			break;
+//			
+//		default:
+//			break;		
+//		}
 		return reachableCells;
 	}
 	
