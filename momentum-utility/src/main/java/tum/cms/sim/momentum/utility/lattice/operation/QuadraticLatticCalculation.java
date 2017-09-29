@@ -83,7 +83,7 @@ public class QuadraticLatticCalculation {
 		return  neighborCoordinate ;	
 	}
 	
-	public static ArrayList<CellIndex> getAllMooreNeighborIndices(CellIndex cellIndex) {
+	public static ArrayList<CellIndex> getAllMooreNeighborIndices(CellIndex cellIndex, int maxX, int maxY) {
 		
 		int row = cellIndex.getRow();
 		int column = cellIndex.getColumn();
@@ -92,7 +92,15 @@ public class QuadraticLatticCalculation {
 		// 9 directions by  Moore quadratic cells
 		for (int direction = 0; direction < 8; direction++) { 
 			
-			listOfNeighbors.add(LatticeTheoryFactory.createCellIndex(QuadraticLatticCalculation.getNeighborMoore(row, column, direction)));
+			CellIndex index = LatticeTheoryFactory.createCellIndex(QuadraticLatticCalculation.getNeighborMoore(row, column, direction));
+			if(index.getColumn() < 0 || index.getRow() < 0) {
+				continue;
+			}
+			
+			if(index.getColumn() > maxX - 1 || index.getRow() > maxY - 1) {
+				continue;
+			}
+			listOfNeighbors.add(index);
 		}	
 		
 		return listOfNeighbors;
@@ -106,7 +114,7 @@ public class QuadraticLatticCalculation {
 		return  neighborCoordinate ;	
 	}
 	
-	public static ArrayList<CellIndex> getAllNeumannNeighborIndices(CellIndex cellIndex) {
+	public static ArrayList<CellIndex> getAllNeumannNeighborIndices(CellIndex cellIndex, int maxX, int maxY) {
 		
 		int row = cellIndex.getRow();
 		int column = cellIndex.getColumn();
@@ -118,6 +126,10 @@ public class QuadraticLatticCalculation {
 			CellIndex index = LatticeTheoryFactory.createCellIndex(QuadraticLatticCalculation.getNeighborNeumann(row, column, direction));
 			
 			if(index.getColumn() < 0 || index.getRow() < 0) {
+				continue;
+			}
+			
+			if(index.getColumn() > maxX - 1 || index.getRow() > maxY - 1) {
 				continue;
 			}
 			

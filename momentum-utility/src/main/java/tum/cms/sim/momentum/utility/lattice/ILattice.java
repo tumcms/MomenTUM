@@ -137,7 +137,11 @@ public interface ILattice extends IUnique {
 	List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, Occupation occupation);
 
 	List<CellIndex> occupyAllSegmentCells(List<Segment2D> segments, Occupation occupation);
+	
+	List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, double value);
 
+	List<CellIndex> occupyAllSegmentCells(List<Segment2D> segments, double value);
+	
 	void setAllCells(Occupation occupation);
 
 	void setAllCells(Double value);
@@ -156,6 +160,10 @@ public interface ILattice extends IUnique {
 
 	void paintLatticeWithValues();
 
+	int computeDistanceMap(List<CellIndex> occupiedCells);
+	
+	List<List<CellIndex>> findLocalMinimal(int globalMaximal, int globalMinimal);
+	
 	/**
 	 * from http://playtechs.blogspot.de/2007/03/raytracing-on-grid.html
 	 * @param from

@@ -84,7 +84,12 @@ public class EdgeVisibilityAngleBasedReducedModel extends GraphOperation {
         while (maxIteration-- > 0 && !isConnected) { // try largest alpha possible, the larger the less edges
         	
         	graph.disconnectAllVertices();
-        	edgeConnector.connectVertices(blockingGeometries, graph, knownSeedVertices, alpha, visibilityTolerance);
+        	try {
+				edgeConnector.connectVertices(blockingGeometries, graph, knownSeedVertices, alpha, visibilityTolerance);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	        isConnected = this.checkVertexSeedConnectivity(graph, knownSeedVertices);
             alpha = alpha / 2.0; 
         }
