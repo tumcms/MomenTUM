@@ -117,17 +117,17 @@ public class Path implements IimmutablePath {
 		return vertexPath.get(currentVertexIndex);
 	}
 
-	public Vertex getNextVertex() {
-		
-		if(vertexPath.size() == 0 || vertexPath.size() < currentVertexIndex + 2) {
-
-			return null;
-		}
-		else {
-			
-			return vertexPath.get(currentVertexIndex + 1);
-		}
-	}
+//	public Vertex getNextVertex() {
+//		
+//		if(vertexPath.size() == 0 || vertexPath.size() < currentVertexIndex + 2) {
+//
+//			return null;
+//		}
+//		else {
+//			
+//			return vertexPath.get(currentVertexIndex + 1);
+//		}
+//	}
 	
 	public synchronized void setCurrentVertex(Vertex currentVertex) {
 	  	

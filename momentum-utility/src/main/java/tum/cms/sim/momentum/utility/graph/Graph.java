@@ -158,7 +158,7 @@ public class Graph extends Unique implements IHasProperties {
     
     public Edge getEdge(Vertex startVertex, Vertex endVertex) {
     	
-    	if(startVertex == endVertex) {
+    	if(startVertex == endVertex || startVertex == null || endVertex == null) {
     		
     		return null;
     	}

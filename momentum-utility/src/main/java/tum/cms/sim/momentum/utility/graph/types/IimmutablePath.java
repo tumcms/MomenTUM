@@ -49,6 +49,4 @@ public interface IimmutablePath {
 	public Vertex getCurrentVertex();
 	
 	public Vertex getFinalVertex();
-	
-	public Vertex getNextVertex();
 }

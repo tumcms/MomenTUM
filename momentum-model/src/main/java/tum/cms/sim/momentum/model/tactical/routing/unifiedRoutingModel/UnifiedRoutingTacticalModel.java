@@ -174,38 +174,80 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 
 	@Override
 	public void callBeforeBehavior(SimulationState simulationState, Collection<IRichPedestrian> pedestrians) {
-		
+		 
 		// Nothing to do
 	}
 	
 	@Override
 	public void callPedestrianBehavior(ITacticalPedestrian pedestrian, SimulationState simulationState) {
-		
-		Vertex start = this.findNavigationStartPoint(pedestrian, this.perception, this.scenarioManager);
-		Vertex end = this.scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());	
-		
+	
 		UnifiedRoutingAlgorithm routingAlgorithm = this.getRoutingAlgorithm(simulationState);
 		
 		routingAlgorithm.setExtension((UnifiedRoutingPedestrianExtension)pedestrian.getExtensionState(this));
 		routingAlgorithm.updateWeightName(simulationState.getCalledOnThread());
 		routingAlgorithm.setCurrentPedestrian(pedestrian);
 		routingAlgorithm.setCurrentPerception(perception);
+		
+		Vertex start = this.findNavigationStartPoint(pedestrian, this.perception, this.scenarioManager);
+ 		Vertex end = this.scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());	
+		
 		Path route = null;
+		Path lastRoute = null;
 		
-		if(!routingAlgorithm.isInDecisionWaiting(simulationState, this.scenarioManager.getGraph(), start)) {
+		Vertex firstNode = null;
+		Vertex nextToCurrentVisit = null;
+		
+		while(true) {
 			
-			route = this.navigate(this.perception,
-					this.scenarioManager.getGraph(),
-					start, 
-					end,
-					routingAlgorithm);		
+			if(!routingAlgorithm.isInDecisionWaiting(simulationState, this.scenarioManager.getGraph(), start)) {
+				
+				route = this.navigate(this.perception,
+						this.scenarioManager.getGraph(),
+						start, 
+						end,
+						routingAlgorithm);	
+				
+				if(firstNode == null) {
+					
+					firstNode = route.getFirstVertex();
+				}
+			}
+			else {
+			
+				route = new Path(start, start);
+				break;
+			}
+
+			if(route == null || 
+			   !perception.isVisible(pedestrian.getPosition(), route.getCurrentVertex()) ||
+			   route.getCurrentVertex().getId().equals(end.getId())) {
+				
+				nextToCurrentVisit = route.getCurrentVertex();
+				
+				if(lastRoute != null) {
+					
+					route = lastRoute;
+				}
+			
+				break;
+			}
+			
+			lastRoute = route;
+			start = route.getCurrentVertex();
+			
+			if(start.getId().intValue() == end.getId().intValue()) {
+				
+				route = lastRoute;
+				break;
+			}
 		}
-		else {
 		
-			route = new Path(start, start);
-		}
+		route.setFirstVertex(firstNode);
+		route.getVertexPath().set(0, firstNode);
 		
 		RoutingState routingState = this.updateRouteState(this.perception, pedestrian, route);
+		routingState.setNextToCurrentVisit(nextToCurrentVisit);
+		
 		pedestrian.setRoutingState(routingState);	
 	}
 	

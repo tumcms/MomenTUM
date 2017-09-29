@@ -51,7 +51,7 @@ public class UnifiedRoutingConstant {
 	/*
 	 * SALL Constants
 	 */
-    public static double SallLegAngleThreshold = 15.0 * ((2.0 * FastMath.PI) / 360.0); //20.0
+    public static double SallLegAngleThreshold = 20.0 * ((2.0 * FastMath.PI) / 360.0); //20.0
     // 15 degree for huge simulation scenarios with no sharp edges
     // 20 degree for small simulation scenarios with sharp edges
     // 30 for the searching algorithm

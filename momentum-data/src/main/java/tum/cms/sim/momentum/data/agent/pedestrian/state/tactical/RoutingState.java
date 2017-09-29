@@ -51,10 +51,15 @@ public class RoutingState {
 		return nextVisit;
 	}
 
-	private Vertex nextToNextVisit = null;
+	private Vertex nextToCurrentVisit = null;
 	
-	public Vertex getNextToNextVisit() {
-		return nextToNextVisit;
+	public Vertex getNextToCurrentVisit() {
+		return nextToCurrentVisit;
+	}
+	
+	public void setNextToCurrentVisit(Vertex nextToCurrent) {
+		
+		this.nextToCurrentVisit = nextToCurrent;
 	}
 
 	private Vertex nextToLastVisit = null;
@@ -72,13 +77,11 @@ public class RoutingState {
 	public RoutingState(Set<Vertex> visitedVertices,
 			Vertex nextToLastVist,
 			Vertex lastVisit,
-			Vertex nextVisit,
-			Vertex nextToNextVisit) {
+			Vertex nextVisit) {
 		
 		this.lastVisit = lastVisit;
 		this.nextToLastVisit = nextToLastVist;
 		this.nextVisit = nextVisit;
-		this.nextToNextVisit = nextToNextVisit;
 		this.visited = visitedVertices;
 	}
 

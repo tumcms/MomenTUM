@@ -72,9 +72,10 @@ public class IterativeShortestPathAlgorithm {
 		}
 		
 		Vertex next = start;
-		int sections = 0;
+		path.appendVertex(start);
+		//int sections = 0;
 		
-		while(sections++ < depth) {
+		//while(sections++ < depth) {
 			
 			next = selectBestSuccessor(graph, visited, previousVertex, start, target);
 	    	
@@ -85,15 +86,15 @@ public class IterativeShortestPathAlgorithm {
 	        	depth = 0;
 	        }
 	        
-	        start = next;
-	        
+	        previousVertex = start;
 	        path.appendVertex(next);
+	        //start = next;
 	        
-	        if(sections == 1) {
+	       // if(sections == 1) {
 	        	
-	        	 path.setCurrentVertex(next);
-	        }
-		}
+	         path.setCurrentVertex(next);
+	        //}
+		//}
 
 		return path;
 	}

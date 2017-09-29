@@ -39,6 +39,7 @@ import java.util.Set;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.model.PedestrianBehaviorModel;
 import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.underylingModels.AvoidanceCalculator;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.underylingModels.BeelineHeuristicsCalculator;
@@ -354,8 +355,12 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 //			emotionalWeight = 1.0;
 //		}
 
+		// in case of a depth search, follow the direct path algorithms to the next node,
+		// this is reseted for each routing call
+		
 		// finalize 
-		return spatialWeight * (1.0 - this.currentExtension.getHerdingProportion()) +
+		return spatialWeight * (1.0 - this.currentExtension.getHerdingProportion()) * 0.9 +
+				0.1 * PedestrianBehaviorModel.getRandom().nextDouble() +
 		   socialWeight * this.currentExtension.getHerdingProportion() +
 			   emotionalWeight;
 	}

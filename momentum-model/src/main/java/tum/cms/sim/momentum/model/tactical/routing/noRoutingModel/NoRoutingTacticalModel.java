@@ -80,7 +80,7 @@ public class NoRoutingTacticalModel extends RoutingModel {
 			Vertex originVertex = GraphTheoryFactory.createVertex(originArea.getGeometry());
 			Vertex targetVertex = GraphTheoryFactory.createVertex(pedestrian.getNextNavigationTarget().getGeometry());
 
-			RoutingState routingState = new RoutingState(null, null, originVertex, targetVertex, null);	
+			RoutingState routingState = new RoutingState(null, null, originVertex, targetVertex);	
 			pedestrian.setRoutingState(routingState);
 		}
 	}
