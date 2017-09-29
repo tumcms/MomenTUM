@@ -100,21 +100,26 @@ public abstract class GeometryModelBusinessLogic {
 								customizationController, visualizationController.getVisibilitiyModel(), vertex));
 					}
 
-					for (EdgeConfiguration edge : graphConfig.getEdges()) {
-						EdgeModel currentEdgeModel = new EdgeModel(coreController, customizationController,
-								visualizationController.getVisibilitiyModel(), tempVertexMap.get(edge.getIdLeft()),
-								tempVertexMap.get(edge.getIdRight()));
-
-						tempEdgeMap.put(currentEdgeModel.getIdentification(), currentEdgeModel);
-
-						tempVertexMap.get(edge.getIdLeft()).addAdjacentEdge(currentEdgeModel);
-						tempVertexMap.get(edge.getIdRight()).addAdjacentEdge(currentEdgeModel);
+					if(graphConfig.getEdges() != null) {
+						for (EdgeConfiguration edge : graphConfig.getEdges()) {
+							EdgeModel currentEdgeModel = new EdgeModel(coreController, customizationController,
+									visualizationController.getVisibilitiyModel(), tempVertexMap.get(edge.getIdLeft()),
+									tempVertexMap.get(edge.getIdRight()));
+	
+							tempEdgeMap.put(currentEdgeModel.getIdentification(), currentEdgeModel);
+	
+							tempVertexMap.get(edge.getIdLeft()).addAdjacentEdge(currentEdgeModel);
+							tempVertexMap.get(edge.getIdRight()).addAdjacentEdge(currentEdgeModel);
+						}
 					}
 				});
 			}
-
+			
 			visualizationController.getVisualizationModel().getEdgeShapes().clear();
-			visualizationController.getVisualizationModel().putEdgeShapes(tempEdgeMap);
+
+			if(tempEdgeMap != null) {
+				visualizationController.getVisualizationModel().putEdgeShapes(tempEdgeMap);
+			}
 
 			visualizationController.getVisualizationModel().getVertexShapes().clear();
 			visualizationController.getVisualizationModel().putVertexShapes(tempVertexMap);

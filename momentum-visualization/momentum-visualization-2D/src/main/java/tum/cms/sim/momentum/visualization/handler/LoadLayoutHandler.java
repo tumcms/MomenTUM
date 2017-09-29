@@ -89,12 +89,17 @@ public class LoadLayoutHandler extends LoadHandler {
 				coreController.getInteractionViewController().getTimeLineModel().setTimeStepDuration(
 					configurationManager.getSimulatorConfiguration().getTimeState().getTimeStepDuration());
 			}
-			else {
+			else if(configurationManager.getSimulatorConfiguration().getSimEnd() != null){
 				
 				coreController.getInteractionViewController().getTimeLineModel().setEndTime(
 						configurationManager.getSimulatorConfiguration().getSimEnd());
 					coreController.getInteractionViewController().getTimeLineModel().setTimeStepDuration(
 						configurationManager.getSimulatorConfiguration().getTimeStepDuration());
+			}
+			else {
+				
+				coreController.getInteractionViewController().getTimeLineModel().setEndTime(0.0);
+					coreController.getInteractionViewController().getTimeLineModel().setTimeStepDuration(0.0);
 			}
 			
 			UserPreferenceHandler.putProperty(PropertyType.layoutPath, file.getParent());
