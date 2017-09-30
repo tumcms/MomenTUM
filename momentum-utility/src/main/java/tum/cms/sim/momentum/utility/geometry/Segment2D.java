@@ -32,8 +32,12 @@
 
 package tum.cms.sim.momentum.utility.geometry;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.math3.util.FastMath;
 import org.dyn4j.geometry.AABB;
 import org.dyn4j.geometry.Mass;
@@ -231,6 +235,37 @@ public class Segment2D extends Geometry2D {
 		}
 		
 		return intersections;
+	}
+
+	public ArrayList<Segment2D> getSegmentSplittedByPolygon(Polygon2D polygon) {
+		ArrayList<Segment2D> segmentList = new ArrayList<>();
+
+		ArrayList<Vector2D> segmentListPoints = new ArrayList<>();
+		segmentListPoints.add(this.getFirstPoint());
+		segmentListPoints.addAll(this.getIntersection(polygon));
+		segmentListPoints.add(this.getLastPoint());
+
+		Comparator<Vector2D> byDistance = (e1, e2) -> Double.compare(
+				e1.distance(this.getFirstPoint()), e2.distance(this.getFirstPoint()));
+
+		segmentListPoints = segmentListPoints.stream()
+				.sorted(byDistance)
+				.collect(Collectors.toCollection(ArrayList::new));
+
+		Vector2D tempPosPrevious = null;
+		for(Vector2D tempPosCurrent : segmentListPoints) {
+			if(tempPosPrevious == null) {
+				tempPosPrevious = tempPosCurrent;
+				continue;
+			}
+
+			if(!tempPosPrevious.equals(tempPosCurrent)) {
+				segmentList.add(GeometryFactory.createSegment(tempPosPrevious, tempPosCurrent));
+				tempPosPrevious = tempPosCurrent;
+			}
+		}
+
+		return segmentList;
 	}
 
 	@Override

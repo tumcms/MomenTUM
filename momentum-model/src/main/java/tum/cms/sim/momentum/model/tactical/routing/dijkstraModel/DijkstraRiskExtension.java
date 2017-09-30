@@ -30,30 +30,38 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.data.layout.area;
+package tum.cms.sim.momentum.model.tactical.routing.dijkstraModel;
 
-import java.util.List;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.utility.graph.Graph;
+import tum.cms.sim.momentum.utility.graph.Path;
+import tum.cms.sim.momentum.utility.graph.Vertex;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.ShortestPathAlgorithm;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.AStarEuklidWeightCalculator;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.DijkstraWeightCalculator;
 
-import tum.cms.sim.momentum.utility.geometry.Polygon2D;
+public class DijkstraRiskExtension implements IPedestrianExtension {
 
-public class TaggedArea extends Area {
-	
-	// better use enum from configuration?
-	public enum Type {
-		Crosswalk,
-		Sidewalk,
-		Footway
+	private ShortestPathAlgorithm shortestPathAlgorithm = null;
+	private AStarEuklidWeightCalculator calculator = null;
+	private String vertexWeightName = null;
+
+	public DijkstraRiskExtension(String weightNameEdge, String weightForPedestrian) {
+
+		this.vertexWeightName = weightNameEdge + weightForPedestrian;
+		this.calculator = new AStarEuklidWeightCalculator(weightNameEdge, weightForPedestrian);
+		this.shortestPathAlgorithm = new ShortestPathAlgorithm(this.calculator);
 	}
 
-	private Type type = null;
-	
-	public TaggedArea(int id, String name, Polygon2D polygon, List<String> categories, Type type) {
-		super(id, name, polygon, categories);
-		this.type = type;
+	public Path route(Graph graph, Vertex start, Vertex target) {
+
+		graph.getVertices().stream().forEach(vertex -> vertex.setWeight(this.vertexWeightName, Double.MAX_VALUE));
+
+		return this.shortestPathAlgorithm.calculateShortestPath(graph, start, target);
 	}
-	
-	public Type getType()
-	{
-		return this.type;
+
+	public void removeWeightsForPedestrian(Graph graph) {
+
+		graph.getVertices().stream().forEach(vertex -> vertex.removeWeight(this.vertexWeightName));
 	}
 }

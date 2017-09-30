@@ -93,16 +93,7 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	@Override
 	public void callPedestrianBehavior(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 
-        List<IPedestrian> otherPedestriansInVisualRange = perception.getPerceptedPedestrians(pedestrian, simulationState);
-
-        if (verboseMode) {
-			pedestrian.getMessageState().clearTopic("percepted pedestrians");
-			for (IPedestrian other : otherPedestriansInVisualRange) {
-				pedestrian.getMessageState().appendMessage("percepted pedestrians", other.getName());
-			}
-		}
-
-		Vector2D acceleration = computeSharedSpaceAcceleration(pedestrian, otherPedestriansInVisualRange, simulationState.getTimeStepDuration());
+		Vector2D acceleration = computeSharedSpaceAcceleration(pedestrian, simulationState);
 		
 		Vector2D deltaVelocity = acceleration.multiply(simulationState.getTimeStepDuration());
 		Vector2D velocity = pedestrian.getVelocity().sum(deltaVelocity);
@@ -139,10 +130,10 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		
 	}
 	
-	private Vector2D computeSharedSpaceAcceleration(IOperationalPedestrian pedestrian, Collection<IPedestrian> otherPedestrians, double timeStepDuration)
+	private Vector2D computeSharedSpaceAcceleration(IOperationalPedestrian pedestrian, SimulationState simulationState)
 	{
 		Vector2D drivingForce = this.computeDrivingForce(pedestrian);
-		Vector2D repulsiveForceConflictingPedestrians = this.computeRepulsiveConflictingPedestrians(pedestrian, otherPedestrians, timeStepDuration);
+		Vector2D repulsiveForceConflictingPedestrians = this.computeRepulsiveConflictingPedestrians(pedestrian, simulationState);
 		Vector2D attractiveForceLeadingPedestrians = this.computeAttractiveForceLeadingPedestrians();
 		Vector2D repulsiveForceConflictingVehicle = this.computeRepulsiveForceConflictingVehicle(pedestrian);
 		Vector2D forceCrosswalkBoundary = this.computeForceCrosswalkBoundary(pedestrian);
@@ -178,22 +169,32 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		return drivingForce;
 	}
 	
-	private Vector2D computeRepulsiveConflictingPedestrians(IOperationalPedestrian pedestrian, Collection<IPedestrian> otherPedestrians, double timeStepDuration)
+	private Vector2D computeRepulsiveConflictingPedestrians(IOperationalPedestrian pedestrian, SimulationState simulationState)
 	{
 		// repulsive force from conflicting pedestrian
+
+		List<IPedestrian> otherPedestriansInVisualRange = perception.getPerceptedPedestrians(pedestrian, simulationState);
+
+		if (verboseMode) {
+			pedestrian.getMessageState().clearTopic("percepted pedestrians");
+			for (IPedestrian other : otherPedestriansInVisualRange) {
+				pedestrian.getMessageState().appendMessage("percepted pedestrians", other.getName());
+			}
+		}
 		
 		boolean newVersion = true;
 		
 		Vector2D repulsiveForceConflictingPedestrians = GeometryFactory.createVector(0, 0);
 		if(newVersion)
 		{
-			repulsiveForceConflictingPedestrians = SharedSpacesComputations.computeRepulsiveForceConflictingPedestrians(pedestrian, otherPedestrians, timeStepDuration,
+			repulsiveForceConflictingPedestrians = SharedSpacesComputations.computeRepulsiveForceConflictingPedestrians(pedestrian,
+					otherPedestriansInVisualRange, simulationState.getTimeStepDuration(),
 					modelVariables.getInteractionStrengthForRepulsiveForceFromSurroundingPedestrians(), modelVariables.getInteractionRangeForRelativeDistance(),
 					modelVariables.getInteractionRangForRelativeConflictingTime(), modelVariables.getStrengthOfForcesExertedFromOtherPedestrians());
 		}
 		else {
 			Vector2D pedestrianInteractionForce;
-			for(IPedestrian other : otherPedestrians) {
+			for(IPedestrian other : this.perception.getAllPedestrians(pedestrian)) {
 				pedestrianInteractionForce = this.socialForce.computePedestrianInteractionForce(pedestrian, other);
 				repulsiveForceConflictingPedestrians = repulsiveForceConflictingPedestrians.sum(pedestrianInteractionForce);				
 			}
