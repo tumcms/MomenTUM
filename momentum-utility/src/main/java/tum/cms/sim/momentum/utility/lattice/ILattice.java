@@ -171,7 +171,7 @@ public interface ILattice extends IUnique {
 	 * @param lattice
 	 * @return
 	 */
-	boolean breshamLineCast(CellIndex from, CellIndex towards);
+	boolean breshamLineCast(CellIndex from, CellIndex towards, int distance);
 
 	void flood(List<CellIndex> startingCells);
 

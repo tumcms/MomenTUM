@@ -51,4 +51,9 @@ public class Edge extends Weighted {
 		this.start = start;
 		this.end = end;
 	}
+	
+	public double euklideanLenght() {
+		
+		return this.start.euklidDistanceBetweenVertex(this.end);
+	}
 }

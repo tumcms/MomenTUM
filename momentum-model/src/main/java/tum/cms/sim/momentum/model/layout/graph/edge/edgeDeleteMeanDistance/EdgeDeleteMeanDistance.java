@@ -53,8 +53,7 @@ public class EdgeDeleteMeanDistance extends GraphOperation {
 		   
         DescriptiveStatistics edgeStatistics = new DescriptiveStatistics();
 
-        graph.getAllEdges().stream().forEach(edge -> 
-        	edgeStatistics.addValue(edge.getStart().euklidDistanceBetweenVertex(edge.getEnd())));
+        graph.getAllEdges().stream().forEach(edge -> edgeStatistics.addValue(edge.euklideanLenght()));
      
         graph.getAllEdges().stream().forEach(edge -> {
         	

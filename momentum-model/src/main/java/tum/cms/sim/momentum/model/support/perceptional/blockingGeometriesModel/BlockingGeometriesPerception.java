@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
@@ -67,6 +68,8 @@ import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 
 public class BlockingGeometriesPerception extends PerceptionalModel {
 
+	private int distance = 250;
+	
 //	private HashMap<Area, ArrayList<Polygon2D>> areaVisibilityMap = new HashMap<Area, ArrayList<Polygon2D>>();
 //	private HashMap<Vertex, ArrayList<Polygon2D>> vertexVisibilityMap = new HashMap<Vertex, ArrayList<Polygon2D>>();
 
@@ -90,24 +93,14 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 			.map(Obstacle::getGeometry)
 			.forEach(obstacleGeometry -> obstacleParts.addAll(obstacleGeometry.getSegments()));
 
-//		this.scenarioManager.getAreas().stream().forEach(area ->
-//			areaVisibilityMap.put(area, new ArrayList<>()));
-		
-//		this.scenarioManager.getAvoidances().stream().forEach(area ->
-//		areaVisibilityMap.put(area, new ArrayList<>()));
-//		
-//		if(this.scenarioManager.getGraphs().size() > 0) {
-//			
-//			this.scenarioManager.getGraph().getVertices().stream().forEach(vertex -> 
-//				vertexVisibilityMap.put(vertex, new ArrayList<>()));
-//		}
-		
-//		areaVisibilityMap.entrySet().stream().forEach(entry -> 
-//		entry.getValue().addAll(this.createVisibilityTriangles(entry.getKey().getGeometry(),  obstacleParts)));
-//
-//		vertexVisibilityMap.entrySet().parallelStream().forEach(entry -> 
-//			entry.getValue().addAll(this.createVisibilityTriangles(entry.getKey().getGeometry(), obstacleParts)));
-		
+		DescriptiveStatistics edgeStatistics = new DescriptiveStatistics();
+
+        this.scenarioManager.getGraph().getAllEdges().stream()
+        	.forEach(edge -> edgeStatistics.addValue(edge.euklideanLenght()));
+     
+		double cellsMax = edgeStatistics.getMax() / this.accuracy;
+		this.distance = (int)(cellsMax * 2);
+	
 		this.visibilityMap = LatticeTheoryFactory.createLattice(
 			"rayTracing",
 			LatticeType.Quadratic,
@@ -254,7 +247,7 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 			}
 			
 			CellIndex towards = this.visibilityMap.getCellIndexFromPosition(other.getPosition());
-			boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards);
+			boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, distance);
 
 			if(hitTarget) {
 			
@@ -380,7 +373,7 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 		CellIndex from = this.visibilityMap.getCellIndexFromPosition(viewPort);
 		CellIndex towards = this.visibilityMap.getCellIndexFromPosition(position);
 			
-		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards);
+		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, distance);
 		
 		return hitTarget;
 	}

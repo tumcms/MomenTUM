@@ -1254,7 +1254,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#breshamLineCast(tum.cms.sim.momentum.utility.lattice.CellIndex, tum.cms.sim.momentum.utility.lattice.CellIndex)
 	 */
     @Override
-	public boolean breshamLineCast(CellIndex from, CellIndex towards) {
+	public boolean breshamLineCast(CellIndex from, CellIndex towards, int distance) {
 
     	boolean hitTarget = false;
     	
@@ -1280,7 +1280,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
         dx *= 2;
         dy *= 2;
 
-        for (; n > 0; --n) {
+        for (; n > 0 && distance > 0; --n) {
         	
         	if(!this.isCellFree(y, x)) {
         		
@@ -1303,6 +1303,8 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
                 y += y_inc;
                 error += dx;
             }
+            
+            distance--;
         }
         
     	return hitTarget;
