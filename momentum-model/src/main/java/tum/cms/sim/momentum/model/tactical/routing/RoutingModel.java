@@ -47,6 +47,19 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 
 public abstract class RoutingModel extends SubTacticalModel {
 
+	/**
+	 * Override this method in a routing model in order to 
+	 * provide specific decision support regarding:
+	 * Is the current vertex visited?
+	 * The default implementation uses an  on sight approach.
+	 * 
+	 * @return true if the current vertex is reached.
+	 */
+	public boolean checkIsVertexVisited() {
+	
+		return true; // default check in rerouting Necessary
+	}
+	
 	public RoutingState updateRouteState(PerceptionalModel peception,
 			ITacticalPedestrian pedestrian,
 			Path newRoute) {
@@ -118,12 +131,8 @@ public abstract class RoutingModel extends SubTacticalModel {
 			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian.getPosition(), pedestrian.getRoutingState().getNextToCurrentVisit());
 			
 			// is the next walking target not visible?! reroute
-			if(nextWalkingTargetVisible) {
+			if(nextWalkingTargetVisible && this.checkIsVertexVisited()) {
 				
-//				pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
-//							null,
-//							pedestrian.getRoutingState().getNextToLastVisit(),
-//							pedestrian.getRoutingState().getLastVisit()));
 				return true;
 			}
 		}

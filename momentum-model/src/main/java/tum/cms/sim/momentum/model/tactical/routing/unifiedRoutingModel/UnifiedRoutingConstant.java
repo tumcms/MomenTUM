@@ -66,7 +66,7 @@ public class UnifiedRoutingConstant {
     /*
 	 * Fastest Path Constants
 	 */
-	public static double FastestMeanSpeed = 1.34; //1.644901429 Pre-BTTW, 1.34 Weidmann
+	public static double FastestMeanSpeed = 1.0;//1.34; //1.644901429 Pre-BTTW, 1.34 Weidmann
 	public static String FastestEdgeMeanSpeedWeightName = "kD"; // for each edge
 	public static String FastestVertexWeightNameSeed = "kE"; // plus pedestrian id
 

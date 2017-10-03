@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
@@ -181,6 +183,8 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 	@Override
 	public void callPedestrianBehavior(ITacticalPedestrian pedestrian, SimulationState simulationState) {
 	
+		int depth = 3;
+		
 		UnifiedRoutingAlgorithm routingAlgorithm = this.getRoutingAlgorithm(simulationState);
 		
 		routingAlgorithm.setExtension((UnifiedRoutingPedestrianExtension)pedestrian.getExtensionState(this));
@@ -194,6 +198,15 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 		Path route = null;
 		Path lastRoute = null;
 		
+		Vertex lastNode = null;
+		Set<Vertex> visited = null;
+		
+		if(pedestrian.getRoutingState() != null) {
+			
+			lastNode = pedestrian.getRoutingState().getLastVisit();
+			visited = pedestrian.getRoutingState().getVisited();
+		}
+		
 		Vertex firstNode = null;
 		Vertex nextToCurrentVisit = null;
 		
@@ -201,10 +214,13 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 			
 			if(!routingAlgorithm.isInDecisionWaiting(simulationState, this.scenarioManager.getGraph(), start)) {
 				
+				
 				route = this.navigate(this.perception,
 						this.scenarioManager.getGraph(),
 						start, 
 						end,
+						lastNode,
+						visited,
 						routingAlgorithm);	
 				
 				if(firstNode == null) {
@@ -218,7 +234,7 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 				break;
 			}
 
-			if(route == null || 
+			if(route == null || depth == 0 ||
 			   !perception.isVisible(pedestrian.getPosition(), route.getCurrentVertex()) ||
 			   route.getCurrentVertex().getId().equals(end.getId())) {
 				
@@ -234,12 +250,15 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 			
 			lastRoute = route;
 			start = route.getCurrentVertex();
+			lastNode = route.getPreviousVertex();
 			
 			if(start.getId().intValue() == end.getId().intValue()) {
 				
 				route = lastRoute;
 				break;
 			}
+			
+			depth--;
 		}
 		
 		route.setFirstVertex(firstNode);
@@ -269,13 +288,17 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 			Graph graph, 
 			Vertex start,
 			Vertex end,
+			Vertex previousVisit,
+			Set<Vertex> visited,
 			UnifiedRoutingAlgorithm routingAlgorithm) {
 
 		routingAlgorithm.initializePedestrianWeightsForTarget(graph, end);
 		
 		Path path = routingAlgorithm.route(graph, 
 			start, 
-			end);
+			end,
+			visited,
+			previousVisit);
 		
 		return path;
 	}
