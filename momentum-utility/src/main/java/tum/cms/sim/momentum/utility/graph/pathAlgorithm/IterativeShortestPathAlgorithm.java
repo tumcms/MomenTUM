@@ -53,7 +53,7 @@ public class IterativeShortestPathAlgorithm {
     	this.selector = selector;
     }
     
-	public Path calculateNextPath(Graph graph, Set<Vertex> visited, Vertex previousVertex, Vertex start, Vertex target, int depth) {
+	public Path calculateNextPath(Graph graph, Set<Vertex> visited, Vertex previousVertex, Vertex start, Vertex target) {
 		
   		Path path = null;
   		
@@ -73,28 +73,18 @@ public class IterativeShortestPathAlgorithm {
 		
 		Vertex next = start;
 		path.appendVertex(start);
-		//int sections = 0;
-		
-		//while(sections++ < depth) {
 			
-			next = selectBestSuccessor(graph, visited, previousVertex, start, target);
-	    	
-	        if(next == null) { // dead alley
-	        	
-	        	Object[] nextVertices = graph.getSuccessorVertices(start).toArray();	
-	        	next = (Vertex)nextVertices[new Random().nextInt(nextVertices.length)];
-	        	depth = 0;
-	        }
-	        
-	        previousVertex = start;
-	        path.appendVertex(next);
-	        //start = next;
-	        
-	       // if(sections == 1) {
-	        	
-	         path.setCurrentVertex(next);
-	        //}
-		//}
+		next = selectBestSuccessor(graph, visited, previousVertex, start, target);
+    	
+        if(next == null) { // dead alley
+        	
+        	Object[] nextVertices = graph.getSuccessorVertices(start).toArray();	
+        	next = (Vertex)nextVertices[new Random().nextInt(nextVertices.length)];
+        }
+        
+        previousVertex = start;
+        path.appendVertex(next);
+        path.setCurrentVertex(next);
 
 		return path;
 	}

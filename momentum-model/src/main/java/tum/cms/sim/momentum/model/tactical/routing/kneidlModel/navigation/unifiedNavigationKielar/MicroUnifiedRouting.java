@@ -95,6 +95,6 @@ public class MicroUnifiedRouting extends MicroRoutingAlgorithm {
 		this.weightCalculator.updateCurrentBeelinePath(beelinePath);
 		
 		// finally calculate by iterative routing including sall, greedy beeline and ant optimiziation
-		return this.algorithm.calculateNextPath(graph, pedestrainVisitiedVertices, previousVertex, pedestrianPosition, destination, 2);
+		return this.algorithm.calculateNextPath(graph, pedestrainVisitiedVertices, previousVertex, pedestrianPosition, destination);
 	}
 }

@@ -297,8 +297,8 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 		Path path = routingAlgorithm.route(graph, 
 			start, 
 			end,
-			visited,
-			previousVisit);
+			previousVisit,
+			visited);
 		
 		return path;
 	}

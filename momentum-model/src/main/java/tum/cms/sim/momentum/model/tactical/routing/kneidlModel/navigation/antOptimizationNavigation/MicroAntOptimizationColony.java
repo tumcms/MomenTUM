@@ -73,8 +73,7 @@ public class MicroAntOptimizationColony extends MicroRoutingAlgorithm {
 				pedestrainVisitiedVertices, 
 				previousVertex, 
 				pedestrianPosition,
-				destination,
-				2);
+				destination);
 	}
 	
 	@Override

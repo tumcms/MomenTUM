@@ -70,7 +70,6 @@ public class MicroAntGbSall extends MicroRoutingAlgorithm {
 				pedestrainVisitiedVertices, 
 				previousVertex, 
 				pedestrianPosition,
-				destination,
-				2);
+				destination);
 	}
 }

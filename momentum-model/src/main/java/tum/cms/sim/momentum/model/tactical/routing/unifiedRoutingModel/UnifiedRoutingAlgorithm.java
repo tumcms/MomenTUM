@@ -89,8 +89,6 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 	private AvoidanceCalculator avoidanceCalculator = new AvoidanceCalculator();
 	private HashMap<Vertex, Double> currentAvValues = null;
 	
-	private ITacticalPedestrian pedestrian = null;
-	
 	private UnifiedRoutingPedestrianExtension currentExtension = null;
 
 	public UnifiedRoutingAlgorithm() {
@@ -141,8 +139,6 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 	public void setCurrentPedestrian(ITacticalPedestrian currentPedestrian) {
 	
 		this.fastesPathCalculator.setCurrentPedestrian(currentPedestrian);
-
-		this.pedestrian = currentPedestrian;
 	}
 	
 	public void updateWeightName(int threadNumber) {
@@ -176,17 +172,8 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 		}
 	}
 	
-	public Path route(Graph graph, Vertex start, Vertex target) {
+	public Path route(Graph graph, Vertex start, Vertex target, Vertex previousVisit, Set<Vertex> visited) {
 		
-		Set<Vertex> visited = null;
-		Vertex previousVisit = null;
-		
-		if(this.pedestrian.getRoutingState() != null) {
-			
-			visited = this.pedestrian.getRoutingState().getVisited();
-			previousVisit = this.pedestrian.getRoutingState().getLastVisit();
-		}
-
 		if(this.currentExtension.getShortestWeightProportion() > 0.0) {
 			
 			this.currentSpPath = this.spDirectAlgorithm.calculateShortestPath(graph, start, target);
@@ -205,7 +192,7 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 			this.currentBhPath = null;
 		}
 	
-		return this.iterativAlgorithm.calculateNextPath(graph, visited, previousVisit, start, target, 2);
+		return this.iterativAlgorithm.calculateNextPath(graph, visited, previousVisit, start, target);
 	}
 	
 	public void updateGlobalWeights(Graph graph, Collection<IRichPedestrian> pedestrians, SimulationState simulationState) {
