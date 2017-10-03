@@ -147,7 +147,7 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 		
 		for(Set<CellIndex> connectedCells: connectedAreas) {
 			connectedCells.stream().parallel().forEach(start -> connectedCells.forEach(end -> {
-				if (lattice.breshamLineCast(start, end)) {
+				if (lattice.breshamLineCast(start, end, Integer.MAX_VALUE)) {
 					lattice.increaseCellNumberValue(start, 1.0);
 				}
 			}));
