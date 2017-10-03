@@ -41,12 +41,12 @@ import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.heuris
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Path;
 import tum.cms.sim.momentum.utility.graph.Vertex;
-import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativeShortestPathAlgorithm;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativePathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.selectorOperation.VertexSelector;
 
 public class MicroUnifiedRouting extends MicroRoutingAlgorithm {
 
-	private IterativeShortestPathAlgorithm algorithm = null;
+	private IterativePathAlgorithm algorithm = null;
 	private MicroBeelineHeuristic beelineAglorithm = null;
 	private MicroFastestPathDijkstra fastestPathAlgorithm = null;
 	private UnifiedIterativeRoutingCalculator weightCalculator = null;
@@ -61,7 +61,7 @@ public class MicroUnifiedRouting extends MicroRoutingAlgorithm {
 		
 		this.beelineAglorithm = beelineAglorithm;
 		this.fastestPathAlgorithm = fastestPathAlgorithm;
-		this.algorithm = new IterativeShortestPathAlgorithm(weightCalculator, vertexSelector);
+		this.algorithm = new IterativePathAlgorithm(weightCalculator, vertexSelector);
 
 		this.weightCalculator = weightCalculator;
 		this.weightCalculator.updateCurrentPedestrian(this.currentPedestrian);

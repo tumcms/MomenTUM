@@ -40,12 +40,12 @@ import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.MicroR
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Path;
 import tum.cms.sim.momentum.utility.graph.Vertex;
-import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativeShortestPathAlgorithm;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativePathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.selectorOperation.SmallestVertexSelector;
 
 public class MicroAntGbSall extends MicroRoutingAlgorithm {
 	
-	private IterativeShortestPathAlgorithm algorithm = null;
+	private IterativePathAlgorithm algorithm = null;
 	private KneidlIterativeWeightCalculator weightCalculator = null;
 
 	public MicroAntGbSall(KneidlIterativeWeightCalculator weightCalculator,
@@ -55,7 +55,7 @@ public class MicroAntGbSall extends MicroRoutingAlgorithm {
 			
 		this.weightCalculator = weightCalculator;
 		this.weightCalculator.setCurrentPedestrian(currentPedestrian);
-		this.algorithm = new IterativeShortestPathAlgorithm(weightCalculator, new SmallestVertexSelector());
+		this.algorithm = new IterativePathAlgorithm(weightCalculator, new SmallestVertexSelector());
 	}
 
 	@Override

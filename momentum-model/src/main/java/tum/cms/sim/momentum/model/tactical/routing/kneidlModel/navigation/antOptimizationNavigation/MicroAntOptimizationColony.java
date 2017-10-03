@@ -41,12 +41,12 @@ import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.weight
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Path;
 import tum.cms.sim.momentum.utility.graph.Vertex;
-import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativeShortestPathAlgorithm;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativePathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.selectorOperation.ProbabilisticVertexSelector;
 
 public class MicroAntOptimizationColony extends MicroRoutingAlgorithm {
 	
-	private IterativeShortestPathAlgorithm algorithm = null;
+	private IterativePathAlgorithm algorithm = null;
 	private IHandleTargetWeightsForGraph targetWeightInitilizer = null;
 	private KneidlIterativeWeightCalculator weightCalculator = null;
 
@@ -58,7 +58,7 @@ public class MicroAntOptimizationColony extends MicroRoutingAlgorithm {
 		this.targetWeightInitilizer = (IHandleTargetWeightsForGraph)weightCalculator;
 		this.weightCalculator = weightCalculator;
 		this.weightCalculator.setCurrentPedestrian(currentPedestrian);
-		this.algorithm = new IterativeShortestPathAlgorithm(weightCalculator, new ProbabilisticVertexSelector());
+		this.algorithm = new IterativePathAlgorithm(weightCalculator, new ProbabilisticVertexSelector());
 	}
 
 	@Override

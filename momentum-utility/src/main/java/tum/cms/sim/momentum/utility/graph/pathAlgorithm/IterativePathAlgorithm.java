@@ -42,12 +42,12 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.selectorOperation.VertexSelector;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.IterativeWeightCalculator;
 
-public class IterativeShortestPathAlgorithm {
+public class IterativePathAlgorithm {
 
 	private IterativeWeightCalculator weightCalculator = null;
     private VertexSelector selector = null;
 
-	public IterativeShortestPathAlgorithm(IterativeWeightCalculator weightCalculator, VertexSelector selector) {
+	public IterativePathAlgorithm(IterativeWeightCalculator weightCalculator, VertexSelector selector) {
     	
     	this.weightCalculator = weightCalculator;
     	this.selector = selector;

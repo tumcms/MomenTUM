@@ -53,7 +53,7 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Path;
 import tum.cms.sim.momentum.utility.graph.Vertex;
-import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativeShortestPathAlgorithm;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativePathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.ShortestPathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.selectorOperation.SmallestVertexSelector;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.IterativeWeightCalculator;
@@ -61,7 +61,7 @@ import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.Iterativ
 public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 
 	private DecisionDurationCalculator decisionDurationCalculator = null;
-	private IterativeShortestPathAlgorithm iterativAlgorithm = null;
+	private IterativePathAlgorithm iterativAlgorithm = null;
 	
 	private ShortestPathAlgorithm bhDirectAlgorithm = null;
 	private BeelineHeuristicsCalculator beelineHeuristicCalculator = new BeelineHeuristicsCalculator(UnifiedRoutingConstant.BeelineVertexWeightNameSeed);
@@ -93,7 +93,7 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 
 	public UnifiedRoutingAlgorithm() {
 		
-		this.iterativAlgorithm = new IterativeShortestPathAlgorithm(this, new SmallestVertexSelector());
+		this.iterativAlgorithm = new IterativePathAlgorithm(this, new SmallestVertexSelector());
 		this.bhDirectAlgorithm = new ShortestPathAlgorithm(beelineHeuristicCalculator);
 		this.spDirectAlgorithm = new ShortestPathAlgorithm(shortestPathCalculator);
 	}
