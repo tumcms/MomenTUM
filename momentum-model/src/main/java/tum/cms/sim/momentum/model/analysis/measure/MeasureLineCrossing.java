@@ -112,19 +112,13 @@ public class MeasureLineCrossing extends Measure {
 		currenXPositionData.forEach(xPositionData -> {
 			
 			// store last position x
-			if(!lastXPositionData.containsKey(xPositionData.getId())) {
-				
-				lastXPositionData.put(xPositionData.getId(), xPositionData);
-			}
+			lastXPositionData.put(xPositionData.getId(), xPositionData);
 		});
 		
 		currenYPositionData.forEach(yPositionData -> {
 			
 			// store last position y
-			if(!lastYPositionData.containsKey(yPositionData.getId())) {
-				
-				lastYPositionData.put(yPositionData.getId(), yPositionData);
-			}
+			lastYPositionData.put(yPositionData.getId(), yPositionData);
 		});
 	}
 	
@@ -138,7 +132,7 @@ public class MeasureLineCrossing extends Measure {
 				xPositionLast.getData().doubleValue(), 
 				yPositionLast.getData().doubleValue());
 		
-		Vector2D currentPosition = 	GeometryFactory.createVector(
+		Vector2D currentPosition = GeometryFactory.createVector(
 				xPositionCurrent.getData().doubleValue(), 
 				yPositionCurrent.getData().doubleValue());
 
