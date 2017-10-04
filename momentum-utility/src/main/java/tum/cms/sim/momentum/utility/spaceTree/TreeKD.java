@@ -35,6 +35,7 @@ package tum.cms.sim.momentum.utility.spaceTree;
 import java.util.List;
 
 import edu.wlu.cs.levy.CG.KDTree;
+import edu.wlu.cs.levy.CG.KeySizeException;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 /**
@@ -122,6 +123,23 @@ public class TreeKD<T> {
 	}
 	
 	/**
+	 * This method finds the nearest neighbors of the position
+	 * @param position, origin regarding the distance check
+	 * @return the found object
+	 * @throws If the operation failed the exception underlying tree implementation is throw
+	 */
+	public T computeNearestNeighbor(Vector2D position) throws Exception {
+
+		double[] simplePosition = new double[this.dimension];
+		simplePosition[0] = position.getXComponent();
+		simplePosition[1] = position.getYComponent();
+
+	    List<T> nearest = this.kdTree.nearest(simplePosition, 1);
+	    
+	    return nearest == null ? null : nearest.get(0);
+	}
+	
+	/**
 	 * Wraps insert and does it for a list.
 	 * The index of positions correspond to the index of objects
 	 * 
@@ -143,6 +161,7 @@ public class TreeKD<T> {
 			}
 		}
 	}
+	
 	/**
 	 * This method removes an element from the tree based on the element's position.
 	 * However, the element is only marked as deleted for performance reasons.
@@ -157,5 +176,22 @@ public class TreeKD<T> {
 		simplePosition[1] = elementsPosition.getYComponent();
 		
 		kdTree.delete(simplePosition);
+	}
+	
+	/**
+	 * This method finds an element in the tree.
+	 * 
+	 * @param elementsPosition
+	 * @return The element or null if not found
+	 * @throws KeySizeException
+	 */
+	
+	public T searchFor(Vector2D elementsPosition) throws KeySizeException {
+		
+		double[] simplePosition = new double[2];
+		simplePosition[0] = elementsPosition.getXComponent();
+		simplePosition[1] = elementsPosition.getYComponent();
+		
+		return kdTree.search(simplePosition);
 	}
 }

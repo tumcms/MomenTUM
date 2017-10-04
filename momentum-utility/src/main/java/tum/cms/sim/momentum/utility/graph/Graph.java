@@ -47,6 +47,8 @@ import tum.cms.sim.momentum.utility.generic.Unique;
 import tum.cms.sim.momentum.utility.geometry.Geometry2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.geometry.operation.GeometryAdditionals;
+import tum.cms.sim.momentum.utility.spaceTree.CheckerTreeKD;
+import tum.cms.sim.momentum.utility.spaceTree.TreeKD;
 
 import java.util.Optional;
 import java.util.Set;
@@ -66,13 +68,13 @@ public class Graph extends Unique implements IHasProperties {
 		this.properties = propertyContainer; 
 	}
 	
+	private TreeKD<ArrayList<Vertex>> vertexTree = null; 
 	private HashMap<String, Double> distanceMap = new HashMap<>();
     private HashMap<Integer, Vertex> vertexMap = new HashMap<Integer, Vertex>();   
     private HashMap<Geometry2D, Vertex> geometryMap = new HashMap<Geometry2D, Vertex>(); 
     private HashMap<Vertex, HashSet<Edge>> successorEdgeMap = new HashMap<Vertex, HashSet<Edge>>();
     private HashMap<Vertex, HashSet<Vertex>> successorVertexMap = new HashMap<Vertex, HashSet<Vertex>>();    
     private Double maximalDistance = null;
-	
 	private boolean floydWarshalComputed = false;
 	
     Graph() { }
@@ -151,10 +153,6 @@ public class Graph extends Unique implements IHasProperties {
 		
 		return null;
 	}
-//    public Edge getEdge(int edgeId) {
-//    	
-//    	return edgeMap.get(edgeId);
-//    }
     
     public Edge getEdge(Vertex startVertex, Vertex endVertex) {
     	
@@ -176,11 +174,6 @@ public class Graph extends Unique implements IHasProperties {
     	return successorEdgeMap.get(vertexMap.get(startVertex.getId()));
     }
     
-    /**
-     * Returns a list of all edges of the graph
-     * @author qa
-     * @return
-     */
     public List<Edge> getAllEdges() {
     	List<Edge> edgeList = new ArrayList<Edge>();
     	for(Vertex current : this.getVertices()) {  	 
@@ -343,6 +336,7 @@ public class Graph extends Unique implements IHasProperties {
     public void clearGraph() {
     	
     	disconnectAllVertices();
+    	this.vertexTree = null;
     	vertexMap = new HashMap<>();
     	geometryMap = new HashMap<>();
     	successorEdgeMap.clear();
@@ -356,53 +350,82 @@ public class Graph extends Unique implements IHasProperties {
     	return this.geometryMap.get(geometry);
     }
     
-    public Vertex findVertexClosestToPosition(Vector2D position, Set<Vertex> toIgnore) {
-
-    	double distance = Double.MAX_VALUE;
-    	double currentDistance = 0.0;
-    	Vertex bestVertex = null;
-    	
-    	for(Vertex vertex : this.vertexMap.values()) {
-    	
-    		if(toIgnore != null && toIgnore.contains(vertex)) {
-    			continue;
-    		}
-    		currentDistance = vertex.euklidDistanceBetweenVertex(position);
+    public List<Vertex> findVertexInDistance(Vector2D position, double distance, Set<Vertex> toIgnore) {
+    
+    	if(vertexTree == null) {
     		
-    		if(currentDistance < distance) {
-    		
-    			bestVertex = vertex;
-    			distance = currentDistance;
-    		}
+    		this.fillKDTree();
     	}
- 
-    	return bestVertex;
+    	
+    	IgnoreVertexChecker ignore = new IgnoreVertexChecker();
+    	ignore.setToIgnore(toIgnore);
+    	List<ArrayList<Vertex>> verticesFound = null;
+    	List<Vertex> flatResults = new ArrayList<>();
+    	
+    	try {
+    		
+    		verticesFound = vertexTree.computeNearestEuclidean(position, distance);
+    		
+    		for(ArrayList<Vertex> foundList : verticesFound) {
+    			
+    			flatResults.addAll(foundList);
+    		}
+		}
+    	catch (Exception e) {
+
+    		e.printStackTrace();
+		}
+   
+    	return flatResults;
     }
     
-    public Vertex findVertexClosestToPositionAndTarget(Vector2D position, Vector2D target, Set<Vertex> toIgnore) {
+    public Vertex findVertexClosestToPosition(Vector2D position, Set<Vertex> toIgnore) {
 
-    	double distance = Double.MAX_VALUE;
-    	double currentDistance = 0.0;
-    	Vertex bestVertex = null;
-    	
-    	for(Vertex vertex : this.vertexMap.values()) {
-    	
-    		if(toIgnore != null && toIgnore.contains(vertex)) {
-    			continue;
-    		}
+    	if(vertexTree == null) {
     		
-    		currentDistance = vertex.euklidDistanceBetweenVertex(position) +
-    				 vertex.euklidDistanceBetweenVertex(target);
-    		
-    		if(currentDistance < distance) {
-    		
-    			bestVertex = vertex;
-    			distance = currentDistance;
-    		}
+    		this.fillKDTree();
     	}
- 
-    	return bestVertex;
+    	
+    	IgnoreVertexChecker ignore = new IgnoreVertexChecker();
+    	ignore.setToIgnore(toIgnore);
+    	ArrayList<Vertex> verticesFound = null;
+    	
+    	try {
+    		
+			verticesFound = vertexTree.computeNearestNeighbor(position);
+		}
+    	catch (Exception e) {
+
+    		e.printStackTrace();
+		}
+   
+    	return verticesFound == null ? null : verticesFound.stream().findFirst().get();
     }
+    
+//    public Vertex findVertexClosestToPositionAndTarget(Vector2D position, Vector2D target, Set<Vertex> toIgnore) {
+//
+//    	double distance = Double.MAX_VALUE;
+//    	double currentDistance = 0.0;
+//    	Vertex bestVertex = null;
+//    	
+//    	for(Vertex vertex : this.vertexMap.values()) {
+//    	
+//    		if(toIgnore != null && toIgnore.contains(vertex)) {
+//    			continue;
+//    		}
+//    		
+//    		currentDistance = vertex.euklidDistanceBetweenVertex(position) +
+//    				 vertex.euklidDistanceBetweenVertex(target);
+//    		
+//    		if(currentDistance < distance) {
+//    		
+//    			bestVertex = vertex;
+//    			distance = currentDistance;
+//    		}
+//    	}
+// 
+//    	return bestVertex;
+//    }
     
     public synchronized double findMaximalVertexDistance() {
     	
@@ -476,10 +499,9 @@ public class Graph extends Unique implements IHasProperties {
 	 * @param knownSeeds
 	 * @return
 	 */
-	public void addGeometryAsVertex(Collection<Geometry2D> knownSeeds) {
+	public void addGeometryAsVertex(Collection<Geometry2D> geometries) {
     	
-    	knownSeeds.forEach(knownSeed -> this.addVertex(GraphTheoryFactory.createVertex(knownSeed)));
-
+		geometries.forEach(geometry -> this.addVertex(GraphTheoryFactory.createVertex(geometry)));
     }
 
 	/**
@@ -609,5 +631,58 @@ public class Graph extends Unique implements IHasProperties {
     			successor.setWeight(weightName, current.euklidDistanceBetweenVertex(successor.getEnd()));
     		});
     	}
+	}
+	
+	private void fillKDTree() {
+		
+		vertexTree = new TreeKD<>(2);
+		
+		this.getVertices().forEach(vertex -> {
+			
+			try {
+				
+				ArrayList<Vertex> element = vertexTree.searchFor(vertex.getGeometry().getCenter());
+				
+				if(element == null) {
+					
+					element = new ArrayList<>();
+				}
+				
+				element.add(vertex);
+				vertexTree.insert(vertex.getGeometry().getCenter(), element);
+			}
+			catch (Exception e) {
+				
+				e.printStackTrace();
+			}
+					
+		});
+	}
+	
+	private class IgnoreVertexChecker implements CheckerTreeKD<ArrayList<Vertex>> {
+
+		private Set<Vertex> ignore = null;
+		
+		public void setToIgnore(Set<Vertex> ignore) {
+			
+			this.ignore = ignore;
+		}
+		
+		@Override
+		public boolean usable(ArrayList<Vertex> elementToCheck) {
+
+			boolean isUsable = true;
+			
+			for(Vertex toCheck : elementToCheck) {
+				
+				if(ignore.contains(toCheck)) {
+					
+					isUsable = false;
+					break;
+				}
+			}
+			
+			return isUsable;
+		}
 	}
 }
