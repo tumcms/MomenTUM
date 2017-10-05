@@ -34,6 +34,7 @@ package tum.cms.sim.momentum.utility.spaceTree;
 
 import java.util.List;
 
+import edu.wlu.cs.levy.CG.Checker;
 import edu.wlu.cs.levy.CG.KDTree;
 import edu.wlu.cs.levy.CG.KeySizeException;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
@@ -44,7 +45,7 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
  * 
  * @author Peter M. Kielar
  *
- * @param <T>, the type of object to store in the KDTree
+ * @param <T>, the type of object to store in the TreeKD
  */
 public class TreeKD<T> {
 
@@ -113,13 +114,24 @@ public class TreeKD<T> {
 	 * @return the list of found objects
 	 * @throws If the operation failed the exception underlying tree implementation is throw
 	 */
-	public List<T> computeNearestNeighbor(Vector2D position, int number) throws Exception {
+	public List<T> computeNearestNeighbor(Vector2D position, int number, Checker<T> checker) throws Exception {
 
 		double[] simplePosition = new double[this.dimension];
 		simplePosition[0] = position.getXComponent();
 		simplePosition[1] = position.getYComponent();
-
-		return this.kdTree.nearest(simplePosition, number);
+		
+		List<T> nearest = null;
+		
+		if(checker != null) {
+			
+			nearest = this.kdTree.nearest(simplePosition, 1, checker);
+		}
+		else {
+			
+			nearest = this.kdTree.nearest(simplePosition, 1);
+		}
+		
+		return nearest;
 	}
 	
 	/**
@@ -128,13 +140,22 @@ public class TreeKD<T> {
 	 * @return the found object
 	 * @throws If the operation failed the exception underlying tree implementation is throw
 	 */
-	public T computeNearestNeighbor(Vector2D position) throws Exception {
+	public T computeNearestNeighbor(Vector2D position, Checker<T> checker) throws Exception {
 
 		double[] simplePosition = new double[this.dimension];
 		simplePosition[0] = position.getXComponent();
 		simplePosition[1] = position.getYComponent();
-
-	    List<T> nearest = this.kdTree.nearest(simplePosition, 1);
+		
+		List<T> nearest = null;
+		
+		if(checker != null) {
+			
+			nearest = this.kdTree.nearest(simplePosition, 1, checker);
+		}
+		else {
+			
+			nearest = this.kdTree.nearest(simplePosition, 1);
+		}
 	    
 	    return nearest == null ? null : nearest.get(0);
 	}

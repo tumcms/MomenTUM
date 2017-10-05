@@ -66,7 +66,7 @@ public class IterativePathAlgorithm {
 			path = new Path(start, target);
 		}
 		
-		if(target.equals(start)) {
+		if(target.getId().intValue() == start.getId().intValue()) {
 			
 		    return new Path(start, target);
 		}

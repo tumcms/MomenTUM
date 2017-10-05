@@ -357,8 +357,7 @@ public class Graph extends Unique implements IHasProperties {
     		this.fillKDTree();
     	}
     	
-    	IgnoreVertexChecker ignore = new IgnoreVertexChecker();
-    	ignore.setToIgnore(toIgnore);
+
     	List<ArrayList<Vertex>> verticesFound = null;
     	List<Vertex> flatResults = new ArrayList<>();
     	
@@ -392,7 +391,7 @@ public class Graph extends Unique implements IHasProperties {
     	
     	try {
     		
-			verticesFound = vertexTree.computeNearestNeighbor(position);
+			verticesFound = vertexTree.computeNearestNeighbor(position, ignore);
 		}
     	catch (Exception e) {
 
@@ -649,7 +648,12 @@ public class Graph extends Unique implements IHasProperties {
 				}
 				
 				element.add(vertex);
-				vertexTree.insert(vertex.getGeometry().getCenter(), element);
+				ArrayList<Vertex> inTreeElement = vertexTree.searchFor(vertex.getGeometry().getCenter());
+				
+				if(inTreeElement == null || !inTreeElement.contains(vertex)) {
+				
+					vertexTree.insert(vertex.getGeometry().getCenter(), element);
+				}
 			}
 			catch (Exception e) {
 				
@@ -673,15 +677,17 @@ public class Graph extends Unique implements IHasProperties {
 
 			boolean isUsable = true;
 			
-			for(Vertex toCheck : elementToCheck) {
+			if(ignore != null) {
 				
-				if(ignore.contains(toCheck)) {
+				for(Vertex toCheck : elementToCheck) {
 					
-					isUsable = false;
-					break;
+					if(ignore.contains(toCheck)) {
+						
+						isUsable = false;
+						break;
+					}
 				}
 			}
-			
 			return isUsable;
 		}
 	}
