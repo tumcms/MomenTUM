@@ -229,7 +229,8 @@ public abstract class RoutingModel extends SubTacticalModel {
 
 				if(startVertexTemp != null) {
 					
-					if(perception.isVisible(pedestrian.getPosition(), startVertexTemp)) {
+					if(perception.isVisible(pedestrian.getPosition(), startVertexTemp) &&
+					   this.scenarioManager.getGraph().getSuccessorEdges(startVertexTemp).size() > 0) {
 						
 						startVertex = startVertexTemp;
 						break;
