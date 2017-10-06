@@ -30,30 +30,46 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.utility.graph;
+package tum.cms.sim.momentum.model.layout.graph.edge.edgeDeleteMeanDistance;
 
-public class Edge extends Weighted {
+import java.util.ArrayList;
 
-	private Vertex start = null;
-	
-	public Vertex getStart() {
-		return start;
-	}
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-	private Vertex end = null;
-	
-	public Vertex getEnd() {
-		return end;
-	}
+import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.model.layout.graph.GraphOperation;
+import tum.cms.sim.momentum.utility.graph.Edge;
+import tum.cms.sim.momentum.utility.graph.Graph;
 
-	Edge(Vertex start, Vertex end) {
+public class EdgeDeleteMeanDistance extends GraphOperation {
+
+	@Override
+	public void callPreProcessing(SimulationState simulationState) {
 		
-		this.start = start;
-		this.end = end;
-	}
-	
-	public double euklideanLenght() {
+		Graph graph = this.scenarioManager.getGraph();
 		
-		return this.start.euklidDistanceBetweenVertex(this.end);
+		ArrayList<Edge> removeEdges = new ArrayList<>();
+			
+		   
+        DescriptiveStatistics edgeStatistics = new DescriptiveStatistics();
+
+        graph.getAllEdges().stream().forEach(edge -> edgeStatistics.addValue(edge.euklideanLenght()));
+     
+        graph.getAllEdges().stream().forEach(edge -> {
+        	
+        	if(edge.getStart().euklidDistanceBetweenVertex(edge.getEnd()) > 
+        		edgeStatistics.getMean() + 2 * edgeStatistics.getStandardDeviation()) {
+        		
+        		removeEdges.add(edge);
+        	}
+        });
+		
+		removeEdges.forEach(remove -> graph.disconnectDirectedVertices(remove.getStart(), remove.getEnd()));
 	}
+
+	@Override
+	public void callPostProcessing(SimulationState simulationState) {
+		// nothing to do
+	}
+
 }

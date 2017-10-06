@@ -32,6 +32,7 @@
 
 package tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.underylingModels;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -48,7 +49,7 @@ public class LeaderPathCalculator extends UnifiedSocialCalculator {
 	public void globalUpdateWeight(Graph graph, Collection<IRichPedestrian> pedestrians, SimulationState simulationState) {
 		
 		Edge edge = null;
-		Double numberOfPeds = 0.0;
+		
 		
 		HashMap<Edge, Double> sumPedestriansOnEdge = new HashMap<Edge, Double>(); 
 
@@ -76,14 +77,33 @@ public class LeaderPathCalculator extends UnifiedSocialCalculator {
 					continue;
 				}
 				
-				numberOfPeds = sumPedestriansOnEdge.get(edge); 
-				numberOfPeds = numberOfPeds == null ? 0.0 : numberOfPeds;
+				ArrayList<Edge> closeByEdges = new ArrayList<Edge>();
 				
-				sumPedestriansOnEdge.put(edge, numberOfPeds + 1.0);
+				closeByEdges.add(edge);
+
+				for(Edge radiationEdge : graph.getSuccessorEdges(edge.getStart())) {
+					
+					if(radiationEdge.equals(edge)) {
+						continue;
+					}
+					
+					closeByEdges.add(radiationEdge);
+				
+				}
+				
+				closeByEdges.forEach(computeEdge -> {
+					
+					Double numberOfPeds = 0.0;
+					numberOfPeds = sumPedestriansOnEdge.get(computeEdge); 
+					numberOfPeds = numberOfPeds == null ? 0.0 : numberOfPeds;
+					
+					sumPedestriansOnEdge.put(computeEdge, numberOfPeds + 1.0);
+				});
 			}
 			
 			for(Edge updateEdge : graph.getAllEdges()) {
 				
+				Double numberOfPeds = 0.0;
 				numberOfPeds = sumPedestriansOnEdge.get(updateEdge);
 				numberOfPeds = numberOfPeds == null ? 0.0 : numberOfPeds;
 
@@ -111,16 +131,6 @@ public class LeaderPathCalculator extends UnifiedSocialCalculator {
 				else {
 					
 					updateEdge.setWeight(UnifiedRoutingConstant.NumberOfPedestriansOnEdge, UnifiedRoutingConstant.LeaderBoundary);
-					
-//						for(Edge radiationEdge : graph.getSuccessorEdges(updateEdge.getStart())) {
-//							
-//							if(radiationEdge.equals(updateEdge)) {
-//								continue;
-//							}
-//							
-//							radiationEdge.setWeight(KielarRoutingConstant.NumberOfPedestriansOnEdge, 
-//									numberOfPeds / KielarRoutingConstant.PedestrianRadiationDrop);
-//						}
 				}
 			}
 		}

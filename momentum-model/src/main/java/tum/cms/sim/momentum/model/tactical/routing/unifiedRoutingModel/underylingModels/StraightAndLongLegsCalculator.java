@@ -52,9 +52,14 @@ public class StraightAndLongLegsCalculator extends UnifiedIterativeCalculator {
 	public double calculateWeight(Graph graph, Vertex previousVisit, Vertex target, Vertex current, Vertex successor) {
 
 		Edge nextEdge = graph.getEdge(current, successor);
+		double sallDistanceEnhancement = 0.0;
+		
+		if(UnifiedRoutingConstant.SallCalculationAngleInfluence < 1.0) {
+			
+			double longestLegDistanceToDestination = GeometryAdditionals.calculateLongestLegLengthAlongEdge(graph, nextEdge, target, sallAngle);
+			sallDistanceEnhancement = longestLegDistanceToDestination / current.euklidDistanceBetweenVertex(target);
+		}
 
-		double longestLegDistanceToDestination = GeometryAdditionals.calculateLongestLegLengthAlongEdge(graph, nextEdge, target, sallAngle);
-		double sallDistanceEnhancement = longestLegDistanceToDestination / current.euklidDistanceBetweenVertex(target);
 		double sallAngleRelative = 0.0;
 		double sallDistancePercent = 1.0;
 		

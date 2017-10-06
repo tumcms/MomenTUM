@@ -129,4 +129,9 @@ public class MorphologicalLatticeOperation {
 		
 		return candidates;
 	}
+	
+	/**
+	 * 
+	 */
+	//public static createDistanceOccupancy(ILattice lattice, )
 }

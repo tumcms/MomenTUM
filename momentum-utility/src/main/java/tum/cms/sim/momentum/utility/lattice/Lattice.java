@@ -81,6 +81,8 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	protected Vector2D minPositionBoundingBox = null;
 	protected Vector2D maxPositionBoundingBox = null;
 
+	protected int maxRowIndex = 0;
+	protected int maxColumnIndex = 0;
 
 	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getPropertyBackPack()
@@ -256,8 +258,6 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		this.neighborhoodType = neigborhoodType;
 
 
-		int maxRowIndex = 0;
-		int maxColumnIndex = 0;
 		
 		switch(this.latticeType) {
 		
@@ -359,17 +359,129 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 			switch(this.neighborhoodType) {
 			
 			case Edge:
-				cellIndizes = QuadraticLatticCalculation.getAllNeumannNeighborIndices(cellIndex);
+				cellIndizes = QuadraticLatticCalculation.getAllNeumannNeighborIndices(cellIndex, maxColumnIndex, maxRowIndex);
 				break;
 				
 			case Touching:
 			default:
-				cellIndizes = QuadraticLatticCalculation.getAllMooreNeighborIndices(cellIndex);
+				cellIndizes = QuadraticLatticCalculation.getAllMooreNeighborIndices(cellIndex, maxColumnIndex, maxRowIndex);
 				break;
 			}				
 			break;
 		}		
 		return cellIndizes;
+	}
+	
+	public List<List<CellIndex>> findLocalMinimal(int globalMaximal, int globalMinimal) {
+		
+		ArrayList<List<CellIndex>> localMinima = new ArrayList<>();
+		
+		while(globalMinimal < globalMaximal) {
+			
+			HashSet<CellIndex> visited = new HashSet<>();
+			
+			for(CellIndex cell : this.getCellsInOrder()) {
+			 
+				int cellValue = (int)this.getCellNumberValue(cell);
+					
+				if(visited.contains(cell) || cellValue != globalMinimal) {
+					
+					continue;
+				}
+				
+				LinkedList<CellIndex> searchCells = new LinkedList<>();
+				searchCells.push(cell);
+				HashSet<CellIndex> minimalSet = new HashSet<>();
+				minimalSet.add(cell);
+				
+				boolean isLocalMinimal = true;
+				
+				while(!searchCells.isEmpty()) {
+					
+					CellIndex nextCell = searchCells.pop();
+					visited.add(nextCell);
+					
+					for(CellIndex adjacentCell : this.getAllNeighborIndices(nextCell)) {
+						
+						int adjacentValue = (int)this.getCellNumberValue(adjacentCell);
+						
+						if(adjacentValue == cellValue) {
+							
+							if(!minimalSet.contains(adjacentCell)) {
+								
+								searchCells.push(adjacentCell);
+								minimalSet.add(nextCell);
+							}
+						}
+						else if(adjacentValue < cellValue) {
+							
+							isLocalMinimal = false;
+							break;
+						}
+					}
+				}
+				
+				if(isLocalMinimal) {
+					
+					localMinima.add(new ArrayList<>());
+					localMinima.get(localMinima.size() - 1).addAll(minimalSet);
+				}
+			}
+			
+			globalMinimal++;
+		}
+		
+		return localMinima;
+	}
+	
+	/**
+	 * computes distance transform map
+	 * returns minimal value
+	 * @param occupiedCells
+	 * @return
+	 */
+	public int computeDistanceMap(List<CellIndex> occupiedCells) {
+		
+		int globalMinima = Integer.MAX_VALUE;
+		LinkedList<CellIndex> currentCells = new LinkedList<>(occupiedCells);
+		// compute distance map
+		
+		while(!currentCells.isEmpty() ) {
+	
+			// get current cell
+			CellIndex currentCell = currentCells.poll();
+
+			if(currentCell == null) {
+				continue;
+			}
+			
+			// get current value
+			int currentValue = (int)this.getCellNumberValue(currentCell);
+					
+			// get adjacent cell of the current
+			List<CellIndex> adjacentCells = this.getAllNeighborIndices(currentCell);
+			
+			// processes adjacent cells
+			for(CellIndex adjacentCell : adjacentCells) {
+				
+				// get adjacent cells value
+				int adjacentValue = (int)this.getCellNumberValue(adjacentCell);
+				
+				if(adjacentValue <= 0.0) { // empty cell add and update
+					
+					this.setCellNumberValue(adjacentCell, currentValue - 1);
+					currentCells.add(adjacentCell);
+					
+					adjacentValue = currentValue - 1;
+					
+					if(adjacentValue < globalMinima) {
+						
+						globalMinima = adjacentValue;
+					}
+				}
+			}
+		}
+		return globalMinima;
 	}
 	
 	/* (non-Javadoc)
@@ -820,6 +932,57 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		
 		return cells;
 	}
+	
+	@Override
+	public List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, double value) {
+		
+		HashMap<CellIndex, Vector2D> insideCellPositions = this.getInsidePositionForCells(polygon);
+		HashMap<CellIndex, Vector2D> borderCellPositions = this.getBorderPositionForCells(polygon);
+		ArrayList<CellIndex> cellsToOccupy = new ArrayList<CellIndex>();
+		
+		for(Entry<CellIndex, Vector2D> cellIndexPosiion : insideCellPositions.entrySet()) {
+			
+			if(this.isInLatticeBounds(cellIndexPosiion.getKey())) {
+				
+				cellsToOccupy.add(cellIndexPosiion.getKey());
+			}
+		}
+		
+		for(Entry<CellIndex, Vector2D> cellIndexPosiion : borderCellPositions.entrySet()) {
+			
+			if(this.isInLatticeBounds(cellIndexPosiion.getKey())) {
+				
+				cellsToOccupy.add(cellIndexPosiion.getKey());
+			}
+		}
+		
+		cellsToOccupy.stream().forEach(cellIndex -> this.setCellNumberValue(cellIndex, value));
+		
+		return cellsToOccupy;
+	}
+	
+	@Override
+	public List<CellIndex> occupyAllSegmentCells(List<Segment2D> segments, double value) {
+		
+		ArrayList<CellIndex> cellsToOccupy = new ArrayList<CellIndex>();
+		
+		for (Segment2D segment : segments) {
+			
+			HashMap<CellIndex, Vector2D> cellPositions = this.getBorderPositionForCells(segment);
+			
+			for(Entry<CellIndex, Vector2D> cellIndexPosiion : cellPositions.entrySet()) {
+				
+				if(this.isInLatticeBounds(cellIndexPosiion.getKey())) {
+					
+					cellsToOccupy.add(cellIndexPosiion.getKey());
+				}
+			}
+		}
+		cellsToOccupy.stream().forEach(cellIndex -> this.setCellNumberValue(cellIndex, value));
+		
+		return cellsToOccupy;
+	}
+	
 	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#occupyAllPolygonCells(tum.cms.sim.momentum.utility.geometry.Polygon2D, tum.cms.sim.momentum.utility.lattice.Lattice.Occupation)
 	 */
@@ -1091,7 +1254,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#breshamLineCast(tum.cms.sim.momentum.utility.lattice.CellIndex, tum.cms.sim.momentum.utility.lattice.CellIndex)
 	 */
     @Override
-	public boolean breshamLineCast(CellIndex from, CellIndex towards) {
+	public boolean breshamLineCast(CellIndex from, CellIndex towards, int distance) {
 
     	boolean hitTarget = false;
     	
@@ -1117,7 +1280,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
         dx *= 2;
         dy *= 2;
 
-        for (; n > 0; --n) {
+        for (; n > 0 && distance > 0; --n) {
         	
         	if(!this.isCellFree(y, x)) {
         		
@@ -1140,6 +1303,8 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
                 y += y_inc;
                 error += dx;
             }
+            
+            distance--;
         }
         
     	return hitTarget;

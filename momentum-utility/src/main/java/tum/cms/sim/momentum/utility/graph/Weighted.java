@@ -40,6 +40,11 @@ public abstract class Weighted extends Unique {
 
 	protected HashMap<String, Double> weightMap = new HashMap<String, Double>();
 	
+	public synchronized boolean hasWeight(String weightName) {
+		
+		return weightMap.containsKey(weightName);
+	}
+	
 	public synchronized Double getWeight(String weightName) {
 		
  		return weightMap.get(weightName);

@@ -265,7 +265,7 @@
 	<!-- and the user has to provide all basic models (walking, wayfinding ...) -->
 	<!-- If blocks exists the user need to provide the corresponding models as given by model a (unique) id -->
 	<!-- The execution order tag comprises at least a single block. -->
-	<exeuctionOrder>
+	<executionOrder>
 		
 		<!-- Blocks are in order and processed based on the given sequence. -->
 		<!-- Blocks have a multiplicator, which indicates in which multiple of the -->
@@ -273,8 +273,10 @@
 		<!-- A block comprises at least one model-->
 		<executionBlock id="1" multiplicator="1">
 		
-			<!-- Each execution block can have at least one block model -->
+			<!-- Each execution block can have at least one execution model -->
 			<!-- They refer to model id. Make sure the model ids are unique! -->
+			<!-- The models have to be of the type operational tactical or strategic. -->
+			<!-- Thus, do not use the sub-models (see below). -->
 			<!-- A modelType is an important hint for the framework and is
 				meta 
 				operational
@@ -284,15 +286,15 @@
 			<!-- The multiplicator works similar to the multiplicator in the execution block. -->
 			<!-- However, blockModels can be called if timeStep % executionBlock.multiplicator = 0 -->
 			<!-- and if timeStep % bockModel.multiplicator = 0. -->
-			<bockModel id="11" modelType="operational" multiplicator="2"/>
-			<bockModel id="2" modelType="operational" multiplicator="1"/>
-			<bockModel id="3" modelType="meta" multiplicator="1"/>
+			<executionModel id="11" modelType="operational" multiplicator="2"/>
+			<executionModel id="2" modelType="operational" multiplicator="1"/>
+			<executionModel id="3" modelType="meta" multiplicator="1"/>
 		</executionBlock>
 		
 		<!-- Multiple more executionBlock can be added. -->
 		<!-- The order of the blocks is important for the execution sequence! -->
 		
-	</exeuctionOrder>
+	</executionOrder>
 	
 	<!-- Agent can perceive objects and other agents. The model of perception is defined here. -->
 	<!-- At the moment only a single model exists, which is of type BlockingGeometries. -->

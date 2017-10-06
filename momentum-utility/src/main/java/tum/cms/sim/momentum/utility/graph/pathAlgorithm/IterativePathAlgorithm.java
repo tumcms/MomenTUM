@@ -42,18 +42,18 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.selectorOperation.VertexSelector;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.IterativeWeightCalculator;
 
-public class IterativeShortestPathAlgorithm {
+public class IterativePathAlgorithm {
 
 	private IterativeWeightCalculator weightCalculator = null;
     private VertexSelector selector = null;
 
-	public IterativeShortestPathAlgorithm(IterativeWeightCalculator weightCalculator, VertexSelector selector) {
+	public IterativePathAlgorithm(IterativeWeightCalculator weightCalculator, VertexSelector selector) {
     	
     	this.weightCalculator = weightCalculator;
     	this.selector = selector;
     }
     
-	public Path calculateNextPath(Graph graph, Set<Vertex> visited, Vertex previousVertex, Vertex start, Vertex target, int depth) {
+	public Path calculateNextPath(Graph graph, Set<Vertex> visited, Vertex previousVertex, Vertex start, Vertex target) {
 		
   		Path path = null;
   		
@@ -66,34 +66,25 @@ public class IterativeShortestPathAlgorithm {
 			path = new Path(start, target);
 		}
 		
-		if(target.equals(start)) {
+		if(target.getId().intValue() == start.getId().intValue()) {
 			
 		    return new Path(start, target);
 		}
 		
 		Vertex next = start;
-		int sections = 0;
-		
-		while(sections++ < depth) {
+		path.appendVertex(start);
 			
-			next = selectBestSuccessor(graph, visited, previousVertex, start, target);
-	    	
-	        if(next == null) { // dead alley
-	        	
-	        	Object[] nextVertices = graph.getSuccessorVertices(start).toArray();	
-	        	next = (Vertex)nextVertices[new Random().nextInt(nextVertices.length)];
-	        	depth = 0;
-	        }
-	        
-	        start = next;
-	        
-	        path.appendVertex(next);
-	        
-	        if(sections == 1) {
-	        	
-	        	 path.setCurrentVertex(next);
-	        }
-		}
+		next = selectBestSuccessor(graph, visited, previousVertex, start, target);
+    	
+        if(next == null) { // dead alley
+        	
+        	Object[] nextVertices = graph.getSuccessorVertices(start).toArray();	
+        	next = (Vertex)nextVertices[new Random().nextInt(nextVertices.length)];
+        }
+        
+        previousVertex = start;
+        path.appendVertex(next);
+        path.setCurrentVertex(next);
 
 		return path;
 	}

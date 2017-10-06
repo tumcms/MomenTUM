@@ -91,7 +91,7 @@
 	
 	<!-- The third variation to model service times / fulfilment duration is to define a value for all locations. -->
 	<!-- This is done with the fulfilmentOverallDuration property. -->
-	<!-- Set 0 in order to remove durations completely, set Double.MAX_VALUE to set infinit fulfillment duration, or another value. -->
+	<!-- Set 0 in order to remove durations completely, set Double.MAX_VALUE to set infinite fulfilment duration, or another value. -->
 	<property name="fulfilmentOverallDuration" type="Double" value="1.0"/>
 	
 	<!-- The behaviorType complexProperty helps to sets the kind of behavior that is expected at a area. -->

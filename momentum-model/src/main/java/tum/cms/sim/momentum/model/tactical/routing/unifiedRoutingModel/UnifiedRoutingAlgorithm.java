@@ -53,7 +53,7 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Path;
 import tum.cms.sim.momentum.utility.graph.Vertex;
-import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativeShortestPathAlgorithm;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.IterativePathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.ShortestPathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.selectorOperation.SmallestVertexSelector;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.IterativeWeightCalculator;
@@ -61,7 +61,7 @@ import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.Iterativ
 public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 
 	private DecisionDurationCalculator decisionDurationCalculator = null;
-	private IterativeShortestPathAlgorithm iterativAlgorithm = null;
+	private IterativePathAlgorithm iterativAlgorithm = null;
 	
 	private ShortestPathAlgorithm bhDirectAlgorithm = null;
 	private BeelineHeuristicsCalculator beelineHeuristicCalculator = new BeelineHeuristicsCalculator(UnifiedRoutingConstant.BeelineVertexWeightNameSeed);
@@ -89,13 +89,11 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 	private AvoidanceCalculator avoidanceCalculator = new AvoidanceCalculator();
 	private HashMap<Vertex, Double> currentAvValues = null;
 	
-	private ITacticalPedestrian pedestrian = null;
-	
 	private UnifiedRoutingPedestrianExtension currentExtension = null;
 
 	public UnifiedRoutingAlgorithm() {
 		
-		this.iterativAlgorithm = new IterativeShortestPathAlgorithm(this, new SmallestVertexSelector());
+		this.iterativAlgorithm = new IterativePathAlgorithm(this, new SmallestVertexSelector());
 		this.bhDirectAlgorithm = new ShortestPathAlgorithm(beelineHeuristicCalculator);
 		this.spDirectAlgorithm = new ShortestPathAlgorithm(shortestPathCalculator);
 	}
@@ -141,8 +139,6 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 	public void setCurrentPedestrian(ITacticalPedestrian currentPedestrian) {
 	
 		this.fastesPathCalculator.setCurrentPedestrian(currentPedestrian);
-
-		this.pedestrian = currentPedestrian;
 	}
 	
 	public void updateWeightName(int threadNumber) {
@@ -176,17 +172,8 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 		}
 	}
 	
-	public Path route(Graph graph, Vertex start, Vertex target) {
+	public Path route(Graph graph, Vertex start, Vertex target, Vertex previousVisit, Set<Vertex> visited) {
 		
-		Set<Vertex> visited = null;
-		Vertex previousVisit = null;
-		
-		if(this.pedestrian.getRoutingState() != null) {
-			
-			visited = this.pedestrian.getRoutingState().getVisited();
-			previousVisit = this.pedestrian.getRoutingState().getLastVisit();
-		}
-
 		if(this.currentExtension.getShortestWeightProportion() > 0.0) {
 			
 			this.currentSpPath = this.spDirectAlgorithm.calculateShortestPath(graph, start, target);
@@ -205,7 +192,7 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 			this.currentBhPath = null;
 		}
 	
-		return this.iterativAlgorithm.calculateNextPath(graph, visited, previousVisit, start, target, 2);
+		return this.iterativAlgorithm.calculateNextPath(graph, visited, previousVisit, start, target);
 	}
 	
 	public void updateGlobalWeights(Graph graph, Collection<IRichPedestrian> pedestrians, SimulationState simulationState) {
@@ -354,6 +341,9 @@ public class UnifiedRoutingAlgorithm extends IterativeWeightCalculator {
 //			emotionalWeight = 1.0;
 //		}
 
+		// in case of a depth search, follow the direct path algorithms to the next node,
+		// this is reseted for each routing call
+		
 		// finalize 
 		return spatialWeight * (1.0 - this.currentExtension.getHerdingProportion()) +
 		   socialWeight * this.currentExtension.getHerdingProportion() +

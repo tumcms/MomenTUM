@@ -94,6 +94,10 @@ public class CsvWriterFormat extends WriterFormat {
 	 */
 	private boolean headerFormated = false;
 	
+	private static String timeStepIndicatorName = "timeStep";
+	
+	private String timeStepIndicator = "timeStep";
+	
 	@Override
 	public void initialize() {
 
@@ -102,6 +106,11 @@ public class CsvWriterFormat extends WriterFormat {
 		if(this.properties.getBooleanProperty(indexName) != null) {
 		
 			this.writeIndex = this.properties.getBooleanProperty(indexName);
+		}
+		
+		if(this.properties.getBooleanProperty(timeStepIndicatorName) != null) {
+			
+			this.timeStepIndicator = this.properties.getStringProperty(timeStepIndicatorName);
 		}
 	}
 
@@ -141,8 +150,8 @@ public class CsvWriterFormat extends WriterFormat {
 						currentSetSize += itemContent.length();
 						csvDataBuilder.append(itemContent);
 						
-						// get the first element, this is the cluster indicator
-						if(iter == 0) {
+						// get "timeStep" element identifies a cluster
+						if(itemType.equals(this.timeStepIndicator)) {
 							
 							indexItem = itemContent;
 						}

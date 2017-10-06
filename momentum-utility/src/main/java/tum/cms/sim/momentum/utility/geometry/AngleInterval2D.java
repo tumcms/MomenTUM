@@ -42,6 +42,11 @@ public class AngleInterval2D {
 
 	AngleInterval2D(double left, double interval) {
 			
+		if(left - interval < 0) {
+			
+			left += limitation;
+		}
+
 		this.left = left;
 		this.right = (left - interval);
 	}
@@ -74,8 +79,7 @@ public class AngleInterval2D {
 		d = FastMath.abs(d-a) % limitation; // d: d-c
 		c = FastMath.abs(c-a) % limitation; // c: d-c
 		b = FastMath.abs(b-a) % limitation; // b: a-b
-		//double a = 0.0; // a: a-b
-	
+
 		if(c <= b || d <= c) {
 			
 			return true;
@@ -83,22 +87,4 @@ public class AngleInterval2D {
 
 		return false;
 	}
-//	/*
-//	 * 
-//	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-//	 */
-//	public int compareTo(AngleInterval2D b) {
-//	
-//		AngleInterval2D a = this;
-//		if (FastMath.abs(a.left - b.left) < precision && FastMath.abs(a.right - b.right) < precision)
-//			return 0;
-//		if (FastMath.abs(a.left - b.left) < precision && a.right > b.right)
-//			return 1;
-//		if (FastMath.abs(a.left - b.left) < precision && a.right< b.right)
-//			return -1;
-//		if (this.left > b.left)
-//			return 1;
-//		else
-//			return -1;
-//	}
 }

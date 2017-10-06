@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="2.0.0" simulationName="2017_Portal_Graph_Test_pedSimScenario">
+
+	<graphs>
+		<graphModel name="routing" id="0">
+			 <graphOperation id="0" name="raw" type="RawGraph">
+				<property name="graphId" type="Integer" value="0"/>
+			</graphOperation> 
+			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased" />
+			<!--<graphOperation id="2" name="corners" type="VertexCreateAtCorners"> 
+				<property name="cornerDistance" type="Double" value="0.7"/> 
+			</graphOperation>-->
+			<graphOperation id="4" name="portal" type="VertexCreatePortal"> 
+				<property name="cellSize" type="Double" value="0.4"/>
+			</graphOperation>
+			<graphOperation id="5" name="visibility" type="VertexCreateMinimalRegion">
+				<property name="visibilityTolerance" type="Double" value="0.1"/>
+			</graphOperation> 
+			<graphOperation id="6" name="toConfiguration" type="ToConfiguration">
+				<property name="scenarioId" type="Integer" value="0"/>
+			</graphOperation>
+		</graphModel>
+	</graphs>
+	
+	<outputWriters>
+		<outputWriter id="1" name="layoutWriter">
+			<property name="call" type="Integer" value="0"/> <!-- In pre-processing only -->
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./2017_Portal_Graph_Test_Layout.xml"/>
+			</writerTarget>
+			<writerFormat formatType="Single"/>
+			<writerSource sourceType="Configuration">
+				<property name="dataElement" type="String" value="layouts"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+	
+	<layouts>
+    <scenario id="0" name="pedSim" maxX="51" maxY="21" minX="0" minY="0">
+      <obstacle id="0" name="Wall18" type="Wall">
+        <point x="30" y="0" />
+        <point x="30" y="15" />
+      </obstacle>
+      <obstacle id="1" name="Wall19" type="Wall">
+        <point x="30" y="15" />
+        <point x="45" y="15" />
+      </obstacle>
+      <obstacle id="2" name="Wall20" type="Wall">
+        <point x="45" y="15" />
+        <point x="45" y="5" />
+      </obstacle>
+      <obstacle id="3" name="Wall21" type="Wall">
+        <point x="45" y="5" />
+        <point x="35" y="5" />
+      </obstacle>
+      <obstacle id="4" name="Wall22" type="Wall">
+        <point x="35" y="5" />
+        <point x="35" y="10" />
+      </obstacle>
+      <obstacle id="5" name="Wall23" type="Wall">
+        <point x="35" y="10" />
+        <point x="40" y="10" />
+      </obstacle>
+      <obstacle id="6" name="Wall24" type="Wall">
+        <point x="20" y="0" />
+        <point x="20" y="8" />
+      </obstacle>
+      <obstacle id="7" name="Wall25" type="Wall">
+        <point x="20" y="8" />
+        <point x="25" y="8" />
+      </obstacle>
+      <obstacle id="8" name="Wall26" type="Wall">
+        <point x="25" y="8" />
+        <point x="25" y="0" />
+      </obstacle>
+      <obstacle id="9" name="Wall27" type="Wall">
+        <point x="20" y="20" />
+        <point x="20" y="12" />
+      </obstacle>
+      <obstacle id="10" name="Wall28" type="Wall">
+        <point x="20" y="12" />
+        <point x="25" y="12" />
+      </obstacle>
+      <obstacle id="11" name="Wall29" type="Wall">
+        <point x="25" y="12" />
+        <point x="25" y="20" />
+      </obstacle>
+      <obstacle id="12" name="Wall30" type="Wall">
+        <point x="10" y="0" />
+        <point x="10" y="8" />
+      </obstacle>
+      <obstacle id="13" name="Wall31" type="Wall">
+        <point x="10" y="20" />
+        <point x="10" y="12" />
+      </obstacle>
+      <obstacle id="14" name="Wall32" type="Wall">
+        <point x="0" y="0" />
+        <point x="50" y="0" />
+      </obstacle>
+      <obstacle id="15" name="Wall33" type="Wall">
+        <point x="50" y="0" />
+        <point x="50" y="20" />
+      </obstacle>
+      <obstacle id="16" name="Wall34" type="Wall">
+        <point x="50" y="20" />
+        <point x="0" y="20" />
+      </obstacle>
+      <obstacle id="17" name="Wall35" type="Wall">
+        <point x="0" y="20" />
+        <point x="0" y="0" />
+      </obstacle>
+    </scenario>
+  </layouts>
+  
+</simulator>

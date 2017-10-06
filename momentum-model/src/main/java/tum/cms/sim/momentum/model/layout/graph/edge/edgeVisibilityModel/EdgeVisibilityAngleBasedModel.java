@@ -63,7 +63,7 @@ public class EdgeVisibilityAngleBasedModel extends GraphOperation {
 				.map(Obstacle::getGeometry).collect(Collectors.toList());	
 		
 		Graph graph = this.scenarioManager.getGraph();
-		double alpha = this.properties.getDoubleProperty(alphaName);
+		double alpha = this.properties.getDoubleProperty(alphaName) / 2.0;
 		
 		HashSet<Vertex> knownSeedVertices = new HashSet<Vertex>();
 		this.scenarioManager.getAreas().stream().forEach(area -> {
@@ -72,8 +72,14 @@ public class EdgeVisibilityAngleBasedModel extends GraphOperation {
 		
 		VisibilityEdgeConnectAlgorithm edgeConnector = new VisibilityEdgeConnectAlgorithm();
 		
-		edgeConnector.connectVertices(blockingGeometries, graph, knownSeedVertices, alpha, visibilityTolerance);
-	
+		try {
+			
+			edgeConnector.connectVertices(blockingGeometries, graph, knownSeedVertices, alpha, visibilityTolerance);
+		}
+		catch (Exception e) {
+
+			e.printStackTrace();
+		}
 	}
 
 	@Override

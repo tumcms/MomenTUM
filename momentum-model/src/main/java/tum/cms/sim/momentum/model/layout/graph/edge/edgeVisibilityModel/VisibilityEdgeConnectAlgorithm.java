@@ -36,10 +36,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.util.FastMath;
+
 import tum.cms.sim.momentum.utility.geometry.AngleInterval2D;
 import tum.cms.sim.momentum.utility.geometry.Geometry2D;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
@@ -54,8 +55,8 @@ public class VisibilityEdgeConnectAlgorithm {
     		Graph graph, 
     		Collection<Vertex> knownSeedVertices, 
     		double alpha,
-    		double connectObstacleDistance) {
-
+    		double connectObstacleDistance) throws Exception {
+		
     	int numberOfAngleSegments = Integer.MAX_VALUE; 
     	alpha = GeometryAdditionals.translateToRadiant(alpha);
     	 
@@ -66,7 +67,6 @@ public class VisibilityEdgeConnectAlgorithm {
     		
         HashMap<Vertex, ArrayList<AngleInterval2D>> vertexAngleIntervals = null;
         
-
         vertexAngleIntervals = new HashMap<Vertex, ArrayList<AngleInterval2D>>();
         
         for (Vertex vertex : graph.getVertices()) {
@@ -74,85 +74,48 @@ public class VisibilityEdgeConnectAlgorithm {
         	vertexAngleIntervals.put(vertex, new ArrayList<>());
         }
 
-        LinkedHashMap<Vertex, LinkedList<Vertex>> verticesSorted = new LinkedHashMap<>();
+        ArrayList<Pair<Vertex,Vertex>> sortedPairsList = new ArrayList<>();
         
         for (Vertex vertex : graph.getVertices()) {
 
-        	verticesSorted.put(vertex, new LinkedList<>());
-        	verticesSorted.get(vertex).addAll(graph.getVertices());
-        	
-        	//three-way vertex sort
-        	verticesSorted.get(vertex).sort(new Comparator<Vertex>() {
-        		@Override
-        		public int compare(Vertex o1, Vertex o2) {
-
-        			if (vertex.getGeometry().getCenter().distance(o1.getGeometry().getCenter()) < 
-        				vertex.getGeometry().getCenter().distance(o2.getGeometry().getCenter())) {
-        				
-        				return -1;
-        			}
-        			else if (vertex.getGeometry().getCenter().distance(o1.getGeometry().getCenter()) > 
-        					 vertex.getGeometry().getCenter().distance(o2.getGeometry().getCenter())) {
-        				
-        				return 1;
-        			}
-        			else {
-        				
-        				return 0;
-        			}
-        		}
-        	});
+        	 for (Vertex vertexOther : graph.getVertices()) {
+        		 
+        		 if (vertex.equals(vertexOther)) {
+        			 continue;
+        		 }
+        		 
+        		 sortedPairsList.add(Pair.of(vertex, vertexOther));
+        	 }
         }
 
-        Vertex vertex = null;
-        Vertex neighborVertex = null;
-        
-        while(!verticesSorted.isEmpty()) {
-        	
-    		vertex = neighborVertex;
-    		
-    		while(vertex != null && verticesSorted.get(vertex).isEmpty()) {
+        sortedPairsList.sort(new Comparator<Pair<Vertex,Vertex>>() {
 
-    			verticesSorted.remove(vertex);
-    			
-    			if(verticesSorted.isEmpty()) {
-    				
-    				break;
-    			}
-    			
-    			vertex = verticesSorted.keySet().stream().findFirst().get();
-    		}
-    		
-    		if(verticesSorted.isEmpty()) {
-    			
-				break;
+			@Override
+			public int compare(Pair<Vertex, Vertex> first, Pair<Vertex, Vertex> second) {
+				
+				return 	Double.compare(first.getLeft().euklidDistanceBetweenVertex(first.getRight()),
+						second.getLeft().euklidDistanceBetweenVertex(second.getRight()));
 			}
-    		
-    		if(vertex == null || vertexAngleIntervals.get(vertex).size() >= numberOfAngleSegments) {
-    			
-    			vertex = verticesSorted.keySet().stream().findFirst().get();
-    		}
-    		
-        	neighborVertex = verticesSorted.get(vertex).poll();
+		});
+       
+        for(int iter = 0; iter < sortedPairsList.size(); iter++) {
         	
+        	// area get next valid vertex to use
+            Vertex vertex = sortedPairsList.get(iter).getLeft();
+            Vertex neighborVertex =sortedPairsList.get(iter).getRight();
+            
+            if(graph.getSuccessorVertices(vertex).contains(neighborVertex) ||
+               graph.getSuccessorVertices(neighborVertex).contains(vertex) ||
+               vertexAngleIntervals.get(vertex).size() >= numberOfAngleSegments ||
+               (vertexAngleIntervals.get(neighborVertex).size() >= numberOfAngleSegments && !vertex.isSeed())) {
+            	
+            	continue;
+            }
+  	
+        	Double leftToRight = this.computeAngleOrIntersection(vertex, neighborVertex, vertexAngleIntervals.get(vertex), alpha);
+        	Double rightToLeft = this.computeAngleOrIntersection(neighborVertex, vertex, vertexAngleIntervals.get(neighborVertex), alpha);
         	
-        	if (vertex.equals(neighborVertex) || graph.getSuccessorVertices(neighborVertex).contains(vertex)) {
-             
-        		continue;
-        	}      	
-        	
-        	Double angle = null;
-        	
-        	if(alpha > 0.0) {
-        		
-        		angle = this.calculateInteresctionAngle(vertex, neighborVertex, vertexAngleIntervals.get(vertex), alpha);
-        	}
-        	else {
-        		
-        		angle = 0.0;
-        	}
-
-        	if (angle != null) {
+        	if (leftToRight != null && (rightToLeft != null || vertex.isSeed())) {
         		
         		 boolean inSight = GeometryAdditionals.calculateIntersection(blockingGeometries,
 	            		vertex.getGeometry().getCenter(),
@@ -160,64 +123,43 @@ public class VisibilityEdgeConnectAlgorithm {
 	            		connectObstacleDistance);	            
 	            
 	            if(inSight) {
-            	
-	            	if(angle > 0.0) {
-	            		
-	            		vertexAngleIntervals.get(vertex).add(
-	            				GeometryFactory.createAngleInterval(angle + alpha, 2.0 * alpha));
+
+	            	vertexAngleIntervals.get(vertex).add(GeometryFactory.createAngleInterval(leftToRight + alpha, 2.0 * alpha));
+	            	
+	            	if(rightToLeft != null) {
+	 
+	            		vertexAngleIntervals.get(neighborVertex).add(GeometryFactory.createAngleInterval(rightToLeft + alpha, 2.0 * alpha));
 	            	}
 	            	
             		graph.doublyConnectVertices(vertex, neighborVertex);
             	}
             }
         }
-        
-//        for (Vertex vertex : vertices) {
-//            
-//	        vertexDistanceComparator.setVertex(vertex);
-//	        
-//	        //Most close Vertex first!
-//	        sortedVertices = new ArrayList<Vertex>();        
-//	        sortedVertices.addAll(graph.getVertices()); 
-//	        sortedVertices.sort(vertexDistanceComparator);
-//
-//	        // iterate through all found neighbors
-//	        for (Vertex neighborVertex : sortedVertices) { // for all, sorted proximity towards reference vertex
-//	   
-//	        }
-//        }
     }
 
-    private Double calculateInteresctionAngle(Vertex vertex, Vertex neighborVertex, List<AngleInterval2D> angleIntervals, double alpha) {
+    private Double computeAngleOrIntersection(Vertex vertex, Vertex neighborVertex, List<AngleInterval2D> angleIntervals, double alpha) {
 		       
     	Vector2D referencePointShifted = vertex.getGeometry().getCenter().sum(10, 0);
     	// 10 could be any other value just for line horizontal to baseline 
     	
         Double angle = GeometryAdditionals.angleBetween0And360CCW(
-        		neighborVertex.getGeometry().getCenter(),
+        		referencePointShifted,
         		vertex.getGeometry().getCenter(),
-        		referencePointShifted);
+        		neighborVertex.getGeometry().getCenter());
         
         boolean intersects = false;
+
         AngleInterval2D newInterval = GeometryFactory.createAngleInterval(angle + alpha, 2 * alpha);
-    	if(newInterval.getLeft() < newInterval.getRight()) {
-    		
-    		intersects = false;
-    	}
-        for (AngleInterval2D angleInterval : angleIntervals) {
-        	
-        	if(angleInterval.getLeft() < angleInterval.getRight()) {
-        		
-        		intersects = false;
-        	}
-        	if(angleInterval.intersects(newInterval)) {// Interval towards baseline! clockwise! Internal is also clockwise!
+        
+		for (AngleInterval2D angleInterval : angleIntervals) {
+			 
+			if(angleInterval.intersects(newInterval)) {// Interval towards baseline! clockwise! Internal is also clockwise!
 
 	            intersects = true;
                 break;
-            }
-        }
+            }	
+    	}
 
     	return (!intersects ? angle : null);
-    } 
-	
+    } 	
 }

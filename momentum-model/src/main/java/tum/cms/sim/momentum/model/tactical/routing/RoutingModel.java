@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
@@ -46,7 +47,22 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 
 public abstract class RoutingModel extends SubTacticalModel {
 
-	protected RoutingState updateRouteState(PerceptionalModel peception, ITacticalPedestrian pedestrian, Path newRoute) {
+	/**
+	 * Override this method in a routing model in order to 
+	 * provide specific decision support regarding:
+	 * Is the current vertex visited?
+	 * The default implementation uses an  on sight approach.
+	 * 
+	 * @return true if the current vertex is reached.
+	 */
+	public boolean checkIsVertexVisited() {
+	
+		return true; // default check in rerouting Necessary
+	}
+	
+	public RoutingState updateRouteState(PerceptionalModel peception,
+			ITacticalPedestrian pedestrian,
+			Path newRoute) {
 		
 		Vertex nextToLastVertex = null;
 		Vertex lastVertex = null;
@@ -62,7 +78,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 		else {
 			
 			lastVertex = newRoute.getFirstVertex();
-			
+
 			if(visited == null) {
 				
 				visited = new HashSet<Vertex>();
@@ -76,23 +92,61 @@ public abstract class RoutingModel extends SubTacticalModel {
 			return new RoutingState(visited,
 					nextToLastVertex,
 					lastVertex,
-					newRoute.getCurrentVertex(),
-					newRoute.getNextVertex());
+					newRoute.getCurrentVertex());
 		}
 		
 		return null;
 	}
 
 	/**
+	 * Check if a pedestrian needs to reroute.
+	 * Only if current vertex is not visible
+	 * or if the next vertex is visible
+	 * @param pedestrian
+	 * @param tacticalControlActive, activates next vertex visible check
+	 * @return if true, reroute
+	 */
+	public boolean reRoutingNecessary(IRichPedestrian pedestrian, boolean tacticalControlActive) {
+		
+		if(pedestrian.getRoutingState() == null) {
+			
+			return true;
+		}	
+
+		boolean currentWalkingTargetVisible = perception.isVisible(pedestrian.getPosition(), pedestrian.getRoutingState().getNextVisit());
+		
+		// is the current walking target not visible?! reroute
+		if(!currentWalkingTargetVisible) {
+			
+			pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
+						pedestrian.getRoutingState().getNextToLastVisit(),
+						pedestrian.getRoutingState().getLastVisit(),
+						null));
+			
+			return true;
+		}
+		
+		if(tacticalControlActive && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
+			
+			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian.getPosition(), pedestrian.getRoutingState().getNextToCurrentVisit());
+			
+			// is the next walking target not visible?! reroute
+			if(nextWalkingTargetVisible && this.checkIsVertexVisited()) {
+				
+				return true;
+			}
+		}
+	
+		return false;
+	}
+	
+	/**
 	 * Exchange the last vertex of the route with another vertex based on the point of interest
 	 * this will improve the routing behavior. Sometimes walking to the center of the goal is
 	 * not the ideal strategy! E.g. queuing behavior.
 	 * 
-	 * Also, if the goal is visible the next Vertex will automatically set to the goal!
+	 * Also, if the strategic goal is visible the next vertex will automatically set to the goal!
 	 * This will reduce unnecessary zig-zak routing.
-	 * 
-	 * This method will check if the next target location (area or point of interest) is directly
-	 * visible. If yes, it will adjust the routing to the visible goal as next walking target.
 	 */
 	public boolean shortCutRoute(PerceptionalModel perception, ITacticalPedestrian pedestrian) {
 		
@@ -104,8 +158,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 					pedestrian.getNextNavigationTarget().getPointOfInterest());
 			
 			Vertex nextVisit = pedestrian.getRoutingState().getNextVisit();
-			Vertex nextToNextVisit = pedestrian.getRoutingState().getNextToNextVisit();
-			
+
 			if(goalAreaEqualsPointOfInterest) { 
 				
 				if(perception.isVisible(pedestrian.getPosition(), pedestrian.getNextNavigationTarget().getPointOfInterest())) {
@@ -122,13 +175,11 @@ public abstract class RoutingModel extends SubTacticalModel {
 					}
 					
 					shortCutSuccessful = true;
-					nextToNextVisit = null;
 					
 					pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
 							pedestrian.getRoutingState().getNextToLastVisit(),
 							pedestrian.getRoutingState().getLastVisit(),
-							nextVisit,
-							nextToNextVisit));
+							nextVisit));
 				}
 			}
 			else {
@@ -139,13 +190,11 @@ public abstract class RoutingModel extends SubTacticalModel {
 					// navigation point, select the point of interest as dynamic walking target
 					nextVisit = GraphTheoryFactory.createVertexCyleBased(pedestrian.getNextNavigationTarget().getPointOfInterest(), -1);
 					shortCutSuccessful = true;
-					nextToNextVisit = null;
-					
+
 					pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
 							pedestrian.getRoutingState().getNextToLastVisit(),
 							pedestrian.getRoutingState().getLastVisit(),
-							nextVisit,
-							nextToNextVisit));
+							nextVisit));
 				}
 			}
 		}
@@ -161,10 +210,11 @@ public abstract class RoutingModel extends SubTacticalModel {
 			ScenarioManager scenarioManager) {
 		
 		Vertex startVertex = null;
+		Vertex end = this.scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
 		
 		if(pedestrian.getRoutingState() == null || // no routing behavior present, find new start
 		   pedestrian.getRoutingState().getNextVisit() == null || // re-routing because next visit is not visible
-		   pedestrian.getRoutingState().getNextToNextVisit() == null || // at the end of routing (shortcut)
+		   pedestrian.getRoutingState().getNextVisit().getId() == end.getId() || // at the end of routing (shortcut)
 		   pedestrian.getRoutingState().getNextVisit().isTemporary()) { // old vertex was temporary
 
 			int maximalInteration = 50;
@@ -177,17 +227,26 @@ public abstract class RoutingModel extends SubTacticalModel {
 						pedestrian.getPosition(),
 						toIgnore);
 
-				if(perception.isVisible(pedestrian.getPosition(), startVertexTemp)) {
+				if(startVertexTemp != null) {
 					
-					startVertex = startVertexTemp;
-					break;
+					if(perception.isVisible(pedestrian.getPosition(), startVertexTemp) &&
+					   this.scenarioManager.getGraph().getSuccessorEdges(startVertexTemp).size() > 0) {
+						
+						startVertex = startVertexTemp;
+						break;
+					}
+					else {
+						
+						toIgnore.add(startVertexTemp);
+					}
+
+					
+					maximalInteration--;
 				}
 				else {
 					
-					toIgnore.add(startVertexTemp);
+					maximalInteration = 0;
 				}
-				
-				maximalInteration--;
 			}
 			
 			if(startVertex == null) {

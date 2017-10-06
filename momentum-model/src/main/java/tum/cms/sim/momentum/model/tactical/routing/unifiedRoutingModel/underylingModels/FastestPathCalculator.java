@@ -32,6 +32,7 @@
 
 package tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.underylingModels;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -71,8 +72,6 @@ public class FastestPathCalculator extends UnifiedSocialCalculator {
 		
 		double meanVelocity = 0.0;
 		Edge edge = null;
-		Double sumSpeed = 0.0;
-		Double numberOfPeds = 0.0;
 		
 		HashMap<Edge, Double> sumPedestriansOnEdge = new HashMap<Edge, Double>(); 
 		HashMap<Edge, Double> sumSpeedOnEdge = new HashMap<Edge, Double>(); 
@@ -101,36 +100,68 @@ public class FastestPathCalculator extends UnifiedSocialCalculator {
 					continue;
 				}
 				
-				numberOfPeds = sumPedestriansOnEdge.get(edge); 
-				numberOfPeds = numberOfPeds == null ? 0.0 : numberOfPeds;
+				ArrayList<Edge> closeByEdges = new ArrayList<Edge>();
 				
-				sumPedestriansOnEdge.put(edge, numberOfPeds + 1.0);
+				closeByEdges.add(edge);
 				
-				sumSpeed = sumSpeedOnEdge.get(edge);
-				sumSpeed = sumSpeed == null ? 0.0 : sumSpeed;
-				
-				sumSpeedOnEdge.put(edge, sumSpeed + pedestrian.getVelocity().getMagnitude());
-			}
-			
-			for(Vertex current : graph.getVertices()) {
-				
-				for(Edge updateEdge : graph.getSuccessorEdges(current)) {
+				for(Edge radiationEdge : graph.getSuccessorEdges(edge.getStart())) {
 					
-					sumSpeed = sumSpeedOnEdge.get(updateEdge);
-					numberOfPeds = sumPedestriansOnEdge.get(updateEdge);
+					if(radiationEdge.equals(edge)) {
+						
+						continue;
+					}
+					
+					if(!radiationEdge.getEnd().getId().equals(edge.getStart().getId())) {
+					
+						//if(radiationEdge.getEnd().euklidDistanceBetweenVertex(edge.getStart()) > distance) {
+						
+							continue;
+						//}
+					}
+//					else {
+//						
+//						//if(radiationEdge.getStart().euklidDistanceBetweenVertex(edge.getStart()) > distance) {
+//							
+//							continue;
+//						//}
+//					}
+					
+					closeByEdges.add(radiationEdge);
+				}
+				
+				closeByEdges.forEach(computeEdge -> {
+					
+					Double numberOfPeds = 0.0;
+					numberOfPeds = sumPedestriansOnEdge.get(computeEdge); 
 					numberOfPeds = numberOfPeds == null ? 0.0 : numberOfPeds;
 					
-					if(sumSpeed == null || numberOfPeds == null || sumSpeed < 0 || numberOfPeds <= 0) {
-						
-						meanVelocity = UnifiedRoutingConstant.FastestMeanSpeed;
-					}
-					else {
-						
-						meanVelocity = sumSpeed / numberOfPeds;
-					}
+					Double sumSpeed = 0.0;
+					sumPedestriansOnEdge.put(computeEdge, numberOfPeds + 1.0);
+					sumSpeed = sumSpeedOnEdge.get(computeEdge);
+					sumSpeed = sumSpeed == null ? 0.0 : sumSpeed;
 					
-					updateEdge.setWeight(UnifiedRoutingConstant.FastestEdgeMeanSpeedWeightName, meanVelocity);
+					sumSpeedOnEdge.put(computeEdge, sumSpeed + pedestrian.getVelocity().getMagnitude());
+				});
+			}
+			
+			for(Edge updateEdge : graph.getAllEdges()) {
+					
+				Double numberOfPeds = 0.0;
+				Double sumSpeed = 0.0;
+				sumSpeed = sumSpeedOnEdge.get(updateEdge);
+				numberOfPeds = sumPedestriansOnEdge.get(updateEdge);
+				numberOfPeds = numberOfPeds == null ? 0.0 : numberOfPeds;
+				
+				if(sumSpeed == null || numberOfPeds == null || sumSpeed < 0 || numberOfPeds <= 0) {
+					
+					meanVelocity = UnifiedRoutingConstant.FastestMeanSpeed;
 				}
+				else {
+					
+					meanVelocity = sumSpeed / numberOfPeds;
+				}
+				
+				updateEdge.setWeight(UnifiedRoutingConstant.FastestEdgeMeanSpeedWeightName, meanVelocity);
 			}
 		}
 	}

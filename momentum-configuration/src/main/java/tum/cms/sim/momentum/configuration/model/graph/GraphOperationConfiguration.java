@@ -51,6 +51,8 @@ public class GraphOperationConfiguration extends PropertyContainerNode {
 		VertexCreateVoronoiBased,
 		VertexCreateAtIntersections,
 		VertexCreateMedialAxis,
+		VertexCreatePortal,
+		VertexCreateMinimalRegion,
 		
 		VertexRemoveVisibilityBased,
 		VertexRemoveSimple,
@@ -64,6 +66,7 @@ public class GraphOperationConfiguration extends PropertyContainerNode {
 		EdgeRemoveMST,
 		EdgeRemoveUnreachable, 
 		EdgeRemoveOneWay,
+		EdgeRemoveMeanDistance,
 		
 		RawGraph,
 		ToConfiguration,
@@ -80,6 +83,8 @@ public class GraphOperationConfiguration extends PropertyContainerNode {
 		map.put(GraphType.VertexCreateVoronoiBased.toString(), GraphType.VertexCreateVoronoiBased);
 		map.put(GraphType.VertexCreateAtIntersections.toString(), GraphType.VertexCreateAtIntersections);
 		map.put(GraphType.VertexCreateMedialAxis.toString(), GraphType.VertexCreateMedialAxis);
+		map.put(GraphType.VertexCreatePortal.toString(), GraphType.VertexCreatePortal);
+		map.put(GraphType.VertexCreateMinimalRegion.toString(), GraphType.VertexCreateMinimalRegion);
 		
 		map.put(GraphType.VertexRemoveVisibilityBased.toString(), GraphType.VertexRemoveVisibilityBased);
 		map.put(GraphType.VertexRemoveSimple.toString(), GraphType.VertexRemoveSimple);
@@ -93,7 +98,7 @@ public class GraphOperationConfiguration extends PropertyContainerNode {
 		map.put(GraphType.EdgeRemoveMST.toString(), GraphType.EdgeRemoveMST);
 		map.put(GraphType.EdgeRemoveUnreachable.toString(), GraphType.EdgeRemoveUnreachable);
 		map.put(GraphType.EdgeRemoveOneWay.toString(), GraphType.EdgeRemoveOneWay);
-		
+		map.put(GraphType.EdgeRemoveMeanDistance.toString(), GraphType.EdgeRemoveMeanDistance);		
 		map.put(GraphType.RawGraph.toString(), GraphType.RawGraph);
 		map.put(GraphType.ToConfiguration.toString(), GraphType.ToConfiguration);
 		map.put(GraphType.FromConfiguration.toString(), GraphType.FromConfiguration);

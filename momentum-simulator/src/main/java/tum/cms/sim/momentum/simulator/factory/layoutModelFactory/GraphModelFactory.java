@@ -41,6 +41,7 @@ import tum.cms.sim.momentum.configuration.scenario.ScenarioConfiguration;
 import tum.cms.sim.momentum.model.layout.graph.GraphModel;
 import tum.cms.sim.momentum.model.layout.graph.GraphOperation;
 import tum.cms.sim.momentum.model.layout.graph.edge.edgeCreateOvermarsModel.EdgeCreateOvermarsModel;
+import tum.cms.sim.momentum.model.layout.graph.edge.edgeDeleteMeanDistance.EdgeDeleteMeanDistance;
 import tum.cms.sim.momentum.model.layout.graph.edge.edgeDeleteOneWayModel.EdgeDeleteOnWayModel;
 import tum.cms.sim.momentum.model.layout.graph.edge.edgeDeleteUnreachablesModel.EdgeDeleteUnreachablesModel;
 import tum.cms.sim.momentum.model.layout.graph.edge.edgeMinimumSpanningTreeModel.EdgeMinimumSpanningTreeModel;
@@ -54,6 +55,8 @@ import tum.cms.sim.momentum.model.layout.graph.vertex.vertexCornerModel.VertexCo
 import tum.cms.sim.momentum.model.layout.graph.vertex.vertexCornerModel.VertexCornerModelEnriched;
 import tum.cms.sim.momentum.model.layout.graph.vertex.vertexIntersectionModel.VertexIntersectionModel;
 import tum.cms.sim.momentum.model.layout.graph.vertex.vertexMedialAxisModel.VertexMedialAxisModel;
+import tum.cms.sim.momentum.model.layout.graph.vertex.vertexMinimalRegionModel.VertexMinimalRegionModel;
+import tum.cms.sim.momentum.model.layout.graph.vertex.vertexPortalModel.VertexPortalModel;
 import tum.cms.sim.momentum.model.layout.graph.vertex.vertexPruneModel.VertexLineRemoveModel;
 import tum.cms.sim.momentum.model.layout.graph.vertex.vertexPruneModel.VertexSimplePruneModel;
 import tum.cms.sim.momentum.model.layout.graph.vertex.vertexPruneModel.VertexVisibilityPruneModel;
@@ -129,6 +132,14 @@ public class GraphModelFactory extends ModelFactory<GraphModelConfiguration, Gra
 			graphOperation = new VertexIntersectionModel();
 			break;
 			
+		case VertexCreatePortal:
+			graphOperation = new VertexPortalModel();
+			break;
+			
+		case VertexCreateMinimalRegion:
+			graphOperation = new VertexMinimalRegionModel();
+			break;
+			
 		case VertexRemoveVisibilityBased:
 			graphOperation = new VertexVisibilityPruneModel();
 			break;
@@ -167,6 +178,10 @@ public class GraphModelFactory extends ModelFactory<GraphModelConfiguration, Gra
 	
 		case EdgeRemoveOneWay:
 			graphOperation = new EdgeDeleteOnWayModel();
+			break;
+			
+		case EdgeRemoveMeanDistance:
+			graphOperation = new EdgeDeleteMeanDistance();
 			break;
 			
 		case RawGraph:

@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
@@ -174,15 +176,14 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 
 	@Override
 	public void callBeforeBehavior(SimulationState simulationState, Collection<IRichPedestrian> pedestrians) {
-		
+		 
 		// Nothing to do
 	}
 	
 	@Override
 	public void callPedestrianBehavior(ITacticalPedestrian pedestrian, SimulationState simulationState) {
-		
-		Vertex start = this.findNavigationStartPoint(pedestrian, this.perception, this.scenarioManager);
-		Vertex end = this.scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());	
+	
+		int depth = 3;
 		
 		UnifiedRoutingAlgorithm routingAlgorithm = this.getRoutingAlgorithm(simulationState);
 		
@@ -190,22 +191,82 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 		routingAlgorithm.updateWeightName(simulationState.getCalledOnThread());
 		routingAlgorithm.setCurrentPedestrian(pedestrian);
 		routingAlgorithm.setCurrentPerception(perception);
+		
+		Vertex start = this.findNavigationStartPoint(pedestrian, this.perception, this.scenarioManager);
+ 		Vertex end = this.scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());	
+		
 		Path route = null;
+		Path lastRoute = null;
 		
-		if(!routingAlgorithm.isInDecisionWaiting(simulationState, this.scenarioManager.getGraph(), start)) {
+		Vertex lastNode = null;
+		Set<Vertex> visited = null;
+		
+		if(pedestrian.getRoutingState() != null) {
 			
-			route = this.navigate(this.perception,
-					this.scenarioManager.getGraph(),
-					start, 
-					end,
-					routingAlgorithm);		
+			lastNode = pedestrian.getRoutingState().getLastVisit();
+			visited = pedestrian.getRoutingState().getVisited();
 		}
-		else {
 		
-			route = new Path(start, start);
+		Vertex firstNode = null;
+		Vertex nextToCurrentVisit = null;
+		
+		while(true) {
+			
+			if(!routingAlgorithm.isInDecisionWaiting(simulationState, this.scenarioManager.getGraph(), start)) {
+				
+				
+				route = this.navigate(this.perception,
+						this.scenarioManager.getGraph(),
+						start, 
+						end,
+						lastNode,
+						visited,
+						routingAlgorithm);	
+				
+				if(firstNode == null) {
+					
+					firstNode = route.getFirstVertex();
+				}
+			}
+			else {
+			
+				route = new Path(start, start);
+				break;
+			}
+
+			if(route == null || depth == 0 ||
+			   !perception.isVisible(pedestrian.getPosition(), route.getCurrentVertex()) ||
+			   route.getCurrentVertex().getId().equals(end.getId())) {
+				
+				nextToCurrentVisit = route.getCurrentVertex();
+				
+				if(lastRoute != null) {
+					
+					route = lastRoute;
+				}
+			
+				break;
+			}
+			
+			lastRoute = route;
+			start = route.getCurrentVertex();
+			lastNode = route.getPreviousVertex();
+			
+			if(start.getId().intValue() == end.getId().intValue()) {
+				
+				route = lastRoute;
+				break;
+			}
+			
+			depth--;
 		}
+		
+		route.setFirstVertex(firstNode);
+		route.getVertexPath().set(0, firstNode);
 		
 		RoutingState routingState = this.updateRouteState(this.perception, pedestrian, route);
+		routingState.setNextToCurrentVisit(nextToCurrentVisit);
+		
 		pedestrian.setRoutingState(routingState);	
 	}
 	
@@ -227,13 +288,17 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 			Graph graph, 
 			Vertex start,
 			Vertex end,
+			Vertex previousVisit,
+			Set<Vertex> visited,
 			UnifiedRoutingAlgorithm routingAlgorithm) {
 
 		routingAlgorithm.initializePedestrianWeightsForTarget(graph, end);
 		
 		Path path = routingAlgorithm.route(graph, 
 			start, 
-			end);
+			end,
+			previousVisit,
+			visited);
 		
 		return path;
 	}
