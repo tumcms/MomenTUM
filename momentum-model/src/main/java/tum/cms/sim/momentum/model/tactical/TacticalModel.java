@@ -62,7 +62,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	
 	//protected double dynamicNodeDistance = 3.0;
 	protected double goalDistanceRadius = 0.15;
-	//protected double navigationDistanceRadius = 0.15;
+	protected double navigationDistanceRadius = 0.15;
 	protected boolean tacticalControl = true;
 	protected boolean routeMemory = true;
 	//protected boolean dynamicNodeReached = false;
@@ -135,7 +135,8 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			
 			goalDistanceRadius = this.properties.getDoubleProperty(goalDistanceRadiusName);
 		}
-		else {
+
+		if(this.properties.getDoubleProperty(navigationDistanceRadiusName) != null)  {
 			
 			goalDistanceRadius = this.properties.getDoubleProperty(navigationDistanceRadiusName);
 		}
@@ -372,15 +373,23 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			
 			// correct goal / point of interest is visible, just go there!
 			normalRouting = !this.routingModel.shortCutRoute(this.perception, pedestrian);
+
+			// re-routing is a process that only needs to be activated if
+			// the next navigation is visible
+			// the current navigation node is not visible!
+			if(normalRouting && this.routingModel.reRoutingNecessary(pedestrian, this.tacticalControl)) {
+
+				this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+			}
 		}
-		
-		// re-routing is a process that only needs to be activated if
-		// the next navigation is visible 
-		// the current navigation node is not visible!
-		if(normalRouting && this.routingModel.reRoutingNecessary(pedestrian, this.tacticalControl)) {
-				
+
+		if(pedestrian.getRoutingState() == null ||
+				pedestrian.getRoutingState().getNextVisit() == null ||
+				pedestrian.getPosition().distance(pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter()) < navigationDistanceRadius)
+		{
 			this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
 		}
+
 		
 		// Is the route memory activated, if not delete it
 		if(!routeMemory) {

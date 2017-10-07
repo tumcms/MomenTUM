@@ -44,6 +44,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.TaggedArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
+import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.UnifiedRoutingAlgorithm;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Segment2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
@@ -51,39 +52,39 @@ import tum.cms.sim.momentum.utility.graph.Edge;
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Path;
 import tum.cms.sim.momentum.utility.graph.Vertex;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.ShortestPathAlgorithm;
+import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.DijkstraWeightCalculator;
 
 public class DijkstraRiskTactical extends RoutingModel {
 
 	private static String weightName = "dijkstraWeight";
-	private HashMap<Edge, Double> euklidDistances = new HashMap<>();
-	private HashMap<Edge, Double> shareNotForPedestrian = new HashMap<>();
+	private static String euclideanDistance = "euclideanDistance";
+	private static String shareNotForPedestrian = "shareNotForPedestrian";
 
 	private Graph visibilityGraph = null;
+	private HashMap<Integer, ShortestPathAlgorithm> shortestPathAlgorithm = new HashMap<>();
 
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 
 		visibilityGraph = this.scenarioManager.getGraph();
-
 		initializeEdgeWeights(this.visibilityGraph);
 	}
 
 	@Override
 	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 
-		return new DijkstraRiskExtension(DijkstraRiskTactical.weightName, Integer.toString(pedestrian.getId()));
+		return null;
 	}
 
 	@Override
 	public void onPedestrianRemoval(IRichPedestrian pedestrian) {
 
-		((DijkstraRiskExtension)pedestrian.getExtensionState(this)).removeWeightsForPedestrian(this.visibilityGraph);
 	}
 
 	@Override
 	public void callBeforeBehavior(SimulationState simulationState, Collection<IRichPedestrian> pedestrians) {
 
-		// Nothing to do
 	}
 
 	@Override
@@ -94,13 +95,15 @@ public class DijkstraRiskTactical extends RoutingModel {
 
 		this.updateEdgeWeights(this.visibilityGraph, simulationState.getCalledOnThread(), DijkstraRiskTactical.weightName);
 
-		DijkstraRiskExtension router = (DijkstraRiskExtension)pedestrian.getExtensionState(this);
-		Path route = router.route(this.visibilityGraph, start, end);
+		this.scenarioManager.getGraph().getVertices().forEach(vertex -> vertex.setWeight(weightName + String.valueOf(simulationState.getCalledOnThread()), Double.MAX_VALUE));
+
+
+		ShortestPathAlgorithm router = getRoutingAlgorithm(simulationState);
+		Path route = router.calculateShortestPath(this.visibilityGraph, start, end);
 
 		RoutingState routingState = this.updateRouteState(this.perception, pedestrian, route);
 		pedestrian.setRoutingState(routingState);
 	}
-
 
 	@Override
 	public void callAfterBehavior(SimulationState simulationState, Collection<IRichPedestrian> pedestrians) {
@@ -114,29 +117,25 @@ public class DijkstraRiskTactical extends RoutingModel {
 		// nothing to do
 	}
 
+	private synchronized ShortestPathAlgorithm getRoutingAlgorithm(SimulationState simulationState) {
+
+		int threadNumber = simulationState.getCalledOnThread();
+		if(!this.shortestPathAlgorithm.containsKey(threadNumber)) {
+			this.shortestPathAlgorithm.put(threadNumber, new ShortestPathAlgorithm(new DijkstraWeightCalculator(weightName + String.valueOf(threadNumber), null)));
+		}
+
+		return this.shortestPathAlgorithm.get(threadNumber);
+	}
+
 	private void updateEdgeWeights(Graph graph, int threadID, String edgeWeightName) {
 
 		String weightName = edgeWeightName + String.valueOf(threadID);
 		double weight = 0;
-		Edge edge = null;
 
+		for(Edge current : graph.getAllEdges()) {
 
-		for(Vertex current : graph.getVertices()) {
-
-			for(Vertex successor : graph.getSuccessorVertices(current)) {
-
-				if(current == successor) {
-
-					continue;
-				}
-
-				edge = graph.getEdge(current, successor);
-				weight = this.euklidDistances.get(edge) * this.shareNotForPedestrian.get(edge);
-				//weight = 555;
-				//System.out.println(edge.getName() + " " + " euklid=" + weight);
-				//edge.setWeight(edgeWeightName, percentageNotForPedestrian);
-				edge.setWeight(weightName, weight);
-			}
+			weight = current.getWeight(shareNotForPedestrian) * current.getWeight(euclideanDistance);
+			current.setWeight(weightName, weight);
 		}
 	}
 
@@ -148,29 +147,20 @@ public class DijkstraRiskTactical extends RoutingModel {
 		Segment2D currentLineSegment = null;
 
 		double percentageNotForPedestrian = 0;
-		double euklidDistance = 0;
+		double euclideanDistance = 0;
 
-		for(Vertex current : graph.getVertices()) {
-			for(Vertex successor : graph.getSuccessorVertices(current)) {
+		for(Edge current : graph.getAllEdges()) {
 
-				if(current == successor) {
-
-					continue;
-				}
-				currentPosition = current.getGeometry().getCenter();
-				successorPosition = successor.getGeometry().getCenter();
+				currentPosition = current.getStart().getGeometry().getCenter();
+				successorPosition = current.getEnd().getGeometry().getCenter();
 				currentLineSegment = GeometryFactory.createSegment(currentPosition, successorPosition);
 
-				euklidDistance = current.euklidDistanceBetweenVertex(successor);
+				euclideanDistance = current.euklideanLenght();
 				percentageNotForPedestrian = calculatePercentageNotForPedestrian(currentLineSegment);
 
-				edge = graph.getEdge(current, successor);
-
-				this.shareNotForPedestrian.put(edge, percentageNotForPedestrian);
-				this.euklidDistances.put(edge, euklidDistance);
-			}
+				current.setWeight(shareNotForPedestrian, percentageNotForPedestrian);
+				current.setWeight(DijkstraRiskTactical.euclideanDistance, euclideanDistance);
 		}
-
 	}
 
 
@@ -205,8 +195,8 @@ public class DijkstraRiskTactical extends RoutingModel {
 
 	private ArrayList<Segment2D> splitByAreas(Segment2D segment) {
 
-		ArrayList<Segment2D> splitSegments = new ArrayList<Segment2D>();
-		ArrayList<Segment2D> splitSegmentsTemp = new ArrayList<Segment2D>();
+		ArrayList<Segment2D> splitSegments = new ArrayList<>();
+		ArrayList<Segment2D> splitSegmentsTemp = new ArrayList<>();
 		splitSegments.add(segment);
 
 		for(TaggedArea curArea : this.scenarioManager.getTaggedAreas()) {
