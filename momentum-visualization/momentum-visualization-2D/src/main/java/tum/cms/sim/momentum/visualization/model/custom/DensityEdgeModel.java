@@ -43,12 +43,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import tum.cms.sim.momentum.utility.geometry.Polygon2D;
-import tum.cms.sim.momentum.visualization.calculation.DensityColor;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
 import tum.cms.sim.momentum.visualization.model.CustomizationModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
+import tum.cms.sim.momentum.visualization.utility.DensityColor;
 
 
 public class DensityEdgeModel extends ShapeModel {

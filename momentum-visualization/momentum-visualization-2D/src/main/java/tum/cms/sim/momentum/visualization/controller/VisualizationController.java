@@ -108,7 +108,9 @@ public class VisualizationController implements Initializable {
 	}
 
 	public void putTrajectoriesIntoPedestrians(HashMap<String, TrajectoryModel> trajectories) {
+		
 		for (PedestrianModel pedestrianShapeModel : visualizationModel.getPedestrianShapes().values()) {
+			
 			pedestrianShapeModel.putTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()));
 		}
 	}

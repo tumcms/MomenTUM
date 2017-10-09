@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.visualization.calculation;
+package tum.cms.sim.momentum.visualization.utility;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;

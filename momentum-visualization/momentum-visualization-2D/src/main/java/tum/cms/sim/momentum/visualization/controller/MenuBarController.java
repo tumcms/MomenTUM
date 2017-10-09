@@ -56,7 +56,8 @@ import tum.cms.sim.momentum.visualization.view.dialogControl.InformationDialogCr
 
 public class MenuBarController implements Initializable {
 
-private CoreController coreController;
+	private CoreController coreController;
+
 	@FXML
 	MenuBar menuBar;
 	@FXML

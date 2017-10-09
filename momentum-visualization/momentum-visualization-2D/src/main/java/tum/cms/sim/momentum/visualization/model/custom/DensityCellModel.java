@@ -39,10 +39,10 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
-import tum.cms.sim.momentum.visualization.calculation.DensityColor;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
+import tum.cms.sim.momentum.visualization.utility.DensityColor;
 
 public class DensityCellModel extends ShapeModel {
 
