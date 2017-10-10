@@ -68,7 +68,7 @@ public class Graph extends Unique implements IHasProperties {
 		this.properties = propertyContainer; 
 	}
 	
-	private TreeKD<ArrayList<Vertex>> vertexTree = null; 
+	private TreeKD<HashSet<Vertex>> vertexTree = null; 
 	private HashMap<String, Double> distanceMap = new HashMap<>();
     private HashMap<Integer, Vertex> vertexMap = new HashMap<Integer, Vertex>();   
     private HashMap<Geometry2D, Vertex> geometryMap = new HashMap<Geometry2D, Vertex>(); 
@@ -358,14 +358,14 @@ public class Graph extends Unique implements IHasProperties {
     	}
     	
 
-    	List<ArrayList<Vertex>> verticesFound = null;
+    	List<HashSet<Vertex>> verticesFound = null;
     	List<Vertex> flatResults = new ArrayList<>();
     	
     	try {
     		
     		verticesFound = vertexTree.computeNearestEuclidean(position, distance);
     		
-    		for(ArrayList<Vertex> foundList : verticesFound) {
+    		for(HashSet<Vertex> foundList : verticesFound) {
     			
     			flatResults.addAll(foundList);
     		}
@@ -380,14 +380,17 @@ public class Graph extends Unique implements IHasProperties {
     
     public Vertex findVertexClosestToPosition(Vector2D position, Set<Vertex> toIgnore) {
 
-    	if(vertexTree == null) {
+    	synchronized (this){
     		
-    		this.fillKDTree();
+	    	if(vertexTree == null) {
+	    		
+	    		this.fillKDTree();
+	    	}
     	}
     	
     	IgnoreVertexChecker ignore = new IgnoreVertexChecker();
     	ignore.setToIgnore(toIgnore);
-    	ArrayList<Vertex> verticesFound = null;
+    	HashSet<Vertex> verticesFound = null;
     	
     	try {
     		
@@ -638,32 +641,41 @@ public class Graph extends Unique implements IHasProperties {
 		
 		this.getVertices().forEach(vertex -> {
 			
+			HashSet<Vertex> inTreeElement = null;
+		
 			try {
 				
-				ArrayList<Vertex> element = vertexTree.searchFor(vertex.getGeometry().getCenter());
-				
-				if(element == null) {
-					
-					element = new ArrayList<>();
-				}
-				
-				element.add(vertex);
-				ArrayList<Vertex> inTreeElement = vertexTree.searchFor(vertex.getGeometry().getCenter());
-				
-				if(inTreeElement == null || !inTreeElement.contains(vertex)) {
-				
-					vertexTree.insert(vertex.getGeometry().getCenter(), element);
-				}
+				inTreeElement = vertexTree.searchFor(vertex.getGeometry().getCenter());
 			}
 			catch (Exception e) {
 				
 				e.printStackTrace();
 			}
+		
+			boolean isInTree = inTreeElement != null ? true : false;
+			
+			if(inTreeElement == null) {
+				
+				inTreeElement = new HashSet<>();
+			}
+			
+			inTreeElement.add(vertex);
+			
+			if(!isInTree) {
+			
+				try {
 					
+					vertexTree.insert(vertex.getGeometry().getCenter(), inTreeElement);
+				}
+				catch (Exception e) {
+					
+					e.printStackTrace();
+				}
+			}
 		});
 	}
 	
-	private class IgnoreVertexChecker implements CheckerTreeKD<ArrayList<Vertex>> {
+	private class IgnoreVertexChecker implements CheckerTreeKD<HashSet<Vertex>> {
 
 		private Set<Vertex> ignore = null;
 		
@@ -673,7 +685,7 @@ public class Graph extends Unique implements IHasProperties {
 		}
 		
 		@Override
-		public boolean usable(ArrayList<Vertex> elementToCheck) {
+		public boolean usable(HashSet<Vertex> elementToCheck) {
 
 			boolean isUsable = true;
 			
