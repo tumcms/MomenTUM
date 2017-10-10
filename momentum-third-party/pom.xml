@@ -28,7 +28,7 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${basedir}/lib/de.xabsl/jXabslEngine_2014_Bugfix0.1/bin/jxabsl-2014Bugfix0.1.jar</file>
+							<file>${basedir}/lib/de.xabsl/jXabslEngine_2014_Bugfix0.1/jar_bin_folder/jxabsl-2014Bugfix0.1.jar</file>
 							<groupId>de.xabsl</groupId>
 							<artifactId>jxabsl</artifactId>
 							<version>2014Bugfix0.10</version>
