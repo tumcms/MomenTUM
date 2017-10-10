@@ -34,9 +34,6 @@ momentum-visualization-2D.properties
 log/
 target/
 
-# Java
-*.jar
-
 # JavaFX
 *.fxbuild
 
