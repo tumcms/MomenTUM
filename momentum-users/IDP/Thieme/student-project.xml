@@ -26,14 +26,21 @@
 		</outputWriter>
 	</outputWriters>
 
+	<lattices>
+		<lattice name="SpaceSyntaxLattice" id="3" scenarioId="0" 
+			latticeType="Quadratic" 
+			cellEdgeSize="0.5"
+			neigborhoodType="Touching"/>
+	</lattices>
+
 	<spaceSyntaxes>
-		<spaceSyntaxModel id="0" name="SimpleSpaceSyntax">
-			<spaceSyntaxOperation id="0" name="DepthMap" type="DepthMap">
-				<property name="resolutionFactor" type="Double" value="2.0" />
-				<!-- hier vielleicht die auflösung festlegen?; outputfilename?-->
+		<spaceSyntaxModel id="2" name="SimpleSpaceSyntax">
+			<spaceSyntaxOperation id="1" name="DepthMap" type="DepthMap">
+				<property name="scenarioLatticeId" type="Integer" value="3"/> 
 			</spaceSyntaxOperation>
 		</spaceSyntaxModel>
 	</spaceSyntaxes>
+	
 	<layouts>
 		<scenario id="0" name="EG" maxX="10.4927" maxY="0" minX="-5.2248" minY="-9.0591">
 			<area id="0" name="Destination0" type="Origin">

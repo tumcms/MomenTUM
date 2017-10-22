@@ -37,8 +37,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.layout.lattice.LatticeModel;
@@ -46,31 +44,30 @@ import tum.cms.sim.momentum.model.layout.spaceSyntax.SpaceSyntaxOperation;
 import tum.cms.sim.momentum.utility.geometry.Geometry2D;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
-import tum.cms.sim.momentum.utility.lattice.LatticeTheoryFactory;
 import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
 import tum.cms.sim.momentum.utility.spaceSyntax.DepthMapSubArea;
 
 public class DepthMapModel extends SpaceSyntaxOperation {
+	private static String additionalIdName = "additionalId";
 
 	@Override
 	public void callPreProcessing(SimulationState simlationState) {
 
-		/**
-		 * properties bieten zugriff auf die ursprüngliche config 
-		 * TODO Christian: outputwriter -> csv (und ggf. jpg o.ä.)
-		 
-		 * TODO Christian: config für lattice über spacesynax-tag machen
-		 */
-
-		ILattice lattice = LatticeTheoryFactory.createLattice(
-				this.properties.getName() + "ID_" + this.properties.getId(), 
-				LatticeType.Quadratic,
-				NeighbourhoodType.Touching, 
-				1.0, 
-				super.scenarioManager.getScenarios().getMaxX(), 
-				super.scenarioManager.getScenarios().getMinX(),
-				super.scenarioManager.getScenarios().getMaxY(), 
-				super.scenarioManager.getScenarios().getMinY());
+		Integer id = properties.getIntegerProperty(additionalIdName);
+		
+		if(id == null) {
+			throw new RuntimeException();
+		}
+		
+		ILattice lattice = this.scenarioManager.getScenarios().getLattices()
+				.stream()
+				.filter(grid -> grid.getId() == id)
+				.findFirst()
+				.get();
+		
+		if(lattice == null) {
+			throw new RuntimeException();
+		}
 
 		lattice.setPropertyBackPack(this.properties);
 

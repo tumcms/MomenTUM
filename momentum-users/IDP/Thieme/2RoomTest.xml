@@ -17,20 +17,23 @@
 				<property name="file" type="File" value="./spaceSyntaxDepthMapResult.xml"/>
 				<property name="index" type="Boolean" value="True"/>
 			</writerTarget>
-
 			<writerFormat formatType="Single"/>
-
-			<writerSource sourceType="SpaceSyntax">
-
+			<writerSource sourceType="SpaceSyntax" additionalId="1">
 			</writerSource>
 		</outputWriter>
 	</outputWriters>
+	
+	<lattices>
+		<lattice name="SpaceSyntaxLattice" id="3" scenarioId="0" 
+			latticeType="Quadratic" 
+			cellEdgeSize="0.5"
+			neigborhoodType="Touching"/>
+	</lattices>
 
 	<spaceSyntaxes>
-		<spaceSyntaxModel id="0" name="SimpleSpaceSyntax">
-			<spaceSyntaxOperation id="0" name="DepthMap" type="DepthMap">
-				<property name="resolutionFactor" type="Double" value="2.0" />
-				<!-- hier vielleicht die auflösung festlegen?; outputfilename?-->
+		<spaceSyntaxModel id="2" name="SimpleSpaceSyntax">
+			<spaceSyntaxOperation id="1" name="DepthMap" type="DepthMap">
+				<property name="scenarioLatticeId" type="Integer" value="3"/> 
 			</spaceSyntaxOperation>
 		</spaceSyntaxModel>
 	</spaceSyntaxes>
@@ -120,10 +123,6 @@
 			<obstacle id="17" name="Wall17" type="Wall">
 				<point x="2.79579305991263" y="-14.1099681423152" />
 				<point x="2.98489712685058" y="-14.1750807514437" />
-			</obstacle>
-			<obstacle id="18" name="Wall18" type="Wall">
-				<point x="10.0000" y="3.0000"/>
-				<point x="10.0000" y="4.0000"/>
 			</obstacle>
 		</scenario>
 	</layouts>
