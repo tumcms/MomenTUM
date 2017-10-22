@@ -48,29 +48,18 @@ import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
 import tum.cms.sim.momentum.utility.spaceSyntax.DepthMapSubArea;
 
 public class DepthMapModel extends SpaceSyntaxOperation {
-	private static String additionalIdName = "additionalId";
+	private static String scenarioLatticeIdName = "scenarioLatticeId";
 
 	@Override
 	public void callPreProcessing(SimulationState simlationState) {
 
-		Integer id = properties.getIntegerProperty(additionalIdName);
-		
-		if(id == null) {
-			throw new RuntimeException();
-		}
+		int id = this.properties.getIntegerProperty(scenarioLatticeIdName);
 		
 		ILattice lattice = this.scenarioManager.getScenarios().getLattices()
 				.stream()
 				.filter(grid -> grid.getId() == id)
-				.findFirst()
-				.get();
+				.findFirst().get();
 		
-		if(lattice == null) {
-			throw new RuntimeException();
-		}
-
-		lattice.setPropertyBackPack(this.properties);
-
 		List<CellIndex> originCenterCells = super.scenarioManager.getOrigins().stream()
 				.map(OriginArea::getGeometry)
 				.map(Geometry2D::getCenter)
