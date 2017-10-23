@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <simulator version="MomenTumV2.0.0" simulationName="2017_TacticalCommandTest">
 
-	<timeState simulationEndTime="1000.0" timeStepDuration="0.1"/>
+	<timeState simulationEndTime="1000.0" timeStepDuration="0.01"/>
 	
 	<logging>
 		<loggingState type="Console" level="Debug"/>
@@ -56,8 +56,8 @@
 			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
 			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
 			<property name="panic_degree" type="Double" value="0.0"/>
-			<property name="mass_behaviour_A" type="Double" value="73.0"/> <!-- 29.0 -->
-			<property name="mass_behaviour_B" type="Double" value="0.25"/> <!--0.05 -->
+			<property name="mass_behaviour_A" type="Double" value="29.0"/> <!-- 29.0 -->
+			<property name="mass_behaviour_B" type="Double" value="0.07"/> <!--0.05 -->
 			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
 			<property name="koester_Epsilon" type="Double" value="10e-6"/>
 			<property name="threads" type="Integer" value="4" />
@@ -89,7 +89,7 @@
 		<routing id="7" name="unifiedRouting" type="UPRM">
 			<property name="randomMode" type="Boolean" value="True"/>
 			<complexProperty name="resultMode" type="CsvMatrix" valueType="Double">
-				<entry file="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\Explanations\BehaviorModelExamples\TacticalCommand\2017_TacticalCommandTest_UPRM.csv" separator=";"/>
+				<entry file="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\startHere\TacticalCommandExample\2017_TacticalCommandTest_UPRM.csv" separator=";"/>
 			</complexProperty>
 		</routing>
 	</routingModels>
@@ -99,7 +99,7 @@
 		<strategicalModels>
 		<strategical id="3" name="odMatrx" type="ODMatrix" perceptualModel="0">
 			<complexProperty name="originDestination" type="CsvMatrix" valueType="Double">
-				<entry file="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\Explanations\BehaviorModelExamples\TacticalCommand\2017_TacticalCommandTest_OD.csv" separator=","/>
+				<entry file="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\startHere\TacticalCommandExample\2017_TacticalCommandTest_OD.csv" separator=","/>
 			</complexProperty>
 			<property name="fulfilmentOverallDuration" type="Double" value="Double.MAX_VALUE"/>
 		</strategical>
@@ -151,7 +151,7 @@
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
 			<property name="basicHeading" type="Double" value="0"/>
-			<property name="maximalPedestrians" type="Integer" value="400"/>
+			<property name="maximalPedestrians" type="Integer" value="200"/>
 			<property name="safetyDistance" type="Double" value="1.9"/>
 			<geometry geometryType="Lattice" fillingType="Random" />
 			<property name="scenarioLatticeId" type="Integer" value="0"/> 
@@ -168,7 +168,7 @@
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
 			<property name="basicHeading" type="Double" value="90"/>
-			<property name="maximalPedestrians" type="Integer" value="100"/>
+			<property name="maximalPedestrians" type="Integer" value="50"/>
 			<property name="safetyDistance" type="Double" value="1.3"/>
 			<geometry geometryType="Lattice" fillingType="Random" />
 			<property name="scenarioLatticeId" type="Integer" value="0"/> 
@@ -192,7 +192,7 @@
 	</absorbers>
 	<outputWriters>
 		<outputWriter id="0" name="pedestrianOutputToFile"> 
-			<property name="call" type="Integer" value="3"/>
+			<property name="call" type="Integer" value="10"/>
 			<property name="buffer" type="Integer" value="100"/>
 			<writerTarget targetType="File">
 				<property name="file" type="File" value="2017_TacticalCommandTest_Pedestrian.csv"/>

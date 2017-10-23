@@ -12,6 +12,7 @@
 		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.23"/>
 		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="1.0"/>
 	</lattices>
+	
 	<graphs>
 		<graphModel name="routing" id="0">
 			<graphOperation id="0" name="raw" type="RawGraph" order="0">
@@ -41,24 +42,27 @@
 			</graphOperation>
 		</graphModel>
 	</graphs>
+	
 	<perceptualModels>
 		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
 			<property name="accuracy" type="Double" value="0.23"/>
 		</perceptual>
 	</perceptualModels>
+	
 	<operationalModels>
 		<operational id="1" name="operational" perceptualModel="0">
 			<walkingReference modelId="2"/>
 		</operational>
 	</operationalModels>
+	
 	<walkingModels>
 		<walking id="2" name="socialForceModel" type="SocialForce">
 			<property name="relaxation_time" type="Double" value="0.5"/>
 			<property name="physical_interaction_kappa" type="Double" value="2.4e5"/>
 			<property name="physical_interaction_k" type="Double" value="1.2e5"/>
 			<property name="panic_degree" type="Double" value="0.0"/>
-			<property name="mass_behaviour_A" type="Double" value="29.0"/> <!-- 29.0 -->
-			<property name="mass_behaviour_B" type="Double" value="0.07"/> <!--0.05 -->
+			<property name="mass_behaviour_A" type="Double" value="73.0"/> <!-- 29.0 -->
+			<property name="mass_behaviour_B" type="Double" value="0.25"/> <!--0.05 -->
 			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
 			<property name="koester_Epsilon" type="Double" value="10e-6"/>
 			<property name="threads" type="Integer" value="4" />
@@ -105,12 +109,12 @@
 			<property name="fulfilmentOverallDuration" type="Double" value="Double.MAX_VALUE"/>
 		</strategical>
 	</strategicalModels>
-		
+	
 	<analysisModels>
 		
 		<analysis id="1" name="xtDensityAnalysis">
 	
-			<property name="call" type="Integer" value="200"/> <!-- Every 1 seconds -->
+			<property name="call" type="Integer" value="100"/> <!-- Every 1 seconds -->
 			<property name="analysisStartStep" type="Integer" value="0"/>
 			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
 			
@@ -175,7 +179,7 @@
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
 			<property name="basicHeading" type="Double" value="0"/>
-			<property name="maximalPedestrians" type="Integer" value="20"/>
+			<property name="maximalPedestrians" type="Integer" value="200"/>
 			<property name="safetyDistance" type="Double" value="1.9"/>
 			<geometry geometryType="Lattice" fillingType="Random" />
 			<property name="scenarioLatticeId" type="Integer" value="0"/> 
@@ -192,7 +196,7 @@
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
 			<property name="basicHeading" type="Double" value="90"/>
-			<property name="maximalPedestrians" type="Integer" value="5"/>
+			<property name="maximalPedestrians" type="Integer" value="50"/>
 			<property name="safetyDistance" type="Double" value="1.3"/>
 			<geometry geometryType="Lattice" fillingType="Random" />
 			<property name="scenarioLatticeId" type="Integer" value="0"/> 
@@ -216,10 +220,10 @@
 	</absorbers>
 	<outputWriters>
 		<outputWriter id="0" name="pedestrianOutputToFile"> 
-			<property name="call" type="Integer" value="30"/>
+			<property name="call" type="Integer" value="50"/>
 			<property name="buffer" type="Integer" value="100"/>
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="2017_TacticalCommandTest_Pedestrian_slow.csv"/>
+				<property name="file" type="File" value="2017_TacticalCommandTest_Pedestrian.csv"/>
 				<property name="index" type="Boolean" value="True"/> 
 			</writerTarget>
 			<writerFormat formatType="Csv">
@@ -241,15 +245,15 @@
 		<outputWriter id="1" name="layoutWriter">
 			<property name="call" type="Integer" value="0"/> <!-- In pre-processing -->
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="2017_TacticalCommandTest_Layout_slow.xml"/>
+				<property name="file" type="File" value="2017_TacticalCommandTest_Layout.xml"/>
 			</writerTarget>
 			<writerFormat formatType="Single"/>
 			<writerSource sourceType="Configuration">
 				<property name="dataElement" type="String" value="layouts"/>
 			</writerSource>
 		</outputWriter>	
-			<outputWriter id="2" name="densityAnalysisOutput">
-			<property name="call" type="Integer" value="200"/>
+		<outputWriter id="2" name="densityAnalysisOutput">
+			<property name="call" type="Integer" value="50"/>
 			<property name="buffer" type="Integer" value="1"/>
 			<writerTarget targetType="File">
 				<property name="file" type="File" value="2017_TacticalCommandTest_XT_Density.csv"/>

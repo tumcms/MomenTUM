@@ -106,6 +106,7 @@
 			<searchingReference modelId="8"/>
 			<property name="goalDistanceRadius" type="Double" value="0.15" />
 			<property name="navigationDistanceRadius" type="Double" value="0.66"/>
+			<property name="tacticalControl" type="Boolean" value="true"/>
 		</tactical>
 	</tacticalModels>
 
@@ -321,6 +322,27 @@
 				<property name="density" type="Format" value="%.2f"/>
 				<property name="maximalDensity" type="Format" value="%.2f"/>
 			</writerSource>
+					<outputWriter id="2" name="densityAnalysisOutput">
+			<property name="call" type="Integer" value="50"/>
+			<property name="buffer" type="Integer" value="1"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="2017_TacticalCommandTest_XT_Density.csv"/>
+				<property name="index" type="Boolean" value="True"/> 
+			</writerTarget>
+			<writerFormat formatType="Csv">
+				<property name="index" type="Boolean" value="True"/> 
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>			
+			<writerSource sourceType="Analysis" additionalId="1"> 
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%s"/>
+				<property name="cornerSize" type="Format" value="%.2f"/>
+				<property name="cellCenterX" type="Format" value="%.2f"/>
+				<property name="cellCenterY" type="Format" value="%.2f"/>
+				<property name="density" type="Format" value="%.2f"/>
+				<property name="maximalDensity" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
 		</outputWriter> 
 		
 		<!--  This is a Model specific output writer for absorbers! -->
