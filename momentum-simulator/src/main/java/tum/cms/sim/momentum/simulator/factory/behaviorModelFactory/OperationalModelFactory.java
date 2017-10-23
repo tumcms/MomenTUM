@@ -36,8 +36,7 @@ import tum.cms.sim.momentum.configuration.model.operational.OperationalModelConf
 import tum.cms.sim.momentum.model.operational.OperationalModel;
 import tum.cms.sim.momentum.model.operational.standing.StandingModel;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -56,18 +55,17 @@ public class OperationalModelFactory extends ModelFactory<OperationalModelConfig
 		operationalModel.setExeuctionId(operationalModel.getId());
 		
 		PerceptionalModel perceptualModel = componentManager.getPerceptionalModel(configuration.getPerceptualModel());
-		BasicQueryModel queryModel = componentManager.getQueryModels().stream().findFirst().get();
 	
-		this.fillComposition(operationalModel, perceptualModel, queryModel, componentManager);
+		this.fillComposition(operationalModel, perceptualModel, componentManager);
 		
 		WalkingModel walkingModel = componentManager.getWalkingModel(configuration.getWalkingReference().getModelId());
-		this.fillComposition(walkingModel, perceptualModel, queryModel, componentManager);
+		this.fillComposition(walkingModel, perceptualModel, componentManager);
 		operationalModel.setWalkingModel(walkingModel);
 		
 		if(configuration.getStandingReference() != null) {
 			
 			StandingModel standingModel = componentManager.getStandingModel(configuration.getStandingReference().getModelId());
-			this.fillComposition(standingModel, perceptualModel, queryModel, componentManager);
+			this.fillComposition(standingModel, perceptualModel, componentManager);
 			operationalModel.setStandingModel(standingModel);
 		}
 		

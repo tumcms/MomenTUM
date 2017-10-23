@@ -30,35 +30,28 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.support.perceptional.blockingGeometriesModel;
+package tum.cms.sim.momentum.model.perceptional.blockingGeometriesModel;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
-import tum.cms.sim.momentum.data.layout.area.Area;
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.layout.lattice.LatticeModel;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.utility.geometry.Geometry2D;
-import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
-import tum.cms.sim.momentum.utility.geometry.Polygon2D;
 import tum.cms.sim.momentum.utility.geometry.Segment2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
-import tum.cms.sim.momentum.utility.geometry.operation.GeometryAdditionals;
 import tum.cms.sim.momentum.utility.graph.Edge;
 import tum.cms.sim.momentum.utility.graph.Vertex;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
@@ -66,6 +59,18 @@ import tum.cms.sim.momentum.utility.lattice.ILattice;
 import tum.cms.sim.momentum.utility.lattice.LatticeTheoryFactory;
 import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 
+/**
+ * The blocking geometry perception model is highly important.
+ * Version 1.0 uses bresenham only because the shadow mapping implementation did not work.
+ * Version 2.0 uses bresenham for single point checks but a FOV Octant based method
+ * (https://blogs.msdn.microsoft.com/ericlippert/2011/12/12/shadowcasting-in-c-part-one/)
+ * to find a set of visible objects in the field of view. This also changed the concept
+ * of the perception model. Now it is a an callable model that updates the positions
+ * of all pedestrian on the perception grid in parallel.
+ * 
+ * @author Peter Kielar
+ *
+ */
 public class BlockingGeometriesPerception extends PerceptionalModel {
 
 	private int distance = 250;
@@ -125,87 +130,124 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 		visibilityMap.flood(originCenterCells);	
 	}
 
-	private List<Polygon2D> createVisibilityTriangles(Geometry2D objectToSee, List<Segment2D> obstacleParts) {
 
-		ArrayList<Segment2D> toCheckObstacleParts = new ArrayList<>();
-
-		ArrayList<ArrayList<Vector2D>> inSightTriangles = new ArrayList<>();
-		toCheckObstacleParts.addAll(obstacleParts);
-		ArrayList<Pair<Vector2D, Segment2D>> testObstacleCorner = new ArrayList<>();
-		
-		toCheckObstacleParts.forEach(part -> part.getVertices()
-				.forEach(corner -> testObstacleCorner.add(new MutablePair<Vector2D, Segment2D>(corner, part))));
-		
-		// sort obstacle parts for shadow mapping
-		testObstacleCorner.sort(new ObstacleLineComparator(objectToSee.getCenter()));
-		
-		inSightTriangles.addAll(GeometryAdditionals.calculateSightCorners(testObstacleCorner, objectToSee.getCenter(), this.accuracy / 100.0));
-		
-		inSightTriangles.removeIf(triangleList-> triangleList.size() == 0);
-		
-		List<Polygon2D> outerVertices = new ArrayList<>();
-		
-		inSightTriangles.forEach(sightTriangle -> {
-
-			if(sightTriangle.size() > 3) {
-				
-				List<Vector2D> sortedTriangle = sightTriangle.subList(0, sightTriangle.size() - 1);
-				sortedTriangle.sort(new CloseToAxisComperator());
-				
-				for(int iter = 0; iter < sortedTriangle.size() - 1; iter += 2) {
-					
-					List<Vector2D> corners = new ArrayList<>();
-					corners.add(sortedTriangle.get(iter));
-					corners.add(sortedTriangle.get(iter + 1));
-					corners.add(sightTriangle.get(sightTriangle.size() - 1));
-					
-					if(!GeometryAdditionals.polygonHasCounterClockwiseWielding(corners)) {
-						
-						corners = GeometryAdditionals.switchOrderOfVertices(corners);
-					}
-					
-					outerVertices.add(GeometryFactory.createPolygon(corners));
-				}
-			}
-			else {
-
-				List<Vector2D> corners = sightTriangle;
-				if(!GeometryAdditionals.polygonHasCounterClockwiseWielding(sightTriangle)) {
-					
-					corners = GeometryAdditionals.switchOrderOfVertices(sightTriangle);
-				}
-				
-				try {
-
-					outerVertices.add(GeometryFactory.createPolygon(corners));	
-				}
-				catch(Exception ex) {
-					
-					ex = null;
-				}
-			}
-			
-		});
-		
-		//this.checkVisibility(outerVertices);
-		
-		return outerVertices;
+	@Override
+	protected void supportModelUpdate(SimulationState simulationState) {
+		// Update positions of pedestrians, be careful this is done in parallel
+		// Thus use a no synchronized lattice
 	}
 	
-	public void checkVisibility(List<Polygon2D> triangles) {
-		
-		visibilityMap.paintLattice();
-		
-		triangles.forEach(triangle -> {
-		
-			visibilityMap.occupyAllPolygonCells(triangle, Occupation.Dynamic);
-		});
+//	private List<Polygon2D> createVisibilityTriangles(Geometry2D objectToSee, List<Segment2D> obstacleParts) {
+//
+//		ArrayList<Segment2D> toCheckObstacleParts = new ArrayList<>();
+//
+//		ArrayList<ArrayList<Vector2D>> inSightTriangles = new ArrayList<>();
+//		toCheckObstacleParts.addAll(obstacleParts);
+//		ArrayList<Pair<Vector2D, Segment2D>> testObstacleCorner = new ArrayList<>();
+//		
+//		toCheckObstacleParts.forEach(part -> part.getVertices()
+//				.forEach(corner -> testObstacleCorner.add(new MutablePair<Vector2D, Segment2D>(corner, part))));
+//		
+//		// sort obstacle parts for shadow mapping
+//		testObstacleCorner.sort(new ObstacleLineComparator(objectToSee.getCenter()));
+//		
+//		inSightTriangles.addAll(GeometryAdditionals.calculateSightCorners(testObstacleCorner, objectToSee.getCenter(), this.accuracy / 100.0));
+//		
+//		inSightTriangles.removeIf(triangleList-> triangleList.size() == 0);
+//		
+//		List<Polygon2D> outerVertices = new ArrayList<>();
+//		
+//		inSightTriangles.forEach(sightTriangle -> {
+//
+//			if(sightTriangle.size() > 3) {
+//				
+//				List<Vector2D> sortedTriangle = sightTriangle.subList(0, sightTriangle.size() - 1);
+//				sortedTriangle.sort(new CloseToAxisComperator());
+//				
+//				for(int iter = 0; iter < sortedTriangle.size() - 1; iter += 2) {
+//					
+//					List<Vector2D> corners = new ArrayList<>();
+//					corners.add(sortedTriangle.get(iter));
+//					corners.add(sortedTriangle.get(iter + 1));
+//					corners.add(sightTriangle.get(sightTriangle.size() - 1));
+//					
+//					if(!GeometryAdditionals.polygonHasCounterClockwiseWielding(corners)) {
+//						
+//						corners = GeometryAdditionals.switchOrderOfVertices(corners);
+//					}
+//					
+//					outerVertices.add(GeometryFactory.createPolygon(corners));
+//				}
+//			}
+//			else {
+//
+//				List<Vector2D> corners = sightTriangle;
+//				if(!GeometryAdditionals.polygonHasCounterClockwiseWielding(sightTriangle)) {
+//					
+//					corners = GeometryAdditionals.switchOrderOfVertices(sightTriangle);
+//				}
+//				
+//				try {
+//
+//					outerVertices.add(GeometryFactory.createPolygon(corners));	
+//				}
+//				catch(Exception ex) {
+//					
+//					ex = null;
+//				}
+//			}
+//			
+//		});
+//		
+//		//this.checkVisibility(outerVertices);
+//		
+//		return outerVertices;
+//	}
 	
-		visibilityMap.paintLattice(); // take care regarding numerical errors some cells that can see, but cannot
-	}
+//	public void checkVisibility(List<Polygon2D> triangles) {
+//		
+//		visibilityMap.paintLattice();
+//		
+//		triangles.forEach(triangle -> {
+//		
+//			visibilityMap.occupyAllPolygonCells(triangle, Occupation.Dynamic);
+//		});
+//	
+//		visibilityMap.paintLattice(); // take care regarding numerical errors some cells that can see, but cannot
+//	}
 	
 	@Override
 	public void callPostProcessing(SimulationState simulationState) { /* nothing to do */ }
+	
+	
+	@Override
+	public boolean isVisible(Vector2D viewPort, Edge edge) {
+		
+		return this.isVisible(viewPort, edge.getStart()) || this.isVisible(viewPort, edge.getEnd());
+	}
+
+	@Override
+	public boolean isVisible(IPedestrian currentPedestrian, IPedestrian otherPedestrian) {
+		
+		return this.isVisible(currentPedestrian.getPosition(), otherPedestrian.getPosition());
+	}
+	
+	@Override
+	public boolean isVisible(Vector2D viewPort, Vertex vertex) {
+		
+		return this.isVisible(viewPort, vertex.getGeometry().getCenter());
+	}
+
+	@Override
+	public boolean isVisible(Vector2D viewPort, Vector2D position) {
+
+		CellIndex from = this.visibilityMap.getCellIndexFromPosition(viewPort);
+		CellIndex towards = this.visibilityMap.getCellIndexFromPosition(position);
+			
+		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, distance);
+		
+		return hitTarget;
+	}
 	
 	@Override
 	public List<IPedestrian> getPerceptedPedestrians(IPedestrian currentPedestrian, SimulationState simulationState) {
@@ -331,52 +373,30 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 //		return visiblePedestrians;
 //	}
 
-	@Override
-	public boolean isVisible(Vector2D viewPort, Vertex vertex) {
-		
-		boolean isVisible = false;
-
-//		if(this.vertexVisibilityMap.containsKey(vertex)) {
+//	@Override
+//	public boolean isVisible(Vector2D viewPort, Vertex vertex) {
+//		
+//		boolean isVisible = false;
+//
+////		if(this.vertexVisibilityMap.containsKey(vertex)) {
+////			
+////			for(Polygon2D triangle : this.vertexVisibilityMap.get(vertex))  {
+////				
+////				if(triangle.contains(viewPort)) {
+////					
+////					isVisible = true;
+////					break;
+////				}	
+////			}
+////		}
+////		else {
 //			
-//			for(Polygon2D triangle : this.vertexVisibilityMap.get(vertex))  {
+//			isVisible = this.isVisible(viewPort, vertex.getGeometry().getCenter());
+////		}
 //				
-//				if(triangle.contains(viewPort)) {
-//					
-//					isVisible = true;
-//					break;
-//				}	
-//			}
-//		}
-//		else {
-			
-			isVisible = this.isVisible(viewPort, vertex.getGeometry().getCenter());
-//		}
-				
-		return isVisible;
-	}
-	
-	@Override
-	public boolean isVisible(Vector2D viewPort, Edge edge) {
-		
-		return this.isVisible(viewPort, edge.getStart()) || this.isVisible(viewPort, edge.getEnd());
-	}
+//		return isVisible;
+//	}
 
-	@Override
-	public boolean isVisible(IPedestrian currentPedestrian, IPedestrian otherPedestrian) {
-		
-		return this.isVisible(currentPedestrian.getPosition(), otherPedestrian.getPosition());
-	}
-
-	@Override
-	public boolean isVisible(Vector2D viewPort, Vector2D position) {
-
-		CellIndex from = this.visibilityMap.getCellIndexFromPosition(viewPort);
-		CellIndex towards = this.visibilityMap.getCellIndexFromPosition(position);
-			
-		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, distance);
-		
-		return hitTarget;
-	}
 	
 //	@Override
 //	public boolean isVisible(Vector2D viewPort, Area area) {
@@ -409,55 +429,55 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 //		return isVisible;
 //	}
 
-	private class ObstacleLineComparator implements Comparator<Pair<Vector2D, Segment2D>> {
-
-		private Vector2D viewPort = null;
-		
-		public ObstacleLineComparator(Vector2D viewPort) {
-			
-			this.viewPort = viewPort;
-		}
-		
-		@Override
-		public int compare(Pair<Vector2D, Segment2D> first, Pair<Vector2D, Segment2D> second) {
-
-		
-			double distanceToFirst = viewPort.distance(first.getLeft());//().distanceBetween(viewPort);
-			double distanceToSecond = viewPort.distance(second.getLeft());// second.getRight().distanceBetween(viewPort);
-					
-			if(distanceToFirst < distanceToSecond)  {
-			
-				return -1;
-			}
-			else if(distanceToFirst > distanceToSecond) {
-				
-				return 1;
-			}
-			
-			return 0;
-		}
-	}	
+//	private class ObstacleLineComparator implements Comparator<Pair<Vector2D, Segment2D>> {
+//
+//		private Vector2D viewPort = null;
+//		
+//		public ObstacleLineComparator(Vector2D viewPort) {
+//			
+//			this.viewPort = viewPort;
+//		}
+//		
+//		@Override
+//		public int compare(Pair<Vector2D, Segment2D> first, Pair<Vector2D, Segment2D> second) {
+//
+//		
+//			double distanceToFirst = viewPort.distance(first.getLeft());//().distanceBetween(viewPort);
+//			double distanceToSecond = viewPort.distance(second.getLeft());// second.getRight().distanceBetween(viewPort);
+//					
+//			if(distanceToFirst < distanceToSecond)  {
+//			
+//				return -1;
+//			}
+//			else if(distanceToFirst > distanceToSecond) {
+//				
+//				return 1;
+//			}
+//			
+//			return 0;
+//		}
+//	}	
 	
-	private class CloseToAxisComperator implements Comparator<Vector2D> {
-
-		private Vector2D axis = GeometryFactory.createVector(0.0, 0.0);
-		
-		@Override
-		public int compare(Vector2D first, Vector2D second) {
-
-			double distanceToFirst = axis.distance(first); 
-			double distanceToSecond = axis.distance(second);
-					
-			if(distanceToFirst < distanceToSecond)  {
-			
-				return -1;
-			}
-			else if(distanceToFirst > distanceToSecond) {
-				
-				return 1;
-			}
-			
-			return 0;
-		}
-	}
+//	private class CloseToAxisComperator implements Comparator<Vector2D> {
+//
+//		private Vector2D axis = GeometryFactory.createVector(0.0, 0.0);
+//		
+//		@Override
+//		public int compare(Vector2D first, Vector2D second) {
+//
+//			double distanceToFirst = axis.distance(first); 
+//			double distanceToSecond = axis.distance(second);
+//					
+//			if(distanceToFirst < distanceToSecond)  {
+//			
+//				return -1;
+//			}
+//			else if(distanceToFirst > distanceToSecond) {
+//				
+//				return 1;
+//			}
+//			
+//			return 0;
+//		}
+//	}
 }

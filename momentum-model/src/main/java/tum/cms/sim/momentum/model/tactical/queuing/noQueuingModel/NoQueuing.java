@@ -88,8 +88,7 @@ public class NoQueuing extends QueuingModel {
 			
 			Vector2D position = null;
 			
-			List<IPedestrian> sameTargetPedestrians = this.query.findPedestrianSameTarget(pedestrian,
-					this.perception, 
+			List<IPedestrian> sameTargetPedestrians = this.perception.findPedestrianSameTarget(pedestrian,
 					targetArea, 
 					false,
 					0.0);
@@ -101,8 +100,8 @@ public class NoQueuing extends QueuingModel {
 				position = GeometryAdditionals.findRandomPositionInPolygon(targetArea.getGeometry());
 				
 				if(position == null ||
-				   this.query.isToCloseToAreaBorder(pedestrian.getBodyRadius(), 0.1, position, targetArea) ||
-				   this.query.isCollisionWithPedestrian(pedestrian.getBodyRadius(), 0.1, position, sameTargetPedestrians)) {
+				   this.perception.isToCloseToAreaBorder(pedestrian.getBodyRadius(), 0.1, position, targetArea) ||
+				   this.perception.isCollisionWithPedestrian(pedestrian, pedestrian.getBodyRadius(), 0.1, position, sameTargetPedestrians)) {
 					
 					gambleIterator--;
 				}

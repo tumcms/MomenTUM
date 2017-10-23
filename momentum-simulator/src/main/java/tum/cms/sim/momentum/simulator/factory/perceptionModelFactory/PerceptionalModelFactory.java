@@ -30,12 +30,11 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.simulator.factory.supportModelFactory;
+package tum.cms.sim.momentum.simulator.factory.perceptionModelFactory;
 
 import tum.cms.sim.momentum.configuration.model.other.PerceptualModelConfiguration;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.perceptional.blockingGeometriesModel.BlockingGeometriesPerception;
-import tum.cms.sim.momentum.model.support.perceptional.worldKnowledgeModel.WorldKnowledgePerception;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.blockingGeometriesModel.BlockingGeometriesPerception;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -51,10 +50,6 @@ public class PerceptionalModelFactory extends ModelFactory<PerceptualModelConfig
 		
 		switch(configuration.getType()) {
 		
-		case WorldKnowledge:
-			perceptualModel = new WorldKnowledgePerception();
-			break;
-			
 		case BlockingGeometries:
 			perceptualModel = new BlockingGeometriesPerception();
 		default:

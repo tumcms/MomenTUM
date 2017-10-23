@@ -738,8 +738,7 @@ public class AngularQueueing extends QueuingModel {
 		
 		Vector2D newQueueEnd = null;
 
-		List<IPedestrian> otherPedestrians = this.query.findPedestrianSameTarget(pedestrian,
-				this.perception, target, true, null);
+		List<IPedestrian> otherPedestrians = this.perception.findPedestrianSameTarget(pedestrian, target, true, null);
 		
 		List<Geometry2D> obstacleGeometires = this.scenarioManager.getObstacles()
 				.stream()
@@ -822,7 +821,7 @@ public class AngularQueueing extends QueuingModel {
 						
 						newQueueEnd = freeCells.remove(0);
 					
-						if(!this.query.isCollisionWithPedestrian(radius, safetyDistance, newQueueEnd, otherPedestrians) &&
+						if(!this.perception.isCollisionWithPedestrian(pedestrian, radius, safetyDistance, newQueueEnd, otherPedestrians) &&
 							this.perception.isVisible(newQueueEnd, queueEnd) &&
 							this.perception.isVisible(newQueueEnd, pedestrian.getPosition())) {
 							

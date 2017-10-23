@@ -46,7 +46,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.AvoidanceArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.UnifiedRoutingConstant.DecisionDuration;
 import tum.cms.sim.momentum.utility.graph.Edge;

@@ -35,14 +35,13 @@ package tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.proce
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.CognitiveConstant.OccupancyType;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.cognitiveFunction.distance.IDistancePerception;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.cognitiveFunction.occupancy.IOccupancyPerception;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.GoalChunk;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.OperationChunk;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.PhysicalChunk;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class PerceptionProcess {
@@ -198,12 +197,11 @@ public class PerceptionProcess {
 		this.distancePerception.perceptDistance(goal, physical, simulationState);
 	}
 	
-	public void executeOccupancy(BasicQueryModel query, 
-			PerceptionalModel perceptionModel, 
+	public void executeOccupancy(PerceptionalModel perceptionModel, 
 			GoalChunk goal, 
 			PhysicalChunk physical,
 			OperationChunk operation) {
 		
-		this.occupancyPerception.perceptOccupancy(query, perceptionModel, goal, physical, operation);
+		this.occupancyPerception.perceptOccupancy(perceptionModel, goal, physical, operation);
 	}
 }

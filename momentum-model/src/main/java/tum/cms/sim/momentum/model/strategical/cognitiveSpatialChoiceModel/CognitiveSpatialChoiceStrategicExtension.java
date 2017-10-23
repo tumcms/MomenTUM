@@ -46,6 +46,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.data.layout.area.Area;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.loader.CognitiveParameterLoader;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.GoalChunk;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.OperationChunk;
@@ -59,8 +60,6 @@ import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.proces
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.process.RescheduleProcess;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.process.ScheduleProcess;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.process.ValuationProcess;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
 
 public class CognitiveSpatialChoiceStrategicExtension implements IPedestrianExtansion {
 
@@ -139,7 +138,6 @@ public class CognitiveSpatialChoiceStrategicExtension implements IPedestrianExta
 
 	public void executeCognitiveProcessing(
 			PerceptionalModel perceptionModel,
-			BasicQueryModel queryModel,
 			SimulationState simulationState,
 			IStrategicPedestrian pedestrian,
 			ScenarioManager scenario) {
@@ -154,7 +152,7 @@ public class CognitiveSpatialChoiceStrategicExtension implements IPedestrianExta
 			this.perceptionProcess.executeVisible(perceptionModel, goal, this.physicalChunk);
 			this.perceptionProcess.executeProximity(goal, this.physicalChunk, this.operationChunk);
 			this.perceptionProcess.executeDistance(goal, this.physicalChunk, simulationState);
-			this.perceptionProcess.executeOccupancy(queryModel, perceptionModel, goal, this.physicalChunk, this.operationChunk);
+			this.perceptionProcess.executeOccupancy(perceptionModel, goal, this.physicalChunk, this.operationChunk);
 		}
 		
 		// update deduction all goals

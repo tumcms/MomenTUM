@@ -44,8 +44,8 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
 import tum.cms.sim.momentum.data.layout.area.DestinationArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.strategical.interestModel.InterestConstant.InterestState;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
 
 public class InterestExtension implements IPedestrianExtansion {
 

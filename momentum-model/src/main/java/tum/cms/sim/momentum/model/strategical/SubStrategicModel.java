@@ -40,23 +40,12 @@ import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.infrastructure.execute.callable.Callable;
 import tum.cms.sim.momentum.model.IPedestrianBehavioralModel;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.utility.generic.IHasProperties;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 
 public abstract class SubStrategicModel extends Callable
 	implements IPedestrianBehavioralModel, IHasProperties {
-	
-	protected BasicQueryModel query = null;
-	
-	public BasicQueryModel getQuery() {
-		return query;
-	}
-	
-	public void setQuery(BasicQueryModel query) {
-		this.query = query;
-	}
 	
 	protected PerceptionalModel perception = null;
 	
