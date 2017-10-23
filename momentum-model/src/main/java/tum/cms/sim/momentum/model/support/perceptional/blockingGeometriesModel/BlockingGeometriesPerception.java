@@ -106,10 +106,10 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 			LatticeType.Quadratic,
 			NeighbourhoodType.Edge,
 			accuracy,
-			this.scenarioManager.getScenarios().getMaxX(), 
-			this.scenarioManager.getScenarios().getMinX(),
-			this.scenarioManager.getScenarios().getMaxY(),
-			this.scenarioManager.getScenarios().getMinY());
+			this.scenarioManager.getScenarios().getMaxX() + accuracy * 3, 
+			this.scenarioManager.getScenarios().getMinX() - accuracy * 3,
+			this.scenarioManager.getScenarios().getMaxY() + accuracy * 3,
+			this.scenarioManager.getScenarios().getMinY() - accuracy * 3);
 		
 		visibilityMap.setAllCells(Occupation.Empty);
 		
