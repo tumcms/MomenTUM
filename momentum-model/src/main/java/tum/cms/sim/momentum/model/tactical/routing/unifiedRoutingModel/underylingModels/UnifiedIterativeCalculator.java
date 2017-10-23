@@ -41,13 +41,14 @@ public abstract class UnifiedIterativeCalculator
 		
 
 	@Override
-	public void preCalculateWeight(Graph graph, Vertex previousVisit, Vertex current, Vertex target) {
-		// Nothing	
+	public void preCalculateWeight(Graph graph, Vertex previousVertex, Vertex current, Vertex target) {
+		// nothing to do
 	}
-
 
 	@Override
-	public void updateWeight(Graph graph, double calculatedWeight,Vertex previousVisi, Vertex target, Vertex current, Vertex successor) {
-		// Nothing		
+	public void updateWeight(Graph graph, double calculatedWeight, Vertex previousVertex, Vertex target, Vertex current,
+			Vertex successor) {
+		// nothing to do
 	}
+
 }
