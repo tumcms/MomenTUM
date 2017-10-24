@@ -34,7 +34,8 @@ package tum.cms.sim.momentum.simulator.factory.perceptionModelFactory;
 
 import tum.cms.sim.momentum.configuration.model.other.PerceptualModelConfiguration;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.perceptional.blockingGeometriesModel.BlockingGeometriesPerception;
+import tum.cms.sim.momentum.model.perceptional.bresenhamPerceptionModel.BresenhamPerceptionModel;
+import tum.cms.sim.momentum.model.perceptional.shadowPerceptionModel.ShadowPerceptionModel;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -43,15 +44,15 @@ import tum.cms.sim.momentum.utility.generic.Unique;
 public class PerceptionalModelFactory extends ModelFactory<PerceptualModelConfiguration, PerceptionalModel>{
 
 	@Override
-	public PerceptionalModel createModel(PerceptualModelConfiguration configuration,
-			ComponentManager componentManager) {
+	public PerceptionalModel createModel(PerceptualModelConfiguration configuration, ComponentManager componentManager) {
 	
 		PerceptionalModel perceptualModel = null;
 		
 		switch(configuration.getType()) {
-		
-		case BlockingGeometries:
-			perceptualModel = new BlockingGeometriesPerception();
+		case Shadow:
+			perceptualModel = new ShadowPerceptionModel();
+		case Bresenham:
+			perceptualModel = new BresenhamPerceptionModel();
 		default:
 			break;
 		}
