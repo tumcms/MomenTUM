@@ -1,0 +1,29 @@
+<!-- Perception models provide a pathway to reduce the amount of information that agents can perceive. -->
+<!-- There are two different perception models -->
+<!-- The bresenham perception model (formerly known as BlockGemetries model) and the shadow perception model. -->
+<!-- The perceptionModels definition block is: -->
+
+<perceptualModels>
+
+	<!-- A perceptual model has a unique id for all perception models, a name and a type. -->
+	<!-- At the moment here only type is:
+		 Bresenham (formerly BlockGemetries)
+		 Shadow -->
+	<!-- The BlockingGeometries model uses shadow mapping and bresenham-lines to check if an objects is visible. -->
+	<!-- If something is not visible it is visually blocked by obstacles. -->
+	<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+		<!-- The perception distance is an optional parameter. -->
+		<!-- It defines the maximal distance an agent can perceive something. -->
+		<!-- In case the perception distance is missing, it model will use "longest graph edge * 2" as distance. -->
+		<property name="perceptionDistance" type="Double" value="100.0"/>
+		<!-- The latticeId property stores the id of a lattice in the lattice models and defines the accuracy of the model -->
+		<!-- If the lattivceId is missing, the model will create its own lattice with an edge size of 0.1. -->
+		<property name="latticeId" type="Integer" value="0"/>
+	</perceptual>
+	
+	<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+		
+		<!-- The latticeId property stores the id of a lattice in the lattice models and defines the accuracy of the model -->
+		<property name="latticeId" type="Integer" value="0.1"/>
+	</perceptual>
+</perceptualModels>

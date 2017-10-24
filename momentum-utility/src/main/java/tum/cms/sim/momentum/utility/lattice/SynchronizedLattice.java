@@ -45,8 +45,8 @@ public class SynchronizedLattice extends Lattice implements ILattice {
 
 	protected SynchronizedLattice(LatticeType latticeType, NeighbourhoodType neigborhoodType, double cellEdgeSize,
 			double maxX, double minX, double maxY, double minY) {
+
 		super(latticeType, neigborhoodType, cellEdgeSize, maxX, minX, maxY, minY);
-		// TODO Auto-generated constructor stub
 	}
 
 	public synchronized void occupyInsideCells(Collection<CellIndex> cells, Occupation occupation) {
@@ -98,5 +98,4 @@ public class SynchronizedLattice extends Lattice implements ILattice {
 		
 		return super.freeCell(cellIndex);	
 	}
-
 }

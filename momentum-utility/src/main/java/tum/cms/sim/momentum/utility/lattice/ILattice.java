@@ -137,6 +137,8 @@ public interface ILattice extends IUnique {
 	List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, Occupation occupation);
 
 	List<CellIndex> occupyAllSegmentCells(List<Segment2D> segments, Occupation occupation);
+
+	List<CellIndex> occupyAllCellsInRadius(Vector2D position, double radius, Occupation occupation);
 	
 	List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, double value);
 
@@ -152,6 +154,8 @@ public interface ILattice extends IUnique {
 
 	void setAllFreeTo(Occupation occupancy);
 
+	void setCells(List<CellIndex> cellsToOccupy, double value);
+	
 	ArrayList<Vector2D> getCornerPoints(CellIndex cell);
 
 	int getNumberOfOccupiedNeighbors(CellIndex cellIndex);
@@ -188,4 +192,7 @@ public interface ILattice extends IUnique {
 	List<CellIndex> getAllCellsWithValue(Double value);
 
 	List<CellIndex> getAllCircleCells(Cycle2D circle);
+	
+	List<CellIndex> getAllCircleCells(double radius, Vector2D position);
+	
 }

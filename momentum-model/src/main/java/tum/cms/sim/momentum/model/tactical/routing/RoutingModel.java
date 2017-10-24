@@ -113,7 +113,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 			return true;
 		}	
 
-		boolean currentWalkingTargetVisible = perception.isVisible(pedestrian.getPosition(), pedestrian.getRoutingState().getNextVisit());
+		boolean currentWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextVisit());
 		
 		// is the current walking target not visible?! reroute
 		if(!currentWalkingTargetVisible) {
@@ -128,7 +128,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 		
 		if(tacticalControlActive && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
 			
-			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian.getPosition(), pedestrian.getRoutingState().getNextToCurrentVisit());
+			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextToCurrentVisit());
 			
 			// is the next walking target not visible?! reroute
 			if(nextWalkingTargetVisible && this.checkIsVertexVisited()) {
@@ -161,7 +161,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 
 			if(goalAreaEqualsPointOfInterest) { 
 				
-				if(perception.isVisible(pedestrian.getPosition(), pedestrian.getNextNavigationTarget().getPointOfInterest())) {
+				if(perception.isVisible(pedestrian, pedestrian.getNextNavigationTarget().getPointOfInterest())) {
 					
 					// the point of interest is the goal area and the goal area is visible
 					// reset to correct goal location target
@@ -184,7 +184,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 			}
 			else {
 				
-				if(perception.isVisible(pedestrian.getPosition(), pedestrian.getNextNavigationTarget().getPointOfInterest()) ) { 
+				if(perception.isVisible(pedestrian, pedestrian.getNextNavigationTarget().getPointOfInterest()) ) { 
 					
 					// the point of interest is visible and it is not the goal area center and not some normal 
 					// navigation point, select the point of interest as dynamic walking target
@@ -229,7 +229,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 
 				if(startVertexTemp != null) {
 					
-					if(perception.isVisible(pedestrian.getPosition(), startVertexTemp) &&
+					if(perception.isVisible(pedestrian, startVertexTemp) &&
 					   this.scenarioManager.getGraph().getSuccessorEdges(startVertexTemp).size() > 0) {
 						
 						startVertex = startVertexTemp;

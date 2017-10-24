@@ -74,23 +74,7 @@ public class LatticeModelConfiguration extends PropertyContainerNode {
 		
 		return new EnumToStringConverter<>(NeighbourhoodType.class, map);
 	}
-	
-	public enum FillingType {
-		
-		Empty,
-		Full,
-		ScenarioLayout
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public static EnumToStringConverter getFillingTypeConverter() {
-		
-		HashMap<String, FillingType> map = new HashMap<>();
-		map.put(FillingType.ScenarioLayout.toString(), FillingType.ScenarioLayout);
-		map.put(FillingType.Empty.toString(), FillingType.Empty);
-		
-		return new EnumToStringConverter<>(FillingType.class, map);
-	}
+
 	
 	@XStreamAsAttribute
 	private Integer scenarioId = null;
@@ -124,18 +108,6 @@ public class LatticeModelConfiguration extends PropertyContainerNode {
 
 	public void setNeigboorhoodType(NeighbourhoodType neigborhoodType) {
 		this.neigborhoodType = neigborhoodType;
-	}
-	
-	@XStreamAsAttribute
-	private FillingType fillingType;
-
-
-	public FillingType getFillingType() {
-		return fillingType;
-	}
-
-	public void setFillingTypeType(FillingType fillingType) {
-		this.fillingType = fillingType;
 	}
 	
 	@XStreamAsAttribute

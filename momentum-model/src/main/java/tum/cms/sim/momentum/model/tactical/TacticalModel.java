@@ -346,7 +346,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	 */
 	private boolean isGoalTargetVisible(IRichPedestrian pedestrian) {
 		
-		return perception.isVisible(pedestrian.getPosition(), pedestrian.getNextNavigationTarget().getPointOfInterest());
+		return perception.isVisible(pedestrian, pedestrian.getNextNavigationTarget().getPointOfInterest());
 	}
 	
 	/**

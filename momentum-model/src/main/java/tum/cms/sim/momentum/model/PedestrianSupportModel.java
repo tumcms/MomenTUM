@@ -73,20 +73,14 @@ public abstract class PedestrianSupportModel extends Callable implements IHasPro
 	@Override
 	public boolean isMultiThreading() {
 
-		return true;
+		return false;
 	}
 	
-	/**
-	 * This method is called N times for each thread
-	 */
 	@Override
 	public void execute(Collection<? extends Void> splittTask, SimulationState simulationState) {
 
 		this.supportModelUpdate(simulationState);
 	}
 	
-	/**
-	 * This method is called N times for each thread
-	 */
-	protected abstract void supportModelUpdate( SimulationState simulationState);
+	protected abstract void supportModelUpdate(SimulationState simulationState);
 }

@@ -235,7 +235,7 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 			}
 
 			if(route == null || depth == 0 ||
-			   !perception.isVisible(pedestrian.getPosition(), route.getCurrentVertex()) ||
+			   !perception.isVisible(pedestrian, route.getCurrentVertex()) ||
 			   route.getCurrentVertex().getId().equals(end.getId())) {
 				
 				nextToCurrentVisit = route.getCurrentVertex();

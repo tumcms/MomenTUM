@@ -146,7 +146,7 @@ public class ODMatrixStrategical extends DestinationChoiceModel {
 		Area nextTarget = pedestrian.getNextNavigationTarget();
 		ODMatrixExtension extension = (ODMatrixExtension)pedestrian.getExtensionState(this);
 		
-		if((perception.isVisible(pedestrian.getPosition(),
+		if((perception.isVisible(pedestrian,
 				pedestrian.getNextNavigationTarget().getPointOfInterest()) && 
 				this.isClose(nextTarget, pedestrian, behavior)) ||
 				this.checkInBehavior(extension, pedestrian.getBehaviorTask())) {

@@ -132,13 +132,12 @@ public class PerceptionProcess {
 	public void executeVisible(PerceptionalModel perceptionModel, GoalChunk goal, PhysicalChunk physical) {
 	
 		Boolean visible = null;
-		Vector2D position = physical.getThisPedestrian().getPosition();
 
-		visible = perceptionModel.isVisible(position, goal.getGoalArea().getPointOfInterest());
+		visible = perceptionModel.isVisible(physical.getThisPedestrian(), goal.getGoalArea().getPointOfInterest());
 		
 		if(!visible) {
 			
-			visible = perceptionModel.isVisible(position, 
+			visible = perceptionModel.isVisible(physical.getThisPedestrian(), 
 					goal.getGoalArea().getPointOfInterest());
 		}
 

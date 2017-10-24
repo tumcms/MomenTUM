@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.perceptional.blockingGeometriesModel;
+package tum.cms.sim.momentum.model.perceptional.bresenhamPerceptionModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,10 +40,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.BehaviorType;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
+import tum.cms.sim.momentum.data.layout.area.Area;
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -57,66 +59,74 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 import tum.cms.sim.momentum.utility.lattice.LatticeTheoryFactory;
-import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 
 /**
- * The blocking geometry perception model is highly important.
- * Version 1.0 uses bresenham only because the shadow mapping implementation did not work.
- * Version 2.0 uses bresenham for single point checks but a FOV Octant based method
- * (https://blogs.msdn.microsoft.com/ericlippert/2011/12/12/shadowcasting-in-c-part-one/)
- * to find a set of visible objects in the field of view. This also changed the concept
- * of the perception model. Now it is a an callable model that updates the positions
- * of all pedestrian on the perception grid in parallel.
- * 
+ * The bresenham (formerly blocking geometry) perception model finds visible objects via bresenham lines.
  * @author Peter Kielar
- *
  */
-public class BlockingGeometriesPerception extends PerceptionalModel {
+public class BresenhamPerceptionModel extends PerceptionalModel {
 
-	private int distance = 250;
+	private static String latticeIdName = "latticeIdName";
+	private static String perceptionDistanceName = "perceptionDistance";
 	
-//	private HashMap<Area, ArrayList<Polygon2D>> areaVisibilityMap = new HashMap<Area, ArrayList<Polygon2D>>();
-//	private HashMap<Vertex, ArrayList<Polygon2D>> vertexVisibilityMap = new HashMap<Vertex, ArrayList<Polygon2D>>();
-
+	private int perceptionDistance = 250;
+	private int latticeId = 0;
+	
 	private long currentTimeStepBuffer = 0;
 	private HashMap<Integer, HashSet<Integer>> pedestrianBuffer = new HashMap<>();
-	
+
 	private ILattice visibilityMap = null;
-	private double accuracy = 0.5;
-	private ArrayList<Segment2D> obstacleParts = new ArrayList<Segment2D>();
+	private double accuracy = 0.1;
 	
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 
-		if(this.properties.getDoubleProperty("accuracy") != null) {
-			
-			this.accuracy = this.properties.getDoubleProperty("accuracy");
+		if(this.properties.getIntegerProperty(perceptionDistanceName) != null) {
+		
+			this.perceptionDistance = this.properties.getIntegerProperty(perceptionDistanceName);
 		}
+		else {
+
+			DescriptiveStatistics edgeStatistics = new DescriptiveStatistics();
+
+	        this.scenarioManager.getGraph().getAllEdges().stream()
+	        	.forEach(edge -> edgeStatistics.addValue(edge.euklideanLenght()));
+	      
+	        double cellsMax = edgeStatistics.getMax() / this.accuracy;
+			this.perceptionDistance = (int)(cellsMax * 2);
+		}
+		
+		// backward compatibility
+		if(this.properties.getIntegerProperty(latticeIdName) != null) {
+			
+			this.latticeId = this.properties.getIntegerProperty(latticeIdName);
+			this.visibilityMap = this.scenarioManager.getLattice(this.latticeId);
+		}
+		else {
+			
+			this.visibilityMap = LatticeTheoryFactory.createLattice(
+				"rayTracing",
+				BehaviorType.Unsynchronized,
+				LatticeType.Quadratic,
+				NeighbourhoodType.Edge,
+				accuracy,
+				this.scenarioManager.getScenarios().getMaxX() + accuracy * 3, 
+				this.scenarioManager.getScenarios().getMinX() - accuracy * 3,
+				this.scenarioManager.getScenarios().getMaxY() + accuracy * 3,
+				this.scenarioManager.getScenarios().getMinY() - accuracy * 3);
+		}
+		
+		ArrayList<Segment2D> obstacleParts = new ArrayList<Segment2D>();
 		
 		this.scenarioManager.getObstacles()
 			.stream()
 			.map(Obstacle::getGeometry)
 			.forEach(obstacleGeometry -> obstacleParts.addAll(obstacleGeometry.getSegments()));
 
-		DescriptiveStatistics edgeStatistics = new DescriptiveStatistics();
-
-        this.scenarioManager.getGraph().getAllEdges().stream()
-        	.forEach(edge -> edgeStatistics.addValue(edge.euklideanLenght()));
-     
-		double cellsMax = edgeStatistics.getMax() / this.accuracy;
-		this.distance = (int)(cellsMax * 2);
+		// this lattice is already pre-processed and has all cells occupied for obstacles
+		// the lattice behavior type have to be unsynchronous
 	
-		this.visibilityMap = LatticeTheoryFactory.createLattice(
-			"rayTracing",
-			LatticeType.Quadratic,
-			NeighbourhoodType.Edge,
-			accuracy,
-			this.scenarioManager.getScenarios().getMaxX() + accuracy * 3, 
-			this.scenarioManager.getScenarios().getMinX() - accuracy * 3,
-			this.scenarioManager.getScenarios().getMaxY() + accuracy * 3,
-			this.scenarioManager.getScenarios().getMinY() - accuracy * 3);
-		
-		visibilityMap.setAllCells(Occupation.Empty);
+		LatticeModel.fillLatticeForObstacles(this.visibilityMap, this.scenarioManager.getScenarios());
 		
 		List<CellIndex> originCenterCells = this.scenarioManager.getOrigins().stream()
 				.map(OriginArea::getGeometry)
@@ -130,12 +140,112 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 		visibilityMap.flood(originCenterCells);	
 	}
 
-
 	@Override
 	protected void supportModelUpdate(SimulationState simulationState) {
-		// Update positions of pedestrians, be careful this is done in parallel
-		// Thus use a no synchronized lattice
+		
+		// nothing to do
 	}
+	
+	@Override
+	public void callPostProcessing(SimulationState simulationState) { /* nothing to do */ }
+	
+	
+	@Override
+	public boolean isVisible(IPedestrian pedestrian, Edge edge) {
+		
+		return this.isVisible(pedestrian, edge.getStart()) || this.isVisible(pedestrian, edge.getEnd());
+	}
+
+	@Override
+	public boolean isVisible(IPedestrian pedestrian, IPedestrian otherPedestrian) {
+		
+		return this.isVisible(pedestrian, otherPedestrian.getPosition());
+	}
+	
+	@Override
+	public boolean isVisible(IPedestrian pedestrian, Vertex vertex) {
+		
+		return this.isVisible(pedestrian, vertex.getGeometry().getCenter());
+	}
+
+	@Override
+	public boolean isVisible(IPedestrian pedestrian, Area area) {
+		
+		return this.isVisible(pedestrian.getPosition(), area.getPointOfInterest());
+	}
+
+	@Override
+	public boolean isVisible(IPedestrian pedestrian, Vector2D position) {
+
+		return this.isVisible(pedestrian.getPosition(), position);
+	}
+
+	@Override
+	public boolean isVisible(Vector2D viewPort, Vector2D position) {
+	
+		CellIndex from = this.visibilityMap.getCellIndexFromPosition(viewPort);
+		CellIndex towards = this.visibilityMap.getCellIndexFromPosition(position);
+			
+		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, perceptionDistance);
+		
+		return hitTarget;
+	}
+
+	@Override
+	public List<IPedestrian> getPerceptedPedestrians(IPedestrian currentPedestrian, SimulationState simulationState) {
+
+		synchronized (this) {
+			
+			if(simulationState.getCurrentTimeStep() != this.currentTimeStepBuffer) {
+				
+				this.currentTimeStepBuffer = simulationState.getCurrentTimeStep();
+				this.pedestrianBuffer.clear();
+				this.pedestrianManager.getAllPedestrians().forEach(pedestrian -> 
+					this.pedestrianBuffer.put(pedestrian.getId(), new HashSet<>()));
+				
+			}
+		}
+		
+		HashSet<Integer> viewForPedestrian = this.pedestrianBuffer.get(currentPedestrian.getId());
+		HashSet<Integer> othersView = null;
+		
+		List<IPedestrian> visiblePedestrians = new ArrayList<>();
+		CellIndex from = this.visibilityMap.getCellIndexFromPosition(currentPedestrian.getPosition());
+		
+		for(IRichPedestrian other : this.pedestrianManager.getAllPedestrians()) {
+			
+			othersView = this.pedestrianBuffer.get(other.getId());
+			
+			if(othersView.contains(currentPedestrian.getId())) {
+				
+				viewForPedestrian.add(other.getId());
+				visiblePedestrians.add(other);
+				continue;
+			}
+			
+			if(viewForPedestrian.contains(other.getId())) {
+				
+				othersView.add(currentPedestrian.getId());
+				visiblePedestrians.add(other);
+				continue;
+			}
+			
+			CellIndex towards = this.visibilityMap.getCellIndexFromPosition(other.getPosition());
+			boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, this.perceptionDistance);
+
+			if(hitTarget) {
+			
+				visiblePedestrians.add(other);
+				
+				viewForPedestrian.add(other.getId());
+				othersView.add(currentPedestrian.getId());
+			}
+		}
+		
+		return visiblePedestrians;
+	}
+
+
 	
 //	private List<Polygon2D> createVisibilityTriangles(Geometry2D objectToSee, List<Segment2D> obstacleParts) {
 //
@@ -216,93 +326,6 @@ public class BlockingGeometriesPerception extends PerceptionalModel {
 //		visibilityMap.paintLattice(); // take care regarding numerical errors some cells that can see, but cannot
 //	}
 	
-	@Override
-	public void callPostProcessing(SimulationState simulationState) { /* nothing to do */ }
-	
-	
-	@Override
-	public boolean isVisible(Vector2D viewPort, Edge edge) {
-		
-		return this.isVisible(viewPort, edge.getStart()) || this.isVisible(viewPort, edge.getEnd());
-	}
-
-	@Override
-	public boolean isVisible(IPedestrian currentPedestrian, IPedestrian otherPedestrian) {
-		
-		return this.isVisible(currentPedestrian.getPosition(), otherPedestrian.getPosition());
-	}
-	
-	@Override
-	public boolean isVisible(Vector2D viewPort, Vertex vertex) {
-		
-		return this.isVisible(viewPort, vertex.getGeometry().getCenter());
-	}
-
-	@Override
-	public boolean isVisible(Vector2D viewPort, Vector2D position) {
-
-		CellIndex from = this.visibilityMap.getCellIndexFromPosition(viewPort);
-		CellIndex towards = this.visibilityMap.getCellIndexFromPosition(position);
-			
-		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, distance);
-		
-		return hitTarget;
-	}
-	
-	@Override
-	public List<IPedestrian> getPerceptedPedestrians(IPedestrian currentPedestrian, SimulationState simulationState) {
-
-		synchronized (this) {
-			
-			if(simulationState.getCurrentTimeStep() != this.currentTimeStepBuffer) {
-				
-				this.currentTimeStepBuffer = simulationState.getCurrentTimeStep();
-				this.pedestrianBuffer.clear();
-				this.pedestrianManager.getAllPedestrians().forEach(pedestrian -> 
-					this.pedestrianBuffer.put(pedestrian.getId(), new HashSet<>()));
-				
-			}
-		}
-		
-		HashSet<Integer> viewForPedestrian = this.pedestrianBuffer.get(currentPedestrian.getId());
-		HashSet<Integer> othersView = null;
-		
-		List<IPedestrian> visiblePedestrians = new ArrayList<>();
-		CellIndex from = this.visibilityMap.getCellIndexFromPosition(currentPedestrian.getPosition());
-		
-		for(IRichPedestrian other : this.pedestrianManager.getAllPedestrians()) {
-			
-			othersView = this.pedestrianBuffer.get(other.getId());
-			
-			if(othersView.contains(currentPedestrian.getId())) {
-				
-				viewForPedestrian.add(other.getId());
-				visiblePedestrians.add(other);
-				continue;
-			}
-			
-			if(viewForPedestrian.contains(other.getId())) {
-				
-				othersView.add(currentPedestrian.getId());
-				visiblePedestrians.add(other);
-				continue;
-			}
-			
-			CellIndex towards = this.visibilityMap.getCellIndexFromPosition(other.getPosition());
-			boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, distance);
-
-			if(hitTarget) {
-			
-				visiblePedestrians.add(other);
-				
-				viewForPedestrian.add(other.getId());
-				othersView.add(currentPedestrian.getId());
-			}
-		}
-		
-		return visiblePedestrians;
-	}
-
 	
 //	//@Override
 //	public List<IPedestrian> getPerceptedPedestrians2(IPedestrian currentPedestrian, ITimeStepInformation simulationState) {

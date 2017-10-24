@@ -257,8 +257,6 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		this.latticeType = latticeType;
 		this.neighborhoodType = neigborhoodType;
 
-
-		
 		switch(this.latticeType) {
 		
 		case Hexagon:
@@ -866,15 +864,11 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		return borderCellPositions;		
 	}
 	
-	/* (non-Javadoc)
-	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getAllCircleCells(tum.cms.sim.momentum.utility.geometry.Cycle2D)
-	 */
+
 	@Override
-	public List<CellIndex> getAllCircleCells(Cycle2D circle) {
-		
+	public List<CellIndex> getAllCircleCells(double radius, Vector2D center) {
+
 		ArrayList<CellIndex> cells = new ArrayList<CellIndex>();
-		Double radius = circle.getRadius();
-		Vector2D center = circle.getCenter();
 		
 		Vector2D circlePointNorth = center.sum(GeometryFactory.createVector(0.0, -radius));
 		Vector2D circlePointEast = center.sum(GeometryFactory.createVector(radius, 0.0));
@@ -902,6 +896,18 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 			}			
 		}
 		return cells;
+	}
+	
+	/* (non-Javadoc)
+	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getAllCircleCells(tum.cms.sim.momentum.utility.geometry.Cycle2D)
+	 */
+	@Override
+	public List<CellIndex> getAllCircleCells(Cycle2D circle) {
+		
+		Double radius = circle.getRadius();
+		Vector2D center = circle.getCenter();
+		
+		return this.getAllCircleCells(radius, center);
 	}
 
 	/* (non-Javadoc)
@@ -1038,6 +1044,40 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		
 		return cellsToOccupy;
 	}
+	
+	@Override
+	public List<CellIndex> occupyAllCellsInRadius(Vector2D position, double radius, Occupation occupation) {
+		
+		List<CellIndex> objectsCells = this.getAllCircleCells(radius, position);
+		objectsCells.stream().forEach(cellIndex -> this.occupyCell(cellIndex, occupation));
+		
+		return objectsCells;
+	}
+	
+//	public ArrayList<CellIndex> getCellIndexFromRadius(Vector2D position, double radius) {
+//		
+//		ArrayList<CellIndex> cells = new ArrayList<>();
+//		CellIndex centerCell = this.getCellIndexFromPosition(position);
+//		
+//		Queue<CellIndex> toDoCells = new LinkedList<>();
+//		toDoCells.add(centerCell);
+//		
+//		while(!toDoCells.isEmpty() ) {
+//		
+//			CellIndex currentCell = toDoCells.poll();
+//			cells.add(currentCell);
+//			
+//			for(CellIndex neigbhor : this.getAllNeighborIndices(currentCell)) {
+//
+//				if(this.getCenterPosition(neigbhor).distance(position) <= radius) {
+//					
+//					toDoCells.add(neigbhor);
+//				}
+//			}
+//		}
+//		
+//		return cells;
+//	}
 
 	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#setAllCells(tum.cms.sim.momentum.utility.lattice.Lattice.Occupation)
@@ -1089,6 +1129,12 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void setCells(List<CellIndex> cellsToOccupy, double value) {
+		
+		cellsToOccupy.forEach(cell -> this.setCellNumberValue(cell, value));
 	}
 	
 	/* (non-Javadoc)
@@ -1282,7 +1328,8 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 
         for (; n > 0 && distance > 0; --n) {
         	
-        	if(!this.isCellFree(y, x)) {
+        	// Has cell a value not 0.0?! Its not free
+        	if(this.getCellNumberValue(y, x) != 0.0) { //!this.isCellFree(y, x) && 
         		
         		break;
         	}

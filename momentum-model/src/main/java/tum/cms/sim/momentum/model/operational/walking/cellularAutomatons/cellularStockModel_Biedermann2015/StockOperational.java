@@ -52,7 +52,6 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
-import tum.cms.sim.momentum.utility.lattice.operation.QuadraticLatticCalculation;
 import tum.cms.sim.momentum.utility.probability.HighQualityRandom;
 
 public class StockOperational extends WalkingModel {
@@ -76,7 +75,8 @@ public class StockOperational extends WalkingModel {
 		timeStepMultiplicator = this.properties.getIntegerProperty(timeStepMultiplicatorName);
 		mesoscopicTimeStep = simulationState.getTimeStepDuration() * timeStepMultiplicator;
 				
-		lattice = this.getLatticeByLatticeID(latticeId);
+		lattice = this.scenarioManager.getLattice(latticeId);
+
 		
 //		if (lattice.getFillingType() != FillingType.ScenarioLayout) {
 //			throw new IllegalArgumentException("The operational Lattice with ID " + lattice.getId() + " is not of FillingType " +
@@ -341,17 +341,5 @@ public class StockOperational extends WalkingModel {
 			
 		lattice.freeCell(currentCellIndex);
 		lattice.occupyCell(desiredCell, Occupation.Dynamic);
-	}
-	
-	private ILattice getLatticeByLatticeID(int latticeID) {
-		
-		ArrayList<ILattice> lattices = this.scenarioManager.getScenarios().getLattices();	
-		
-		ILattice lattice = lattices.stream()
-				.filter(grid -> grid.getId() == latticeID)
-				.findFirst()
-				.get();
-				
-		return lattice;
 	}
 }

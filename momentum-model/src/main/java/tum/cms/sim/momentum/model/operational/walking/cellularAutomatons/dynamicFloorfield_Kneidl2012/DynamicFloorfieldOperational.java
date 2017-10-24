@@ -79,11 +79,8 @@ public class DynamicFloorfieldOperational extends WalkingModel {
 		//load the lattice from the config and get it from the scenario manager
 		int latticeId = this.properties.getIntegerProperty(scenarioLatticeIdName);
 		
-		layoutLattice = this.scenarioManager.getScenarios().getLattices().stream()
-				.filter(grid -> grid.getId() == latticeId)
-				.findFirst()
-				.get();
-			
+		layoutLattice = this.scenarioManager.getLattice(latticeId);
+
 		for(int iter = 1; iter <= simulationState.getNumberOfThreads(); iter++) {
 			
 			ILattice doubleLattice = LatticeTheoryFactory.createLattice(layoutLattice.getName() + "_" + String.valueOf(iter),

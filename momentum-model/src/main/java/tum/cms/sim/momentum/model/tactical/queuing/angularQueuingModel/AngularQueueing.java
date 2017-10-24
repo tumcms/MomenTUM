@@ -152,11 +152,11 @@ public class AngularQueueing extends QueuingModel {
 			closeToSelfList.stream().forEach(category -> this.closeToSelf.add(category));
 		}
 	
-		double latticeSize = this.scenarioManager.getLattices().get(0).getCellEdgeSize();
+		//double latticeSize = this.scenarioManager.getLattices().get(0).getCellEdgeSize();
 		this.queueLattice = LatticeTheoryFactory.createLattice("queueLattice",
 				LatticeType.Quadratic, 
 				NeighbourhoodType.Touching,
-				latticeSize,
+				0.23,
 				this.scenarioManager.getScenarios().getMaxX(),
 				this.scenarioManager.getScenarios().getMinX(),
 				this.scenarioManager.getScenarios().getMaxY(),
@@ -255,7 +255,7 @@ public class AngularQueueing extends QueuingModel {
 			}
 			
 			if(pedestrian.getPosition().distance(queuingPosition) < proximityDistance &&
-					this.perception.isVisible(pedestrian.getPosition(), targetArea.getPointOfInterest())) {
+					this.perception.isVisible(pedestrian, targetArea.getPointOfInterest())) {
 				
 				queue.addNewQueue(queuingPosition, pedestrian.getId(), pedestrian.getGroupId());
 			}

@@ -47,8 +47,10 @@ import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 
 public class FixedStanding extends StandingModel {
 
+	private static String latticeIdName = "latticeId";
 	private static String isCAName = "isCA";
 	private boolean isCA = false;
+	private int latticeId = 0;
 	
 	@Override
 	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian){
@@ -86,7 +88,7 @@ public class FixedStanding extends StandingModel {
 				
 			if(this.scenarioManager.getLattices().size() > 0 && isCA) {
 				
-				ILattice caLattice = this.scenarioManager.getLattices().get(0);
+				ILattice caLattice = this.scenarioManager.getLattice(latticeId);
 
 				CellIndex newStandingPosition = caLattice.getCellIndexFromPosition(position);
 				position = caLattice.getCenterPosition(newStandingPosition);
@@ -110,8 +112,12 @@ public class FixedStanding extends StandingModel {
 		if(this.properties.getBooleanProperty(isCAName) != null) {
 			
 			isCA = this.properties.getBooleanProperty(isCAName);
+			
+			if(this.properties.getIntegerProperty(latticeIdName) != null) {
+				
+				latticeId = this.properties.getIntegerProperty(latticeIdName); 
+			}
 		}
-		
 	}
 
 	@Override

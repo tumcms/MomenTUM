@@ -94,7 +94,7 @@ public class InterestExtension implements IPedestrianExtansion {
 		Behavior behavior = Behavior.Routing;
 		
 		if(pedestrian.getNextNavigationTarget().getGeometry().contains(pedestrian.getPosition()) || 
-				(perception.isVisible(pedestrian.getPosition(),
+				(perception.isVisible(pedestrian,
 						pedestrian.getNextNavigationTarget().getPointOfInterest()) && 
 						pedestrian.getNextNavigationTarget().getGeometry().contains(pedestrian.getNextWalkingTarget()))) {
 			

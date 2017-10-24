@@ -261,13 +261,16 @@ public abstract class PerceptionalModel extends PedestrianSupportModel {
 	
 	public abstract List<IPedestrian> getPerceptedPedestrians(IPedestrian pedestrian, SimulationState simulationState);
 	
-	public abstract boolean isVisible(IPedestrian currentPedestrian, IPedestrian otherPedestrian);
+	public abstract boolean isVisible(IPedestrian pedestrian, IPedestrian otherPedestrian);
+	
+	public abstract boolean isVisible(IPedestrian pedestrian, Vector2D position);
+
+	public abstract boolean isVisible(IPedestrian pedestrian, Area area);
+	
+	public abstract boolean isVisible(IPedestrian pedestrian, Vertex vertex);
+
+	public abstract boolean isVisible(IPedestrian pedestrian, Edge edge);	
 	
 	public abstract boolean isVisible(Vector2D viewPort, Vector2D position);
 	
-	//public abstract boolean isVisible(Vector2D viewPort, Area area);
-	
-	public abstract boolean isVisible(Vector2D viewPort, Vertex vertex);
-
-	public abstract boolean isVisible(Vector2D viewPort, Edge edge);	
 }
