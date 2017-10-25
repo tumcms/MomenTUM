@@ -12,6 +12,7 @@ import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.layout.lattice.LatticeModel;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Segment2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.geometry.operation.GeometryAdditionals;
@@ -40,15 +41,23 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	private HashMap<Integer, HashSet<Obstacle>> pedestrainToObstacle = new HashMap<>();
 	private HashMap<Integer, HashSet<Area>> pedestrainToArea = new HashMap<>();
 	private HashSet<Integer> pedestrianComputed= new HashSet<>();
+	private List<CellIndex> perceptionHorizon = null;
 	
 	@Override
 	public List<IPedestrian> getPerceptedPedestrians(IPedestrian pedestrian, SimulationState simulationState) {
 		
 		return pedestrainToPedestrian.get(pedestrian.getId()).stream().collect(Collectors.toList());
 	}
+	
+//	@Override
+//	public List<IPedestrian> getPerceptedObstacles(IPedestrian pedestrian, SimulationState simulationState) {
+//		
+//		return pedestrainToPedestrian.get(pedestrian.getId()).stream().collect(Collectors.toList());
+//	}
+
 
 	/**
-	 * This method use a bresenham line as alternative to avoid heavy computation 
+	 * This method use a bresenham line as alternative to avoid heavy computations 
 	 */
 	@Override
 	public boolean isVisible(Vector2D viewPort, Vector2D position) {
@@ -56,7 +65,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		CellIndex from = this.scenarioManager.getLattice(latticeId).getCellIndexFromPosition(viewPort);
 		CellIndex towards = this.scenarioManager.getLattice(latticeId).getCellIndexFromPosition(position);
 			
-		return this.scenarioManager.getLattice(latticeId).breshamLineCast(from, towards, perceptionDistance);
+		return this.scenarioManager.getLattice(latticeId).breshamLineCast(from, towards, perceptionDistance) != 0.0;
 	}
 
 	/**
@@ -109,10 +118,64 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			pedestrianComputed.add(pedestrianId);
 		}
 		
-		double view = this.perceptionRadiant;
-		double distance = this.perceptionDistance;
+		ILattice visibilityLattice = this.scenarioManager.getLattice(latticeId);
+
+		// start position
+		CellIndex viewPort = visibilityLattice.getCellIndexFromPosition(pedestrianViewPoint);
+		
+		// select cells of the horizon
+		List<CellIndex> perceptionBorder = this.findPerceptionBorder(visibilityLattice, pedestrianViewPoint, viewDirection);
 		
 		// compute shadow map
+		
+	}
+	
+	
+	private List<CellIndex> findPerceptionBorder(ILattice visibilityLattice, Vector2D pedestrianViewPoint, Vector2D viewDirection) {
+		
+		// find "left" cwclockwise horizon intersection
+		Vector2D cwclockRotateViewDirection = viewDirection.rotate(this.perceptionRadiant)
+				.scale((int)((this.perceptionDistance + 0.5)/visibilityLattice.getCellEdgeSize()));
+		
+		// find "right" clockwise horizon intersection
+		Vector2D clockRotateViewDirection = viewDirection.rotate(-1.0 * this.perceptionRadiant)
+				.scale((int)((this.perceptionDistance + 0.5)/visibilityLattice.getCellEdgeSize()));
+		
+		// find left and right
+		double distanceToOptimalCellLeft = Double.MAX_VALUE;
+		int indexOptimalCellLeft = -1;
+		double distanceToOptimalCellRight = Double.MAX_VALUE;
+		int indexOptimalCellRight = -1;
+		
+		for(int iter = 0; iter < this.perceptionHorizon.size(); iter++) {
+			
+			CellIndex horizon = this.perceptionHorizon.get(iter);
+			Vector2D horizonPosition = visibilityLattice.getCenterPosition(horizon);
+			
+			if(distanceToOptimalCellLeft < horizonPosition.distance(cwclockRotateViewDirection)) {
+				
+				indexOptimalCellLeft = iter;
+			}
+			
+			if(distanceToOptimalCellRight < horizonPosition.distance(clockRotateViewDirection)) {
+				
+				indexOptimalCellRight = iter;
+			}
+		}
+		
+		List<CellIndex> perceptionBorder = new ArrayList<>();
+		// get all border cells 
+		if(indexOptimalCellLeft < indexOptimalCellRight) { // ok
+			
+			perceptionBorder.addAll(this.perceptionHorizon.subList(indexOptimalCellLeft, indexOptimalCellRight));
+		}
+		else { // breaks at the end of the list
+			
+			perceptionBorder.addAll(this.perceptionHorizon.subList(indexOptimalCellLeft, this.perceptionHorizon.size() - 1));
+			perceptionBorder.addAll(this.perceptionHorizon.subList(0, indexOptimalCellRight));
+		}
+		
+		return perceptionBorder;
 	}
 
 	/**
@@ -152,6 +215,9 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 
 		ILattice visibilityMap = this.scenarioManager.getLattice(this.latticeId);
 		LatticeModel.fillLatticeForObstacles(visibilityMap, this.scenarioManager.getScenarios());
+		
+		this.perceptionHorizon = visibilityMap.getAllOnCircleBorder(this.perceptionDistance,
+				GeometryFactory.createVector(0.0, 0.0));
 	}
 
 	@Override

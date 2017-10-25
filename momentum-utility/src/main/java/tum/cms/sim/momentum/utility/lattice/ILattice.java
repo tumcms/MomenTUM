@@ -124,7 +124,7 @@ public interface ILattice extends IUnique {
 
 	ArrayList<CellIndex> getAllNeighborIndices(Vector2D position);
 
-	void occupyInsideCells(Collection<CellIndex> cells, Occupation occupation);
+	void occupyCells(Collection<CellIndex> cells, Occupation occupation);
 
 	HashMap<CellIndex, Vector2D> getBorderPositionForCells(Segment2D segment);
 
@@ -170,12 +170,14 @@ public interface ILattice extends IUnique {
 	
 	/**
 	 * from http://playtechs.blogspot.de/2007/03/raytracing-on-grid.html
+	 * 
+	 * 
 	 * @param from
 	 * @param towards
 	 * @param lattice
-	 * @return
+	 * @return zero (0.0) if towards cell was hit without intersection else the value of a hit cell
 	 */
-	boolean breshamLineCast(CellIndex from, CellIndex towards, int distance);
+	double breshamLineCast(CellIndex from, CellIndex towards, int distance);
 
 	void flood(List<CellIndex> startingCells);
 
@@ -195,4 +197,5 @@ public interface ILattice extends IUnique {
 	
 	List<CellIndex> getAllCircleCells(double radius, Vector2D position);
 	
+	List<CellIndex> getAllOnCircleBorder(double radius, Vector2D center);
 }

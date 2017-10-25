@@ -185,8 +185,9 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 	
 		CellIndex from = this.visibilityMap.getCellIndexFromPosition(viewPort);
 		CellIndex towards = this.visibilityMap.getCellIndexFromPosition(position);
-			
-		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, perceptionDistance);
+		
+		// hit means found the position without crashing into obstacles
+		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, perceptionDistance) != 0.0;
 		
 		return hitTarget;
 	}
@@ -231,7 +232,7 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 			}
 			
 			CellIndex towards = this.visibilityMap.getCellIndexFromPosition(other.getPosition());
-			boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, this.perceptionDistance);
+			boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, this.perceptionDistance) != 0.0;
 
 			if(hitTarget) {
 			

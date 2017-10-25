@@ -115,7 +115,7 @@ public class LatticeGeneratorGeometry extends GeneratorGeometry {
 
 		// for each solid and wall find polygon elements on the lattice and occupy them
 		LatticeModel.fillLatticeForObstacles(lattice, scenarioManager.getScenarios());
-		this.lattice.occupyInsideCells(positionForCells.keySet(), Occupation.Empty);		
+		this.lattice.occupyCells(positionForCells.keySet(), Occupation.Empty);		
 
 		this.spawnPositions = new ArrayList<Vector2D>();
 		

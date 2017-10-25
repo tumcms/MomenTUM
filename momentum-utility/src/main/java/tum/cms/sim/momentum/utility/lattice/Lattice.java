@@ -766,7 +766,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#occupyInsideCells(java.util.Collection, tum.cms.sim.momentum.utility.lattice.Lattice.Occupation)
 	 */
 	@Override
-	public synchronized void occupyInsideCells(Collection<CellIndex> cells, Occupation occupation) {
+	public synchronized void occupyCells(Collection<CellIndex> cells, Occupation occupation) {
 	
 		if(cells != null) {
 			
@@ -864,7 +864,85 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		return borderCellPositions;		
 	}
 	
+	/**
+	 * https://de.wikipedia.org/wiki/Bresenham-Algorithmus#Kreisvariante_des_Algorithmus
+	 * Returns the border cells of a circle in order.
+	 * They are based on 8 octants and therefore symmetric regarding (size/ 8) - 4
+	 * Octant 1, 2, 4, and 6 have a single value more to for the axis.
+	 * The cell index are centered around the center but may be outside of the lattice.
+	 * This is useful for buffering the indices. Later add the new centers row,column
+	 * if the start is zero,zero.
+	 */
+	@Override
+	public List<CellIndex> getAllOnCircleBorder(double radius, Vector2D center) {
+		
+		int gridRadius = (int)((radius + 0.5)/cellEdgeSize);
+		
+		ArrayList<CellIndex> cellsOct1 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct2 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct3 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct4 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct5 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct6 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct7 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct8 = new ArrayList<CellIndex>();
+		
+	    CellIndex startCellLeft = this.getCellIndexFromPosition(center);
+	    
+	    // center top (oct 1 and 8)
+	    cellsOct1.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow(), startCellLeft.getColumn() + gridRadius));
+	    // center bottom (oct 4 and 5)
+	    cellsOct4.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow(), startCellLeft.getColumn() - gridRadius));
+	    // right center (oct 2 and 3)
+	    cellsOct2.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + gridRadius, startCellLeft.getColumn()));
+	    // left center (oct 6 and 7)
+	    cellsOct6.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - gridRadius, startCellLeft.getColumn()));
 
+	    int f = 1 - gridRadius;
+	    int ddF_x = 0;
+	    int ddF_y = -2 * gridRadius;
+	    int x = 0;
+	    int y = gridRadius;
+	
+	    while(x < y) {
+	    	
+	    	if(f >= 0) {
+	    	  
+	    		y--;
+	    		ddF_y += 2;
+	        	f += ddF_y;
+	    	}
+	      
+	    	x++;
+		    ddF_x += 2;
+		    f += ddF_x + 1;
+
+		    cellsOct1.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + x, startCellLeft.getColumn() + y)); //oct1
+		    cellsOct8.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - x, startCellLeft.getColumn() + y)); //oct8
+		    
+		    cellsOct4.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + x, startCellLeft.getColumn() - y)); //oct4
+		    cellsOct5.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - x, startCellLeft.getColumn() - y)); //oct5
+		    
+		    cellsOct2.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + y, startCellLeft.getColumn() + x)); //oct2
+		    cellsOct7.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - y, startCellLeft.getColumn() + x)); //oct7
+		    
+		    cellsOct3.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + y, startCellLeft.getColumn() - x)); //oct3
+		    cellsOct6.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - y, startCellLeft.getColumn() - x)); //oct6
+	    }
+	    
+	    ArrayList<CellIndex> cellsInOrder = new ArrayList<>();
+	    cellsInOrder.addAll(cellsOct1);
+	    cellsInOrder.addAll(cellsOct2);
+	    cellsInOrder.addAll(cellsOct3);
+	    cellsInOrder.addAll(cellsOct4);
+	    cellsInOrder.addAll(cellsOct5);
+	    cellsInOrder.addAll(cellsOct6);
+	    cellsInOrder.addAll(cellsOct7);
+	    cellsInOrder.addAll(cellsOct8);
+	    
+	    return cellsInOrder;
+	}
+	
 	@Override
 	public List<CellIndex> getAllCircleCells(double radius, Vector2D center) {
 
@@ -1300,16 +1378,14 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#breshamLineCast(tum.cms.sim.momentum.utility.lattice.CellIndex, tum.cms.sim.momentum.utility.lattice.CellIndex)
 	 */
     @Override
-	public boolean breshamLineCast(CellIndex from, CellIndex towards, int distance) {
+	public double breshamLineCast(CellIndex from, CellIndex towards, int distance) {
 
-    	boolean hitTarget = false;
-    	
         int dx = FastMath.abs(from.getColumn() - towards.getColumn());
         int dy = FastMath.abs(from.getRow() - towards.getRow());
         
         if(dy == 0 && dx == 0) {
         	
-        	return true;
+        	return 0.0; // start is end
         }
         
         int x = from.getColumn();
@@ -1325,18 +1401,21 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
         int error = dx - dy;
         dx *= 2;
         dy *= 2;
-
+        double value = -1.0;
+        
         for (; n > 0 && distance > 0; --n) {
         	
         	// Has cell a value not 0.0?! Its not free
-        	if(this.getCellNumberValue(y, x) != 0.0) { //!this.isCellFree(y, x) && 
+        	value = this.getCellNumberValue(y, x);
+        	
+        	if(value != 0.0) { //!this.isCellFree(y, x) && 
         		
         		break;
         	}
         	
         	if(x == targetX && y == targetY) {
         		
-        		hitTarget = true;
+        		value = 0.0; // nothing in the way
         		break;
         	}
 
@@ -1354,7 +1433,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
             distance--;
         }
         
-    	return hitTarget;
+    	return value;
     }
     
 	/* (non-Javadoc)

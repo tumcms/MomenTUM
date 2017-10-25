@@ -49,9 +49,9 @@ public class SynchronizedLattice extends Lattice implements ILattice {
 		super(latticeType, neigborhoodType, cellEdgeSize, maxX, minX, maxY, minY);
 	}
 
-	public synchronized void occupyInsideCells(Collection<CellIndex> cells, Occupation occupation) {
+	public synchronized void occupyCells(Collection<CellIndex> cells, Occupation occupation) {
 		
-		super.occupyInsideCells(cells, occupation);
+		super.occupyCells(cells, occupation);
 	}
 	
 	public synchronized Boolean freeCell(int row, int column) {
