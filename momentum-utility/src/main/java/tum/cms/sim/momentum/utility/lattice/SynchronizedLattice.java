@@ -34,7 +34,7 @@ package tum.cms.sim.momentum.utility.lattice;
 
 import java.util.Collection;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 
 //Internal Agreement: 
 //	Occupied by fixed Object: Double.NaN; 
@@ -43,7 +43,7 @@ import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguratio
 
 public class SynchronizedLattice extends Lattice implements ILattice {
 
-	protected SynchronizedLattice(LatticeType latticeType, NeighbourhoodType neigborhoodType, double cellEdgeSize,
+	protected SynchronizedLattice(LatticeType latticeType, NeighborhoodType neigborhoodType, double cellEdgeSize,
 			double maxX, double minX, double maxY, double minY) {
 
 		super(latticeType, neigborhoodType, cellEdgeSize, maxX, minX, maxY, minY);

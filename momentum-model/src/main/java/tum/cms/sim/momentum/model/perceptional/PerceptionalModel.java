@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.model.perceptional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -259,7 +260,7 @@ public abstract class PerceptionalModel extends PedestrianSupportModel {
 		return isCollision;
 	}
 	
-	public abstract List<IPedestrian> getPerceptedPedestrians(IPedestrian pedestrian, SimulationState simulationState);
+	public abstract Collection<IPedestrian> getPerceptedPedestrians(IPedestrian pedestrian, SimulationState simulationState);
 	
 	public abstract boolean isVisible(IPedestrian pedestrian, IPedestrian otherPedestrian);
 	
@@ -273,4 +274,5 @@ public abstract class PerceptionalModel extends PedestrianSupportModel {
 	
 	public abstract boolean isVisible(Vector2D viewPort, Vector2D position);
 	
+	public abstract double getPerceptionDistance();
 }

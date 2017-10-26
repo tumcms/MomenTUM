@@ -51,8 +51,10 @@ public class PerceptionalModelFactory extends ModelFactory<PerceptualModelConfig
 		switch(configuration.getType()) {
 		case Shadow:
 			perceptualModel = new ShadowPerceptionModel();
+			break;
 		case Bresenham:
 			perceptualModel = new BresenhamPerceptionModel();
+			break;
 		default:
 			break;
 		}

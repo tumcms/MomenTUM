@@ -8,7 +8,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
@@ -21,7 +21,7 @@ public class LatticeTest {
 		// Arrange		
 		ILattice lattice = LatticeTheoryFactory.createLattice("testLattice",
 				LatticeType.Quadratic,
-				NeighbourhoodType.Touching,
+				NeighborhoodType.Touching,
 				1,
 				10, // 11 cells
 				0,  

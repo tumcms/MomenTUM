@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.math3.util.FastMath;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
@@ -263,12 +263,12 @@ public class StockOperational extends WalkingModel {
 			double neumannDistance = cellEdgeSize;
 			double mooreDistance = cellEdgeSize * FastMath.sqrt(2.0);
 			
-			if (currentStock >= neumannDistance && lattice.getNeighborhoodType() == NeighbourhoodType.Edge) {
+			if (currentStock >= neumannDistance && lattice.getNeighborhoodType() == NeighborhoodType.Edge) {
 				
 				walkability = WalkPotentialType.EdgeNeighbour;
 			}
 			
-			if (currentStock >= mooreDistance && lattice.getNeighborhoodType() == NeighbourhoodType.Touching) {
+			if (currentStock >= mooreDistance && lattice.getNeighborhoodType() == NeighborhoodType.Touching) {
 				
 				walkability = WalkPotentialType.TouchingNeighbour;
 			}		

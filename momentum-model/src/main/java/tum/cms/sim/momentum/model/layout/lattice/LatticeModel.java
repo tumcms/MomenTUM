@@ -88,6 +88,7 @@ public class LatticeModel extends Callable implements IHasProperties {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
+		
 		this.lattice = LatticeTheoryFactory.createLattice(				
 				latticeConfiguration.getName(), 
 				latticeConfiguration.getBehaviorType(),
@@ -149,7 +150,7 @@ public class LatticeModel extends Callable implements IHasProperties {
 	 * @param scenario
 	 * @return all cells
 	 */
-	public static List<CellIndex> fillLatticeForObstacles2(ILattice lattice, Scenario scenario) {
+	public static List<CellIndex> fillLatticeForObstaclesGetCells(ILattice lattice, Scenario scenario) {
 
 		List<CellIndex> freeCells = Collections.synchronizedList(new ArrayList<>(lattice.getNumberOfColumns() * lattice.getNumberOfRows()));
 		freeCells.addAll(lattice.getCellsInOrder());

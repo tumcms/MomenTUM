@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.math3.util.FastMath;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.QueuingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
@@ -155,7 +155,7 @@ public class AngularQueueing extends QueuingModel {
 		//double latticeSize = this.scenarioManager.getLattices().get(0).getCellEdgeSize();
 		this.queueLattice = LatticeTheoryFactory.createLattice("queueLattice",
 				LatticeType.Quadratic, 
-				NeighbourhoodType.Touching,
+				NeighborhoodType.Touching,
 				0.23,
 				this.scenarioManager.getScenarios().getMaxX(),
 				this.scenarioManager.getScenarios().getMinX(),

@@ -59,7 +59,7 @@ public class LatticeModelConfiguration extends PropertyContainerNode {
 		return new EnumToStringConverter<>(LatticeType.class, map);
 	}
 	
-	public enum NeighbourhoodType {
+	public enum NeighborhoodType {
 		
 		Touching,
 		Edge
@@ -68,11 +68,11 @@ public class LatticeModelConfiguration extends PropertyContainerNode {
 	@SuppressWarnings("rawtypes")
 	public static EnumToStringConverter getNeighbourhoodTypeConverter() {
 		
-		HashMap<String, NeighbourhoodType> map = new HashMap<>();
-		map.put(NeighbourhoodType.Edge.toString(), NeighbourhoodType.Edge);
-		map.put(NeighbourhoodType.Touching.toString(), NeighbourhoodType.Touching);
+		HashMap<String, NeighborhoodType> map = new HashMap<>();
+		map.put(NeighborhoodType.Edge.toString(), NeighborhoodType.Edge);
+		map.put(NeighborhoodType.Touching.toString(), NeighborhoodType.Touching);
 		
-		return new EnumToStringConverter<>(NeighbourhoodType.class, map);
+		return new EnumToStringConverter<>(NeighborhoodType.class, map);
 	}
 
 	
@@ -99,14 +99,14 @@ public class LatticeModelConfiguration extends PropertyContainerNode {
 	}
 
 	@XStreamAsAttribute
-	private NeighbourhoodType neigborhoodType;
+	private NeighborhoodType neigborhoodType;
 
 
-	public NeighbourhoodType getNeigborhoodType() {
+	public NeighborhoodType getNeigborhoodType() {
 		return neigborhoodType;
 	}
 
-	public void setNeigboorhoodType(NeighbourhoodType neigborhoodType) {
+	public void setNeigboorhoodType(NeighborhoodType neigborhoodType) {
 		this.neigborhoodType = neigborhoodType;
 	}
 	

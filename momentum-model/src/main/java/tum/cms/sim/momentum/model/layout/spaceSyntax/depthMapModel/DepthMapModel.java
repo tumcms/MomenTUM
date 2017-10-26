@@ -55,7 +55,7 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 
 		int id = this.properties.getIntegerProperty(scenarioLatticeIdName);
 		
-		ILattice lattice = this.scenarioManager.getScenarios().getLattices()
+		ILattice lattice = this.scenarioManager.getScenarios().getLattices().values()
 				.stream()
 				.filter(grid -> grid.getId() == id)
 				.findFirst().get();

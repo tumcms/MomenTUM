@@ -114,9 +114,12 @@ public abstract class RoutingModel extends SubTacticalModel {
 		}	
 
 		boolean currentWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextVisit());
+		double distanceToNextVisit = pedestrian.getRoutingState().getNextVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
 		
 		// is the current walking target not visible?! reroute
-		if(!currentWalkingTargetVisible) {
+		// however, if it is not in perception range, keep routing. Thus, reroute if close and not visible
+		if(!currentWalkingTargetVisible &&
+			distanceToNextVisit < perception.getPerceptionDistance()) {
 			
 			pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
 						pedestrian.getRoutingState().getNextToLastVisit(),
@@ -126,12 +129,17 @@ public abstract class RoutingModel extends SubTacticalModel {
 			return true;
 		}
 		
+		// The tactical control enables a more smooth routing because it addresses the vertex following the current one
 		if(tacticalControlActive && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
 			
 			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextToCurrentVisit());
+			double distanceToNextToCurrentVisit = pedestrian.getRoutingState().getNextToCurrentVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
 			
 			// is the next walking target not visible?! reroute
-			if(nextWalkingTargetVisible && this.checkIsVertexVisited()) {
+			// however, if it is not in perception range, keep routing. Thus, reroute if close and not visible
+			if(nextWalkingTargetVisible &&
+			   this.checkIsVertexVisited() &&
+			   distanceToNextToCurrentVisit < perception.getPerceptionDistance()) {
 				
 				return true;
 			}

@@ -37,7 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import tum.cms.sim.momentum.configuration.generator.GeneratorGeometryConfiguration.GeometryGeneratorType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -101,7 +101,7 @@ public class LatticeGeneratorGeometry extends GeneratorGeometry {
 			
 			lattice = LatticeTheoryFactory.createLattice(null,
 					scenarioLattice.getType(),
-					NeighbourhoodType.Touching,
+					NeighborhoodType.Touching,
 					scenarioCellEdgeSize,
 					matchedMaxX, 
 					matchedMinX, 

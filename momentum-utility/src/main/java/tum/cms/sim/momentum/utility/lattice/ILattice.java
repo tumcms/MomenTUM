@@ -38,8 +38,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.utility.generic.IUnique;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 import tum.cms.sim.momentum.utility.geometry.Cycle2D;
@@ -56,9 +58,9 @@ public interface ILattice extends IUnique {
 
 	List<CellIndex> getCellsInOrder();
 
-	NeighbourhoodType getNeighborhoodType();
+	NeighborhoodType getNeighborhoodType();
 
-	void setNeighborhoodType(NeighbourhoodType type);
+	void setNeighborhoodType(NeighborhoodType type);
 
 	LatticeType getType();
 
@@ -95,6 +97,8 @@ public interface ILattice extends IUnique {
 	void setCellNumberValue(CellIndex cellIndex, double numberValue);
 
 	void setCellNumberValue(int row, int column, double numberValue);
+
+	void setCellNumberValue(Vector2D position, double numberValue);
 
 	double getCellNumberValue(CellIndex cellIndex);
 
@@ -177,8 +181,19 @@ public interface ILattice extends IUnique {
 	 * @param lattice
 	 * @return zero (0.0) if towards cell was hit without intersection else the value of a hit cell
 	 */
-	double breshamLineCast(CellIndex from, CellIndex towards, int distance);
+	double breshamLineCast(CellIndex from, CellIndex towards, int cellDistance);
 
+	/**
+	 * From cell start
+	 * to cell end
+	 * stop value can be null, if not null stop only if the ray finds a value
+	 * if null stop at any non 0.0 value.
+	 * ignore value will be ignored if exists
+	 * @return returns a list of traversed cells and their values excluding the stop value
+	 */
+	List<Pair<Double, CellIndex>> breshamLineCastTrace(CellIndex from, CellIndex towards, Double stopValue, Double ignorevalue, boolean storeTrace);
+
+	
 	void flood(List<CellIndex> startingCells);
 
 	/**

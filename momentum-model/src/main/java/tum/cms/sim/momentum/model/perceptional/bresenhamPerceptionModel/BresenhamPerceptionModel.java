@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.model.perceptional.bresenhamPerceptionModel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.BehaviorType;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -59,6 +60,7 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 import tum.cms.sim.momentum.utility.lattice.LatticeTheoryFactory;
+import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 
 /**
  * The bresenham (formerly blocking geometry) perception model finds visible objects via bresenham lines.
@@ -69,8 +71,7 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 	private static String latticeIdName = "latticeIdName";
 	private static String perceptionDistanceName = "perceptionDistance";
 	
-	private int perceptionDistance = 250;
-	private int latticeId = 0;
+	private int perceptionCells = 250;
 	
 	private long currentTimeStepBuffer = 0;
 	private HashMap<Integer, HashSet<Integer>> pedestrianBuffer = new HashMap<>();
@@ -81,9 +82,29 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 
+		if(this.properties.getIntegerProperty(latticeIdName) != null) {
+			
+			int latticeId = this.properties.getIntegerProperty(latticeIdName);
+			this.visibilityMap = this.scenarioManager.getLattice(latticeId);
+			this.accuracy = this.visibilityMap.getCellEdgeSize();
+		}
+		else { // backward compatibility
+			
+			this.visibilityMap = LatticeTheoryFactory.createLattice(
+				"rayTracing",
+				BehaviorType.Unsynchronized,
+				LatticeType.Quadratic,
+				NeighborhoodType.Edge,
+				accuracy,
+				this.scenarioManager.getScenarios().getMaxX() + accuracy * 3, 
+				this.scenarioManager.getScenarios().getMinX() - accuracy * 3,
+				this.scenarioManager.getScenarios().getMaxY() + accuracy * 3,
+				this.scenarioManager.getScenarios().getMinY() - accuracy * 3);
+		}
+
 		if(this.properties.getIntegerProperty(perceptionDistanceName) != null) {
 		
-			this.perceptionDistance = this.properties.getIntegerProperty(perceptionDistanceName);
+			this.perceptionCells = (int)(this.properties.getIntegerProperty(perceptionDistanceName) / accuracy);
 		}
 		else {
 
@@ -93,27 +114,7 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 	        	.forEach(edge -> edgeStatistics.addValue(edge.euklideanLenght()));
 	      
 	        double cellsMax = edgeStatistics.getMax() / this.accuracy;
-			this.perceptionDistance = (int)(cellsMax * 2);
-		}
-		
-		// backward compatibility
-		if(this.properties.getIntegerProperty(latticeIdName) != null) {
-			
-			this.latticeId = this.properties.getIntegerProperty(latticeIdName);
-			this.visibilityMap = this.scenarioManager.getLattice(this.latticeId);
-		}
-		else {
-			
-			this.visibilityMap = LatticeTheoryFactory.createLattice(
-				"rayTracing",
-				BehaviorType.Unsynchronized,
-				LatticeType.Quadratic,
-				NeighbourhoodType.Edge,
-				accuracy,
-				this.scenarioManager.getScenarios().getMaxX() + accuracy * 3, 
-				this.scenarioManager.getScenarios().getMinX() - accuracy * 3,
-				this.scenarioManager.getScenarios().getMaxY() + accuracy * 3,
-				this.scenarioManager.getScenarios().getMinY() - accuracy * 3);
+			this.perceptionCells = (int)(cellsMax * 2);
 		}
 		
 		ArrayList<Segment2D> obstacleParts = new ArrayList<Segment2D>();
@@ -183,17 +184,25 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 	@Override
 	public boolean isVisible(Vector2D viewPort, Vector2D position) {
 	
+
 		CellIndex from = this.visibilityMap.getCellIndexFromPosition(viewPort);
 		CellIndex towards = this.visibilityMap.getCellIndexFromPosition(position);
+			
+		if(!visibilityMap.isInLatticeBounds(from) || !visibilityMap.isInLatticeBounds(towards)) {
+			
+			return false;
+		}
+
+		Occupation result = Occupation.convertDoubleToOccupation(
+				this.visibilityMap.breshamLineCast(from,
+						towards,
+						perceptionCells));
 		
-		// hit means found the position without crashing into obstacles
-		boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, perceptionDistance) != 0.0;
-		
-		return hitTarget;
+		return Occupation.Empty.equals(result);
 	}
 
 	@Override
-	public List<IPedestrian> getPerceptedPedestrians(IPedestrian currentPedestrian, SimulationState simulationState) {
+	public Collection<IPedestrian> getPerceptedPedestrians(IPedestrian currentPedestrian, SimulationState simulationState) {
 
 		synchronized (this) {
 			
@@ -232,7 +241,7 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 			}
 			
 			CellIndex towards = this.visibilityMap.getCellIndexFromPosition(other.getPosition());
-			boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, this.perceptionDistance) != 0.0;
+			boolean hitTarget = this.visibilityMap.breshamLineCast(from, towards, this.perceptionCells) != 0.0;
 
 			if(hitTarget) {
 			
@@ -246,7 +255,13 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 		return visiblePedestrians;
 	}
 
+	@Override
+	public double getPerceptionDistance() {
+	
+		return this.perceptionCells;
+	}
 
+// this is old shadow mapping code that had some bugs, we use shadow perception model for this now
 	
 //	private List<Polygon2D> createVisibilityTriangles(Geometry2D objectToSee, List<Segment2D> obstacleParts) {
 //
