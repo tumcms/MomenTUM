@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.simulator.factory.behaviorModelFactory;
 
 import tum.cms.sim.momentum.configuration.model.strategical.StrategicalModelConfiguration;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.strategical.DestinationChoiceModel;
 import tum.cms.sim.momentum.model.strategical.StrategicalModel;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.CognitiveSpatialChoiceStrategical;
@@ -41,8 +42,6 @@ import tum.cms.sim.momentum.model.strategical.noDecisionModel.NoDecisionStrategi
 import tum.cms.sim.momentum.model.strategical.odMatrixModel.ODMatrixStrategical;
 import tum.cms.sim.momentum.model.strategical.shortestDestinationModel.ShortestDestinationStrategical;
 import tum.cms.sim.momentum.model.strategical.strictOrderModel.StrictOrderStrategical;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -103,10 +102,9 @@ public class StrategicalModelFactory extends ModelFactory<StrategicalModelConfig
 		Unique.generateUnique(subStrategicModel, configuration);		
 	
 		PerceptionalModel perceptualModel = componentManager.getPerceptionalModel(configuration.getPerceptualModel());
-		BasicQueryModel queryModel = componentManager.getQueryModels().stream().findFirst().get();
 		
-		this.fillComposition(strategicalModel, perceptualModel, queryModel, componentManager);
-		this.fillComposition(subStrategicModel, perceptualModel, queryModel, componentManager);
+		this.fillComposition(strategicalModel, perceptualModel, componentManager);
+		this.fillComposition(subStrategicModel, perceptualModel, componentManager);
 		
 		return strategicalModel;
 	}

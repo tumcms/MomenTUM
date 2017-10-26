@@ -34,14 +34,9 @@ package tum.cms.sim.momentum.model;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.IExtendsPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 
 public interface IPedestrianBehavioralModel extends IExtendsPedestrian {
-
-	public BasicQueryModel getQuery();
-
-	public void setQuery(BasicQueryModel query);
 
 	public PerceptionalModel getPerception();
 

@@ -88,6 +88,7 @@ public class LatticeModel extends Callable implements IHasProperties {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
+		
 		this.lattice = LatticeTheoryFactory.createLattice(				
 				latticeConfiguration.getName(), 
 				latticeConfiguration.getBehaviorType(),
@@ -116,7 +117,7 @@ public class LatticeModel extends Callable implements IHasProperties {
 				}
 				
 				scenarioConfiguration.getLattices().add(latticeConfiguration);
-				this.scenarioManager.getScenarios().getLattices().add(this.lattice);
+				this.scenarioManager.getScenarios().getLattices().put(this.lattice.getId(), this.lattice);
 				
 				break;
 			}
@@ -139,16 +140,17 @@ public class LatticeModel extends Callable implements IHasProperties {
 		
 		nonSolidObstacles.parallelStream().forEach(obs -> {
 			
-			try {
 			lattice.occupyAllSegmentCells(obs.getObstacleParts(), Occupation.Fixed);
-			}
-			catch(Exception ex) {
-				ex = null;
-			}
 		});
 	}
 	
-	public static List<CellIndex> fillLatticeForObstacles2(ILattice lattice, Scenario scenario) {
+	/**
+	 * 
+	 * @param lattice
+	 * @param scenario
+	 * @return all cells
+	 */
+	public static List<CellIndex> fillLatticeForObstaclesGetCells(ILattice lattice, Scenario scenario) {
 
 		List<CellIndex> freeCells = Collections.synchronizedList(new ArrayList<>(lattice.getNumberOfColumns() * lattice.getNumberOfRows()));
 		freeCells.addAll(lattice.getCellsInOrder());

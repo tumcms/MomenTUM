@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.landmarks.LandmarkCalculator;
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Vertex;

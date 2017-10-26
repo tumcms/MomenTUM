@@ -56,7 +56,7 @@ public class FastestWeightCalculator
 		
 		double isInSight = 1.0;
 		
-		this.currentPerception.isVisible(this.currentPedestrian.getPosition(), edge);
+		this.currentPerception.isVisible(this.currentPedestrian, edge);
 
 		double meanVelocity = KneidlConstant.FastestMeanSpeed;
 		

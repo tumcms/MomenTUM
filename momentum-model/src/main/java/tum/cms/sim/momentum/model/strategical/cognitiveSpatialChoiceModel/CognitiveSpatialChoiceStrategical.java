@@ -123,7 +123,6 @@ public class CognitiveSpatialChoiceStrategical extends DestinationChoiceModel {
 			if(extension.canPerformControl(pedestrian)) {
 				
 				extension.executeCognitiveProcessing(this.perception,
-						this.query,
 						simulationState,
 						pedestrian,
 						this.scenarioManager);

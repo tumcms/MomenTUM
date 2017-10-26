@@ -38,8 +38,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.utility.generic.IUnique;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 import tum.cms.sim.momentum.utility.geometry.Cycle2D;
@@ -56,9 +58,9 @@ public interface ILattice extends IUnique {
 
 	List<CellIndex> getCellsInOrder();
 
-	NeighbourhoodType getNeighborhoodType();
+	NeighborhoodType getNeighborhoodType();
 
-	void setNeighborhoodType(NeighbourhoodType type);
+	void setNeighborhoodType(NeighborhoodType type);
 
 	LatticeType getType();
 
@@ -96,6 +98,8 @@ public interface ILattice extends IUnique {
 
 	void setCellNumberValue(int row, int column, double numberValue);
 
+	void setCellNumberValue(Vector2D position, double numberValue);
+
 	double getCellNumberValue(CellIndex cellIndex);
 
 	double getCellNumberValue(int row, int column);
@@ -124,7 +128,7 @@ public interface ILattice extends IUnique {
 
 	ArrayList<CellIndex> getAllNeighborIndices(Vector2D position);
 
-	void occupyInsideCells(Collection<CellIndex> cells, Occupation occupation);
+	void occupyCells(Collection<CellIndex> cells, Occupation occupation);
 
 	HashMap<CellIndex, Vector2D> getBorderPositionForCells(Segment2D segment);
 
@@ -137,6 +141,8 @@ public interface ILattice extends IUnique {
 	List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, Occupation occupation);
 
 	List<CellIndex> occupyAllSegmentCells(List<Segment2D> segments, Occupation occupation);
+
+	List<CellIndex> occupyAllCellsInRadius(Vector2D position, double radius, Occupation occupation);
 	
 	List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, double value);
 
@@ -152,6 +158,8 @@ public interface ILattice extends IUnique {
 
 	void setAllFreeTo(Occupation occupancy);
 
+	void setCells(List<CellIndex> cellsToOccupy, double value);
+	
 	ArrayList<Vector2D> getCornerPoints(CellIndex cell);
 
 	int getNumberOfOccupiedNeighbors(CellIndex cellIndex);
@@ -166,13 +174,26 @@ public interface ILattice extends IUnique {
 	
 	/**
 	 * from http://playtechs.blogspot.de/2007/03/raytracing-on-grid.html
+	 * 
+	 * 
 	 * @param from
 	 * @param towards
 	 * @param lattice
-	 * @return
+	 * @return zero (0.0) if towards cell was hit without intersection else the value of a hit cell
 	 */
-	boolean breshamLineCast(CellIndex from, CellIndex towards, int distance);
+	double breshamLineCast(CellIndex from, CellIndex towards, int cellDistance);
 
+	/**
+	 * From cell start
+	 * to cell end
+	 * stop value can be null, if not null stop only if the ray finds a value
+	 * if null stop at any non 0.0 value.
+	 * ignore value will be ignored if exists
+	 * @return returns a list of traversed cells and their values excluding the stop value
+	 */
+	List<Pair<Double, CellIndex>> breshamLineCastTrace(CellIndex from, CellIndex towards, Double stopValue, Double ignorevalue, boolean storeTrace);
+
+	
 	void flood(List<CellIndex> startingCells);
 
 	/**
@@ -188,4 +209,8 @@ public interface ILattice extends IUnique {
 	List<CellIndex> getAllCellsWithValue(Double value);
 
 	List<CellIndex> getAllCircleCells(Cycle2D circle);
+	
+	List<CellIndex> getAllCircleCells(double radius, Vector2D position);
+	
+	List<CellIndex> getAllOnCircleBorder(double radius, Vector2D center);
 }
