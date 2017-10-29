@@ -50,7 +50,7 @@ import tum.cms.sim.momentum.utility.lattice.LatticeTheoryFactory;
 import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 import tum.cms.sim.momentum.utility.voronoi.VoronoiTheoryFactory;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 
 public class GraphOnLatticeOperation {
 	
@@ -73,7 +73,7 @@ public class GraphOnLatticeOperation {
 		if(console) System.out.print("Creating lattice ... ");
 		ILattice lattice = LatticeTheoryFactory.createLattice("routeMapLattice", 
 				LatticeType.Quadratic, 
-				NeighbourhoodType.Touching, 
+				NeighborhoodType.Touching, 
 				cellEdgeSize, //cell edge size
 				boundingBox.getMaxX(), boundingBox.getMinX(), 
 				boundingBox.getMaxY(), boundingBox.getMinY()); 
@@ -192,7 +192,7 @@ public class GraphOnLatticeOperation {
 		
 		ILattice lattice = LatticeTheoryFactory.createLattice("medialAxisLattice", 
 				LatticeType.Quadratic, 
-				NeighbourhoodType.Edge, 
+				NeighborhoodType.Edge, 
 				cellEdgeSize,
 				boundingBox.getMaxX(), boundingBox.getMinX(), 
 				boundingBox.getMaxY(), boundingBox.getMinY()); 
@@ -242,7 +242,7 @@ public class GraphOnLatticeOperation {
 //		System.out.println(lattice.getNeighborhoodType());
 		
 		//change the neighborhood type so the thinning algorithm can work properly
-		lattice.setNeighborhoodType(NeighbourhoodType.Touching);
+		lattice.setNeighborhoodType(NeighborhoodType.Touching);
 		MorphologicalLatticeOperation.thinLatticeGraph(lattice, Occupation.Dynamic);
 		
 //		System.out.println(lattice.getNeighborhoodType());

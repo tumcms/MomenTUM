@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.math3.util.FastMath;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.QueuingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
@@ -152,11 +152,11 @@ public class AngularQueueing extends QueuingModel {
 			closeToSelfList.stream().forEach(category -> this.closeToSelf.add(category));
 		}
 	
-		double latticeSize = this.scenarioManager.getLattices().get(0).getCellEdgeSize();
+		//double latticeSize = this.scenarioManager.getLattices().get(0).getCellEdgeSize();
 		this.queueLattice = LatticeTheoryFactory.createLattice("queueLattice",
 				LatticeType.Quadratic, 
-				NeighbourhoodType.Touching,
-				latticeSize,
+				NeighborhoodType.Touching,
+				0.23,
 				this.scenarioManager.getScenarios().getMaxX(),
 				this.scenarioManager.getScenarios().getMinX(),
 				this.scenarioManager.getScenarios().getMaxY(),
@@ -255,7 +255,7 @@ public class AngularQueueing extends QueuingModel {
 			}
 			
 			if(pedestrian.getPosition().distance(queuingPosition) < proximityDistance &&
-					this.perception.isVisible(pedestrian.getPosition(), targetArea.getPointOfInterest())) {
+					this.perception.isVisible(pedestrian, targetArea.getPointOfInterest())) {
 				
 				queue.addNewQueue(queuingPosition, pedestrian.getId(), pedestrian.getGroupId());
 			}
@@ -738,8 +738,7 @@ public class AngularQueueing extends QueuingModel {
 		
 		Vector2D newQueueEnd = null;
 
-		List<IPedestrian> otherPedestrians = this.query.findPedestrianSameTarget(pedestrian,
-				this.perception, target, true, null);
+		List<IPedestrian> otherPedestrians = this.perception.findPedestrianSameTarget(pedestrian, target, true, null);
 		
 		List<Geometry2D> obstacleGeometires = this.scenarioManager.getObstacles()
 				.stream()
@@ -822,7 +821,7 @@ public class AngularQueueing extends QueuingModel {
 						
 						newQueueEnd = freeCells.remove(0);
 					
-						if(!this.query.isCollisionWithPedestrian(radius, safetyDistance, newQueueEnd, otherPedestrians) &&
+						if(!this.perception.isCollisionWithPedestrian(pedestrian, radius, safetyDistance, newQueueEnd, otherPedestrians) &&
 							this.perception.isVisible(newQueueEnd, queueEnd) &&
 							this.perception.isVisible(newQueueEnd, pedestrian.getPosition())) {
 							

@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.data.layout;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,14 +81,15 @@ public class Scenario extends LayoutObject implements IHasProperties {
 		super(name);
 	}
 	
-	private ArrayList<ILattice> latticeList = new ArrayList<ILattice>();
+	private HashMap<Integer, ILattice> lattices = new HashMap<>();
 	
-	public ArrayList<ILattice> getLattices() {
-		return latticeList;
+	public HashMap<Integer, ILattice> getLattices() {
+		return lattices;
 	}
 	
-	public void setLattices(ArrayList<ILattice> latticeList) {
-		this.latticeList = latticeList;
+	public void setLattices(Collection<ILattice> latticeList) {
+		
+		latticeList.forEach(lattice -> this.lattices.put(lattice.getId(), lattice));
 	}
 	
 	private ArrayList<Graph> graphs = new ArrayList<>(); 
@@ -436,10 +438,10 @@ public class Scenario extends LayoutObject implements IHasProperties {
 			this.intermediataAreas = null;
 		}
 		
-		if(this.latticeList != null) {
+		if(this.lattices != null) {
 			
-			this.latticeList.clear();
-			this.latticeList = null;
+			this.lattices.clear();
+			this.lattices = null;
 		}
 		
 		if(this.obstacleList != null) {

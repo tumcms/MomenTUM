@@ -35,7 +35,7 @@ package tum.cms.sim.momentum.model.layout.graph.vertex.vertexMinimalRegionModel;
 import java.util.ArrayList;
 import java.util.List;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.layout.graph.GraphOperation;
 import tum.cms.sim.momentum.model.layout.lattice.LatticeModel;
@@ -73,7 +73,7 @@ public class VertexMinimalRegionModel extends GraphOperation {
 		ILattice lattice = LatticeTheoryFactory.createLattice(
 				"distanceMap", 
 				LatticeType.Quadratic,
-				NeighbourhoodType.Touching,
+				NeighborhoodType.Touching,
 				cellSize,
 				this.scenarioManager.getScenarios().getMaxX() + cellSize,
 				this.scenarioManager.getScenarios().getMinX() - cellSize,

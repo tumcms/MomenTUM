@@ -44,8 +44,8 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
 import tum.cms.sim.momentum.data.layout.area.DestinationArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.strategical.interestModel.InterestConstant.InterestState;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
 
 public class InterestExtension implements IPedestrianExtansion {
 
@@ -94,7 +94,7 @@ public class InterestExtension implements IPedestrianExtansion {
 		Behavior behavior = Behavior.Routing;
 		
 		if(pedestrian.getNextNavigationTarget().getGeometry().contains(pedestrian.getPosition()) || 
-				(perception.isVisible(pedestrian.getPosition(),
+				(perception.isVisible(pedestrian,
 						pedestrian.getNextNavigationTarget().getPointOfInterest()) && 
 						pedestrian.getNextNavigationTarget().getGeometry().contains(pedestrian.getNextWalkingTarget()))) {
 			

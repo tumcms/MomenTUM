@@ -345,7 +345,7 @@ public class MoussaidOperational extends WalkingModel {
 	// The following methods have been copied from the class HelbingOperational. Moussaid used Helbing's basic acceleration algorithm and added his group effect terms.
 	private Vector2D computeIndividualDirection(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 		
-		List<Vector2D> neighboursDirections = this.perception.getPerceptedPedestrians(pedestrian, simulationState)
+		Collection<Vector2D> neighboursDirections = this.perception.getPerceptedPedestrians(pedestrian, simulationState)
 															.stream()
 															.map(IPedestrian::getHeading)
 															.collect(Collectors.toList());

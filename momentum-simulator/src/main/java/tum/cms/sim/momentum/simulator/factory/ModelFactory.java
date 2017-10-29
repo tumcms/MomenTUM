@@ -34,8 +34,7 @@ package tum.cms.sim.momentum.simulator.factory;
 
 import tum.cms.sim.momentum.configuration.generic.PropertyContainerNode;
 import tum.cms.sim.momentum.model.IPedestrianBehavioralModel;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.absorberModelFactory.AbsorberFactory;
 import tum.cms.sim.momentum.simulator.factory.analysisModelFactory.*;
@@ -44,7 +43,7 @@ import tum.cms.sim.momentum.simulator.factory.generatorModelFactory.*;
 import tum.cms.sim.momentum.simulator.factory.layoutModelFactory.*;
 import tum.cms.sim.momentum.simulator.factory.metaModelFactory.MetaModelFactory;
 import tum.cms.sim.momentum.simulator.factory.outputModelFactory.*;
-import tum.cms.sim.momentum.simulator.factory.supportModelFactory.PerceptionalModelFactory;
+import tum.cms.sim.momentum.simulator.factory.perceptionModelFactory.PerceptionalModelFactory;
 
 public abstract class ModelFactory <T extends PropertyContainerNode, K> {
 
@@ -165,13 +164,11 @@ public abstract class ModelFactory <T extends PropertyContainerNode, K> {
 
 	protected void fillComposition(IPedestrianBehavioralModel behavioralModel, 
 			PerceptionalModel perceptualModel,
-			BasicQueryModel queryModel,
 			ComponentManager componentManager) {
 		
 		componentManager.getPedestrianManager().addPedestrianExtenders(behavioralModel);
 		
 		behavioralModel.setPerceptionalModel(perceptualModel);
-		behavioralModel.setQuery(queryModel);
 		behavioralModel.setScenario(componentManager.getScenarioManager());	
 	}
 	

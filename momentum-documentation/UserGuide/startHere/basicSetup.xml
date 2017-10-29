@@ -400,6 +400,8 @@
 			<!-- The tacticalControl is mostly set to True and activates "smart" behavior. -->
 			<!-- This smart behavior includes to start routing if walking goals of e.g. queuing models are not visible. -->
 			<!-- Hence, the tacticalControl helps to reduce nonsense behavior like being "stuck". -->
+			<!-- However, do set this to false in case pedestrian should strictly follow a routing path, -->
+			<!-- smart behavior leads to taking short-cuts and perception based re-routing. -->
 			<propety name="tacticalControl" type="Boolean" value="True"/>
 			
 			<!-- The routeMemory indicates if a pedestrian should remember and avoid already visited route nodes. -->

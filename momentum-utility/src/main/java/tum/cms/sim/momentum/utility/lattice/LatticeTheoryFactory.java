@@ -34,7 +34,7 @@ package tum.cms.sim.momentum.utility.lattice;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.BehaviorType;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 
 public class LatticeTheoryFactory {
 	
@@ -51,7 +51,7 @@ public class LatticeTheoryFactory {
 	
 	public static ILattice createLattice(String name,
 			LatticeType latticeType,
-			NeighbourhoodType neighborhoodType,
+			NeighborhoodType neighborhoodType,
 			double cellEdgeSize,
 			double maxX,
 			double minX,
@@ -68,7 +68,7 @@ public class LatticeTheoryFactory {
 	public static ILattice createLattice(String name,
 			BehaviorType behaviorType,
 			LatticeType latticeType,
-			NeighbourhoodType neighborhoodType,
+			NeighborhoodType neighborhoodType,
 			double cellEdgeSize,
 			double maxX,
 			double minX,

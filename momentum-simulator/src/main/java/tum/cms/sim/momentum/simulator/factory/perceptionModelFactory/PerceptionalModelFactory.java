@@ -30,12 +30,12 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.simulator.factory.supportModelFactory;
+package tum.cms.sim.momentum.simulator.factory.perceptionModelFactory;
 
 import tum.cms.sim.momentum.configuration.model.other.PerceptualModelConfiguration;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.perceptional.blockingGeometriesModel.BlockingGeometriesPerception;
-import tum.cms.sim.momentum.model.support.perceptional.worldKnowledgeModel.WorldKnowledgePerception;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.bresenhamPerceptionModel.BresenhamPerceptionModel;
+import tum.cms.sim.momentum.model.perceptional.shadowPerceptionModel.ShadowPerceptionModel;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -44,19 +44,17 @@ import tum.cms.sim.momentum.utility.generic.Unique;
 public class PerceptionalModelFactory extends ModelFactory<PerceptualModelConfiguration, PerceptionalModel>{
 
 	@Override
-	public PerceptionalModel createModel(PerceptualModelConfiguration configuration,
-			ComponentManager componentManager) {
+	public PerceptionalModel createModel(PerceptualModelConfiguration configuration, ComponentManager componentManager) {
 	
 		PerceptionalModel perceptualModel = null;
 		
 		switch(configuration.getType()) {
-		
-		case WorldKnowledge:
-			perceptualModel = new WorldKnowledgePerception();
+		case Shadow:
+			perceptualModel = new ShadowPerceptionModel();
 			break;
-			
-		case BlockingGeometries:
-			perceptualModel = new BlockingGeometriesPerception();
+		case Bresenham:
+			perceptualModel = new BresenhamPerceptionModel();
+			break;
 		default:
 			break;
 		}

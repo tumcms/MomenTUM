@@ -30,15 +30,19 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.support;
+package tum.cms.sim.momentum.model;
+
+import java.util.Collection;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.PedestrianManager;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
+import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.infrastructure.execute.callable.Callable;
+import tum.cms.sim.momentum.infrastructure.execute.callable.IGenericCallable;
 import tum.cms.sim.momentum.utility.generic.IHasProperties;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 
-public abstract class PedestrianSupportModel extends Callable implements IHasProperties {
+public abstract class PedestrianSupportModel extends Callable implements IHasProperties, IGenericCallable {
 
 	protected PropertyBackPack properties = null;
 	
@@ -65,4 +69,18 @@ public abstract class PedestrianSupportModel extends Callable implements IHasPro
 	public void setScenarioManager(ScenarioManager scenarioManager) {
 		this.scenarioManager = scenarioManager;
 	}
+	
+	@Override
+	public boolean isMultiThreading() {
+
+		return false;
+	}
+	
+	@Override
+	public void execute(Collection<? extends Void> splittTask, SimulationState simulationState) {
+
+		this.supportModelUpdate(simulationState);
+	}
+	
+	protected abstract void supportModelUpdate(SimulationState simulationState);
 }

@@ -2,7 +2,7 @@
 <simulator version="2.0.0" simulationName="ExampleSimulation">
 	
 	<!-- The simulation runs 1200 seconds = 20 Minutes, and has 1200/0.05 = 24000 steps of length 0.05 second. -->
-	<timeState simulationEndTime="1200.0" timeStepDuration="0.05"/>
+	<timeState simulationEndTime="500.0" timeStepDuration="0.05"/>
 	
 	<!-- The parallelization is done based on 3 threads. -->
 	<threadingState threads="3"/>
@@ -12,19 +12,12 @@
 		<loggingState type="Console" level="Debug"/>
 	</logging>
 	
-	<!-- We re-run the simulation. Each re-run the name="LOOP" variable will be increased. -->
-	<!-- The variables starts at 0.0 ends after at 1.0; thus, after 2 changes. -->
-	<!-- Look for $LOOP$, this value will be exchanged in each loop. -->
-	<loop updateType="Stepwise" accuracyDigits="1">
-		<loopVariable name="LOOP" start="0.0" change="1.0" steps="0"/> <!-- number of steps number of loops --> 
-	</loop>
-	
 	<!-- The layout was created via the AutoCad Plugin. -->
 	<!-- We use the link option of the layout scenario to load it. -->
 	<!-- The content of the scenario could have been copy-pasted to into the scenario tag. -->
 	<layouts>
 		<!-- TODO Warning: update path -->
-		<scenario id="0" layoutLink="Path to basicExampleLayout.xml"/>
+		<scenario id="0" layoutLink="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleLayout.xml"/>
 	</layouts>
 	
 	<!-- We need 2 lattices. -->
@@ -33,6 +26,8 @@
 		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46"/>
 		<!-- Used by the xtDensity analysis=1 -->
 		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="1.0"/>
+		<!-- perception lattice -->
+		<lattice id="2" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.1"/>
 	</lattices>
 	
 	<!-- A simple routing graph is generated for the routing model=4 -->
@@ -44,7 +39,7 @@
 			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased"/>
 			<graphOperation id="2" name="corners" type="VertexCreateAtCorners"> 
 				<property name="cornerDistance" type="Double" value="0.7"/> 
-			</graphOperation> 	
+			</graphOperation>
 			<graphOperation id="3" name="visibility" type="EdgeCreateVisibilityConnect">
 				<property name="visibilityTolerance" type="Double" value="0.1"/>
 			</graphOperation> 
@@ -60,7 +55,8 @@
 	<!-- The standard BlockingGeometries perception model is used.. there is no other. -->
 	<perceptualModels>
 		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
-			<property name="accuracy" type="Double" value="0.1"/>
+			<property name="perceptionDistance" type="Double" value="100.0"/>
+			<property name="latticeId" type="Integer" value="2"/>
 		</perceptual>
 	</perceptualModels>
 	
@@ -104,14 +100,20 @@
 			<stayingReference modelId="6"/>
 			<queuingReference modelId="7"/>
 			<searchingReference modelId="8"/>
-			<property name="goalDistanceRadius" type="Double" value="0.15" />
-			<property name="navigationDistanceRadius" type="Double" value="0.66"/>
+			<property name="goalDistanceRadius" type="Double" value="0.23" />
+			<property name="routeMemory" type="Boolean" value="False" />
+			<property name="tacticalControl" type="Boolean" value="True" />
 		</tactical>
 	</tacticalModels>
 
 	<!-- A single routing model. -->
 	<routingModels>
-		<routing id="5" name="dijkstra" type="Dijkstra"/>
+		<routing id="5" name="unifiedRouting" type="UPRM">
+			<property name="randomMode" type="Boolean" value="True"/>
+			<complexProperty name="resultMode" type="CsvMatrix" valueType="Double">
+				<entry file="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleUPRM.csv" separator=";"/>
+			</complexProperty>
+		</routing>
 	</routingModels>
 	
 	<!-- A single staying model. -->
@@ -133,7 +135,7 @@
 			<property name="queueDistance" type="Double" value="0.71"/>
 			<property name="queuingLag" type="Double" value="1.5"/>
 			<complexProperty name="closeToSelf" type="List" valueType="String">
-				<entry index="0" value="ticket"/> 
+				<entry index="0" value="NaturalQueue"/> 
 			</complexProperty>
 		</queuing>
 	</queuingModels>
@@ -141,24 +143,24 @@
 	<!-- A single searching model. This is a dummy model, which provides no real searching behavior!. -->
 	<searchingModels>
 		<searching id="8" name="noSearching" type="NoSearching"/>
-	</searchingModels>	
+	</searchingModels>
 	
 	<!-- A single destination choice (strategic model) model. -->
 	<strategicalModels>
 		<strategical id="9" name="odMatrx" type="ODMatrix" perceptualModel="0">
 			<complexProperty name="originDestination" type="CsvMatrix" valueType="Double">
 				<!-- TODO Warning: update path -->
-				<entry file="Path to basicExampleODMatrix.csv" separator=";"/>
+				<entry file="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleODMatrix.csv" separator=";"/>
 			</complexProperty>
 			<complexProperty name="behaviorType" type="List" valueType="String">
-			    <entry index="1" value="Staying"/>
-			    <entry index="2" value="Queuing"/>
+			    <entry index="1" value="Queuing"/>
+			    <entry index="2" value="Staying"/>
 			    <entry index="3" value="Staying"/>
+				<entry index="4" value="Staying"/>
 			</complexProperty>
 			<complexProperty name="fulfilmentDuration" type="List" valueType="Double">
-			   	<entry index="1" value="60.0"/>
-			    <entry index="2" value="1.0"/>
-			    <entry index="3" value="1.0"/>
+			    <entry index="1" value="20.0"/>
+			    <entry index="2" value="60.0"/>
 			</complexProperty>
 		</strategical>
 	</strategicalModels>
@@ -181,15 +183,30 @@
 		<generator id="0" name="generator" scenario="0" origin="0" seed="0" type="Plan">
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
-			<property name="basicHeading" type="Double" value="90"/>
-			<property name="maximalPedestrians" type="Integer" value="400"/>
+			<property name="basicHeading" type="Double" value="-90"/>
+			<property name="maximalPedestrians" type="Integer" value="100"/>
 			<property name="safetyDistance" type="Double" value="0.5"/>
-			<geometry geometryType="Lattice" fillingType="Random" />
-			<property name="scenarioLatticeId" type="Integer" value="0"/> 
+			<geometry geometryType="Point"/> 
 			<complexProperty name="interval" type="List" valueType="Double">
 				<entry index="0" value="0"/> 
 				<entry index="1" value="200.0"/> 
-			</complexProperty>		
+			</complexProperty>
+			<complexProperty name="percentage" type="List" valueType="Double"> 
+				<entry index="0" value="1.0"/> 
+				<entry index="1" value="0.0"/>
+			</complexProperty>
+		</generator>
+		<generator id="1" name="generator" scenario="0" origin="5" seed="0" type="Plan">
+			<property name="startTime" type="Double" value="0"/>
+			<property name="endTime" type="Double" value="Infinity"/>
+			<property name="basicHeading" type="Double" value="0"/>
+			<property name="maximalPedestrians" type="Integer" value="100"/>
+			<property name="safetyDistance" type="Double" value="0.5"/>
+			<geometry geometryType="Point"/> 
+			<complexProperty name="interval" type="List" valueType="Double">
+				<entry index="0" value="0"/> 
+				<entry index="1" value="200.0"/> 
+			</complexProperty>
 			<complexProperty name="percentage" type="List" valueType="Double"> 
 				<entry index="0" value="1.0"/> 
 				<entry index="1" value="0.0"/>
@@ -200,7 +217,10 @@
 	<!-- A single absorber -->
 	<absorbers>
 		<!-- The generator is used in the scenario=0 destination=3, which are in the exampleLayout.xml file. -->
-		<absorber id="0" name="absorber" scenario="0" destination="3" type="DestinationInstantly">
+		<absorber id="0" name="absorber" scenario="0" destination="3" type="DestinationSelected">
+			<property name="vanishTime" type="Double" value="0.2"/>
+		</absorber>
+		<absorber id="1" name="absorber" scenario="0" destination="4" type="DestinationSelected">
 			<property name="vanishTime" type="Double" value="0.2"/>
 		</absorber>
 	</absorbers>
@@ -234,7 +254,7 @@
 			<property name="analysisStartStep" type="Integer" value="0"/>
 			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
 			
-			<measure type="XtDensity">		
+			<measure type="XtDensity">
 				<property name="latticeId" type="Integer" value="1"/>
 				<property name="timeRange" type="Integer" value="3"/>
 				<property name="maximalDensity" type="Double" value="5.0"/>
@@ -255,7 +275,7 @@
 			<property name="call" type="Integer" value="10"/> <!-- Print 10 * 0.05 = 0.5 seconds -->
 			<property name="buffer" type="Integer" value="50"/>
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="./2017_BasicExample_Pedestrian_$LOOP$.csv"/>
+				<property name="file" type="File" value="./2017_BasicExample_Pedestrian.csv"/>
 				<property name="index" type="Boolean" value="True"/> 
 			</writerTarget>
 			<writerFormat formatType="Csv">
@@ -270,6 +290,7 @@
 				<property name="xHeading" type="Format" value="%.2f"/>
 				<property name="yHeading" type="Format" value="%.2f"/>
 				<property name="behavior" type="Format" value="%d"/>
+				<property name="seedID" type="Format" value="%d"/>
 				<property name="currentVertexID" type="Format" value="%d"/>
 			</writerSource>
 		</outputWriter>
@@ -284,34 +305,18 @@
 				<property name="dataElement" type="String" value="layouts"/>
 			</writerSource>
 		</outputWriter>
-		
-		<outputWriter id="2" name="occupancyAnalysisOutput">
-			<property name="call" type="Integer" value="20"/> <!-- Each second -->
-			<property name="buffer" type="Integer" value="100"/>
-			<writerTarget targetType="File">
-				<property name="file" type="File" value="./2017_BasicExample_Occupancy_$LOOP$.csv"/>
-			</writerTarget>
-			<writerFormat formatType="Csv">
-				<property name="delimiter" type="String" value=";"/>
-			</writerFormat>
-			<writerSource sourceType="Analysis" additionalId="0"> 
-				<property name="timeStep" type="Format" value="%d"/>
-				<property name="id" type="Format" value="%d"/>
-				<property name="areaOccupancy" type="Format" value="%d"/>
-			</writerSource>
-		</outputWriter> 
-		
-		<outputWriter id="3" name="densityAnalysisOutput">
+
+		<outputWriter id="2" name="densityAnalysisOutput">
 			<property name="call" type="Integer" value="20"/> <!-- Every 1 (0.05 * 40) seconds -->
 			<property name="buffer" type="Integer" value="1"/>
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="./2017_BasicExample_XT_Density_$LOOP$.csv"/>
+				<property name="file" type="File" value="./2017_BasicExample_XT_Density.csv"/>
 				<property name="index" type="Boolean" value="True"/> 
 			</writerTarget>
 			<writerFormat formatType="Csv">
 				<property name="index" type="Boolean" value="True"/> 
 				<property name="delimiter" type="String" value=";"/>
-			</writerFormat>			
+			</writerFormat>
 			<writerSource sourceType="Analysis" additionalId="1"> 
 				<property name="timeStep" type="Format" value="%d"/>
 				<property name="id" type="Format" value="%s"/>
@@ -322,22 +327,5 @@
 				<property name="maximalDensity" type="Format" value="%.2f"/>
 			</writerSource>
 		</outputWriter> 
-		
-		<!--  This is a Model specific output writer for absorbers! -->
-		<outputWriter id="4" name="outflowAbsorber">
-			<property name="call" type="Integer" value="1"/> <!-- Print time step, in order to get all removed pedestrians. -->	
-			<property name="buffer" type="Integer" value="50"/>
-			<writerTarget targetType="File">
-				<property name="file" type="File" value="./2017_BasicExample_OutFlow_$LOOP$.csv"/>
-			</writerTarget>
-			<writerFormat formatType="Csv">
-				<property name="delimiter" type="String" value=";"/>
-			</writerFormat>
-			<!-- Output source is an absorber with the id = 0 -->
-            <writerSource sourceType="Absorber" additionalId="0"> 
-               <property name="timeStep" type="Format" value="%d"/>
-               <property name="removedCount" type="Format" value="%d"/>
-            </writerSource>
-	    </outputWriter>
 	</outputWriters>
 </simulator>

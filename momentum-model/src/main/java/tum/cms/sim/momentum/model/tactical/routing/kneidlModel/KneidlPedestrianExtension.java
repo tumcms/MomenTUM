@@ -37,7 +37,7 @@ import java.util.HashMap;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.KneidlConstant.KneidlNavigationType;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.MicroRoutingAlgorithm;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.fastestNavigation.FastestWeightCalculator;

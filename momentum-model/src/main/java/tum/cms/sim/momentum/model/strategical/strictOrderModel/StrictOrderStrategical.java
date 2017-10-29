@@ -92,9 +92,9 @@ public class StrictOrderStrategical extends DestinationChoiceModel {
 			next = this.order.get(extension.getCurrentTargetArea());
 		}
 		
-		boolean isTargetVisible = perception.isVisible(pedestrian.getPosition(),
+		boolean isTargetVisible = perception.isVisible(pedestrian,
 				pedestrian.getNextNavigationTarget().getPointOfInterest())
-				|| this.perception.isVisible(pedestrian.getPosition(), next.getPointOfInterest());
+				|| this.perception.isVisible(pedestrian, next.getPointOfInterest());
 		
 		if(initalize && !isTargetVisible) {
 			

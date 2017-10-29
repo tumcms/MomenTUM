@@ -261,6 +261,9 @@ public class SimulatorManager {
 			// Add simulation objects
 			callController.callGenericCallable(componentManager.getGenerators());
 			
+			// Execute perception processing
+			callController.callGenericCallable(componentManager.getPerceptionalModels());
+			
 			// Execute blocks and underlying meta models and models in corresponding order if allowed
 			callController.callBlockExecution(timeManager);
 
@@ -296,6 +299,9 @@ public class SimulatorManager {
 		
 			// Add simulation objects
 			callController.callGenericCallable(componentManager.getGenerators());
+			
+			// Execute perception processing
+			callController.callGenericCallable(componentManager.getPerceptionalModels());
 			
 			// Act 
 			callController.callExecutionCallable(componentManager.getStrategicalModels(), pedestrianManager);

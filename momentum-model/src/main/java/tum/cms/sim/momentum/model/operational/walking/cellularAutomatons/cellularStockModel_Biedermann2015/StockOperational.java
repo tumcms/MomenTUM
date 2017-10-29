@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.math3.util.FastMath;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
@@ -52,7 +52,6 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
-import tum.cms.sim.momentum.utility.lattice.operation.QuadraticLatticCalculation;
 import tum.cms.sim.momentum.utility.probability.HighQualityRandom;
 
 public class StockOperational extends WalkingModel {
@@ -76,7 +75,8 @@ public class StockOperational extends WalkingModel {
 		timeStepMultiplicator = this.properties.getIntegerProperty(timeStepMultiplicatorName);
 		mesoscopicTimeStep = simulationState.getTimeStepDuration() * timeStepMultiplicator;
 				
-		lattice = this.getLatticeByLatticeID(latticeId);
+		lattice = this.scenarioManager.getLattice(latticeId);
+
 		
 //		if (lattice.getFillingType() != FillingType.ScenarioLayout) {
 //			throw new IllegalArgumentException("The operational Lattice with ID " + lattice.getId() + " is not of FillingType " +
@@ -263,12 +263,12 @@ public class StockOperational extends WalkingModel {
 			double neumannDistance = cellEdgeSize;
 			double mooreDistance = cellEdgeSize * FastMath.sqrt(2.0);
 			
-			if (currentStock >= neumannDistance && lattice.getNeighborhoodType() == NeighbourhoodType.Edge) {
+			if (currentStock >= neumannDistance && lattice.getNeighborhoodType() == NeighborhoodType.Edge) {
 				
 				walkability = WalkPotentialType.EdgeNeighbour;
 			}
 			
-			if (currentStock >= mooreDistance && lattice.getNeighborhoodType() == NeighbourhoodType.Touching) {
+			if (currentStock >= mooreDistance && lattice.getNeighborhoodType() == NeighborhoodType.Touching) {
 				
 				walkability = WalkPotentialType.TouchingNeighbour;
 			}		
@@ -341,17 +341,5 @@ public class StockOperational extends WalkingModel {
 			
 		lattice.freeCell(currentCellIndex);
 		lattice.occupyCell(desiredCell, Occupation.Dynamic);
-	}
-	
-	private ILattice getLatticeByLatticeID(int latticeID) {
-		
-		ArrayList<ILattice> lattices = this.scenarioManager.getScenarios().getLattices();	
-		
-		ILattice lattice = lattices.stream()
-				.filter(grid -> grid.getId() == latticeID)
-				.findFirst()
-				.get();
-				
-		return lattice;
 	}
 }

@@ -135,7 +135,7 @@ public class LatticeModel extends Callable implements IHasProperties {
 				}
 				
 				scenarioConfiguration.getLattices().add(latticeConfiguration);
-				this.scenarioManager.getScenarios().getLattices().add(this.lattice);
+				this.scenarioManager.getScenarios().getLattices().put(this.lattice.getId(), this.lattice);
 				
 				break;
 			}
@@ -158,12 +158,7 @@ public class LatticeModel extends Callable implements IHasProperties {
 		
 		nonSolidObstacles.parallelStream().forEach(obs -> {
 			
-			try {
-				lattice.occupyAllSegmentCells(obs.getObstacleParts(), Occupation.Fixed);
-			}
-			catch(Exception ex) {
-				ex = null;
-			}
+			lattice.occupyAllSegmentCells(obs.getObstacleParts(), Occupation.Fixed);
 		});
 	}
 	
