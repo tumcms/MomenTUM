@@ -173,6 +173,16 @@ public interface ILattice extends IUnique {
 	List<List<CellIndex>> findLocalMinimal(int globalMaximal, int globalMinimal);
 	
 	/**
+	 * This method attempts to casts a line from the start to the target CellIndex. 
+	 * When the line hits the grid boundaries or an obstacle, it terminates.
+	 * @param start
+	 * @param target
+	 * @return true if the target CellIndex is reached, false otherwise.
+	 */
+	
+	boolean breshamLineCast(CellIndex start, CellIndex target);
+	
+	/**
 	 * from http://playtechs.blogspot.de/2007/03/raytracing-on-grid.html
 	 * 
 	 * 

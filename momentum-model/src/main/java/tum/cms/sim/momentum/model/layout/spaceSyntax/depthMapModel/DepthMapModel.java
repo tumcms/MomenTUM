@@ -32,24 +32,13 @@
 
 package tum.cms.sim.momentum.model.layout.spaceSyntax.depthMapModel;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.math3.util.FastMath;
-
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
-import tum.cms.sim.momentum.infrastructure.logging.LoggingManager;
-import tum.cms.sim.momentum.model.layout.lattice.LatticeModel;
 import tum.cms.sim.momentum.model.layout.spaceSyntax.SpaceSyntaxOperation;
 import tum.cms.sim.momentum.utility.geometry.Geometry2D;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
@@ -58,44 +47,47 @@ import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
 import tum.cms.sim.momentum.utility.spaceSyntax.DepthMapSubArea;
 
 public class DepthMapModel extends SpaceSyntaxOperation {
+	
 	private static String scenarioLatticeIdName = "scenarioLatticeId";
 
 	@Override
 	public void callPreProcessing(SimulationState simlationState) {
 
 		int id = this.properties.getIntegerProperty(scenarioLatticeIdName);
-		
+
 		ILattice lattice = this.scenarioManager.getScenarios().getLattices().values()
 				.stream()
 				.filter(grid -> grid.getId() == id)
-				.findFirst().get();
-		
-		List<CellIndex> originCenterCells = super.scenarioManager.getOrigins().stream()
+				.findFirst()
+				.get();
+
+		List<CellIndex> originCenterCells = super.scenarioManager.getOrigins()
+				.stream()
 				.map(OriginArea::getGeometry)
 				.map(Geometry2D::getCenter)
 				.map(center -> lattice.getCellIndexFromPosition(center))
 				.collect(Collectors.toList());
-		
-		LatticeModel.fillLatticeForObstacles(lattice, super.scenarioManager.getScenarios());
-		
+
+
 		List<Set<CellIndex>> connectedAreas = this.createConnectedAreas(originCenterCells, lattice);
-		
+
 		this.computeDepthMap(connectedAreas, lattice);
 
 		List<DepthMapSubArea> subAreas = this.computeMinMaxForSubAreas(connectedAreas, lattice);
-		
+
 		this.scenarioManager.getSpaceSyntax().setDepthMap(
-				new DepthMap(lattice, 
-						subAreas,
-						super.scenarioManager.getScenarios().getMaxX(), 
-						super.scenarioManager.getScenarios().getMinX(),
-						super.scenarioManager.getScenarios().getMaxY(), 
+				new DepthMap(
+						lattice, 
+						subAreas, 
+						super.scenarioManager.getScenarios().getMaxX(),
+						super.scenarioManager.getScenarios().getMinX(), 
+						super.scenarioManager.getScenarios().getMaxY(),
 						super.scenarioManager.getScenarios().getMinY())
 				);
-		
-		this.writeResultAsImage(subAreas, lattice);
+
+		//this.writeResultAsImage(subAreas, lattice);
 	}
-	
+
 	@Override
 	public void callPostProcessing(SimulationState simlationState) {
 
@@ -103,144 +95,159 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 	}
 
 	/**
-	 * This method floods the given lattice for given CellIndices of type 'Origin' and creates a set of indices.
-	 * If the given starting indices are connected i.e. pedestrians can walk from one origin to the next origin, 
-	 * then no additional set is generated for this origin.
-	 * If all starting points are connected, this method returns a list containing only one set.
-	 * @param originCenterCells a list of starting points for flooding
-	 * @param lattice on which the flooding happens
-	 * @return a list of sets, which represent an index structure for connected areas
+	 * This method floods the given lattice for given CellIndices of type
+	 * 'Origin' and creates a set of indices. If the given starting indices are
+	 * connected i.e. pedestrians can walk from one origin to the next origin,
+	 * then no additional set is generated for this origin. If all starting
+	 * points are connected, this method returns a list containing only one set.
+	 * 
+	 * @param originCenterCells
+	 *            a list of starting points for flooding
+	 * @param lattice
+	 *            on which the flooding happens
+	 * @return a list of sets, which represent an index structure for connected
+	 *         areas
 	 */
 	private List<Set<CellIndex>> createConnectedAreas(List<CellIndex> originCenterCells, ILattice lattice) {
-		
+
 		List<Set<CellIndex>> connectedAreas = new ArrayList<Set<CellIndex>>();
-		
-		for(CellIndex current: originCenterCells) {
-			
+
+		for (CellIndex current : originCenterCells) {
+
 			boolean newAreaRequired = true;
-			
-			for(Set<CellIndex> disconnectedArea: connectedAreas){
-				if(disconnectedArea.contains(current)) {
+
+			for (Set<CellIndex> disconnectedArea : connectedAreas) {
+				if (disconnectedArea.contains(current)) {
 					newAreaRequired = false;
 					break;
 				}
 			}
-			
-			if(newAreaRequired == true) {
+
+			if (newAreaRequired == true) {
 				connectedAreas.add(lattice.flood(current));
 			}
 		}
-		
+
 		return connectedAreas;
 	}
 
 	/**
 	 * Computes the actual DepthMap Metric for each connected Area respectively.
-	 * @param connectedAreas a list of connected sets containing indices, which are basically an index structure for connected areas on top of the provided lattice
-	 * @param lattice the lattice where the result is written to
+	 * 
+	 * @param connectedAreas
+	 *            a list of connected sets containing indices, which are
+	 *            basically an index structure for connected areas on top of the
+	 *            provided lattice
+	 * @param lattice
+	 *            the lattice where the result is written to
 	 */
 	private void computeDepthMap(List<Set<CellIndex>> connectedAreas, ILattice lattice) {
-		
-		for(Set<CellIndex> connectedCells: connectedAreas) {
+
+		for (Set<CellIndex> connectedCells : connectedAreas) {
 			connectedCells.stream().parallel().forEach(start -> connectedCells.forEach(end -> {
-				
-				if (lattice.breshamLineCast(start, end, Integer.MAX_VALUE) == 0.0) {
-					
+
+				if (lattice.breshamLineCast(start, end)) {
+
 					lattice.increaseCellNumberValue(start, 1.0);
-					
+
 				}
 			}));
 		}
 	}
-	
+
 	/**
 	 * Computes the minimum and maximum Double value respectively for each Area.
-	 * @param connectedAreas 
-	 * @return a List which contains the minimum and maximum paired to the respective connected area.
+	 * 
+	 * @param connectedAreas
+	 * @return a List which contains the minimum and maximum paired to the
+	 *         respective connected area.
 	 */
-	
+
 	private List<DepthMapSubArea> computeMinMaxForSubAreas(List<Set<CellIndex>> disconnectedAreas, ILattice lattice) {
-		
+
 		List<DepthMapSubArea> result = new ArrayList<DepthMapSubArea>(disconnectedAreas.size());
-		
-		for(int i = 0; i < disconnectedAreas.size(); i ++) {
-			
+
+		for (int i = 0; i < disconnectedAreas.size(); i++) {
+
 			Set<CellIndex> connectedCells = disconnectedAreas.get(i);
-			
-			Double[] minMax = new Double[] { Double.MAX_VALUE, Double.MIN_VALUE }; // first value is min, second is max
-			
+
+			Double[] minMax = new Double[] {
+					Double.MAX_VALUE, // first value is min
+					Double.MIN_VALUE}; // second value is max
+
 			connectedCells.stream().forEach(cellIndex -> {
-	
+
 				Double currentValue = (Double) lattice.getCellNumberValue(cellIndex);
-	
+
 				if (currentValue < minMax[0]) {
 					minMax[0] = currentValue;
 				}
-	
+
 				if (currentValue > minMax[1]) {
 					minMax[1] = currentValue;
 				}
 			});
-			
+
 			result.add(new DepthMapSubArea(connectedCells, minMax[0], minMax[1], i));
 		}
-		
+
 		return result;
 	}
-	
+
+	/*
 	private void writeResultAsImage(List<DepthMapSubArea> subAreas, ILattice lattice) {
 
 		int width = lattice.getNumberOfColumns();
 		int height = lattice.getNumberOfRows();
-		int heightImage = height - 1; 
+		int heightImage = height - 1;
 
 		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-		subAreas.forEach(subArea ->{
+		subAreas.forEach(subArea -> {
 			Double newMax = subArea.getMaximum() - subArea.getMinimum();
-	
+
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
-	
+
 					Double currentValue = lattice.getCellNumberValue(y, x);
 					short r = 0;
 					short g = 0;
 					short b = 0;
-	
+
 					if (currentValue.equals(Double.NaN)) {
 						r = 255;
 						g = 255;
 						b = 255;
 					} else {
-						
+
 						Double newValue = currentValue - subArea.getMinimum();
 						b = (short) FastMath.round((newValue / newMax) * 255.0);
 					}
-	
+
 					int p = (r << 16) | (g << 8) | b; // pixel
 					// int p = new java.awt.Color(r, g, b, a).getRGB();
 					img.setRGB(x, heightImage - y, p);
 				}
 			}
-			
+
 			Double minAsPercent = ((int) (subArea.getMinimum() / subArea.getConnectedIndices().size() * 10000)) / 100.0;
 			Double maxAsPercent = ((int) (subArea.getMaximum() / subArea.getConnectedIndices().size() * 10000)) / 100.0;
-			LoggingManager.logUser("Subarea #" + subArea + " MinAbs: " + subArea.getMinimum() 
-			+ " MaxAbs: " + subArea.getMaximum() + " MinPercent: " + minAsPercent + " MaxPercent: " + maxAsPercent);
+			LoggingManager.logUser("Subarea #" + subArea + " MinAbs: " + subArea.getMinimum() + " MaxAbs: "
+					+ subArea.getMaximum() + " MinPercent: " + minAsPercent + " MaxPercent: " + maxAsPercent);
 		});
-		
+
 		Date date = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 		String outputPath = "./" + dateFormat.format(date) + "_" + lattice.getName() + ".jpg";
 		File output = new File(outputPath);
-		
+
 		try {
-			if(ImageIO.write(img, "jpg", output))
+			if (ImageIO.write(img, "jpg", output))
 				LoggingManager.logUser("Successfully written image to: " + output.toString());
 			else
 				LoggingManager.logUser("Something else happened!?");
 		} catch (IOException e) {
 			LoggingManager.logUser("Schreiben des Bildes fehlgeschlagen...");
 		}
-	}
+	}*/
 }

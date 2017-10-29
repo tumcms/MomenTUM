@@ -1410,6 +1410,62 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		
 		System.out.print("\n");
 	}
+	
+	/* (non-Javadoc)
+	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#breshamLineCast(tum.cms.sim.momentum.utility.lattice.CellIndex, tum.cms.sim.momentum.utility.lattice.CellIndex)
+	 */
+    @Override
+	public boolean breshamLineCast(CellIndex from, CellIndex towards) {
+
+    	boolean hitTarget = false;
+    	
+        int dx = FastMath.abs(from.getColumn() - towards.getColumn());
+        int dy = FastMath.abs(from.getRow() - towards.getRow());
+        
+        if(dy == 0 && dx == 0) {
+        	
+        	return true;
+        }
+        
+        int x = from.getColumn();
+        int y = from.getRow();
+        int targetX = towards.getColumn();
+        int targetY = towards.getRow();
+        
+        int n = 1 + dx + dy;
+        
+        int x_inc = towards.getColumn() > from.getColumn() ? 1 : -1;
+        int y_inc = towards.getRow() > from.getRow() ? 1 : -1;
+        
+        int error = dx - dy;
+        dx *= 2;
+        dy *= 2;
+
+        for (; n > 0; --n) {
+        	
+        	if(!this.isCellFree(y, x)) {
+        		
+        		break;
+        	}
+        	
+        	if(x == targetX && y == targetY) {
+        		
+        		hitTarget = true;
+        		break;
+        	}
+
+            if (error > 0) {
+                x += x_inc;
+                error -= dy;
+            }
+            else {
+                y += y_inc;
+                error += dx;
+            }
+        }
+        
+    	return hitTarget;
+    }
     
 	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#breshamLineCast(tum.cms.sim.momentum.utility.lattice.CellIndex, tum.cms.sim.momentum.utility.lattice.CellIndex)
