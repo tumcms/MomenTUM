@@ -55,6 +55,8 @@ import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 
 public class LatticeModel extends Callable implements IHasProperties {
 	
+	private static String addAdditionalCellsName = "addAdditionalCells";
+	
    	protected ScenarioManager scenarioManager = null;
 	protected ILattice lattice = null;
 	
@@ -88,7 +90,21 @@ public class LatticeModel extends Callable implements IHasProperties {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
-		this.lattice = LatticeTheoryFactory.createLattice(				
+		Boolean addAdditionalCells = this.properties.getBooleanProperty(this.addAdditionalCellsName);
+		
+		if (addAdditionalCells == false) {
+			this.lattice = LatticeTheoryFactory.createLattice(				
+					latticeConfiguration.getName(), 
+					latticeConfiguration.getBehaviorType(),
+					latticeConfiguration.getLatticeType(), 
+					latticeConfiguration.getNeigborhoodType(), 
+					latticeConfiguration.getCellEdgeSize(), 
+					scenarioManager.getScenarios().getMaxX(), 
+					scenarioManager.getScenarios().getMinX(), 
+					scenarioManager.getScenarios().getMaxY(), 
+					scenarioManager.getScenarios().getMinY());
+		} else {
+			this.lattice = LatticeTheoryFactory.createLattice(				
 				latticeConfiguration.getName(), 
 				latticeConfiguration.getBehaviorType(),
 				latticeConfiguration.getLatticeType(), 
@@ -98,6 +114,9 @@ public class LatticeModel extends Callable implements IHasProperties {
 				scenarioManager.getScenarios().getMinX() - latticeConfiguration.getCellEdgeSize(), 
 				scenarioManager.getScenarios().getMaxY() + latticeConfiguration.getCellEdgeSize(), 
 				scenarioManager.getScenarios().getMinY() - latticeConfiguration.getCellEdgeSize());
+		}
+		
+		
 		
 		lattice.setPropertyBackPack(this.properties);
 		Unique.generateUnique(lattice, latticeConfiguration);		
@@ -140,29 +159,12 @@ public class LatticeModel extends Callable implements IHasProperties {
 		nonSolidObstacles.parallelStream().forEach(obs -> {
 			
 			try {
-			lattice.occupyAllSegmentCells(obs.getObstacleParts(), Occupation.Fixed);
+				lattice.occupyAllSegmentCells(obs.getObstacleParts(), Occupation.Fixed);
 			}
 			catch(Exception ex) {
 				ex = null;
 			}
 		});
-	}
-	
-	public static List<CellIndex> fillLatticeForObstacles2(ILattice lattice, Scenario scenario) {
-
-		List<CellIndex> freeCells = Collections.synchronizedList(new ArrayList<>(lattice.getNumberOfColumns() * lattice.getNumberOfRows()));
-		freeCells.addAll(lattice.getCellsInOrder());
-		
-		ArrayList<SolidObstacle> solidObstacles = scenario.getSolidObstacles();
-		ArrayList<WallObstacle> nonSolidObstacles = scenario.getWallObstacles();
-		List<List<CellIndex>> occupiedCells = Collections.synchronizedList(new ArrayList<>(solidObstacles.size() * nonSolidObstacles.size()));
-		
-		solidObstacles.parallelStream().forEach(obs -> occupiedCells.add(lattice.occupyAllPolygonCells((Polygon2D) obs.getGeometry(), Occupation.Fixed)));
-		nonSolidObstacles.parallelStream().forEach(obs -> occupiedCells.add(lattice.occupyAllSegmentCells(obs.getObstacleParts(), Occupation.Fixed)));
-		
-		occupiedCells.stream().forEach(obstacleList -> freeCells.removeAll(obstacleList));
-		
-		return freeCells;
 	}
 	
 	/**

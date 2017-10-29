@@ -32,13 +32,23 @@
 
 package tum.cms.sim.momentum.model.layout.spaceSyntax.depthMapModel;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+
+import org.apache.commons.math3.util.FastMath;
+
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.infrastructure.logging.LoggingManager;
 import tum.cms.sim.momentum.model.layout.lattice.LatticeModel;
 import tum.cms.sim.momentum.model.layout.spaceSyntax.SpaceSyntaxOperation;
 import tum.cms.sim.momentum.utility.geometry.Geometry2D;
@@ -83,7 +93,7 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 						super.scenarioManager.getScenarios().getMinY())
 				);
 		
-		//this.writeResultAsImage(subAreas, lattice);
+		this.writeResultAsImage(subAreas, lattice);
 	}
 	
 	@Override
@@ -174,7 +184,7 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 		
 		return result;
 	}
-	/*
+	
 	private void writeResultAsImage(List<DepthMapSubArea> subAreas, ILattice lattice) {
 
 		int width = lattice.getNumberOfColumns();
@@ -229,5 +239,5 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 		} catch (IOException e) {
 			LoggingManager.logUser("Schreiben des Bildes fehlgeschlagen...");
 		}
-	}*/
+	}
 }
