@@ -32,43 +32,82 @@
 
 package tum.cms.sim.momentum.utility.spaceSyntax;
 
-import java.util.List;
+import java.util.Set;
 
 import tum.cms.sim.momentum.utility.generic.Unique;
+import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 
 public class DepthMap extends Unique {
 	
 	private final ILattice lattice;
-	private final List<DepthMapSubArea> disconnectedAreas;
+	private final Set<CellIndex> connectedIndices;
 	
 	private final int domainRows;
 	private final int domainColumns;
-	private final double maxX;
-	private final double minX;
-	private final double maxY;
-	private final double minY;
 	
-	public DepthMap(ILattice lattice, List<DepthMapSubArea> disconnectedAreas, double
-			maxX, double maxY, double minX, double minY) {
+	private final double minValue;
+	private final double maxValue;
+	
+	private final double minX;
+	private final double minY;
+	private final double maxX;
+	private final double maxY;
+	
+	public DepthMap(ILattice lattice, Set<CellIndex> connectedIndices, double minValue, double maxValue) {
 		
 		this.lattice = lattice;
-		this.disconnectedAreas = disconnectedAreas;
+		this.connectedIndices = connectedIndices;
+		
 		this.domainRows = lattice.getNumberOfRows();
 		this.domainColumns = lattice.getNumberOfColumns();
-		this.maxX = maxX;
-		this.maxY = maxY;
-		this.minX = minX;
-		this.minY = minY;
+		
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+		
+		this.minX = lattice.getMinPositionBoundingBox().getXComponent();
+		this.minY = lattice.getMinPositionBoundingBox().getYComponent();
+		this.maxX = lattice.getMaxPositionBoundingBox().getXComponent();
+		this.maxY = lattice.getMaxPositionBoundingBox().getYComponent();
 	}
 	
 	public ILattice getLattice() {
-		
 		return lattice;
 	}
 	
-	public List<DepthMapSubArea> getDisconnectedAreas() {
-		
-		return disconnectedAreas;
+	public Set<CellIndex> getConnectedAreas() {
+		return connectedIndices;
+	}
+	
+	public int getDomainRows() {
+		return domainRows;
+	}
+	
+	public int getDomainColumns() {
+		return domainColumns;
+	}
+
+	public double getMinValue() {
+		return minValue;
+	}
+
+	public double getMaxValue() {
+		return maxValue;
+	}
+
+	public double getMinX() {
+		return minX;
+	}
+
+	public double getMinY() {
+		return minY;
+	}
+
+	public double getMaxX() {
+		return maxX;
+	}
+
+	public double getMaxY() {
+		return maxY;
 	}
 }
