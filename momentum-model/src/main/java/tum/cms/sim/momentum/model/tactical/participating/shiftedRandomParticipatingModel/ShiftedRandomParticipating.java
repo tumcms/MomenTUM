@@ -42,7 +42,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.StayingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -80,7 +80,7 @@ public class ShiftedRandomParticipating extends StayingModel {
 	protected HashMap<Integer, Double> maximalAttractionDistances = new HashMap<>();
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		// Nothing to do
 		return null;

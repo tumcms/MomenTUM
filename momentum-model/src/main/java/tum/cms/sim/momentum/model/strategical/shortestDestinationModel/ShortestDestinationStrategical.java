@@ -37,7 +37,7 @@ import java.util.List;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -53,7 +53,7 @@ public class ShortestDestinationStrategical extends DestinationChoiceModel {
 	private String weightName = "weightShortestDestination";
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 	 	/* nothing to do */
 		return null;

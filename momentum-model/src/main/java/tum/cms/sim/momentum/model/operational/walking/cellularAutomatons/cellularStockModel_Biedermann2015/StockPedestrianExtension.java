@@ -33,10 +33,10 @@
 package tum.cms.sim.momentum.model.operational.walking.cellularAutomatons.cellularStockModel_Biedermann2015;
 
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 
-public class StockPedestrianExtension implements IPedestrianExtansion {
+public class StockPedestrianExtension implements IPedestrianExtension {
 	
 	private CellIndex desiredCell;
 	private double stock = 0;

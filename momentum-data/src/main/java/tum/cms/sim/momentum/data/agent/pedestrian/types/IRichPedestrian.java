@@ -43,5 +43,5 @@ public interface IRichPedestrian
 	
 	public void setMetaState(MetaState state);
 	
-	public void setExtensionState(IPedestrianExtansion extension, IExtendsPedestrian modelReference);
+	public void setExtensionState(IPedestrianExtension extension, IExtendsPedestrian modelReference);
 }	

@@ -41,7 +41,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalSta
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.*;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
 import tum.cms.sim.momentum.utility.generic.Unique;
@@ -269,7 +269,7 @@ public class Pedestrian extends Unique implements IRichPedestrian {
 	
 	/* Extension */
 	
-	public IPedestrianExtansion getExtensionState(IExtendsPedestrian modelReference) {
+	public IPedestrianExtension getExtensionState(IExtendsPedestrian modelReference) {
 		
 		return state.extensionContainer.get(modelReference);
 	}
@@ -366,7 +366,7 @@ public class Pedestrian extends Unique implements IRichPedestrian {
 	}
 	
 	@Override
-	public void setExtensionState(IPedestrianExtansion extension, IExtendsPedestrian modelReference) {
+	public void setExtensionState(IPedestrianExtension extension, IExtendsPedestrian modelReference) {
 		
 		state.extensionContainer.put(modelReference, extension);
 	}
@@ -441,6 +441,6 @@ public class Pedestrian extends Unique implements IRichPedestrian {
 		
 		MetaState metaState = null;
 
-		HashMap<IExtendsPedestrian, IPedestrianExtansion> extensionContainer = new HashMap<IExtendsPedestrian, IPedestrianExtansion>();
+		HashMap<IExtendsPedestrian, IPedestrianExtension> extensionContainer = new HashMap<IExtendsPedestrian, IPedestrianExtension>();
 	}
 }

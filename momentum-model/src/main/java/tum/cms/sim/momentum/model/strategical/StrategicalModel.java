@@ -35,7 +35,7 @@ package tum.cms.sim.momentum.model.strategical;
 import java.util.Collection;
 
 import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.PedestrianBehaviorModel;
@@ -59,7 +59,7 @@ public class StrategicalModel extends PedestrianBehaviorModel {
 	}
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return null; // Nothing to do
 	}
