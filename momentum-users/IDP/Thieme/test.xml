@@ -8,20 +8,20 @@
 
 	<outputWriters>
 
+		<!-- Writer currently only works in this combination. -->
 		<outputWriter id="1337" name="spaceSyntaxWriter">
 			<!-- If value for call is 0, then it is called in preProcessing. Integer.MAX_VALUE-->
 			<property name="call" type="Integer" value="0"/>
 			<!--<property name="buffer" type="Integer" value="50"/>-->
 
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="./spaceSyntaxDepthMapResult3.xml"/>
+				<property name="file" type="File" value="./spaceSyntaxDepthMapResult4.xml"/>
 				<property name="index" type="Boolean" value="True"/>
 			</writerTarget>
 
 			<writerFormat formatType="Single"/>
 
-			<writerSource sourceType="SpaceSyntax">
-
+			<writerSource name="spaceSyntaxOperation_DepthMap" sourceType="SpaceSyntax" additionalId="1">
 			</writerSource>
 		</outputWriter>
 		
@@ -44,7 +44,7 @@
 	<lattices>
 		<lattice name="SpaceSyntaxLattice" id="3" scenarioId="0" 
 			latticeType="Quadratic" 
-			cellEdgeSize="0.2"
+			cellEdgeSize="0.5"
 			neigborhoodType="Touching">
 			<!-- 	the default for additional cells is True. 
 					This means the cellEdgeSize * 2 is added to the max width and height of the lattice.
@@ -62,13 +62,14 @@
 			</spaceSyntaxOperation>
 		</spaceSyntaxModel>
 	</spaceSyntaxes>
+	
 	<layouts>
 		<scenario id="0" name="Level 1" maxX="14.9797" maxY="10.6711" minX="-14.8203" minY="-28.5952">
-			<area id="0" name="Destination0" type="Origin">
-				<point x="-0.5836" y="-6.7591" />
-				<point x="-0.5836" y="-7.0716" />
-				<point x="0.3014" y="-7.0716" />
-				<point x="0.3014" y="-6.7591" />
+			<area id="0" name="Region_Entrance" type="Origin">
+				<point x="10.0000" y="3.0000"/>
+				<point x="10.0000" y="4.0000"/>
+				<point x="9.0000" y="4.0000"/>
+				<point x="9.0000" y="3.0000"/>
 			</area>
 			<obstacle id="0" name="Wall0" type="Wall">
 				<point x="14.9797" y="10.6711" />

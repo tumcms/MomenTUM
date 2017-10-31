@@ -34,36 +34,44 @@ package tum.cms.sim.momentum.utility.spaceSyntax;
 
 import java.util.Set;
 
-import tum.cms.sim.momentum.utility.generic.Unique;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 
-public class DepthMap extends Unique {
+@XStreamAlias("DepthMap")
+public class DepthMap extends SpaceSyntax {
 	
-	private final ILattice lattice;
-	private final Set<CellIndex> connectedIndices;
-	
+	@XStreamAsAttribute
 	private final int domainRows;
+	@XStreamAsAttribute
 	private final int domainColumns;
 	
+	@XStreamAsAttribute
 	private final double minValue;
+	@XStreamAsAttribute
 	private final double maxValue;
 	
+	@XStreamAsAttribute
 	private final double minX;
+	@XStreamAsAttribute
 	private final double minY;
+	@XStreamAsAttribute
 	private final double maxX;
+	@XStreamAsAttribute
 	private final double maxY;
 	
-	public DepthMap(ILattice lattice, Set<CellIndex> connectedIndices, double minValue, double maxValue) {
+	public DepthMap(ILattice lattice, Set<CellIndex> connectedIndices) {
 		
-		this.lattice = lattice;
-		this.connectedIndices = connectedIndices;
+		super(lattice, connectedIndices);
 		
 		this.domainRows = lattice.getNumberOfRows();
 		this.domainColumns = lattice.getNumberOfColumns();
-		
-		this.minValue = minValue;
-		this.maxValue = maxValue;
+
+		Double[] latticeMinMaxValues = lattice.getMinMaxValuesForIndices(connectedIndices);
+		this.minValue = latticeMinMaxValues[0];
+		this.maxValue = latticeMinMaxValues[0];
 		
 		this.minX = lattice.getMinPositionBoundingBox().getXComponent();
 		this.minY = lattice.getMinPositionBoundingBox().getYComponent();

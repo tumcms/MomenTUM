@@ -136,6 +136,15 @@ public interface ILattice extends IUnique {
 
 	HashMap<CellIndex, Vector2D> getBorderPositionForCells(Polygon2D polygon);
 
+	/**
+	 * Computes the minimum and maximum Double value respectively for each Area.
+	 * 
+	 * @param connectedAreas
+	 * @return a List which contains the minimum and maximum paired to the
+	 *         respective connected area.
+	 */
+	Double[] getMinMaxValuesForIndices(Set<CellIndex> connectedIndices);
+
 	List<CellIndex> getAllPolygonCells(Polygon2D polygon);
 
 	List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, Occupation occupation);
