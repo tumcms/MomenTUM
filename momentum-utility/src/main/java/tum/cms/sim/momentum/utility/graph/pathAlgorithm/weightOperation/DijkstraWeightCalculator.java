@@ -38,8 +38,7 @@ import java.util.Comparator;
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Vertex;
 
-public class DijkstraWeightCalculator 
-	extends DirectWeightCalculatur {
+public class DijkstraWeightCalculator extends DirectWeightCalculatur {
 
 	protected String weightName = null;
 	protected String weightNameExtension = null;
@@ -104,4 +103,5 @@ public class DijkstraWeightCalculator
 		candidates.sort(weightComparator);
 		return candidates;
 	}
+
 }

@@ -49,6 +49,7 @@ import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
 import tum.cms.sim.momentum.visualization.utility.ColorGenerator;
+import tum.cms.sim.momentum.visualization.utility.IdExtension;
 
 public class LayerConfigurationController implements Initializable {
 	
@@ -171,63 +172,44 @@ public class LayerConfigurationController implements Initializable {
 	public HashMap<String, TrajectoryModel> loadTrajectories() throws Exception {
 
 		double timeStep = 0.0;
-//		ArrayList<String> peds = new ArrayList<String>();
-//		peds.add("100");
-//		peds.add("200");
-//		peds.add("300");
-//		peds.add("400");
-//		peds.add("500");
-//		peds.add("600");
-//		peds.add("700");
-//		peds.add("800");
-//		peds.add("900");
-//		peds.add("1000");
-//		peds.add("1100");
-//		peds.add("1200");
-//		peds.add("1300");
-//		peds.add("1400");
-//		peds.add("1500");
-//		peds.add("1600");
-//		peds.add("1700");
-//		peds.add("1800");
-//		peds.add("1900");
-//		peds.add("2000");
-//		peds.add("2100");
+		IdExtension createID = new IdExtension();
+		
 		for(SimulationOutputReader simReader : coreController.getSimulationOutputReaderListOfType(CsvType.Pedestrian)) {
-		while (timeStep < simReader.getEndCluster()
-				* simReader.getTimeStepDifference()) {
-
-			SimulationOutputCluster dataStepCurrent = simReader.readDataSet(timeStep);
-
-			if (dataStepCurrent != null && !dataStepCurrent.isEmpty()) {
-
-				for (String identification : dataStepCurrent.getIdentifications()) {
-
-					//if (peds.contains(identification)) {
-
-						if (!trajectories.containsKey(identification)) {
-
-							trajectories.put(identification,
-									new TrajectoryModel(coreController.getVisualizationController().getCustomizationController(),
+			
+			while (timeStep < simReader.getEndCluster() * simReader.getTimeStepDifference()) {
+	
+				SimulationOutputCluster dataStepCurrent = simReader.readDataSet(timeStep);
+	
+				if (dataStepCurrent != null && !dataStepCurrent.isEmpty()) {
+	
+					for (String identification : dataStepCurrent.getIdentifications()) {
+	
+						String hashId = createID.createUniqueId(identification, simReader.getFilePathHash());
+						if (!trajectories.containsKey(hashId)) {
+	
+							trajectories.put(hashId,
+									new TrajectoryModel(hashId,
+											coreController.getVisualizationController().getCustomizationController(),
 											dataStepCurrent.getDoubleData(identification, OutputType.x.name()),
 											dataStepCurrent.getDoubleData(identification, OutputType.y.name()),
 											coreController.getCoreModel().getResolution()));
-						} else {
-
-							trajectories.get(identification).append(
+						}
+						else {
+	
+							trajectories.get(hashId).append(
 									dataStepCurrent.getDoubleData(identification, OutputType.x.name()),
 									dataStepCurrent.getDoubleData(identification, OutputType.y.name()),
 									coreController.getCoreModel().getResolution());
 						}
-					//}
+					}
+	
+					simReader.clearBuffer(timeStep);
 				}
-
-				simReader.clearBuffer(timeStep);
+	
+				timeStep += simReader.getTimeStepDifference();
 			}
-
-			timeStep += simReader.getTimeStepDifference();
 		}
-		}
+		
 		return trajectories;
 	}
 	

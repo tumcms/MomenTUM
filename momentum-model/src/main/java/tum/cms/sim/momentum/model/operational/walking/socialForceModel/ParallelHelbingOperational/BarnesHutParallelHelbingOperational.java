@@ -52,7 +52,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -83,7 +83,7 @@ public class BarnesHutParallelHelbingOperational extends WalkingModel {
     private ThreadPoolExecutor workerPool;
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 
 		return new SocialForcePedestrianExtension();
 	}

@@ -30,37 +30,40 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.utility.spaceSyntax;
+package tum.cms.sim.momentum.simulator.factory.perceptionModelFactory;
 
-import java.util.Set;
-
+import tum.cms.sim.momentum.configuration.model.other.PerceptualModelConfiguration;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.bresenhamPerceptionModel.BresenhamPerceptionModel;
+import tum.cms.sim.momentum.model.perceptional.shadowPerceptionModel.ShadowPerceptionModel;
+import tum.cms.sim.momentum.simulator.component.ComponentManager;
+import tum.cms.sim.momentum.simulator.factory.ModelFactory;
+import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
 import tum.cms.sim.momentum.utility.generic.Unique;
-import tum.cms.sim.momentum.utility.lattice.CellIndex;
 
-public class DepthMapSubArea extends Unique{
+public class PerceptionalModelFactory extends ModelFactory<PerceptualModelConfiguration, PerceptionalModel>{
 
-	private Set<CellIndex> connectedIndices;
-	private Double minimum;
-	private Double maximum;
+	@Override
+	public PerceptionalModel createModel(PerceptualModelConfiguration configuration, ComponentManager componentManager) {
 	
-	public DepthMapSubArea(Set<CellIndex> connectedIndices, Double minimum, Double maximum, int id) {
-		this.connectedIndices = connectedIndices;
-		this.minimum = minimum;
-		this.maximum = maximum;
-		this.setId(id);
-	}
-	
-	public Set<CellIndex> getConnectedIndices() {
-		return connectedIndices;
-	}
-	
-	public Double getMinimum() {
+		PerceptionalModel perceptualModel = null;
 		
-		return minimum;
-	}
-	
-	public Double getMaximum() {
+		switch(configuration.getType()) {
+		case Shadow:
+			perceptualModel = new ShadowPerceptionModel();
+			break;
+		case Bresenham:
+			perceptualModel = new BresenhamPerceptionModel();
+			break;
+		default:
+			break;
+		}
 		
-		return maximum;
+		perceptualModel.setPedestrianManager(componentManager.getPedestrianManager());
+		perceptualModel.setScenarioManager(componentManager.getScenarioManager());
+		Unique.generateUnique(perceptualModel, configuration);
+		perceptualModel.setPropertyBackPack(PropertyBackPackFactory.fillProperties(configuration));
+		
+		return perceptualModel;
 	}
 }

@@ -38,7 +38,7 @@ import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.StandingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.PedestrianBehaviorModel;
@@ -175,7 +175,7 @@ public class OperationalModel extends PedestrianBehaviorModel {
 	}
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 	
 		return null; // Nothing to do
 	}

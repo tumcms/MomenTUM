@@ -32,14 +32,14 @@
 
 package tum.cms.sim.momentum.model.tactical.routing.dijkstraModel;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.Path;
 import tum.cms.sim.momentum.utility.graph.Vertex;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.ShortestPathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.AStarEuklidWeightCalculator;
 
-public class DijkstraExtension implements IPedestrianExtension {
+public class DijkstraExtension implements IPedestrianExtansion {
 
 	private ShortestPathAlgorithm shortestPathAlgorithm = null;
 	private AStarEuklidWeightCalculator calculator = null;

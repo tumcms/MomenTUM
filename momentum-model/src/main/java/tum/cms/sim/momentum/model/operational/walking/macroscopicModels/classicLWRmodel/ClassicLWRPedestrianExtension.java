@@ -33,9 +33,9 @@
 package tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel;
 
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 
-public class ClassicLWRPedestrianExtension implements IPedestrianExtension {
+public class ClassicLWRPedestrianExtension implements IPedestrianExtansion {
 	
 
 }

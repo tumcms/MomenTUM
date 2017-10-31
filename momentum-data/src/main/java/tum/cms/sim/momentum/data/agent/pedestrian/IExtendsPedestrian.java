@@ -32,12 +32,12 @@
 
 package tum.cms.sim.momentum.data.agent.pedestrian;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 
 public interface IExtendsPedestrian {
 
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian);
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian);
 	
 	public void onPedestrianRemoval(IRichPedestrian pedestrian);
 }

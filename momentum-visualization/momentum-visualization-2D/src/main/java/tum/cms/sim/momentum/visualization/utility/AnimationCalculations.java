@@ -72,6 +72,7 @@ import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
  */
 public abstract class AnimationCalculations {
 	
+	private static IdExtension idCalculator = new IdExtension();
 	/**
 	 * Calculates all active {@link SimulationOutputReader}s that contain the timestep. Returns a 
 	 * {@link ParallelTransition} with all concurrent pedestrian movements
@@ -108,7 +109,7 @@ public abstract class AnimationCalculations {
 		return concurrentMovements;
 	}
 
-	private static ParallelTransition updateCustomData(CsvType type, SimulationOutputCluster dataStep, CoreController coreController) {
+	private static ParallelTransition updateCustomData(CsvType type, SimulationOutputCluster dataStep, CoreController coreController, SimulationOutputReader simulationOutputReader) {
 		
 		ShapeModel customVisualization = null;
 		VisualizationModel visualizationModel = coreController.getVisualizationController().getVisualizationModel();
@@ -127,14 +128,16 @@ public abstract class AnimationCalculations {
 
 			for (String id : dataStep.getIdentifications()) {
 
+				String hashId = idCalculator.createUniqueId(id, simulationOutputReader.getFilePathHash());
+				
 				switch (type) {
 
 				case TransitZones:
 
-					if (!customMap.containsKey(id)) {
+					if (!customMap.containsKey(hashId)) {
 
 						customVisualization = getCustomShapeModel(type, id, customizationController);
-						customMap.put(id, customVisualization);
+						customMap.put(hashId, customVisualization);
 
 						TransitAreaModel transit = (TransitAreaModel) customVisualization;
 
@@ -146,7 +149,7 @@ public abstract class AnimationCalculations {
 					} else { // set position
 
 						customMap = visualizationModel.getSpecificCustomShapesMap(type);
-						TransitAreaModel transit = (TransitAreaModel) customMap.get(id);
+						TransitAreaModel transit = (TransitAreaModel) customMap.get(hashId);
 
 						transit.placeShape(dataStep.getDoubleData(id, "transitx"),
 								dataStep.getDoubleData(id, "transity"), dataStep.getDoubleData(id, "radiusIn"),
@@ -156,10 +159,10 @@ public abstract class AnimationCalculations {
 
 				case MacroscopicNetwork:
 
-					if (!customMap.containsKey(id)) {
+					if (!customMap.containsKey(hashId)) {
 
 						customVisualization = getCustomShapeModel(type, id, customizationController);
-						customMap.put(id, customVisualization);
+						customMap.put(hashId, customVisualization);
 
 						DensityEdgeModel densitiyEdgeModel = (DensityEdgeModel) customVisualization;
 
@@ -173,7 +176,7 @@ public abstract class AnimationCalculations {
 					} else { // set position
 
 						customMap = visualizationModel.getSpecificCustomShapesMap(type);
-						DensityEdgeModel densitiyEdgeModel = (DensityEdgeModel) customMap.get(id);
+						DensityEdgeModel densitiyEdgeModel = (DensityEdgeModel) customMap.get(hashId);
 
 						densitiyEdgeModel.placeShape(coreController.getCoreModel(),
 								dataStep.getDoubleData(id, "firstNodeX"), dataStep.getDoubleData(id, "firstNodeY"),
@@ -185,10 +188,10 @@ public abstract class AnimationCalculations {
 
 				case xtDensity:
 
-					if (!customMap.containsKey(id)) {
+					if (!customMap.containsKey(hashId)) {
 
 						customVisualization = getCustomShapeModel(type, id, customizationController);
-						customMap.put(id, customVisualization);
+						customMap.put(hashId, customVisualization);
 
 						DensityCellModel densitiyEdgeModel = (DensityCellModel) customVisualization;
 
@@ -201,7 +204,7 @@ public abstract class AnimationCalculations {
 					} else { // set position
 
 						customMap = visualizationModel.getSpecificCustomShapesMap(type);
-						DensityCellModel densitiyEdgeModel = (DensityCellModel) customMap.get(id);
+						DensityCellModel densitiyEdgeModel = (DensityCellModel) customMap.get(hashId);
 
 						densitiyEdgeModel.placeShape(dataStep.getDoubleData(id, "density"),
 								dataStep.getDoubleData(id, "maximalDensity"));
@@ -330,7 +333,7 @@ public abstract class AnimationCalculations {
 
 			for (String id : dataStep.getIdentifications()) {
 				
-				String hashId = id + simulationOutputReader.getFilePathHash();
+				String hashId = idCalculator.createUniqueId(id, simulationOutputReader.getFilePathHash());
 
 				if (!visualizationModel.getPedestrianShapes().containsKey(hashId)) {
 
@@ -415,6 +418,13 @@ public abstract class AnimationCalculations {
 			}
 		}
 
+		if (concurrentMovementAnimation.getChildren().size() == 0
+				&& coreController.getInteractionViewController().getTimeLineModel().getPlaying()) {
+
+			PauseTransition waitTransition = new PauseTransition(Duration.seconds(animationDurationInSecond));
+			concurrentMovementAnimation.getChildren().add(waitTransition);
+		}
+
 		return concurrentMovementAnimation;
 	}
 
@@ -476,10 +486,12 @@ public abstract class AnimationCalculations {
 
 		case TransitZones:
 			ShapeModelToReturn = new TransitAreaModel(id);
+
 			break;
 
 		case MacroscopicNetwork:
 			ShapeModelToReturn = new DensityEdgeModel(id, customizationController);
+
 			break;
 
 		case xtDensity:
@@ -560,7 +572,7 @@ public abstract class AnimationCalculations {
 			}
 		}
 
-		return AnimationCalculations.updateCustomData(simulationOutputReader.getCsvType(), dataStepCurrent, coreController);
+		return AnimationCalculations.updateCustomData(simulationOutputReader.getCsvType(), dataStepCurrent, coreController, simulationOutputReader);
 	}
 	
 	private static void bufferPreviousPedestrian(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {

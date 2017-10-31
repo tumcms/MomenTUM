@@ -41,11 +41,11 @@ import java.util.Arrays;
 
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
-import tum.cms.sim.momentum.visualization.calculation.TrajectoryCubicCurve;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.enums.Smoothness;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CustomizationModel;
+import tum.cms.sim.momentum.visualization.utility.TrajectoryCubicCurve;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
 import javafx.animation.PathTransition.OrientationType;

@@ -35,7 +35,7 @@ package tum.cms.sim.momentum.model.tactical.searching.noSearchingModel;
 import java.util.Collection;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.SearchingState;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -46,7 +46,7 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 public class NoSearchingModel extends SearchingModel {
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return null; // Nothing to do
 	}

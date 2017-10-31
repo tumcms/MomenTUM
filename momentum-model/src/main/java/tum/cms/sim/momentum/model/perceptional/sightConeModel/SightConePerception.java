@@ -30,24 +30,43 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.support.perceptional.worldKnowledgeModel;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package tum.cms.sim.momentum.model.perceptional.sightConeModel;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 import tum.cms.sim.momentum.utility.graph.Edge;
 import tum.cms.sim.momentum.utility.graph.Vertex;
 
-public class WorldKnowledgePerception extends PerceptionalModel {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class SightConePerception extends PerceptionalModel {
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+    private double radius; // range of vision, [m]
+
+
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
+    public double getAngleInRadians() {
+        return Math.toRadians(angle);
+    }
+
+    private double angle;   // angular aperture, [deg]
+
 
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
-		// nothing to do
+
+		setRadius(this.properties.getDoubleProperty("radius"));
+		setAngle(this.properties.getDoubleProperty("angle"));
 	}
 
 	@Override
@@ -57,45 +76,54 @@ public class WorldKnowledgePerception extends PerceptionalModel {
 	
 	@Override
 	public List<IPedestrian> getPerceptedPedestrians(IPedestrian currentPedestrian, SimulationState simulationState) {
-	
+
 		return this.pedestrianManager.getAllPedestriansImmutable()
 				.stream()
-				.filter(pedestrian -> pedestrian.getId() != currentPedestrian.getId())
+				.filter(otherPedestrian -> otherPedestrian.getId() != currentPedestrian.getId())
+				.filter(otherPedestrian -> isVisible(currentPedestrian, otherPedestrian.getPosition()))
 				.collect(Collectors.toList());
 	}
 	
 	@Override
 	public boolean isVisible(IPedestrian currentPedestrian, IPedestrian otherPedestrian) {
-
-		return true;
+        return isVisible(currentPedestrian, otherPedestrian.getPosition());
 	}
-	
-//	@Override
-//	public boolean isVisible(Vector2D viewPort,  Area area) {
-//		
-//		return true;
-//	}
 
 	@Override
-	public boolean isVisible(Vector2D viewPort, Vertex vertex) {
+	public boolean isVisible(IPedestrian pedestrian, Vector2D position) {
+		double currentDistance = position.distance(pedestrian.getPosition());
+		double currentAngle = pedestrian.getHeading().getAngleBetween(position.difference(pedestrian.getPosition()));
 
-		return true;
+		return currentDistance <= this.radius && Math.abs(currentAngle) <= getAngleInRadians() / 2;
 	}
-	
+
 	@Override
-	public boolean isVisible(Vector2D viewPort, Edge edge) {
-	
-		return true;
+	public boolean isVisible(IPedestrian pedestrian, Area area) {
+		return false;
+	}
+
+	@Override
+	public boolean isVisible(IPedestrian pedestrian, Vertex vertex) {
+		return false;
+	}
+
+	@Override
+	public boolean isVisible(IPedestrian pedestrian, Edge edge) {
+		return false;
 	}
 
 	@Override
 	public boolean isVisible(Vector2D viewPort,  Vector2D position) {
-
 		return true;
 	}
 
 	@Override
-	public boolean isVisible(IPedestrian currentPedestrian, List<Vector2D> positionList) {
-		return true;
+	public double getPerceptionDistance() {
+		return 0;
+	}
+
+	@Override
+	protected void supportModelUpdate(SimulationState simulationState) {
+
 	}
 }

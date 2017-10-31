@@ -32,17 +32,15 @@
 
 package tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.cognitiveFunction.occupancy;
 
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.GoalChunk;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.OperationChunk;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.PhysicalChunk;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
 
 public class NoneOccupancyPerception implements IOccupancyPerception {
 
 	@Override
-	public void perceptOccupancy(BasicQueryModel query,
-			PerceptionalModel perceptionModel,
+	public void perceptOccupancy(PerceptionalModel perceptionModel, 
 			GoalChunk goal,
 			PhysicalChunk physical,
 			OperationChunk operation) {

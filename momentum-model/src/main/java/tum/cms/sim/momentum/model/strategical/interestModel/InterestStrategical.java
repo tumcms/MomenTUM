@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -49,7 +49,7 @@ public class InterestStrategical extends DestinationChoiceModel {
 	private InterestConfiguration configuration = null;
 	
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 	
 		return new InterestExtension(this, 
 				this.interestLocations, 

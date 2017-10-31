@@ -35,7 +35,7 @@ package tum.cms.sim.momentum.model.tactical.participating.noParticipatingModel;
 import java.util.Collection;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.StayingState;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -46,7 +46,7 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 public class NoStaying extends StayingModel {
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return null; // Nothing to do
 	}

@@ -35,16 +35,14 @@ package tum.cms.sim.momentum.model.tactical.routing.dijkstraModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.TaggedArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
-import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.UnifiedRoutingAlgorithm;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Segment2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
@@ -72,7 +70,7 @@ public class DijkstraRiskTactical extends RoutingModel {
 	}
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 
 		return null;
 	}

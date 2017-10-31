@@ -32,9 +32,9 @@
 
 package tum.cms.sim.momentum.model.strategical.strictOrderModel;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 
-public class StrictOrderExtension  implements IPedestrianExtension {
+public class StrictOrderExtension  implements IPedestrianExtansion {
 
 	private Integer currentTargetArea = null;
 

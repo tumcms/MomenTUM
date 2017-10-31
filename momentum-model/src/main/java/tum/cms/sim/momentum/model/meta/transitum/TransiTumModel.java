@@ -43,7 +43,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MetaState;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.meta.MetaModel;
@@ -172,7 +172,7 @@ public class TransiTumModel extends MetaModel {
 	}
 	
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		TransiTumModelDescisionerExtension extension = null;	
 		
@@ -309,7 +309,7 @@ public class TransiTumModel extends MetaModel {
 			break;	
 		}
 		transitionAreasMicroMeso = MicroMesoUtility.updateTransitionAreas(multiscaleAreas, transitionRadiusMicroMeso);
-		collisionDetectionLattice = this.scenarioManager.getLattices().get(collisionDetectionLatticeId);
+		collisionDetectionLattice = this.scenarioManager.getLattice(collisionDetectionLatticeId);
 		
 		XTDesityCalculator = new XTDensityCalculation(dynamicZoomTimeStepMultiplicator.longValue(), collisionDetectionLattice);
 		dynamicZoomer = new DynamicZoom(collisionDetectionLattice, tolerableDensity, maximalVelocity, mesoscopicTimeStep, dynamicZoomTimeStepMultiplicator, transitionAreasMicroMeso.size(), influenceSphereMultiplicator);		
@@ -382,7 +382,7 @@ public class TransiTumModel extends MetaModel {
 	// Micro2Meso Transformation
 	private void transformMicro2MesoPedestrians(ArrayList<IRichPedestrian> microscopicPedestrians, ArrayList<IRichPedestrian> mesoscopicPedestrians, TransitionArea transitionArea, ArrayList<TransitionArea> transitionAreasMicroMeso) {
 		
-		ILattice mesoscopicLattice = this.scenarioManager.getLattices().get(scenarioLatticeId);
+		ILattice mesoscopicLattice = this.scenarioManager.getLattice(scenarioLatticeId);
 		
 		mesoscopicPedestrians.stream()
 					.forEach(ped -> mesoscopicLattice.occupyCell( mesoscopicLattice.getCellIndexFromPosition(ped.getPosition()), Occupation.Dynamic));
@@ -417,7 +417,7 @@ public class TransiTumModel extends MetaModel {
 	// Meso2Micro Transformation
 	private void transformMeso2MicroPedestrians(ArrayList<IRichPedestrian> mesoscopicPedestrians, ArrayList<IRichPedestrian> microscopicPedestrians, TransitionArea transitionArea) {
 		
-		ILattice mesoscopicLattice = this.scenarioManager.getLattices().get(scenarioLatticeId);
+		ILattice mesoscopicLattice = this.scenarioManager.getLattice(scenarioLatticeId);
 		
 		mesoscopicPedestrians.stream()
 					.forEach(ped -> mesoscopicLattice.occupyCell( mesoscopicLattice.getCellIndexFromPosition(ped.getPosition()), Occupation.Dynamic));

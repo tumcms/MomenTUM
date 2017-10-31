@@ -41,7 +41,7 @@ import tum.cms.sim.momentum.data.agent.car.types.IRichCar;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.area.TaggedArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -67,7 +67,7 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	private boolean verboseMode = true;
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -173,7 +173,7 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	{
 		// repulsive force from conflicting pedestrian
 
-		List<IPedestrian> otherPedestriansInVisualRange = perception.getPerceptedPedestrians(pedestrian, simulationState);
+		Collection<IPedestrian> otherPedestriansInVisualRange = perception.getPerceptedPedestrians(pedestrian, simulationState);
 
 		if (verboseMode) {
 			pedestrian.getMessageState().clearTopic("percepted pedestrians");

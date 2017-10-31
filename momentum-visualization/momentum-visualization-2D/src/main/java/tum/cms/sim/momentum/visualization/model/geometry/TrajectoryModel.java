@@ -71,8 +71,9 @@ public class TrajectoryModel {
 		return trajectory.strokeProperty();
 	}
 
-	public TrajectoryModel(CustomizationController customizationController, double x, double y, int resolution) {
+	public TrajectoryModel(String id, CustomizationController customizationController, double x, double y, int resolution) {
 		
+		this.id = id;
 		trajectory = new Path();
 		if (customizationController.getCustomizationModel().isTrajectoryRandomColor()) {
 			trajectory.setStroke(new Color(
@@ -82,15 +83,15 @@ public class TrajectoryModel {
 		            1.0));
 		}
 		else {
+			
 			trajectory.strokeProperty().bind(customizationController.getCustomizationModel().trajectoryColorProperty());
 		}
-
 		
 		trajectory.getElements().add(new MoveTo(
 				x * resolution, 
 				y * resolution));
 		trajectory.strokeWidthProperty().bind(customizationController.getCustomizationModel().trajectoryThicknessProperty());
-		trajectory.setTranslateZ(-0.002);
+		trajectory.setTranslateZ(0.002);
 	}
 	
 	public void append(double x, double y, int resolution) {

@@ -50,7 +50,7 @@ The documentation folder provides some basic information on how to use the frame
 
 2. Start your favorite IDE and import the Maven projects to your environment (we use Eclipse). 
 
-3. Make sure you run Maven install on the third-party project because we use libraries that are not part of the Maven repositories.
+3. Make sure you run Maven install on the third-party project because we use libraries that are not part of the Maven repositories. If errors are given, run maven update (eclipse).
 
 4. Typically, the code compiles without errors and you can explore the code-base.
 

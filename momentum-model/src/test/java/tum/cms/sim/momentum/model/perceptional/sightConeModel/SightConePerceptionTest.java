@@ -1,6 +1,5 @@
-package tum.cms.sim.momentum.model.support.perceptional.sightConeModel;
+package tum.cms.sim.momentum.model.perceptional.sightConeModel;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tum.cms.sim.momentum.data.agent.pedestrian.Pedestrian;

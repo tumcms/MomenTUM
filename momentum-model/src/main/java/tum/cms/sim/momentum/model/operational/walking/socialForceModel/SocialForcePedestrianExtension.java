@@ -32,7 +32,7 @@
 
 package tum.cms.sim.momentum.model.operational.walking.socialForceModel;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 /**
@@ -41,7 +41,7 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
  * @author Sven Lauterbach (sven.lauterbach@tum.de)
  *
  */
-public class SocialForcePedestrianExtension implements IPedestrianExtension {
+public class SocialForcePedestrianExtension implements IPedestrianExtansion {
 	
 	private Vector2D pedestrianInteractionForce;
 	private Vector2D obstacleInteractionForce;

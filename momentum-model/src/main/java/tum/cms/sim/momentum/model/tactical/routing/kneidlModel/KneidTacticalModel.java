@@ -38,7 +38,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -152,7 +152,7 @@ public class KneidTacticalModel extends RoutingModel {
 	public void callPostProcessing(SimulationState simulationState) { /* nothing to do */ }
 		
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		KneidlNavigationType navigationType = navigationTypeProbabilitySpace.getItemEquallyDistributed();
 	

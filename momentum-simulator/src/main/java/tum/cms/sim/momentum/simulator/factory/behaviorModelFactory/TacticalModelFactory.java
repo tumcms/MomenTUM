@@ -33,8 +33,7 @@
 package tum.cms.sim.momentum.simulator.factory.behaviorModelFactory;
 
 import tum.cms.sim.momentum.configuration.model.tactical.TacticalModelConfiguration;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.TacticalModel;
 import tum.cms.sim.momentum.model.tactical.participating.StayingModel;
 import tum.cms.sim.momentum.model.tactical.queuing.QueuingModel;
@@ -57,24 +56,23 @@ public class TacticalModelFactory extends ModelFactory<TacticalModelConfiguratio
 		tacticalModel.setExeuctionId(tacticalModel.getId());
 		
 		PerceptionalModel perceptualModel = componentManager.getPerceptionalModel(configuration.getPerceptualModel());
-		BasicQueryModel queryModel = componentManager.getQueryModels().stream().findFirst().get();
 		
-		this.fillComposition(tacticalModel, perceptualModel, queryModel, componentManager);
+		this.fillComposition(tacticalModel, perceptualModel, componentManager);
 		
 		StayingModel participatingModel = componentManager.getStayingModel(configuration.getStayingReference().getModelId());
-		this.fillComposition(participatingModel, perceptualModel, queryModel, componentManager);	
+		this.fillComposition(participatingModel, perceptualModel, componentManager);	
 		tacticalModel.setParticipatingModel(participatingModel);
 		
 		QueuingModel queuingModel = componentManager.getQueuingModel(configuration.getQueuingReference().getModelId());
-		this.fillComposition(queuingModel, perceptualModel, queryModel, componentManager);	
+		this.fillComposition(queuingModel, perceptualModel, componentManager);	
 		tacticalModel.setQueuingModel(queuingModel);
 		
 		RoutingModel routingModel = componentManager.getRoutingModel(configuration.getRoutingReference().getModelId());
-		this.fillComposition(routingModel, perceptualModel, queryModel, componentManager);	
+		this.fillComposition(routingModel, perceptualModel, componentManager);	
 		tacticalModel.setRoutingModel(routingModel);
 		
 		SearchingModel searchingModel = componentManager.getSearchingModel(configuration.getSerachingReference().getModelId());
-		this.fillComposition(searchingModel, perceptualModel, queryModel, componentManager);
+		this.fillComposition(searchingModel, perceptualModel, componentManager);
 		tacticalModel.setSearchingModel(searchingModel);
 		
 		return tacticalModel;

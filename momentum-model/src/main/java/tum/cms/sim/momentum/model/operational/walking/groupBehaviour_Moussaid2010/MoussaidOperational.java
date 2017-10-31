@@ -40,7 +40,7 @@ import org.apache.commons.math3.util.FastMath;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -105,7 +105,7 @@ public class MoussaidOperational extends WalkingModel {
 	}	
 	
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		MoussaidPedestrianExtension newExtension = new MoussaidPedestrianExtension();
 		newExtension.setAttractionEffectsStrength(MoussaidConstant.attraction_effects_strength);
@@ -345,7 +345,7 @@ public class MoussaidOperational extends WalkingModel {
 	// The following methods have been copied from the class HelbingOperational. Moussaid used Helbing's basic acceleration algorithm and added his group effect terms.
 	private Vector2D computeIndividualDirection(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 		
-		List<Vector2D> neighboursDirections = this.perception.getPerceptedPedestrians(pedestrian, simulationState)
+		Collection<Vector2D> neighboursDirections = this.perception.getPerceptedPedestrians(pedestrian, simulationState)
 															.stream()
 															.map(IPedestrian::getHeading)
 															.collect(Collectors.toList());

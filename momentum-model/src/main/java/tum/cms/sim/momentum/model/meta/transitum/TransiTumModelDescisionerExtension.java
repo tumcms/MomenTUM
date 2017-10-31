@@ -36,14 +36,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.model.meta.transitum.data.MultiscaleArea;
 import tum.cms.sim.momentum.model.meta.transitum.data.MultiscaleArea.AreaType;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 // gives the model (operational, tactical, strategical) that belongs to this pedestrian
-public class TransiTumModelDescisionerExtension implements IPedestrianExtension {
+public class TransiTumModelDescisionerExtension implements IPedestrianExtansion {
 	
 	private HashSet<Integer> simulationModels = new HashSet<>();
 	private SimulationType simulationType = null;

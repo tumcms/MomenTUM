@@ -37,7 +37,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -47,7 +47,7 @@ import tum.cms.sim.momentum.model.strategical.DestinationChoiceModel;
 public class NoDecisionStrategical extends DestinationChoiceModel {
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 
 		return null;
 	}

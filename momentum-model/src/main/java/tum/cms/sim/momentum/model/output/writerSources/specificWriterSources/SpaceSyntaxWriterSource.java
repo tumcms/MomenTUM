@@ -42,11 +42,9 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.output.writerSources.genericWriterSources.SingleElementWriterSource;
-import tum.cms.sim.momentum.utility.generic.Unique;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
-import tum.cms.sim.momentum.utility.spaceSyntax.DepthMapSubArea;
 import tum.cms.sim.momentum.utility.spaceSyntax.SpaceSyntax;
 
 public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
@@ -73,7 +71,6 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 		this.dataItemNames.add("adding fake key");
 		this.xStream = new XStream();
 		this.createAliasesForClasses(this.xStream, scenarioManager.getSpaceSyntax().getDepthMap().getLattice());
-		
 	}
 
 	private void createAliasesForClasses(XStream xStream, ILattice lattice) {
@@ -84,21 +81,17 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 
 		xStream.alias("DepthMap", DepthMap.class);
 		xStream.omitField(DepthMap.class, "lattice");
-		xStream.addImplicitCollection(DepthMap.class, "disconnectedAreas");
+		xStream.addImplicitCollection(DepthMap.class, "connectedIndices");
 		xStream.useAttributeFor(DepthMap.class, "domainRows");
 		xStream.useAttributeFor(DepthMap.class, "domainColumns");
+
+		xStream.useAttributeFor(DepthMap.class, "minValue");
+		xStream.useAttributeFor(DepthMap.class, "maxValue");
+		
 		xStream.useAttributeFor(DepthMap.class, "maxX");
 		xStream.useAttributeFor(DepthMap.class, "minX");
 		xStream.useAttributeFor(DepthMap.class, "maxY");
 		xStream.useAttributeFor(DepthMap.class, "minY");
-		
-		xStream.useAttributeFor(Unique.class, "id");
-		xStream.useAttributeFor(Unique.class, "name");
-		
-		xStream.alias("DepthMapSubArea", DepthMapSubArea.class);
-		xStream.addImplicitCollection(DepthMapSubArea.class, "connectedIndices");
-		xStream.useAttributeFor(DepthMapSubArea.class, "minimum");
-		xStream.useAttributeFor(DepthMapSubArea.class, "maximum");
 		
 		xStream.alias("CellIndex", CellIndex.class);
 		xStream.omitField(CellIndex.class, "index");

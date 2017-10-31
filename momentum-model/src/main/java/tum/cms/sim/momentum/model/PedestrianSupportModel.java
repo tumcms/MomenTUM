@@ -30,53 +30,57 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.visualization.calculation;
+package tum.cms.sim.momentum.model;
 
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
+import java.util.Collection;
 
-public class DensityColor {
+import tum.cms.sim.momentum.data.agent.pedestrian.PedestrianManager;
+import tum.cms.sim.momentum.data.layout.ScenarioManager;
+import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.infrastructure.execute.callable.Callable;
+import tum.cms.sim.momentum.infrastructure.execute.callable.IGenericCallable;
+import tum.cms.sim.momentum.utility.generic.IHasProperties;
+import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 
-	public static Paint getColor(double currentDensity, double maximalDensity) {
-		
-		return DensityColor.getColor(currentDensity, maximalDensity, 1.0, false);
-	}
-		
-	public static Paint getColor(double currentDensity, double maximalDensity, double transparency, boolean invert) {
-		
-		//maximalDensity = 50.0;
-		int base = invert ? 255 : 0 ;
-		double densityBase = (currentDensity/maximalDensity);// + 0.5;
-		
-		if (densityBase <= Double.MIN_VALUE) {
-			
-			return Color.rgb(base, base, base, transparency);
-		}
-		
-		if(densityBase > 1.0) {
-			
-			densityBase = 1.0;
-		}
-		
-		Integer rgbValueGreen = DensityColor.calculateRgbForGreen(currentDensity, maximalDensity);
-		Integer rgbValueRed = DensityColor.calculateRgbForRed(currentDensity, maximalDensity);
-		
-//		Color color = Color.rgb(rgbValueRed, rgbValueGreen, 0, transparency);
-//		
-//		return color.deriveColor(color.getHue(), color.getSaturation(), densityBase, color.getOpacity());
-		
-		return Color.rgb(rgbValueRed, rgbValueGreen, 0, transparency);
+public abstract class PedestrianSupportModel extends Callable implements IHasProperties, IGenericCallable {
+
+	protected PropertyBackPack properties = null;
+	
+	@Override
+	public PropertyBackPack getPropertyBackPack() {
+		return properties;
 	}
 	
-	private static Integer calculateRgbForGreen(double currentDensity, double maximalDensity) {
-		
-		Double doubleValue = (255 * (1 - currentDensity / maximalDensity));
-		return doubleValue < 0 ? 0 : doubleValue.intValue();
+	@Override
+	public void setPropertyBackPack(PropertyBackPack propertyContainer) {
+
+		this.properties = propertyContainer; 
+	}
+	
+	protected PedestrianManager pedestrianManager = null;
+
+	public void setPedestrianManager(PedestrianManager pedestrianManager) {
+
+		this.pedestrianManager = pedestrianManager;
 	}
 
-	private static Integer calculateRgbForRed(double currentDensity, double maximalDensity) {
+	protected ScenarioManager scenarioManager = null;
 
-		Double doubleValue = (255 * (currentDensity / maximalDensity));
-		return doubleValue > 255 ? 255 : doubleValue.intValue();
+	public void setScenarioManager(ScenarioManager scenarioManager) {
+		this.scenarioManager = scenarioManager;
 	}
+	
+	@Override
+	public boolean isMultiThreading() {
+
+		return false;
+	}
+	
+	@Override
+	public void execute(Collection<? extends Void> splittTask, SimulationState simulationState) {
+
+		this.supportModelUpdate(simulationState);
+	}
+	
+	protected abstract void supportModelUpdate(SimulationState simulationState);
 }

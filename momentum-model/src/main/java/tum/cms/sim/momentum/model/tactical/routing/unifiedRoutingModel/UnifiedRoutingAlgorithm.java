@@ -39,7 +39,7 @@ import java.util.Set;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.underylingModels.AvoidanceCalculator;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.underylingModels.BeelineHeuristicsCalculator;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.underylingModels.DecisionDurationCalculator;

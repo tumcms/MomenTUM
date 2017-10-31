@@ -35,7 +35,7 @@ package tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.unifi
 import java.util.HashMap;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.KneidlIterativeWeightCalculator;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.antGbSallNavigation.AntGbSallWeightCalculator;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.fastestNavigation.FastestWeightCalculator;

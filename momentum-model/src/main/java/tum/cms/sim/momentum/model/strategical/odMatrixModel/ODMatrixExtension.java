@@ -32,9 +32,9 @@
 
 package tum.cms.sim.momentum.model.strategical.odMatrixModel;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 
-public class ODMatrixExtension implements IPedestrianExtension {
+public class ODMatrixExtension implements IPedestrianExtansion {
 
 	private Double currentWaitingTime = null;
 

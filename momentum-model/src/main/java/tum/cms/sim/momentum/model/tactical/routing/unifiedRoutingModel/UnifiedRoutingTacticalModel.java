@@ -41,12 +41,12 @@ import java.util.Set;
 import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.AvoidanceArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.UnifiedRoutingConstant.DecisionDuration;
 import tum.cms.sim.momentum.utility.graph.Edge;
@@ -165,7 +165,7 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 	}
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return new UnifiedRoutingPedestrianExtension(this.typeExtractor, 
 				this.herding,
@@ -235,7 +235,7 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 			}
 
 			if(route == null || depth == 0 ||
-			   !perception.isVisible(pedestrian.getPosition(), route.getCurrentVertex()) ||
+			   !perception.isVisible(pedestrian, route.getCurrentVertex()) ||
 			   route.getCurrentVertex().getId().equals(end.getId())) {
 				
 				nextToCurrentVisit = route.getCurrentVertex();

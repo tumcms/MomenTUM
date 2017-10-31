@@ -38,11 +38,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.math3.util.FastMath;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
@@ -62,7 +62,7 @@ public class DynamicFloorfieldOperational extends WalkingModel {
 	private ILattice layoutLattice = null;
 
 	@Override
-	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		DynamicFloorfieldPedestrianExtension newExtension = new DynamicFloorfieldPedestrianExtension();	
 		return newExtension;
@@ -79,11 +79,8 @@ public class DynamicFloorfieldOperational extends WalkingModel {
 		//load the lattice from the config and get it from the scenario manager
 		int latticeId = this.properties.getIntegerProperty(scenarioLatticeIdName);
 		
-		layoutLattice = this.scenarioManager.getScenarios().getLattices().stream()
-				.filter(grid -> grid.getId() == latticeId)
-				.findFirst()
-				.get();
-			
+		layoutLattice = this.scenarioManager.getLattice(latticeId);
+
 		for(int iter = 1; iter <= simulationState.getNumberOfThreads(); iter++) {
 			
 			ILattice doubleLattice = LatticeTheoryFactory.createLattice(layoutLattice.getName() + "_" + String.valueOf(iter),
@@ -219,7 +216,7 @@ public class DynamicFloorfieldOperational extends WalkingModel {
 			
 		case Quadratic:
 				
-			if (currentStock >= cellEdgeSize * FastMath.sqrt(2.0) && layoutLattice.getNeighborhoodType() == NeighbourhoodType.Touching) {
+			if (currentStock >= cellEdgeSize * FastMath.sqrt(2.0) && layoutLattice.getNeighborhoodType() == NeighborhoodType.Touching) {
 				
 				reachableCells = QuadraticLatticCalculation.getAllMooreNeighborIndices(currentCellIndex,
 						layoutLattice.getNumberOfColumns(),

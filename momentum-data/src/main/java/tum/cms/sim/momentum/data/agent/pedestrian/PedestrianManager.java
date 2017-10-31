@@ -44,7 +44,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.state.other.StaticState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.infrastructure.execute.IUpdateState;
@@ -91,6 +91,11 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 	public Collection<IPedestrian> getAllPedestriansImmutable() {
 		
 		return pedestrianContainer.getAllPedestriansImmutable();
+	}
+	
+	public Collection<IPedestrian> getPedestrians(List<Integer> ids) {
+		
+		return pedestrianContainer.getPedestriansForList(ids);
 	}
 	
 	public Collection<IRichPedestrian> getAllPedestrians() {
@@ -184,7 +189,7 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 			
 			for(IExtendsPedestrian extender : extenders) {
 				
-				IPedestrianExtension extension = extender.onPedestrianGeneration(pedestrian);
+				IPedestrianExtansion extension = extender.onPedestrianGeneration(pedestrian);
 				pedestrian.setExtensionState(extension, extender);
 				afterImage.setExtensionState(extension, extender);
 			}
@@ -253,11 +258,18 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 			return (Collection<IPedestrian>)((Collection<? extends IPedestrian>)afterImagePedestrians.values());
 		}
 
-		public Collection<? extends IRichPedestrian> getPedestrainsForThread(int startFilterFromIndex, int endFilterToIndex) {
+		public Collection<IRichPedestrian> getPedestrainsForThread(int startFilterFromIndex, int endFilterToIndex) {
 			
-			return new ArrayList<Pedestrian>(originalPedestrians.values()).subList(startFilterFromIndex, endFilterToIndex);
+			return new ArrayList<IRichPedestrian>(originalPedestrians.values()).subList(startFilterFromIndex, endFilterToIndex);
 		}
 
+		public Collection<IPedestrian> getPedestriansForList(List<Integer> ids) {
+			
+			ArrayList<IPedestrian> pedestrianList = new ArrayList<>();
+			ids.forEach(id -> pedestrianList.add(originalPedestrians.get(id)));
+			return pedestrianList;
+		}
+		
 //		public Collection<IPedestrian> getNearestPedestriansImmutable(IPedestrian pedestrian, double distance) {
 //			
 //			List<IPedestrian> result = null;

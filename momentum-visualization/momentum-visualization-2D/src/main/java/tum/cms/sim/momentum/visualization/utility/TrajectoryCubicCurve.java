@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.visualization.calculation;
+package tum.cms.sim.momentum.visualization.utility;
 
 import javafx.geometry.Point2D;
 import javafx.scene.shape.CubicCurveTo;

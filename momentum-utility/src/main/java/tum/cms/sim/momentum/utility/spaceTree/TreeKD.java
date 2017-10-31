@@ -157,7 +157,7 @@ public class TreeKD<T> {
 			nearest = this.kdTree.nearest(simplePosition, 1);
 		}
 	    
-	    return nearest == null ? null : nearest.get(0);
+	    return nearest == null || nearest.size() == 0 ? null : nearest.get(0);
 	}
 	
 	/**

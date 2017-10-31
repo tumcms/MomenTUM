@@ -38,11 +38,11 @@ import tum.cms.sim.momentum.configuration.generic.FormatString;
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.data.agent.pedestrian.IExtendsPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.PedestrianManager;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.model.IPedestrianBehavioralModel;
 
-public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, K extends IPedestrianExtension>
+public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, K extends IPedestrianExtansion>
 	extends SingleSetWriterSource {
 	
 	private Iterator<IRichPedestrian> currentPedestrians = null;

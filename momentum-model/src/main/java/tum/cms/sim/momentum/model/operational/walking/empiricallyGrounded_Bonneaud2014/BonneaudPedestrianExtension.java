@@ -32,9 +32,9 @@
 
 package tum.cms.sim.momentum.model.operational.walking.empiricallyGrounded_Bonneaud2014;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
 
-public class BonneaudPedestrianExtension implements IPedestrianExtension {
+public class BonneaudPedestrianExtension implements IPedestrianExtansion {
 
 	private double angularVelocity;
 	
