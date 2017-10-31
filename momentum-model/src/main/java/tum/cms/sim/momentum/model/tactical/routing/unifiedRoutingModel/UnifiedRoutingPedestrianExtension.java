@@ -32,10 +32,10 @@
 
 package tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.model.tactical.routing.unifiedRoutingModel.UnifiedRoutingConstant.DecisionDuration;
 
-public class UnifiedRoutingPedestrianExtension implements IPedestrianExtansion {
+public class UnifiedRoutingPedestrianExtension implements IPedestrianExtension {
 
 	private double greedyBeelineWeightProportion = 0.0;
 	private double shortestWeightProportion = 0.0;

@@ -87,7 +87,7 @@ public interface IPedestrian extends IUnique {
 
 	public Area getNextNavigationTarget();
 	
-	public IPedestrianExtansion getExtensionState(IExtendsPedestrian modelReference);
+	public IPedestrianExtension getExtensionState(IExtendsPedestrian modelReference);
 
 	public MessageState getMessageState();
 

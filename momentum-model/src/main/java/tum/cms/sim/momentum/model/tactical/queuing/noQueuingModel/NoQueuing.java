@@ -37,7 +37,7 @@ import java.util.List;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.QueuingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -49,7 +49,7 @@ import tum.cms.sim.momentum.utility.geometry.operation.GeometryAdditionals;
 public class NoQueuing extends QueuingModel {
 
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return null; // Nothing to do
 	}

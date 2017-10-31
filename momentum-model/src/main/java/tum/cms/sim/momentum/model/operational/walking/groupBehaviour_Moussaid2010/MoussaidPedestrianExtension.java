@@ -32,10 +32,10 @@
 
 package tum.cms.sim.momentum.model.operational.walking.groupBehaviour_Moussaid2010;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
-public class MoussaidPedestrianExtension implements IPedestrianExtansion {
+public class MoussaidPedestrianExtension implements IPedestrianExtension {
 
 	// ATTRIBUTES
 	// ----------------------------------------------------------------------

@@ -33,10 +33,10 @@
 package tum.cms.sim.momentum.model.operational.walking.cellularAutomatons.dynamicFloorfield_Kneidl2012;
 
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 
-public class DynamicFloorfieldPedestrianExtension implements IPedestrianExtansion {
+public class DynamicFloorfieldPedestrianExtension implements IPedestrianExtension {
 	
 	private CellIndex desiredCell;
 	private double stock = 0;
