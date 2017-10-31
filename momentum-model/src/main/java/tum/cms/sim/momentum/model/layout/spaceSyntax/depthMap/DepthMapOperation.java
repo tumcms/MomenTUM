@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.layout.spaceSyntax.depthMapModel;
+package tum.cms.sim.momentum.model.layout.spaceSyntax.depthMap;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -55,7 +55,7 @@ import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
 
-public class DepthMapModel extends SpaceSyntaxOperation {
+public class DepthMapOperation extends SpaceSyntaxOperation {
 	
 	private static String scenarioLatticeIdName = "scenarioLatticeId";
 
@@ -78,22 +78,19 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 				.collect(Collectors.toList());
 
 
-		Set<CellIndex> connectedArea = this.floodLatticeFromOrigins(originCenterCells, lattice);
-		this.computeDepthMap(connectedArea, lattice);
-		Double[] latticeMinMaxValues = this.getLatticeMinMaxForConnectedArea(connectedArea, lattice);
+		Set<CellIndex> connectedIndices = this.floodLatticeFromOrigins(originCenterCells, lattice);
+		this.computeDepthMap(connectedIndices, lattice);
 
 		DepthMap depthMap = new DepthMap(
 				lattice, 
-				connectedArea,
-				latticeMinMaxValues[0],
-				latticeMinMaxValues[1]
+				connectedIndices
 		);
 		depthMap.setId(this.getId());
 		depthMap.setName(this.getName());
 		
-		this.scenarioManager.getSpaceSyntax().setDepthMap(depthMap);
+		this.scenarioManager.getSpaceSyntaxes().add(depthMap);
 
-		this.writeResultAsImage(depthMap, lattice);
+		//this.writeResultAsImage(depthMap, lattice);
 	}
 
 	@Override
@@ -171,39 +168,7 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 				}
 			}));
 	}
-
-	/**
-	 * Computes the minimum and maximum Double value respectively for each Area.
-	 * 
-	 * @param connectedAreas
-	 * @return a List which contains the minimum and maximum paired to the
-	 *         respective connected area.
-	 */
-
-	private Double[] getLatticeMinMaxForConnectedArea(Set<CellIndex> connectedIndices, ILattice lattice) {
-
-			Double[] minMax = new Double[] {
-					Double.MAX_VALUE, // first value is minimum
-					Double.MIN_VALUE}; // second value is maximum
-
-			connectedIndices.stream()
-				.forEach(cellIndex -> {
-
-					Double currentValue = (Double) lattice.getCellNumberValue(cellIndex);
-	
-					if (currentValue < minMax[0]) {
-						minMax[0] = currentValue;
-					}
-	
-					if (currentValue > minMax[1]) {
-						minMax[1] = currentValue;
-					}
-			});
-
-		return minMax;
-	}
-
-	
+	/*
 	private void writeResultAsImage(DepthMap depthMap, ILattice lattice) {
 
 		int width = depthMap.getDomainColumns();
@@ -256,5 +221,5 @@ public class DepthMapModel extends SpaceSyntaxOperation {
 		} catch (IOException e) {
 			LoggingManager.logUser("Schreiben des Bildes fehlgeschlagen...");
 		}
-	}
+	}*/
 }

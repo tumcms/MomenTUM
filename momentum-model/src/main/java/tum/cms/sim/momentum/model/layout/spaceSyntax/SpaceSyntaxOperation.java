@@ -58,27 +58,4 @@ public abstract class SpaceSyntaxOperation extends Callable implements IHasPrope
 	public void setScenario(ScenarioManager scenario) {
 		this.scenarioManager = scenario;
 	}
-	/*
-	protected ArrayList<Callable> operations = new ArrayList<>();
-	
-	public ArrayList<Callable> getOperations() {
-		return operations;
-	}
-
-	public void setOperations(ArrayList<Callable> operations) {
-		this.operations = operations;
-	}*/
-	
-	/*
-	@Override
-	public void callPreProcessing(SimulationState simulationState) {
-		
-		operations.forEach(operation -> operation.callPreProcessing(simulationState));
-	}
-
-	@Override
-	public void callPostProcessing(SimulationState simulationState) {
-		
-		operations.forEach(operation -> operation.callPostProcessing(simulationState));
-	}*/
 }

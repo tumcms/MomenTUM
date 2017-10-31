@@ -1054,6 +1054,33 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		return cells;
 	}
 	
+	/* (non-Javadoc)
+	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getMinMaxValuesForIndices(tum.cms.sim.momentum.utility.lattice.CellIndex)
+	 */
+	@Override
+	public Double[] getMinMaxValuesForIndices(Set<CellIndex> connectedIndices) {
+
+			Double[] minMax = new Double[] {
+					Double.MAX_VALUE, // first value is minimum
+					Double.MIN_VALUE}; // second value is maximum
+
+			connectedIndices.stream()
+				.forEach(cellIndex -> {
+
+					Double currentValue = (Double) this.getCellNumberValue(cellIndex);
+	
+					if (currentValue < minMax[0]) {
+						minMax[0] = currentValue;
+					}
+	
+					if (currentValue > minMax[1]) {
+						minMax[1] = currentValue;
+					}
+			});
+
+		return minMax;
+	}
+	
 	@Override
 	public List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, double value) {
 		
