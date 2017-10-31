@@ -92,7 +92,7 @@ public class LatticeModel extends Callable implements IHasProperties {
 		
 		Boolean addAdditionalCells = this.properties.getBooleanProperty(this.addAdditionalCellsName);
 		
-		if (addAdditionalCells == false) {
+		if (addAdditionalCells == null || addAdditionalCells == false) {
 			this.lattice = LatticeTheoryFactory.createLattice(				
 					latticeConfiguration.getName(), 
 					latticeConfiguration.getBehaviorType(),
