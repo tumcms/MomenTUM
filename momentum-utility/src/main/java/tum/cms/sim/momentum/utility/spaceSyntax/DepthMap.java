@@ -71,7 +71,7 @@ public class DepthMap extends SpaceSyntax {
 
 		Double[] latticeMinMaxValues = lattice.getMinMaxValuesForIndices(connectedIndices);
 		this.minValue = latticeMinMaxValues[0];
-		this.maxValue = latticeMinMaxValues[0];
+		this.maxValue = latticeMinMaxValues[1];
 		
 		this.minX = lattice.getMinPositionBoundingBox().getXComponent();
 		this.minY = lattice.getMinPositionBoundingBox().getYComponent();
