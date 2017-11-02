@@ -40,7 +40,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 
-@XStreamAlias("DepthMap")
+@XStreamAlias("SpaceSyntax")
 public class DepthMap extends SpaceSyntax {
 	
 	@XStreamAsAttribute
