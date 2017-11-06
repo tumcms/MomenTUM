@@ -104,25 +104,25 @@ public class FindDialogCreator {
 				switch(newValue) {
 				case Area:
 					idChooser.getItems().clear();
-					idChooser.getItems().setAll(coreController.getVisualizationModel().getAreaShapes().keySet());
+					idChooser.getItems().setAll(coreController.getPlaybackController().getPlaybackModel().getAreaShapes().keySet());
 					Collections.sort(idChooser.getItems(), new NumericStringComparator());
 					break;
 					
 				case Edge:
 					idChooser.getItems().clear();
-					idChooser.getItems().setAll(coreController.getVisualizationModel().getEdgeShapes().keySet());
+					idChooser.getItems().setAll(coreController.getPlaybackController().getPlaybackModel().getEdgeShapes().keySet());
 					//TODO: sort list items
 					break;
 					
 				case Pedestrian:
 					idChooser.getItems().clear();
-					idChooser.getItems().setAll(coreController.getVisualizationModel().getPedestrianShapes().keySet());
+					idChooser.getItems().setAll(coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().keySet());
 					Collections.sort(idChooser.getItems(), new NumericStringComparator());
 					break;
 					
 				case Vertex:
 					idChooser.getItems().clear();
-					coreController.getVisualizationModel().getVertexShapes().keySet().forEach(key -> {
+					coreController.getPlaybackController().getPlaybackModel().getVertexShapes().keySet().forEach(key -> {
 						idChooser.getItems().add(String.valueOf(key));
 					});
 					Collections.sort(idChooser.getItems(), new NumericStringComparator());
@@ -148,24 +148,24 @@ public class FindDialogCreator {
 				
 				switch(entityTypeChooser.getValue()) {
 				case Area:
-					selectedShape = coreController.getVisualizationModel().getAreaShapes().get(idChooser.getValue());
-					details = new DetailsModel(coreController.getVisualizationModel().getAreaShapes().get(idChooser.getValue()).getDataProperties());
+					selectedShape = coreController.getPlaybackController().getPlaybackModel().getAreaShapes().get(idChooser.getValue());
+					details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getAreaShapes().get(idChooser.getValue()).getDataProperties());
 					selectionHandler.setSelection(selectedShape, true, details);
 					
 					break;
 				case Edge:
-					selectedShape = coreController.getVisualizationModel().getEdgeShapes().get(idChooser.getValue());
-					details = new DetailsModel(coreController.getVisualizationModel().getEdgeShapes().get(idChooser.getValue()).getDataProperties());
+					selectedShape = coreController.getPlaybackController().getPlaybackModel().getEdgeShapes().get(idChooser.getValue());
+					details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getEdgeShapes().get(idChooser.getValue()).getDataProperties());
 					selectionHandler.setSelection(selectedShape, true, details);
 					break;
 				case Pedestrian:
-					selectedShape = coreController.getVisualizationModel().getPedestrianShapes().get(idChooser.getValue());
-					details = new DetailsModel(coreController.getVisualizationModel().getPedestrianShapes().get(idChooser.getValue()).getDataProperties());
+					selectedShape = coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(idChooser.getValue());
+					details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(idChooser.getValue()).getDataProperties());
 					selectionHandler.setSelection(selectedShape, true, details);
 					break;
 				case Vertex:
-					selectedShape = coreController.getVisualizationModel().getVertexShapes().get(Integer.parseInt(idChooser.getValue()));
-					details = new DetailsModel(coreController.getVisualizationModel().getVertexShapes().get(Integer.parseInt(idChooser.getValue())).getDataProperties());
+					selectedShape = coreController.getPlaybackController().getPlaybackModel().getVertexShapes().get(Integer.parseInt(idChooser.getValue()));
+					details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getVertexShapes().get(Integer.parseInt(idChooser.getValue())).getDataProperties());
 					selectionHandler.setSelection(selectedShape, true, details);
 					break;
 				}

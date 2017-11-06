@@ -58,7 +58,6 @@ public class SimulationOutputReader {
 	private CsvReader dataSetReader = null;
 	private int currentBufferSize = -1;
 	private boolean clearBuffer = false;
-	private boolean activeAnimating = false;
 
 	private double currentAsyncIndex = 0L;
 	private Double bufferedSetIndexLeft = null;
@@ -109,9 +108,24 @@ public class SimulationOutputReader {
 		dataSetBuffer.forEach((cluster, data) -> dataSetBuffer.put(cluster, null));
 	}
 
-	public boolean isLoadedForIndex(double index) {
+	public CsvType getCsvType() {
+		return csvType;
+	}
+	
+	public boolean isDataWithContent(Double index) {
+		
+		boolean isDataExistent = true;
+		
+		if (dataSetBuffer.get(index) == null || dataSetBuffer.get(index).isEmpty()) {
+		
+			isDataExistent = false;
+		}
 
-		return this.dataSetBuffer.containsKey(index);
+		return isDataExistent;
+	}
+
+	public String getFilePathHash() {
+		return filePathHash;
 	}
 
 	private void setIndexContent(Long timeIndex, Long lineStart, Long pointer) {
@@ -164,6 +178,41 @@ public class SimulationOutputReader {
 			e.printStackTrace();
 		} 
 		return "."+hash.substring(hash.length()-6, hash.length());
+	}
+
+	public boolean makeReadyForIndex(double index) throws Exception {
+
+		boolean indexExists = false;
+		
+		this.asyncReadDataSet(index); // initialize loading the data
+		
+		// if the modulo index is not zero, the reader is not
+		// compatible with the current timeStep
+		if(index % this.dataSetReader.getTimeStepDifference() != 0.0) {
+			
+			// However, this means the reader is ready, because it has nothing to do
+			// still we dislike this and interpolate to the closest (last index)
+			// double interpolatedTimeStep = index - (index % this.dataSetReader.getTimeStepDifference());
+			// still.. this is not a good solutions, actually:
+			// Create more dataSetBuffer indices for the non existing time steps and link
+			// the content of the neighboring data sets to the empty indices.
+			indexExists = true;
+		}
+		else  { // here the reader is compatible with the index
+			
+			// check if the data is ready
+			if(dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady() ) {
+				
+				// if not ready, data is being red, if null data does not exists
+				indexExists = false;
+			}
+			else {
+				
+				indexExists = true;
+			}
+		}
+		
+		return indexExists;
 	}
 
 	public void clearBuffer(double index) {
@@ -247,45 +296,6 @@ public class SimulationOutputReader {
 		}
 	}
 
-	public void readStandardIndex() throws FileNotFoundException, IOException {
-
-		Integer lineCounter = 0;
-		Long timeStepOfLastLine = null;
-		Long timeStepOfCurrentLine = null;
-
-		if (new File(this.getDataSetReader().getInputFilePath()).exists()) {
-
-			try (BufferedReader in = new BufferedReader(new FileReader(this.getDataSetReader().getInputFilePath()))) {
-
-				String line = in.readLine(); // header
-
-				long sizeOfTimeStepLines = line.length() + 2;
-				
-				while ((line = in.readLine()) != null) {
-
-					String[] content = line.split(";");
-
-					timeStepOfCurrentLine = Long.parseLong(content[0]);
-
-					if (timeStepOfLastLine == null) {
-						
-						this.setIndexContent(Long.parseLong(content[0]), Long.parseLong(lineCounter.toString()),
-								 sizeOfTimeStepLines);
-					}
-
-					if (timeStepOfLastLine != null && timeStepOfCurrentLine.compareTo(timeStepOfLastLine) != 0) {
-						
-						this.setIndexContent(Long.parseLong(content[0]), Long.parseLong(lineCounter.toString()),
-								 sizeOfTimeStepLines);
-					}
-
-					sizeOfTimeStepLines += line.length() + 2;
-					lineCounter++;
-					timeStepOfLastLine = timeStepOfCurrentLine;
-				}
-			}
-		}
-	}
 
 	public SimulationOutputCluster asyncReadDataSet(double index) throws Exception {
 
@@ -329,7 +339,8 @@ public class SimulationOutputReader {
 			if (lineIndex >= 0) {
 
 				this.loadRecords(index, lineIndex, 1);
-			} else {
+			}
+			else {
 
 				dataSetBuffer.put(index, new SimulationOutputCluster(index));
 			}
@@ -349,6 +360,46 @@ public class SimulationOutputReader {
 		}
 	}
 
+	private void readStandardIndex() throws FileNotFoundException, IOException {
+
+		Integer lineCounter = 0;
+		Long timeStepOfLastLine = null;
+		Long timeStepOfCurrentLine = null;
+
+		if (new File(this.getDataSetReader().getInputFilePath()).exists()) {
+
+			try (BufferedReader in = new BufferedReader(new FileReader(this.getDataSetReader().getInputFilePath()))) {
+
+				String line = in.readLine(); // header
+
+				long sizeOfTimeStepLines = line.length() + 2;
+				
+				while ((line = in.readLine()) != null) {
+
+					String[] content = line.split(";");
+
+					timeStepOfCurrentLine = Long.parseLong(content[0]);
+
+					if (timeStepOfLastLine == null) {
+						
+						this.setIndexContent(Long.parseLong(content[0]), Long.parseLong(lineCounter.toString()),
+								 sizeOfTimeStepLines);
+					}
+
+					if (timeStepOfLastLine != null && timeStepOfCurrentLine.compareTo(timeStepOfLastLine) != 0) {
+						
+						this.setIndexContent(Long.parseLong(content[0]), Long.parseLong(lineCounter.toString()),
+								 sizeOfTimeStepLines);
+					}
+
+					sizeOfTimeStepLines += line.length() + 2;
+					lineCounter++;
+					timeStepOfLastLine = timeStepOfCurrentLine;
+				}
+			}
+		}
+	}
+	
 	private void loadRecords(double index, Long lineIndex, double buffer) throws Exception {
 
 		SimulationOutputCluster dataSet = null;
@@ -497,36 +548,6 @@ public class SimulationOutputReader {
 				}
 			}
 		}
-	}
-
-	public boolean isActiveAnimating() {
-		return activeAnimating;
-	}
-
-	public void setActiveAnimating(boolean activeAnimating) {
-		this.activeAnimating = activeAnimating;
-	}
-
-	public CsvType getCsvType() {
-		return csvType;
-	}
-	
-	/**
-	 * 
-	 * @param timeStep
-	 * @return if timestep is in this {@link SimulationOutputReader}
-	 */
-	public boolean containsTimeStep(Double timeStep) {
-		double tmpTimeStepDuration = getTimeStepDuration();
-		while(((int) tmpTimeStepDuration) != tmpTimeStepDuration) {
-			timeStep *= 10;
-			tmpTimeStepDuration *= 10;
-		}
-		return (timeStep % tmpTimeStepDuration) == 0.0;
-	}
-
-	public String getFilePathHash() {
-		return filePathHash;
 	}
 
 }

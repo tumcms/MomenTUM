@@ -33,13 +33,18 @@
 package tum.cms.sim.momentum.visualization.model;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.MapProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleMapProperty;
+import javafx.collections.FXCollections;
+import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 
 /**
  * Contains the data for the whole application, like the resolution 
@@ -59,6 +64,21 @@ public class CoreModel {
 	private final BooleanProperty csvLoaded = new SimpleBooleanProperty(this, "csvLoaded", false);
 	private final BooleanProperty layoutLoaded = new SimpleBooleanProperty(this, "layoutLoaded", false);
 
+	private final MapProperty<String, SimulationOutputReader> simulationOutputReaders = new SimpleMapProperty<String, SimulationOutputReader>(
+			this, "simulationOutputReaders", FXCollections.observableHashMap());
+	
+	public MapProperty<String, SimulationOutputReader> simulationOutputReadersProperty() {
+		return simulationOutputReaders;
+	}
+
+	public Map<String, SimulationOutputReader> getSimulationOutputReaders() {
+		return simulationOutputReaders.get();
+	}
+
+	public void putSimulationOutputReader(String identifier, SimulationOutputReader reader) {
+		this.simulationOutputReaders.put(identifier,reader);
+	}
+	
 	public CoreModel() {
 		ResourceBundle bundle = null;
 		
