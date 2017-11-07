@@ -41,19 +41,24 @@ import tum.cms.sim.momentum.configuration.scenario.ScenarioConfiguration;
 import tum.cms.sim.momentum.configuration.scenario.VertexConfiguration;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
-import tum.cms.sim.momentum.visualization.controller.VisualizationController;
-import tum.cms.sim.momentum.visualization.model.geometry.*;
+import tum.cms.sim.momentum.visualization.controller.PlaybackController;
+import tum.cms.sim.momentum.visualization.model.geometry.AreaModel;
+import tum.cms.sim.momentum.visualization.model.geometry.TaggedAreaModel;
+import tum.cms.sim.momentum.visualization.model.geometry.EdgeModel;
+import tum.cms.sim.momentum.visualization.model.geometry.LatticeModel;
+import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
+import tum.cms.sim.momentum.visualization.model.geometry.VertexModel;
 
 public abstract class GeometryModelBusinessLogic {
 
 	public static void createLayout(ScenarioConfiguration scenarioConfiguration, CoreController coreController) {
 
-		CustomizationController customizationController = coreController.getVisualizationController().getCustomizationController();
-		VisualizationController visualizationController = coreController.getVisualizationController();
+		CustomizationController customizationController = coreController.getPlaybackController().getCustomizationController();
+		PlaybackController playbackController = coreController.getPlaybackController();
 		
-		visualizationController.getVisualizationModel().setMaxSizeX(scenarioConfiguration.getMaxX()); // without
+		playbackController.getPlaybackModel().setMaxSizeX(scenarioConfiguration.getMaxX()); // without
 		// resolution!
-		visualizationController.getVisualizationModel().setMaxSizeY(scenarioConfiguration.getMaxY()); // without
+		playbackController.getPlaybackModel().setMaxSizeY(scenarioConfiguration.getMaxY()); // without
 		// resolution!
 
 		// 1. lattice
@@ -62,11 +67,11 @@ public abstract class GeometryModelBusinessLogic {
 		if (scenarioConfiguration.getLattices() != null) {
 			// paints only the first lattice
 			tempLatticeList.add(new LatticeModel(scenarioConfiguration.getLattices().get(0), scenarioConfiguration,
-					coreController, customizationController, visualizationController.getVisibilitiyModel()));
+					coreController, customizationController, playbackController.getVisibilitiyModel()));
 		}
 
-		visualizationController.getVisualizationModel().getLatticeShapes().clear();
-		visualizationController.getVisualizationModel().addLatticeShapes(FXCollections.observableArrayList(tempLatticeList));
+		playbackController.getPlaybackModel().getLatticeShapes().clear();
+		playbackController.getPlaybackModel().addLatticeShapes(FXCollections.observableArrayList(tempLatticeList));
 
 		// 2. areas
 		HashMap<String, AreaModel> tempAreaMap = new HashMap<String, AreaModel>();
@@ -79,8 +84,8 @@ public abstract class GeometryModelBusinessLogic {
 			});
 		}
 
-		visualizationController.getVisualizationModel().getAreaShapes().clear();
-		visualizationController.getVisualizationModel().putAreaShapes(tempAreaMap);
+		playbackController.getPlaybackModel().getAreaShapes().clear();
+		playbackController.getPlaybackModel().putAreaShapes(tempAreaMap);
 
         // 2.5 tagged areas
         HashMap<String, TaggedAreaModel> tempTaggedAreaMap = new HashMap<String, TaggedAreaModel>();
@@ -93,8 +98,8 @@ public abstract class GeometryModelBusinessLogic {
             });
         }
 
-        visualizationController.getVisualizationModel().getTaggedAreaShapes().clear();
-        visualizationController.getVisualizationModel().putTaggedAreaShapes(tempTaggedAreaMap);
+        playbackController.getPlaybackModel().getTaggedAreaShapes().clear();
+        playbackController.getPlaybackModel().putTaggedAreaShapes(tempTaggedAreaMap);
 
 		// 3. graph
 		if (scenarioConfiguration.getGraphs() != null) {
@@ -107,13 +112,13 @@ public abstract class GeometryModelBusinessLogic {
 				scenarioConfiguration.getGraphs().forEach(graphConfig -> {
 					for (VertexConfiguration vertex : graphConfig.getVertices()) {
 						tempVertexMap.put(vertex.getId(), new VertexModel(graphConfig, coreController,
-								customizationController, visualizationController.getVisibilitiyModel(), vertex));
+								customizationController, playbackController.getVisibilitiyModel(), vertex));
 					}
 
 					if(graphConfig.getEdges() != null) {
 						for (EdgeConfiguration edge : graphConfig.getEdges()) {
 							EdgeModel currentEdgeModel = new EdgeModel(coreController, customizationController,
-									visualizationController.getVisibilitiyModel(), tempVertexMap.get(edge.getIdLeft()),
+									playbackController.getVisibilitiyModel(), tempVertexMap.get(edge.getIdLeft()),
 									tempVertexMap.get(edge.getIdRight()));
 	
 							tempEdgeMap.put(currentEdgeModel.getIdentification(), currentEdgeModel);
@@ -125,14 +130,14 @@ public abstract class GeometryModelBusinessLogic {
 				});
 			}
 			
-			visualizationController.getVisualizationModel().getEdgeShapes().clear();
+			playbackController.getPlaybackModel().getEdgeShapes().clear();
 
 			if(tempEdgeMap != null) {
-				visualizationController.getVisualizationModel().putEdgeShapes(tempEdgeMap);
+				playbackController.getPlaybackModel().putEdgeShapes(tempEdgeMap);
 			}
 
-			visualizationController.getVisualizationModel().getVertexShapes().clear();
-			visualizationController.getVisualizationModel().putVertexShapes(tempVertexMap);
+			playbackController.getPlaybackModel().getVertexShapes().clear();
+			playbackController.getPlaybackModel().putVertexShapes(tempVertexMap);
 		}
 
 		// 4. obstacles
@@ -144,7 +149,7 @@ public abstract class GeometryModelBusinessLogic {
 					.add(new ObstacleModel(obstacleConfiguration, coreController, customizationController)));
 		}
 
-		visualizationController.getVisualizationModel().getObstacleShapes().clear();
-		visualizationController.getVisualizationModel().addObstacleShapes(FXCollections.observableArrayList(tempObstacleList));
+		playbackController.getPlaybackModel().getObstacleShapes().clear();
+		playbackController.getPlaybackModel().addObstacleShapes(FXCollections.observableArrayList(tempObstacleList));
 	}
 }

@@ -50,15 +50,24 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import tum.cms.sim.momentum.utility.csvData.CsvType;
-import tum.cms.sim.momentum.visualization.model.geometry.*;
+import tum.cms.sim.momentum.visualization.model.geometry.AreaModel;
+import tum.cms.sim.momentum.visualization.model.geometry.TaggedAreaModel;
+import tum.cms.sim.momentum.visualization.model.geometry.EdgeModel;
+import tum.cms.sim.momentum.visualization.model.geometry.LatticeModel;
+import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
+import tum.cms.sim.momentum.visualization.model.geometry.PedestrianModel;
+import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
+import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
+import tum.cms.sim.momentum.visualization.model.geometry.VertexModel;
 
-public class VisualizationModel {
+public class PlaybackModel {
 
 	private double miniForAnimation = 0.00001;
 	private double maxForAnimation = 6.0;
 	private final DoubleProperty maxSizeX = new SimpleDoubleProperty(this, "maxSizeX", 1.0);
 	private final BooleanProperty is3DView = new SimpleBooleanProperty(this, "is3DView", false);
 	private final DoubleProperty maxSizeY = new SimpleDoubleProperty(this, "maxSizeY", 1.0);
+
 	private final MapProperty<String, AreaModel> areaShapes = new SimpleMapProperty<String, AreaModel>(this,
 			"areaShapes", FXCollections.observableHashMap());
 	private final MapProperty<String, TaggedAreaModel> taggedAreaShapes = new SimpleMapProperty<String, TaggedAreaModel>(this,
@@ -69,10 +78,13 @@ public class VisualizationModel {
 			"edgeShapes", FXCollections.observableHashMap());
 	private final ListProperty<ObstacleModel> obstacleShapes = new SimpleListProperty<ObstacleModel>(this,
 			"obstacleShapes", FXCollections.observableArrayList());
+
 	private final MapProperty<String, TrajectoryModel> trajectoryShapes = new SimpleMapProperty<String, TrajectoryModel>(
 			this, "trajectoryShapes", FXCollections.observableHashMap());
+
 	private final ListProperty<LatticeModel> latticeShapes = new SimpleListProperty<LatticeModel>(this, "latticeShapes",
 			FXCollections.observableArrayList());
+
 	private HashSet<Double> redPedestrianGroupColor = new HashSet<Double>();
 	private HashSet<Double> bluePedestrianGroupColor = new HashSet<Double>();
 	private HashMap<CsvType, HashMap<String, Point2D>> previousShapePositionPoints = new HashMap<CsvType, HashMap<String, Point2D>> ();
@@ -80,6 +92,7 @@ public class VisualizationModel {
 
 	private final MapProperty<CsvType, ObservableMap<String, ShapeModel>> customShapesMap = new SimpleMapProperty<CsvType, ObservableMap<String, ShapeModel>>(
 			this, "customShapes", FXCollections.observableHashMap());
+
 	private final MapProperty<String, PedestrianModel> pedestrianShapes = new SimpleMapProperty<String, PedestrianModel>(
 			this, "pedestrianShapes", FXCollections.observableHashMap());
 
@@ -234,9 +247,19 @@ public class VisualizationModel {
 		return this.getCustomShapesMap().get(type);
 	}
 
-	public void addCustomShapes(CsvType type) {
+	/**
+	 * Adds a new custom shape observable for a new csv type if this does not exists
+	 * @param type
+	 * @return true if a new observable was created, otherwise false
+	 */
+	public boolean addCustomShapes(CsvType type) {
 
-		this.customShapesMap.put(type, FXCollections.observableHashMap());
+		if(this.customShapesMap.putIfAbsent(type, FXCollections.observableHashMap()) == null) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public void clearCustom() {

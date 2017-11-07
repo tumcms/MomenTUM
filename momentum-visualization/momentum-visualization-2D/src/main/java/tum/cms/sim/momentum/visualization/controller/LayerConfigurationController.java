@@ -63,10 +63,10 @@ public class LayerConfigurationController implements Initializable {
 		this.layerConfigurationBox.disableProperty().bind(coreController.getCoreModel().layoutLoadedProperty().not());
 		
 		Bindings.bindBidirectional(showLatticesCheckBox.selectedProperty(),
-				coreController.getVisualizationController().getVisibilitiyModel().latticeVisibilityProperty());
+				coreController.getPlaybackController().getVisibilitiyModel().latticeVisibilityProperty());
 		
 		Bindings.bindBidirectional(showGraphCheckBox.selectedProperty(),
-				coreController.getVisualizationController().getVisibilitiyModel().graphVisibilityProperty());
+				coreController.getPlaybackController().getVisibilitiyModel().graphVisibilityProperty());
 		
 		this.layerConfigurationBox.visibleProperty().bind(coreController.getCoreModel().getSwitchLayerView().isNotEqualTo(0.0, 0.1));
 	}
@@ -93,21 +93,21 @@ public class LayerConfigurationController implements Initializable {
 	
 	@FXML void onCheckAllTrajectories(ActionEvent actionEvent) throws Exception {
 		
-		if(coreController.getVisualizationModel().getTrajectoryShapes().size() == 0) {
+		if(coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().size() == 0) {
 			
 			HashMap<String, TrajectoryModel> trajectories = loadTrajectories();
-			coreController.getVisualizationController().putTrajectoriesIntoPedestrians(trajectories);
-			coreController.getVisualizationModel().putTrajectoryShapes(trajectories);
+			coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);
+			coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
 		}
 		
-		coreController.getVisualizationModel()
+		coreController.getPlaybackController().getPlaybackModel()
 			.getTrajectoryShapes()
 			.forEach((id,trajectoryShape) -> trajectoryShape.setVisibility(showAllTrajetoriesCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowPedestrian(ActionEvent actionEvent) {
 		
-		coreController.getVisualizationModel()
+		coreController.getPlaybackController().getPlaybackModel()
 			.getPedestrianShapes()
 			.values()
 			.forEach(pedestrianShape -> pedestrianShape.setVisibility(showPedestrianCheckBox.isSelected()));
@@ -115,57 +115,58 @@ public class LayerConfigurationController implements Initializable {
 	
 	@FXML void onCheckShowObstacle(ActionEvent actionEvent) {
 		
-		coreController.getVisualizationModel()
+		coreController.getPlaybackController().getPlaybackModel()
 			.getObstacleShapes()
 			.forEach(obstacleShape -> obstacleShape.setVisibility(showObstaclesCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowOrigin(ActionEvent actionEvent) {
 		
-		coreController.getVisualizationModel()
+		coreController.getPlaybackController().getPlaybackModel()
 			.getAreaShapes().values().stream().filter(area -> area.getType() == AreaType.Origin)
 			.forEach(originShape -> originShape.setVisibility(showOriginsCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowIntermediate(ActionEvent actionEvent) {
 		
-		coreController.getVisualizationModel()
+		coreController.getPlaybackController().getPlaybackModel()
 			.getAreaShapes().values().stream().filter(area -> area.getType() == AreaType.Intermediate || area.getType() == AreaType.Information)
 			.forEach(intermediateShape -> intermediateShape.setVisibility(showIntermediatesCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowDestination(ActionEvent actionEvent) {
 		
-		coreController.getVisualizationModel()
+		coreController.getPlaybackController().getPlaybackModel()
 			.getAreaShapes().values().stream().filter(area -> area.getType() == AreaType.Destination)
 			.forEach(destinationShape -> destinationShape.setVisibility(showDestinationsCheckBox.isSelected()));
 	}
 
 	@FXML void onCheckShowTaggedArea(ActionEvent actionEvent) {
 
-		coreController.getVisualizationModel()
+		coreController.getPlaybackController().getPlaybackModel()
 				.getTaggedAreaShapes().values()
 				.forEach(taggedAreaShape -> taggedAreaShape.setVisibility(showTaggedAreasCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowDensityEdge(ActionEvent actionEvent) {
 		
-		coreController.getVisualizationModel()
+		coreController.getPlaybackController().getPlaybackModel()
 		.getEdgeShapes().values()
 		.forEach(edgeShape -> edgeShape.setVisibility(showPedestrianCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowGroups(ActionEvent actionEvent) {
 		
-		ColorGenerator.generateGroupColors(coreController.getVisualizationController().getVisualizationModel());
-		coreController.getVisualizationModel()
+		ColorGenerator.generateGroupColors(coreController.getPlaybackController().getPlaybackModel());
+		coreController.getPlaybackController().getPlaybackModel()
 			.getPedestrianShapes().forEach((id, shape) -> shape.setIsGroupColored(!shape.getIsGroupColored()));
 	}
 	
 	@FXML void onCheckShowSeedColoring(ActionEvent actionEvent) {
 		
-		ColorGenerator.generateSeedColors(coreController.getVisualizationController().getVisualizationModel());
-		coreController.getVisualizationModel()
+		ColorGenerator.generateSeedColors(coreController.getPlaybackController().getPlaybackModel());
+		coreController.getPlaybackController()
+			.getPlaybackModel()
 			.getPedestrianShapes().forEach((id, shape) -> shape.setIsSeedColored(!shape.getIsSeedColored()));
 	}
 	
@@ -189,7 +190,7 @@ public class LayerConfigurationController implements Initializable {
 	
 							trajectories.put(hashId,
 									new TrajectoryModel(hashId,
-											coreController.getVisualizationController().getCustomizationController(),
+											coreController.getPlaybackController().getCustomizationController(),
 											dataStepCurrent.getDoubleData(identification, OutputType.x.name()),
 											dataStepCurrent.getDoubleData(identification, OutputType.y.name()),
 											coreController.getCoreModel().getResolution()));

@@ -78,7 +78,12 @@ public class VisualizationKernel extends Application {
 				@Override
 				public void handle(WindowEvent arg0) {
 
-					new ExitHandler(coreController).clean();
+					try {
+						new ExitHandler(coreController).clean();
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			});
 			
