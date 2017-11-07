@@ -35,7 +35,7 @@ package tum.cms.sim.momentum.model.tactical.routing.kneidlModel;
 import java.util.Collection;
 import java.util.HashMap;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.KneidlConstant.KneidlNavigationType;
@@ -49,7 +49,7 @@ import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.heuris
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.sallNavigation.MicroStraigthAndLongLegs;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.navigation.sallNavigation.StraigthAndLongLegsCalculator;
 
-public class KneidlPedestrianExtension implements IPedestrianExtansion {
+public class KneidlPedestrianExtension implements IPedestrianExtension {
 	
 	private HashMap<KneidlNavigationType, MicroRoutingAlgorithm> routingAlgorithms =
 			new HashMap<KneidlNavigationType, MicroRoutingAlgorithm>();

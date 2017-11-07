@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -63,7 +63,7 @@ public class CognitiveSpatialChoiceStrategical extends DestinationChoiceModel {
 	private HashMap<Integer, CognitiveSpatialChoiceStrategicExtension> groupMindSet = new HashMap<>();
 
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		CognitiveSpatialChoiceStrategicExtension extension = null;
 		

@@ -153,7 +153,7 @@ public class ScenarioManager {
 		return scenarios.get(this.scenarioId).getGraphs();
 	}
 	
-	public SpaceSyntax getSpaceSyntax() {
+	public List<SpaceSyntax> getSpaceSyntaxes() {
 		
 		return scenarios.get(this.scenarioId).getSpaceSyntaxes();
 	}

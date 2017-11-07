@@ -102,14 +102,15 @@ public class Scenario extends LayoutObject implements IHasProperties {
 		this.graphs = graphs;
 	}
 	
-	private SpaceSyntax spaceSyntax = new SpaceSyntax();
+	private List<SpaceSyntax> spaceSyntaxes;
 	
-	public void setSpaceSyntaxes(SpaceSyntax spaceSyntax) {
-		this.spaceSyntax = spaceSyntax;
-	}
-	
-	public SpaceSyntax getSpaceSyntaxes() {
-		return this.spaceSyntax;
+	public List<SpaceSyntax> getSpaceSyntaxes() {
+		
+		if (spaceSyntaxes == null) {
+			spaceSyntaxes = new ArrayList<>();
+		}
+
+		return this.spaceSyntaxes;
 	}
 
 	private KDTree<ArrayList<Obstacle>> obstacles = new KDTree<ArrayList<Obstacle>>(2);

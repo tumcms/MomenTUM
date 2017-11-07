@@ -32,43 +32,90 @@
 
 package tum.cms.sim.momentum.utility.spaceSyntax;
 
-import java.util.List;
+import java.util.Set;
 
-import tum.cms.sim.momentum.utility.generic.Unique;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+
+import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 
-public class DepthMap extends Unique {
+@XStreamAlias("SpaceSyntax")
+public class DepthMap extends SpaceSyntax {
 	
-	private final ILattice lattice;
-	private final List<DepthMapSubArea> disconnectedAreas;
-	
+	@XStreamAsAttribute
 	private final int domainRows;
+	@XStreamAsAttribute
 	private final int domainColumns;
-	private final double maxX;
-	private final double minX;
-	private final double maxY;
-	private final double minY;
 	
-	public DepthMap(ILattice lattice, List<DepthMapSubArea> disconnectedAreas, double
-			maxX, double maxY, double minX, double minY) {
+	@XStreamAsAttribute
+	private final double minValue;
+	@XStreamAsAttribute
+	private final double maxValue;
+	
+	@XStreamAsAttribute
+	private final double minX;
+	@XStreamAsAttribute
+	private final double minY;
+	@XStreamAsAttribute
+	private final double maxX;
+	@XStreamAsAttribute
+	private final double maxY;
+	
+	public DepthMap(ILattice lattice, Set<CellIndex> connectedIndices) {
 		
-		this.lattice = lattice;
-		this.disconnectedAreas = disconnectedAreas;
+		super(lattice, connectedIndices);
+		
 		this.domainRows = lattice.getNumberOfRows();
 		this.domainColumns = lattice.getNumberOfColumns();
-		this.maxX = maxX;
-		this.maxY = maxY;
-		this.minX = minX;
-		this.minY = minY;
+
+		Double[] latticeMinMaxValues = lattice.getMinMaxValuesForIndices(connectedIndices);
+		this.minValue = latticeMinMaxValues[0];
+		this.maxValue = latticeMinMaxValues[0];
+		
+		this.minX = lattice.getMinPositionBoundingBox().getXComponent();
+		this.minY = lattice.getMinPositionBoundingBox().getYComponent();
+		this.maxX = lattice.getMaxPositionBoundingBox().getXComponent();
+		this.maxY = lattice.getMaxPositionBoundingBox().getYComponent();
 	}
 	
 	public ILattice getLattice() {
-		
 		return lattice;
 	}
 	
-	public List<DepthMapSubArea> getDisconnectedAreas() {
-		
-		return disconnectedAreas;
+	public Set<CellIndex> getConnectedAreas() {
+		return connectedIndices;
+	}
+	
+	public int getDomainRows() {
+		return domainRows;
+	}
+	
+	public int getDomainColumns() {
+		return domainColumns;
+	}
+
+	public double getMinValue() {
+		return minValue;
+	}
+
+	public double getMaxValue() {
+		return maxValue;
+	}
+
+	public double getMinX() {
+		return minX;
+	}
+
+	public double getMinY() {
+		return minY;
+	}
+
+	public double getMaxX() {
+		return maxX;
+	}
+
+	public double getMaxY() {
+		return maxY;
 	}
 }

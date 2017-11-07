@@ -136,6 +136,15 @@ public interface ILattice extends IUnique {
 
 	HashMap<CellIndex, Vector2D> getBorderPositionForCells(Polygon2D polygon);
 
+	/**
+	 * Computes the minimum and maximum Double value respectively for each Area.
+	 * 
+	 * @param connectedAreas
+	 * @return a List which contains the minimum and maximum paired to the
+	 *         respective connected area.
+	 */
+	Double[] getMinMaxValuesForIndices(Set<CellIndex> connectedIndices);
+
 	List<CellIndex> getAllPolygonCells(Polygon2D polygon);
 
 	List<CellIndex> occupyAllPolygonCells(Polygon2D polygon, Occupation occupation);
@@ -171,6 +180,16 @@ public interface ILattice extends IUnique {
 	int computeDistanceMap(List<CellIndex> occupiedCells);
 	
 	List<List<CellIndex>> findLocalMinimal(int globalMaximal, int globalMinimal);
+	
+	/**
+	 * This method attempts to casts a line from the start to the target CellIndex. 
+	 * When the line hits the grid boundaries or an obstacle, it terminates.
+	 * @param start
+	 * @param target
+	 * @return true if the target CellIndex is reached, false otherwise.
+	 */
+	
+	boolean breshamLineCast(CellIndex start, CellIndex target);
 	
 	/**
 	 * from http://playtechs.blogspot.de/2007/03/raytracing-on-grid.html

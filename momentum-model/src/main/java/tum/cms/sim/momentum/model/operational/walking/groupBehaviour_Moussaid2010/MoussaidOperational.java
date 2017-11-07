@@ -33,14 +33,13 @@
 package tum.cms.sim.momentum.model.operational.walking.groupBehaviour_Moussaid2010;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -105,7 +104,7 @@ public class MoussaidOperational extends WalkingModel {
 	}	
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		MoussaidPedestrianExtension newExtension = new MoussaidPedestrianExtension();
 		newExtension.setAttractionEffectsStrength(MoussaidConstant.attraction_effects_strength);

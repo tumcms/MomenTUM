@@ -30,37 +30,8 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.utility.spaceSyntax;
+package tum.cms.sim.momentum.data.agent.pedestrian.types;
 
-import java.util.Set;
+public interface IPedestrianExtension {
 
-import tum.cms.sim.momentum.utility.generic.Unique;
-import tum.cms.sim.momentum.utility.lattice.CellIndex;
-
-public class DepthMapSubArea extends Unique{
-
-	private Set<CellIndex> connectedIndices;
-	private Double minimum;
-	private Double maximum;
-	
-	public DepthMapSubArea(Set<CellIndex> connectedIndices, Double minimum, Double maximum, int id) {
-		this.connectedIndices = connectedIndices;
-		this.minimum = minimum;
-		this.maximum = maximum;
-		this.setId(id);
-	}
-	
-	public Set<CellIndex> getConnectedIndices() {
-		return connectedIndices;
-	}
-	
-	public Double getMinimum() {
-		
-		return minimum;
-	}
-	
-	public Double getMaximum() {
-		
-		return maximum;
-	}
 }

@@ -32,27 +32,22 @@
 
 package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2014;
 
-import java.awt.geom.Line2D;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.codehaus.jackson.map.introspect.BasicClassIntrospector.GetterMethodFilter;
 
 import tum.cms.sim.momentum.data.agent.car.CarManager;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.area.TaggedArea;
 import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForce;
-import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForcePedestrianExtension;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
-import tum.cms.sim.momentum.utility.geometry.Segment2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class SharedSpaceForceOperational extends WalkingModel {
@@ -74,7 +69,7 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	}
 
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		// TODO Auto-generated method stub
 		return null;
 	}
