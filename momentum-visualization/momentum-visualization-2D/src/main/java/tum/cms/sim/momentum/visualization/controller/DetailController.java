@@ -67,7 +67,7 @@ public class DetailController implements Initializable {
 	
 	public void bindCoreModel(CoreController coreController) {
 		
-		this.vbox.disableProperty().bind(coreController.getVisualizationModel().is3DViewProperty());
+		this.vbox.disableProperty().bind(coreController.getPlaybackController().getPlaybackModel().is3DViewProperty());
 	}
 
 	public VBox getDetailBox() {

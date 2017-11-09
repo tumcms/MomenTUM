@@ -58,7 +58,7 @@ import tum.cms.sim.momentum.visualization.handler.SelectionHandler;
 import tum.cms.sim.momentum.visualization.model.GestureModel;
 import tum.cms.sim.momentum.visualization.model.SnapshotModel;
 import tum.cms.sim.momentum.visualization.model.VisibilitiyModel;
-import tum.cms.sim.momentum.visualization.model.VisualizationModel;
+import tum.cms.sim.momentum.visualization.model.PlaybackModel;
 import tum.cms.sim.momentum.visualization.model.geometry.AreaModel;
 import tum.cms.sim.momentum.visualization.model.geometry.EdgeModel;
 import tum.cms.sim.momentum.visualization.model.geometry.LatticeModel;
@@ -69,10 +69,9 @@ import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
 import tum.cms.sim.momentum.visualization.model.geometry.VertexModel;
 import tum.cms.sim.momentum.visualization.view.userControl.ExtendedCanvas;
 
-public class VisualizationController implements Initializable {
+public class PlaybackController implements Initializable {
 
-	@FXML
-	private VisualizationModel visualizationModel;
+	// view
 	@FXML
 	private AnchorPane playBackPane;
 	@FXML
@@ -82,18 +81,6 @@ public class VisualizationController implements Initializable {
 	@FXML
 	private AnchorPane movablePane;
 	private SubScene viewScene = null;
-
-	private CoreController coreController;
-	private static SelectionHandler selectionHandler = null;
-
-	private CustomizationController customizationController = new CustomizationController();
-	private SnapshotModel snapshotModel = new SnapshotModel();
-	private VisibilitiyModel visibilitiyModel = new VisibilitiyModel();
-	private GestureModel gestureModel = new GestureModel();
-
-	public VisualizationModel getVisualizationModel() {
-		return visualizationModel;
-	}
 
 	public AnchorPane getPlayBackCanvas() {
 		return playBackPane;
@@ -106,173 +93,52 @@ public class VisualizationController implements Initializable {
 	public AnchorPane getPlaybackObjectsPane() {
 		return playbackObjectsPane;
 	}
-
-	public void putTrajectoriesIntoPedestrians(HashMap<String, TrajectoryModel> trajectories) {
-		
-		for (PedestrianModel pedestrianShapeModel : visualizationModel.getPedestrianShapes().values()) {
-			
-			pedestrianShapeModel.putTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()));
-		}
-	}
-
-	public void clearAll() {
-
-		visualizationModel.getAreaShapes().clear();
-		visualizationModel.getObstacleShapes().clear();
-		visualizationModel.getVertexShapes().clear();
-		visualizationModel.getEdgeShapes().clear();
-		visualizationModel.getLatticeShapes().clear();
-		visualizationModel.getPedestrianShapes().clear();
-		visualizationModel.getTrajectoryShapes().clear();
-		visualizationModel.getRedPedestrianGroupColor().clear();
-		visualizationModel.getBluePedestrianGroupColor().clear();
-
-		if (visualizationModel.getPreviousPedestrianPoints() != null) {
-
-			visualizationModel.getPreviousPedestrianPoints().clear();
-		}
-
-		if (visualizationModel.getOverNextPedestrianPoints() != null) {
-
-			visualizationModel.getOverNextPedestrianPoints().clear();
-		}
-
-		visualizationModel.is3DViewProperty().set(false);
-		visualizationModel.maxSizeXProperty().set(1.0);
-		visualizationModel.maxSizeYProperty().set(1.0);
-	}
-
-	public void bindCustomShapes(CsvType type) {
-
-		this.visualizationModel.getSpecificCustomShapesMap(type)
-				.addListener(new MapChangeListener<String, ShapeModel>() {
-
-					@Override
-					public void onChanged(MapChangeListener.Change<? extends String, ? extends ShapeModel> changed) {
-						if (changed.getMap().size() > 0) {
-							if (!changed.wasRemoved()) {
-								playbackObjectsPane.getChildren().add(changed.getValueAdded().getShape());
-							}
-						} else {
-							playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
-						}
-						playBackPane.toBack();
-					}
-				});
-	}
-
-	public void bindCoreModel(CoreController coreController) {
-
-		this.coreController = coreController;
-
-		movablePane.layoutXProperty().set(00.0);
-		movablePane.layoutYProperty().set(0.0);
-
-		System.out.println("pbop maxHeight=" + playbackObjectsPane.getMaxHeight());
-		System.out.println("pbop maxWidth=" + playbackObjectsPane.getMaxWidth());
-		System.out.println("maxHeight=" + movablePane.maxHeightProperty().get());
-		System.out.println("maxWidth=" + movablePane.maxWidthProperty().get());
-
-		this.extendedCanvas.setGestureModel(getGestureModel());
-		this.extendedCanvas.setRotatableChild(playbackObjectsPane);
-
-		// pivot point and rota, click on object is on the back side and cannot
-		// reach the simu objects
-		Rotate initalRotate = new Rotate(180.0, Rotate.X_AXIS);
-		movablePane.getTransforms().add(initalRotate);
-
-		this.extendedCanvas.setMovableChild(movablePane);
-		VisualizationController.selectionHandler = new SelectionHandler(
-				coreController.getDetailController().getTableView());
-	}
+	// controller
+	private CoreController coreController;
+	private CustomizationController customizationController = new CustomizationController();
+	private static SelectionHandler selectionHandler = null;
 
 	public static SelectionHandler getSelectionHandler() {
 
 		return selectionHandler;
 	}
+	
+	// model
+	private SnapshotModel snapshotModel = new SnapshotModel();
+	private VisibilitiyModel visibilitiyModel = new VisibilitiyModel();
+	private GestureModel gestureModel = new GestureModel();
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-
-		playBackPane.getChildren().clear(); // remove extendedCancas als child
-
-		viewScene = new SubScene(extendedCanvas, playBackPane.getWidth(), playBackPane.getHeight(), false,
-				SceneAntialiasing.BALANCED);
-
-		viewScene.setFill(Color.TRANSPARENT);
-		viewScene.widthProperty().bind(playBackPane.widthProperty());
-		viewScene.heightProperty().bind(playBackPane.heightProperty());
-
-		playBackPane.getChildren().add(viewScene);
-
-		AmbientLight ambient = new AmbientLight();
-
-		extendedCanvas.prefWidthProperty().bind(playBackPane.widthProperty());
-		extendedCanvas.prefHeightProperty().bind(playBackPane.heightProperty());
-		extendedCanvas.getChildren().add(ambient);
-
-		playBackPane.setOnMousePressed(extendedCanvas.getOnMousePressedEventHandler());
-		playBackPane.setOnMouseDragged(extendedCanvas.getOnMouseDraggedEventHandler());
-		playBackPane.setOnScroll(extendedCanvas.getOnScrollEventHandler());
-
-		extendedCanvas.setFocusTraversable(true);
-		extendedCanvas.setOnKeyPressed(extendedCanvas.getOnKeyRotationPressedEventHandler());
-		playBackPane.setOnKeyPressed(onKey3DViewKeyEventHandler);
-
-		visualizationModel.areaShapesProperty().addListener(onAreaShapesListChangedListener);
-		visualizationModel.obstacleShapesProperty().addListener(onObstracleShapesListChangedListener);
-		visualizationModel.pedestrianShapesProperty().addListener(onPedestrianShapesListChangedListener);
-
-		visualizationModel.vertexShapesProperty().addListener(onVertexShapesListChangedListener);
-		visualizationModel.edgeShapesProperty().addListener(onEdgeShapesListChangedListener);
-
-		visualizationModel.trajectoryShapesProperty().addListener(onTrajectoryShapesListChangedListener);
-		visualizationModel.latticeShapesProperty().addListener(onLatticeShapesListChangedListener);
+	public CustomizationController getCustomizationController() {
+		return customizationController;
 	}
 
-	private EventHandler<KeyEvent> onKey3DViewKeyEventHandler = new EventHandler<KeyEvent>() {
+	public SnapshotModel getSnapshotModel() {
+		return snapshotModel;
+	}
 
-		@Override
-		public void handle(KeyEvent event) {
+	public VisibilitiyModel getVisibilitiyModel() {
+		return visibilitiyModel;
+	}
 
-			if (event.getCode() == KeyCode.I && !VisualizationController.this.visualizationModel.getIs3DView()
-					|| event.getCode() == KeyCode.SPACE
-							&& VisualizationController.this.visualizationModel.getIs3DView()) {
+	public GestureModel getGestureModel() {
+		return gestureModel;
+	}
+	
+	@FXML
+	private PlaybackModel playbackModel;
+	
+	public PlaybackModel getPlaybackModel() {
+		return playbackModel;
+	}
 
-				Boolean is3DView = VisualizationController.this.visualizationModel.getIs3DView();
-				VisualizationController.this.visualizationModel.setIs3DView(!is3DView);
-				boolean isZBuffer = false;
-
-				if (VisualizationController.this.visualizationModel.getIs3DView()) {
-
-					isZBuffer = true;
-				}
-
-				viewScene.setRoot(new AnchorPane());
-				viewScene.widthProperty().unbind();
-				viewScene.heightProperty().unbind();
-				extendedCanvas.getChildren().clear();
-				playBackPane.getChildren().clear(); // remove extendedCancas als
-													// child
-
-				viewScene = new SubScene(extendedCanvas, playBackPane.getWidth(), playBackPane.getHeight(), isZBuffer,
-						SceneAntialiasing.BALANCED);
-
-				viewScene.setFill(Color.TRANSPARENT);
-				viewScene.widthProperty().bind(playBackPane.widthProperty());
-				viewScene.heightProperty().bind(playBackPane.heightProperty());
-
-				playBackPane.getChildren().add(viewScene);
-				extendedCanvas.getChildren().add(movablePane);
-
-				if (!VisualizationController.this.visualizationModel.getIs3DView()) {
-
-					AmbientLight light = new AmbientLight();
-					extendedCanvas.getChildren().add(light);
-				}
-			}
+	public void putTrajectoriesIntoPedestrians(HashMap<String, TrajectoryModel> trajectories) {
+		
+		for (PedestrianModel pedestrianShapeModel : playbackModel.getPedestrianShapes().values()) {
+			
+			pedestrianShapeModel.putTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()));
 		}
-	};
+	}
+	
 
 	public void onMouseClicked(MouseEvent event) {
 
@@ -320,30 +186,168 @@ public class VisualizationController implements Initializable {
 
 		movablePane.layoutXProperty().set(newX);
 		movablePane.layoutYProperty().set(newY);
-
 	}
 
-	private MapChangeListener<String, AreaModel> onAreaShapesListChangedListener = new MapChangeListener<String, AreaModel>() {
+	public void clearAll() {
+
+		playbackModel.getAreaShapes().clear();
+		playbackModel.getObstacleShapes().clear();
+		playbackModel.getVertexShapes().clear();
+		playbackModel.getEdgeShapes().clear();
+		playbackModel.getLatticeShapes().clear();
+		playbackModel.getPedestrianShapes().clear();
+		playbackModel.getTrajectoryShapes().clear();
+		playbackModel.getRedPedestrianGroupColor().clear();
+		playbackModel.getBluePedestrianGroupColor().clear();
+		playbackModel.getCustomShapesMap().clear();
+		
+		if (playbackModel.getPreviousPedestrianPoints() != null) {
+
+			playbackModel.getPreviousPedestrianPoints().clear();
+		}
+
+		if (playbackModel.getOverNextPedestrianPoints() != null) {
+
+			playbackModel.getOverNextPedestrianPoints().clear();
+		}
+
+		playbackModel.is3DViewProperty().set(false);
+		playbackModel.maxSizeXProperty().set(1.0);
+		playbackModel.maxSizeYProperty().set(1.0);
+	}
+
+	public void bindCoreModel(CoreController coreController) {
+
+		this.coreController = coreController;
+
+		movablePane.layoutXProperty().set(00.0);
+		movablePane.layoutYProperty().set(0.0);
+
+		System.out.println("pbop maxHeight=" + playbackObjectsPane.getMaxHeight());
+		System.out.println("pbop maxWidth=" + playbackObjectsPane.getMaxWidth());
+		System.out.println("maxHeight=" + movablePane.maxHeightProperty().get());
+		System.out.println("maxWidth=" + movablePane.maxWidthProperty().get());
+
+		this.extendedCanvas.setGestureModel(gestureModel);
+		this.extendedCanvas.setRotatableChild(playbackObjectsPane);
+
+		// pivot point and rota, click on object is on the back side and cannot
+		// reach the simu objects
+		Rotate initalRotate = new Rotate(180.0, Rotate.X_AXIS);
+		movablePane.getTransforms().add(initalRotate);
+
+		this.extendedCanvas.setMovableChild(movablePane);
+		PlaybackController.selectionHandler = new SelectionHandler(
+				coreController.getDetailController().getTableView());
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+
+		playBackPane.getChildren().clear(); // remove extendedCancas als child
+
+		viewScene = new SubScene(extendedCanvas, playBackPane.getWidth(), playBackPane.getHeight(), false,
+				SceneAntialiasing.BALANCED);
+
+		viewScene.setFill(Color.TRANSPARENT);
+		viewScene.widthProperty().bind(playBackPane.widthProperty());
+		viewScene.heightProperty().bind(playBackPane.heightProperty());
+
+		playBackPane.getChildren().add(viewScene);
+
+		AmbientLight ambient = new AmbientLight();
+
+		extendedCanvas.prefWidthProperty().bind(playBackPane.widthProperty());
+		extendedCanvas.prefHeightProperty().bind(playBackPane.heightProperty());
+		extendedCanvas.getChildren().add(ambient);
+
+		playBackPane.setOnMousePressed(extendedCanvas.getOnMousePressedEventHandler());
+		playBackPane.setOnMouseDragged(extendedCanvas.getOnMouseDraggedEventHandler());
+		playBackPane.setOnScroll(extendedCanvas.getOnScrollEventHandler());
+
+		extendedCanvas.setFocusTraversable(true);
+		extendedCanvas.setOnKeyPressed(extendedCanvas.getOnKeyRotationPressedEventHandler());
+		playBackPane.setOnKeyPressed(onKey3DViewKeyEventHandler);
+
+		playbackModel.areaShapesProperty().addListener(onAreaShapesListChangedListener);
+		playbackModel.obstacleShapesProperty().addListener(onObstracleShapesListChangedListener);
+		playbackModel.pedestrianShapesProperty().addListener(onPedestrianShapesListChangedListener);
+
+		playbackModel.vertexShapesProperty().addListener(onVertexShapesListChangedListener);
+		playbackModel.edgeShapesProperty().addListener(onEdgeShapesListChangedListener);
+
+		playbackModel.trajectoryShapesProperty().addListener(onTrajectoryShapesListChangedListener);
+		playbackModel.latticeShapesProperty().addListener(onLatticeShapesListChangedListener);
+	}
+
+	public void bindCustomShapes(CsvType type) {
+
+		if(this.playbackModel.addCustomShapes(type)) {
+			
+			this.playbackModel.getSpecificCustomShapesMap(type).addListener(new MapChangeListener<String, ShapeModel>() {
+
+				@Override
+				public void onChanged(MapChangeListener.Change<? extends String, ? extends ShapeModel> changed) {
+					
+					if (changed.getMap().size() > 0) {
+						
+						if (!changed.wasRemoved()) {
+							
+							playbackObjectsPane.getChildren().add(changed.getValueAdded().getShape());
+						}
+					}
+					else {
+						
+						playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
+					}
+					
+					playBackPane.toBack();
+				}
+			});
+		}
+	}
+
+	private EventHandler<KeyEvent> onKey3DViewKeyEventHandler = new EventHandler<KeyEvent>() {
 
 		@Override
-		public void onChanged(MapChangeListener.Change<? extends String, ? extends AreaModel> changed) {
+		public void handle(KeyEvent event) {
 
-			if (changed.getMap().size() > 0) {
+			if (event.getCode() == KeyCode.I && !PlaybackController.this.playbackModel.getIs3DView()
+					|| event.getCode() == KeyCode.SPACE
+							&& PlaybackController.this.playbackModel.getIs3DView()) {
 
-				if (!changed.wasRemoved()) {
+				Boolean is3DView = PlaybackController.this.playbackModel.getIs3DView();
+				PlaybackController.this.playbackModel.setIs3DView(!is3DView);
+				boolean isZBuffer = false;
 
-					changed.getValueAdded().registerSelectable(VisualizationController.selectionHandler);
-					playbackObjectsPane.getChildren().add(changed.getValueAdded().getAreaShape());
-				} else {
-					playbackObjectsPane.getChildren().remove(changed.getValueRemoved().getAreaShape());
+				if (PlaybackController.this.playbackModel.getIs3DView()) {
+
+					isZBuffer = true;
 				}
 
-			} else {
+				viewScene.setRoot(new AnchorPane());
+				viewScene.widthProperty().unbind();
+				viewScene.heightProperty().unbind();
+				extendedCanvas.getChildren().clear();
+				playBackPane.getChildren().clear(); // remove extendedCancas als
+													// child
 
-				playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
+				viewScene = new SubScene(extendedCanvas, playBackPane.getWidth(), playBackPane.getHeight(), isZBuffer,
+						SceneAntialiasing.BALANCED);
+
+				viewScene.setFill(Color.TRANSPARENT);
+				viewScene.widthProperty().bind(playBackPane.widthProperty());
+				viewScene.heightProperty().bind(playBackPane.heightProperty());
+
+				playBackPane.getChildren().add(viewScene);
+				extendedCanvas.getChildren().add(movablePane);
+
+				if (!PlaybackController.this.playbackModel.getIs3DView()) {
+
+					AmbientLight light = new AmbientLight();
+					extendedCanvas.getChildren().add(light);
+				}
 			}
-			playbackObjectsPane.toFront();
-			playBackPane.toBack();
 		}
 	};
 
@@ -376,7 +380,8 @@ public class VisualizationController implements Initializable {
 					playbackObjectsPane.getChildren().addAll(borderShapes);
 					playbackObjectsPane.getChildren().addAll(topShapes);
 				}
-			} else {
+			}
+			else {
 
 				playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
 			}
@@ -410,6 +415,30 @@ public class VisualizationController implements Initializable {
 		}
 	};
 
+	private MapChangeListener<String, AreaModel> onAreaShapesListChangedListener = new MapChangeListener<String, AreaModel>() {
+
+		@Override
+		public void onChanged(MapChangeListener.Change<? extends String, ? extends AreaModel> changed) {
+
+			if (changed.getMap().size() > 0) {
+
+				if (!changed.wasRemoved()) {
+
+					changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
+					playbackObjectsPane.getChildren().add(changed.getValueAdded().getAreaShape());
+				} else {
+					playbackObjectsPane.getChildren().remove(changed.getValueRemoved().getAreaShape());
+				}
+
+			} else {
+
+				playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
+			}
+			playbackObjectsPane.toFront();
+			playBackPane.toBack();
+		}
+	};
+	
 	private MapChangeListener<String, PedestrianModel> onPedestrianShapesListChangedListener = new MapChangeListener<String, PedestrianModel>() {
 
 		@Override
@@ -419,7 +448,7 @@ public class VisualizationController implements Initializable {
 
 				if (!changed.wasRemoved()) {
 
-					changed.getValueAdded().registerSelectable(VisualizationController.selectionHandler);
+					changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
 					playbackObjectsPane.getChildren().add(changed.getValueAdded().getPedestrianShape());
 				}
 			} else {
@@ -440,7 +469,7 @@ public class VisualizationController implements Initializable {
 
 				if (!changed.wasRemoved()) {
 
-					changed.getValueAdded().registerSelectable(VisualizationController.selectionHandler);
+					changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
 					playbackObjectsPane.getChildren().add(changed.getValueAdded().getVertexShape());
 				}
 			} else {
@@ -461,7 +490,7 @@ public class VisualizationController implements Initializable {
 
 				if (!changed.wasRemoved()) {
 
-					changed.getValueAdded().registerSelectable(VisualizationController.selectionHandler);
+					changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
 					playbackObjectsPane.getChildren().add(changed.getValueAdded().getEdgeShape());
 				}
 			} else {
@@ -492,21 +521,4 @@ public class VisualizationController implements Initializable {
 			playBackPane.toBack();
 		}
 	};
-
-	public CustomizationController getCustomizationController() {
-		return customizationController;
-	}
-
-	public SnapshotModel getSnapshotModel() {
-		return snapshotModel;
-	}
-
-	public VisibilitiyModel getVisibilitiyModel() {
-		return visibilitiyModel;
-	}
-
-	public GestureModel getGestureModel() {
-		return gestureModel;
-	}
-
 }

@@ -44,7 +44,7 @@ public class ExitHandler {
 		this.coreController = coreController;
 	}
 
-	public void clean() {
+	public void clean() throws Exception {
 		
 		this.coreController.cleanOnExit();
     	Platform.exit();
