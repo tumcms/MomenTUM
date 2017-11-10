@@ -116,6 +116,8 @@ public class LoadCsvHandler extends LoadHandler {
 
 				AnimationCalculations.calculateVisualizationOfTimeStep(currentTimeStep, coreController);
 				
+				AnimationCalculations.calculateVisualizationOfTimeStep(currentTimeStep, coreController);
+				
 				UserPreferenceHandler.putProperty(PropertyType.outputCsvPath, csvFile.getParent());
 				QuickloadHandler.addFile(csvFile);
 				coreController.getCoreModel().setCsvLoaded(true);

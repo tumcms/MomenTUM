@@ -101,7 +101,7 @@ public abstract class GeometryModelBusinessLogic {
         playbackController.getPlaybackModel().getTaggedAreaShapes().clear();
         playbackController.getPlaybackModel().putTaggedAreaShapes(tempTaggedAreaMap);
 
-		// 3. graph
+        // 3. graph
 		if (scenarioConfiguration.getGraphs() != null) {
 
 			HashMap<String, EdgeModel> tempEdgeMap = new HashMap<String, EdgeModel>();

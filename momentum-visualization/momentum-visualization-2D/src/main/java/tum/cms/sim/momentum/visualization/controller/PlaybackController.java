@@ -185,7 +185,7 @@ public class PlaybackController implements Initializable {
 
 		playbackModel.getAreaShapes().clear();
         playbackModel.getTaggedAreaShapes().clear();
-        playbackModel.getObstacleShapes().clear();
+		playbackModel.getObstacleShapes().clear();
 		playbackModel.getVertexShapes().clear();
 		playbackModel.getEdgeShapes().clear();
 		playbackModel.getLatticeShapes().clear();
@@ -434,29 +434,29 @@ public class PlaybackController implements Initializable {
 		}
 	};
 
-	private MapChangeListener<String, TaggedAreaModel> onTaggedAreaShapesListChangedListener = new MapChangeListener<String, TaggedAreaModel>() {
+    private MapChangeListener<String, TaggedAreaModel> onTaggedAreaShapesListChangedListener = new MapChangeListener<String, TaggedAreaModel>() {
 
-		@Override
-		public void onChanged(MapChangeListener.Change<? extends String, ? extends TaggedAreaModel> changed) {
+        @Override
+        public void onChanged(MapChangeListener.Change<? extends String, ? extends TaggedAreaModel> changed) {
 
-			if (changed.getMap().size() > 0) {
+            if (changed.getMap().size() > 0) {
 
-				if (!changed.wasRemoved()) {
+                if (!changed.wasRemoved()) {
 
-					changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
-					playbackObjectsPane.getChildren().add(changed.getValueAdded().getTaggedAreaShape());
-				} else {
-					playbackObjectsPane.getChildren().remove(changed.getValueRemoved().getTaggedAreaShape());
-				}
+                    changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
+                    playbackObjectsPane.getChildren().add(changed.getValueAdded().getTaggedAreaShape());
+                } else {
+                    playbackObjectsPane.getChildren().remove(changed.getValueRemoved().getTaggedAreaShape());
+                }
 
-			} else {
+            } else {
 
-				playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
-			}
-			playbackObjectsPane.toFront();
-			playBackPane.toBack();
-		}
-	};
+                playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
+            }
+            playbackObjectsPane.toFront();
+            playBackPane.toBack();
+        }
+    };
 
 	private MapChangeListener<String, PedestrianModel> onPedestrianShapesListChangedListener = new MapChangeListener<String, PedestrianModel>() {
 
