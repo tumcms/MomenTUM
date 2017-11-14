@@ -44,11 +44,11 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPIUI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2017\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -107,9 +107,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" /lib:"C:\Program Files\Autodesk\Revit 2017" /lib:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2" /targetplatform:v4 /out:"..\..\MomenTumV2SpaceSyntaxRevit.dll" "$(ProjectDir)bin\Debug\MomenTumV2SpaceSyntaxRevit.dll" "$(ProjectDir)bin\Debug\GalaSoft.MvvmLight.dll"
+    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe" /lib:"C:\Program Files\Autodesk\Revit 2017" /lib:"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2" /targetplatform:v4 /out:"..\MomenTumV2SpaceSyntaxRevit.dll" "$(ProjectDir)bin\Debug\MomenTumV2SpaceSyntaxRevit.dll" "$(ProjectDir)bin\Debug\GalaSoft.MvvmLight.dll"
 copy "$(ProjectDir)MomenTumV2SpaceSyntaxRevit.addin" "$(AppData)\Autodesk\Revit\Addins\2017"
-copy "$(ProjectDir)MomenTumV2SpaceSyntaxRevit.dll" "$(AppData)\Autodesk\Revit\Addins\2017"</PostBuildEvent>
+copy "$(ProjectDir)bin\MomenTumV2SpaceSyntaxRevit.dll" "$(AppData)\Autodesk\Revit\Addins\2017"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
