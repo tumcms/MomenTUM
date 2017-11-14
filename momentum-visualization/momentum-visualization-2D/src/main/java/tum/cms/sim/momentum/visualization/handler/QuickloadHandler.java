@@ -56,14 +56,14 @@ public class QuickloadHandler {
 		
 	}
 
-	public static void quickload(CoreController coreController) {
+	public static void quickload(CoreController coreController, double currentTimeStep) {
 		
 		if (latestLayout != null) {
 			
-			quickloadLayout(coreController);
+			quickloadLayout(coreController, currentTimeStep);
 			
 			if (csvFiles != null) {
-				quickloadCsv(coreController);
+				quickloadCsv(coreController, currentTimeStep);
 			}
 		}
 	}
@@ -74,17 +74,17 @@ public class QuickloadHandler {
 	 * @param loadX
 	 *            how many of the last loaded files should be loaded
 	 */
-	private static void quickloadCsv(CoreController coreController) {
+	private static void quickloadCsv(CoreController coreController, double currentTimeStep) {
 		int loadX = csvFiles.size();
 		for (int i = loadX - 1; i >= 0; i--) {;
-				quickloadCsv(coreController, csvFiles.get(i));
+				quickloadCsv(coreController, csvFiles.get(i), currentTimeStep);
 		}
 	}
 
-	private static void quickloadCsv(CoreController coreController, File file) {
+	private static void quickloadCsv(CoreController coreController, File file, double currentTimeStep) {
 		LoadCsvHandler loadCsvHandler = new LoadCsvHandler();
 		try {
-			loadCsvHandler.load(coreController, file);
+			loadCsvHandler.load(coreController, file, currentTimeStep);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -94,13 +94,13 @@ public class QuickloadHandler {
 	 * Loads the latest loaded layout file
 	 * @param coreController
 	 */
-	private static void quickloadLayout(CoreController coreController) {
+	private static void quickloadLayout(CoreController coreController, double currentTimeStep) {
 		
 		LoadLayoutHandler loadLayoutHandler = new LoadLayoutHandler();
 		
 		try {
 			
-			loadLayoutHandler.load(coreController, latestLayout);
+			loadLayoutHandler.load(coreController, latestLayout, currentTimeStep);
 		}
 		catch (Exception e) {
 			

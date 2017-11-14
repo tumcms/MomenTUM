@@ -101,7 +101,7 @@ public class LoadBackgroundImageHandler {
 				 BackgroundPosition.CENTER, 
 				 size);
 		 
-		 AnchorPane grid2 = coreController.getVisualizationController().getPlayBackCanvas();
+		 AnchorPane grid2 = coreController.getPlaybackController().getPlayBackCanvas();
 	 
 		 pane = new Pane();
 		 ObservableList<Node> list = grid2.getChildren();

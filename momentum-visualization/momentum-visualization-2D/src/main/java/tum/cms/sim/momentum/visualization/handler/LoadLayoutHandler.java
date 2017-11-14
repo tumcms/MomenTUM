@@ -50,7 +50,7 @@ public class LoadLayoutHandler extends LoadHandler {
 	private final static String titleLayoutChooser = "Open simulation layout file";
 
 	@Override
-	public void load(CoreController coreController, Window parentWindow) throws Exception {
+	public void load(CoreController coreController, Window parentWindow, double currentTimeStep) throws Exception {
 
 		File layoutFile = getFile(titleLayoutChooser, new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml"),
 				parentWindow);
@@ -58,13 +58,13 @@ public class LoadLayoutHandler extends LoadHandler {
 		if (layoutFile != null) {
 			
 			QuickloadHandler.resetCsvFiles();
-			this.load(coreController, layoutFile);
+			this.load(coreController, layoutFile, currentTimeStep);
 		}
 
 	}
 
 	@Override
-	public void load(CoreController coreController, File file) throws Exception {
+	public void load(CoreController coreController, File file, double currentTimeStep) throws Exception {
 		
 		if (coreController.getCoreModel().getLayoutLoaded()) {
 
@@ -76,8 +76,8 @@ public class LoadLayoutHandler extends LoadHandler {
 			ConfigurationManager configurationManager = new ConfigurationManager();
 			configurationManager.deserializeCompleteConfiguration(file.getAbsolutePath());
 
-			coreController.getVisualizationController().getCustomizationController().fillCustomizationModelFromPreferences();
-			coreController.getVisualizationController().getVisibilitiyModel().fillFromPreferences();
+			coreController.getPlaybackController().getCustomizationController().fillCustomizationModelFromPreferences();
+			coreController.getPlaybackController().getVisibilitiyModel().fillFromPreferences();
 
 			GeometryModelBusinessLogic.createLayout(configurationManager.getSimulatorConfiguration().getLayouts().get(0), coreController);
 
@@ -104,15 +104,15 @@ public class LoadLayoutHandler extends LoadHandler {
 			
 			UserPreferenceHandler.putProperty(PropertyType.layoutPath, file.getParent());
 			Rectangle2D boundingBox = AnimationCalculations.computeObstacleCenterOfGravity2D(
-					configurationManager.getSimulatorConfiguration().getLayouts().get(0), coreController.getVisualizationController().getVisualizationModel());
+					configurationManager.getSimulatorConfiguration().getLayouts().get(0), coreController.getPlaybackController().getPlaybackModel());
 
-			coreController.getVisualizationController().centerViewPoint(boundingBox);
+			coreController.getPlaybackController().centerViewPoint(boundingBox);
 			QuickloadHandler.setLatestLayout(file);
 			coreController.getCoreModel().setLayoutLoaded(true);
 		} catch (FileNotFoundException e) {
 
 			coreController.getCoreModel().setLayoutLoaded(false);
-			coreController.getVisualizationController().clearAll();
+			coreController.getPlaybackController().clearAll();
 			InformationDialogCreator.createErrorDialog("", "Error loading layout file", e);
 			throw e;
 		}

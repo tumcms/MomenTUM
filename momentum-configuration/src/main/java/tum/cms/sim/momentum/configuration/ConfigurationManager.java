@@ -381,7 +381,6 @@ public class ConfigurationManager {
 		
 		serializer.registerConverter(LatticeModelConfiguration.getLatticeTypeConverter());
 		serializer.registerConverter(LatticeModelConfiguration.getNeighbourhoodTypeConverter());
-		serializer.registerConverter(LatticeModelConfiguration.getFillingTypeConverter());
 		serializer.registerConverter(LatticeModelConfiguration.getBehaviorTypeConverter());
 		
 		serializer.registerConverter(GraphOperationConfiguration.getTypeConverter());

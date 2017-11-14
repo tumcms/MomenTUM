@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">    
+    <Assembly>
+	MomenTumV2SpaceSyntaxRevit.dll
+    </Assembly>
+    <ClientId>502fe383-2648-4e98-adf8-133747f9dc34</ClientId>
+    <FullClassName>MomenTumV2SpaceSyntax</FullClassName>
+    <Text>MomenTumV2SpaceSyntax</Text>
+    <VendorId>ADSK</VendorId>
+    <VisibilityMode>AlwaysVisible</VisibilityMode>
+  </AddIn>
+</RevitAddIns>

@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.simulator.factory.outputModelFactory;
 
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration;
+import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.model.IPedestrianBehavioralModel;
 import tum.cms.sim.momentum.model.absorber.Absorber;
 import tum.cms.sim.momentum.model.absorber.AbsorberWriterSource;
@@ -118,7 +119,13 @@ public class WriterSourceFactory extends ModelFactory<WriterSourceConfiguration,
 		case SpaceSyntax:
 			
 			SpaceSyntaxWriterSource spaceSyntaxWriterSource = new SpaceSyntaxWriterSource();
-			spaceSyntaxWriterSource.setScenarioManager(componentManager.getScenarioManager());
+			
+			ScenarioManager scenarioManager = componentManager.getScenarioManager();
+			spaceSyntaxWriterSource.setScenarioManager(scenarioManager);
+
+			Integer additionalId = configuration.getAdditionalId();
+			spaceSyntaxWriterSource.setAdditionalId(additionalId);
+			
 			writerSource = spaceSyntaxWriterSource;
 			break;
 			

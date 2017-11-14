@@ -32,13 +32,31 @@
 
 package tum.cms.sim.momentum.utility.spaceSyntax;
 
+import java.util.Set;
+
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 import tum.cms.sim.momentum.utility.generic.IHasProperties;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 import tum.cms.sim.momentum.utility.generic.Unique;
-import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
+import tum.cms.sim.momentum.utility.lattice.CellIndex;
+import tum.cms.sim.momentum.utility.lattice.ILattice;
 
 public class SpaceSyntax extends Unique implements IHasProperties {
+	
+	@XStreamOmitField
+	protected final ILattice lattice;
+	@XStreamImplicit
+	protected final Set<CellIndex> connectedIndices;
+	
+	protected SpaceSyntax(ILattice lattice, Set<CellIndex> connectedIndices) {
 		
+		this.lattice = lattice;
+		this.connectedIndices = connectedIndices;
+	}
+	
+	@XStreamOmitField
 	protected PropertyBackPack properties = null;
 	
 	@Override
@@ -52,13 +70,11 @@ public class SpaceSyntax extends Unique implements IHasProperties {
 		this.properties = propertyContainer; 
 	}
 	
-	private DepthMap depthMap = null;
-	
-	public DepthMap getDepthMap() {
-		return depthMap;
+	public ILattice getlattice() {
+		return lattice;
 	}
 
-	public void setDepthMap(DepthMap depthMap) {
-		this.depthMap = depthMap;
+	public Set<CellIndex> getConnectedIndices() {
+		return connectedIndices; 
 	}
 }

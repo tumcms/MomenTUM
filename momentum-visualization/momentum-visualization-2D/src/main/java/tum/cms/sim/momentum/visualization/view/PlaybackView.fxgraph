@@ -30,23 +30,22 @@
  * SOFTWARE.
  ******************************************************************************/
  
- package tum.cms.sim.momentum.visualization.view
+package tum.cms.sim.momentum.visualization.view
 
 import javafx.scene.layout.AnchorPane
 import tum.cms.sim.momentum.visulization.view.userControl.ResizeCanvas
 import tum.cms.sim.momentum.visualization.model.LayoutModel
-import tum.cms.sim.momentum.visualization.model.VisualizationModel
+import tum.cms.sim.momentum.visualization.model.PlaybackModel
+import tum.cms.sim.momentum.visualization.controller.PlaybackController
 import tum.cms.sim.momentum.visualization.view.userControl.ExtendedCanvas
-import javafx.scene.canvas.Canvas
-import tum.cms.sim.momentum.visualization.controller.VisualizationController
 import javafx.scene.control.Button
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.StackPane
 import javafx.scene.SubScene
 
-component PlaybackView controlledby VisualizationController {
+component PlaybackView controlledby PlaybackController {
 	
-	define VisualizationModel id visualizationModel 
+	define PlaybackModel id playbackModel 
 		
 	AnchorPane id playBackPane { 	
 		style: "-fx-background-color: TRANSPARENT",

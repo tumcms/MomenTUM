@@ -42,7 +42,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.StayingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -80,7 +80,7 @@ public class ShiftedRandomParticipating extends StayingModel {
 	protected HashMap<Integer, Double> maximalAttractionDistances = new HashMap<>();
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		// Nothing to do
 		return null;
@@ -180,15 +180,15 @@ public class ShiftedRandomParticipating extends StayingModel {
 				if(pedestrian.getStayingState() != null) {
 					
 					if(pedestrian.isLeader() &&
-					   this.query.isCollisionWithPedestrian(pedestrian.getBodyRadius(),
+					   this.perception.isCollisionWithPedestrian(pedestrian,
+							pedestrian.getBodyRadius(),
 							0.0, 
-							pedestrian.getStayingState().getStayingPosition(),
-							this.perception.getAllPedestrians(pedestrian))) {
+							pedestrian.getStayingState().getStayingPosition())) {
 								
 						pedestrian.setStayingState(null);
 					}
 					else if(pedestrian.isLeader() &&
-							this.query.isCollisionWithObstacles(pedestrian.getBodyRadius(),
+							this.perception.isCollisionWithObstacles(pedestrian.getBodyRadius(),
 									safetyDistance, 
 									pedestrian.getStayingState().getStayingPosition(),
 									scenarioManager.getObstacles())) {
@@ -204,7 +204,7 @@ public class ShiftedRandomParticipating extends StayingModel {
 					else if(!pedestrian.isLeader() && 
 							leaderPosition.containsKey(pedestrian.getId()) &&
 							leaderPosition.get(pedestrian.getId()) != null &&
-							this.query.isCollisionWithObstacles(pedestrian.getBodyRadius(),
+							this.perception.isCollisionWithObstacles(pedestrian.getBodyRadius(),
 									safetyDistance, 
 									pedestrian.getStayingState().getStayingPosition(),
 									scenarioManager.getObstacles())) {
@@ -215,7 +215,7 @@ public class ShiftedRandomParticipating extends StayingModel {
 					else if(!pedestrian.isLeader() && 
 							leaderPosition.containsKey(pedestrian.getId()) &&
 							leaderPosition.get(pedestrian.getId()) != null &&
-							this.query.isCollisionWithObstacles(pedestrian.getBodyRadius(),
+							this.perception.isCollisionWithObstacles(pedestrian.getBodyRadius(),
 									safetyDistance, 
 									pedestrian.getStayingState().getStayingPosition(),
 									scenarioManager.getObstacles())) {
@@ -233,8 +233,7 @@ public class ShiftedRandomParticipating extends StayingModel {
 					}
 					else {
 						
-						IPedestrian leader = this.query.findLeaders(pedestrian, 
-							this.perception,
+						IPedestrian leader = this.perception.findLeaders(pedestrian, 
 							simulationState)
 							.get(0);
 	
@@ -266,7 +265,7 @@ public class ShiftedRandomParticipating extends StayingModel {
 				
 					leaderPosition.put(pedestrian.getId(), pedestrian.getNextWalkingTarget());
 					
-					List<IPedestrian> groupMembers = this.query.groupMembers(pedestrian, perception, simulationState);
+					List<IPedestrian> groupMembers = this.perception.groupMembers(pedestrian, simulationState);
 					groupMembers.forEach(member -> {
 						
 						if(member.getId() != pedestrian.getId()) {
@@ -286,8 +285,7 @@ public class ShiftedRandomParticipating extends StayingModel {
 		
 		Area targetArea = pedestrian.getNextNavigationTarget();
 		
-		List<IPedestrian> sameTargetPedestrians = this.query.findPedestrianSameTarget(pedestrian,
-				this.perception, 
+		List<IPedestrian> sameTargetPedestrians = this.perception.findPedestrianSameTarget(pedestrian,
 				targetArea,
 				false,
 				0.0);
@@ -307,14 +305,12 @@ public class ShiftedRandomParticipating extends StayingModel {
 		Vector2D participationPosition = null;
 		Vector2D participationHeading = null;
 		
-		List<IPedestrian> groupMembers = this.query.findLeaders(pedestrian, 
-				this.perception,
+		List<IPedestrian> groupMembers = this.perception.findLeaders(pedestrian, 
 				simulationState);
 			
 		Area targetArea = pedestrian.getNextNavigationTarget();
 		
-		List<IPedestrian> sameTargetPedestrians = this.query.findPedestrianSameTarget(pedestrian,
-				this.perception, 
+		List<IPedestrian> sameTargetPedestrians = this.perception.findPedestrianSameTarget(pedestrian,
 				targetArea,
 				true,
 				0.0);
@@ -378,9 +374,9 @@ public class ShiftedRandomParticipating extends StayingModel {
 			groupeParticipationPosition = jointParticipationPosition.sum(xRandom, yRandom);
 			
 			if(!targetArea.getGeometry().contains(groupeParticipationPosition) ||
-			   this.query.isCollisionWithObstacles(bodyRadius, safetyDistance, groupeParticipationPosition, scenarioManager.getObstacles()) ||
-			   this.query.isToCloseToAreaBorder(bodyRadius, safetyDistance, groupeParticipationPosition, targetArea) ||
-			   this.query.isCollisionWithPedestrian(bodyRadius, 0.0, groupeParticipationPosition, sameTargetPedestrians)) {
+			   this.perception.isCollisionWithObstacles(bodyRadius, safetyDistance, groupeParticipationPosition, scenarioManager.getObstacles()) ||
+			   this.perception.isToCloseToAreaBorder(bodyRadius, safetyDistance, groupeParticipationPosition, targetArea) ||
+			   this.perception.isCollisionWithPedestrian(groupMember, bodyRadius, 0.0, groupeParticipationPosition, sameTargetPedestrians)) {
 						
 					gambleIterator--;
 					groupeParticipationPosition = null;
@@ -439,9 +435,9 @@ public class ShiftedRandomParticipating extends StayingModel {
 						gambleIterator--;
 					}
 					else if(!targetArea.getGeometry().contains(singleParticipationPosition) ||
-					   this.query.isCollisionWithObstacles(bodyRadius, safetyDistance, singleParticipationPosition, scenarioManager.getObstacles()) ||
-					   this.query.isToCloseToAreaBorder(bodyRadius, safetyDistance, singleParticipationPosition, targetArea) ||
-					   this.query.isCollisionWithPedestrian(bodyRadius, safetyDistance, singleParticipationPosition, sameTargetPedestrians)) {
+					   this.perception.isCollisionWithObstacles(bodyRadius, safetyDistance, singleParticipationPosition, scenarioManager.getObstacles()) ||
+					   this.perception.isToCloseToAreaBorder(bodyRadius, safetyDistance, singleParticipationPosition, targetArea) ||
+					   this.perception.isCollisionWithPedestrian(pedestrian, bodyRadius, safetyDistance, singleParticipationPosition, sameTargetPedestrians)) {
 						
 						gambleIterator--;
 					}
@@ -461,9 +457,9 @@ public class ShiftedRandomParticipating extends StayingModel {
 				singleParticipationPosition = GeometryAdditionals.findRandomPositionInPolygon(targetArea.getGeometry());
 				
 				 if(targetArea.getGeometry().contains(singleParticipationPosition) ||
-				    !this.query.isCollisionWithObstacles(bodyRadius, safetyDistance, singleParticipationPosition, scenarioManager.getObstacles()) ||
-				    !this.query.isToCloseToAreaBorder(bodyRadius, safetyDistance, singleParticipationPosition, targetArea) ||
-					!this.query.isCollisionWithPedestrian(bodyRadius, safetyDistance, singleParticipationPosition, sameTargetPedestrians)) {
+				    !this.perception.isCollisionWithObstacles(bodyRadius, safetyDistance, singleParticipationPosition, scenarioManager.getObstacles()) ||
+				    !this.perception.isToCloseToAreaBorder(bodyRadius, safetyDistance, singleParticipationPosition, targetArea) ||
+					!this.perception.isCollisionWithPedestrian(pedestrian, bodyRadius, safetyDistance, singleParticipationPosition, sameTargetPedestrians)) {
 							
 					break;
 				}

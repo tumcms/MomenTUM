@@ -45,18 +45,19 @@ public abstract class LoadHandler {
 	 * Use this method if the user has to specify which file is loaded.
 	 * @param coreController
 	 * @param parentWindow
+	 * @param currentTimeStep to animate
 	 * @throws Exception
 	 */
-	public abstract void load(CoreController coreController, Window parentWindow) throws Exception;
+	public abstract void load(CoreController coreController, Window parentWindow,double currentTimeStep) throws Exception;
 	
 	/**
 	 * Use this method to load a specific file
 	 * @param coreController
 	 * @param file
-	 * @param preferenceManager
+	 * @param currentTimeStep to animate
 	 * @throws Exception
 	 */
-	public abstract void load(CoreController coreController, File file) throws Exception;
+	public abstract void load(CoreController coreController, File file, double currentTimeStep) throws Exception;
 
 	/**
 	 * Opens a dialog where the user can select a file to load

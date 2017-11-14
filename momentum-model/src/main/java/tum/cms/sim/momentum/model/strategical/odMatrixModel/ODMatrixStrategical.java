@@ -45,7 +45,7 @@ import java.util.Optional;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -123,7 +123,7 @@ public class ODMatrixStrategical extends DestinationChoiceModel {
 	}
 
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return new ODMatrixExtension();
 	}
@@ -146,7 +146,7 @@ public class ODMatrixStrategical extends DestinationChoiceModel {
 		Area nextTarget = pedestrian.getNextNavigationTarget();
 		ODMatrixExtension extension = (ODMatrixExtension)pedestrian.getExtensionState(this);
 		
-		if((perception.isVisible(pedestrian.getPosition(),
+		if((perception.isVisible(pedestrian,
 				pedestrian.getNextNavigationTarget().getPointOfInterest()) && 
 				this.isClose(nextTarget, pedestrian, behavior)) ||
 				this.checkInBehavior(extension, pedestrian.getBehaviorTask())) {

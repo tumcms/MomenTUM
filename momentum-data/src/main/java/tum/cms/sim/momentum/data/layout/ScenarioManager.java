@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.data.layout;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -131,10 +132,15 @@ public class ScenarioManager {
 		
 		return scenarios.get(this.scenarioId).getTaggedAreas(type);
 	}
+
+	public ILattice getLattice(int latticeId) {
+
+		return scenarios.get(this.scenarioId).getLattices().get(latticeId);
+	}
 	
-	public ArrayList<ILattice> getLattices() {
+	public Collection<ILattice> getLattices() {
 		
-		return scenarios.get(this.scenarioId).getLattices();
+		return scenarios.get(this.scenarioId).getLattices().values();
 	}
 	
 	public Graph getGraph() {
@@ -147,7 +153,7 @@ public class ScenarioManager {
 		return scenarios.get(this.scenarioId).getGraphs();
 	}
 	
-	public SpaceSyntax getSpaceSyntax() {
+	public List<SpaceSyntax> getSpaceSyntaxes() {
 		
 		return scenarios.get(this.scenarioId).getSpaceSyntaxes();
 	}

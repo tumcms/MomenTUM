@@ -1,0 +1,2991 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<simulator xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0.2" name="RevitLayouting">
+
+	<timeState simulationEndTime="2.0" timeStepDuration="0.5"/> <!-- can this be ommitted? -->
+
+	<logging>
+		<loggingState type="Console" level="User"/>
+	</logging>
+
+	<outputWriters>
+
+		<!-- Writer currently only works in this combination. -->
+		<outputWriter id="1337" name="spaceSyntaxWriter">
+			<!-- If value for call is 0, then it is called in preProcessing. Integer.MAX_VALUE-->
+			<property name="call" type="Integer" value="0"/>
+			<!--<property name="buffer" type="Integer" value="50"/>-->
+
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./spaceSyntaxDepthMapResult4.xml"/>
+				<property name="index" type="Boolean" value="True"/>
+			</writerTarget>
+
+			<writerFormat formatType="Single"/>
+
+			<writerSource name="spaceSyntaxOperation_DepthMap" sourceType="SpaceSyntax" additionalId="1">
+			</writerSource>
+		</outputWriter>
+		
+		<!-- can be used to print a lattice to image -->
+		<!--<outputWriter id="123" name="testLatticeToPicWriter">
+			<property name="call" type="Integer" value="0" />
+			<writerTarget targetType="File" >
+				<property name="file" type="File" value="./spaceSyntax.jpg" />
+				<property name="index" type="Integer" value="1" />
+			</writerTarget>
+			<writerFormat formatType="Single"/>
+			<WriterSource sourceType="LatticeWriter" additionalId="0">
+				<property name="min" type="Integer" value="1" /> 
+				<property name="max" type="Integer" value="1" />
+				<property name="obstacle" type="Integer" value="1" />
+			</WriterSource>
+		</outputWriter>-->
+	</outputWriters>
+
+	<lattices>
+		<lattice name="SpaceSyntaxLattice" id="3" scenarioId="0" 
+			latticeType="Quadratic" 
+			cellEdgeSize="0.2"
+			neigborhoodType="Touching">
+			<!-- 	the default for additional cells is True. 
+					This means the cellEdgeSize * 2 is added to the max width and height of the lattice.
+					False implies that no additional cells are created and the max width and height of 
+					the lattice is not altered.
+			-->
+			<property name="addAdditionalCells" type="Boolean" value="False"/>
+		</lattice>
+	</lattices>
+
+	<spaceSyntaxes>
+		<spaceSyntaxModel id="2" name="SimpleSpaceSyntax">
+			<spaceSyntaxOperation id="1" name="DepthMap" type="DepthMap">
+				<property name="scenarioLatticeId" type="Integer" value="3"/> 
+			</spaceSyntaxOperation>
+		</spaceSyntaxModel>
+	</spaceSyntaxes>
+	
+  <layouts>
+    <scenario id="0" name="Ebene 1" maxX="92.0203" maxY="117.4858" minX="47.0784" minY="53.2865">
+      <area id="0" name="Origin0" type="Origin">
+        <point x="81.363334797035932" y="112.2858" />
+        <point x="81.363334797035932" y="115.1658" />
+        <point x="79.360265202964072" y="115.1658" />
+        <point x="79.360265202964072" y="112.2858" />
+      </area>
+      <area id="1" name="Origin1" type="Origin">
+        <point x="68.350449084549879" y="110.73926241632864" />
+        <point x="68.550349084549879" y="110.79306241632864" />
+        <point x="68.316450915450147" y="111.66213758367137" />
+        <point x="68.116550915450148" y="111.60833758367137" />
+      </area>
+      <area id="2" name="Origin2" type="Origin">
+        <point x="71.4815" y="107.8554" />
+        <point x="71.4815" y="108.4054" />
+        <point x="70.5965" y="108.4054" />
+        <point x="70.5965" y="107.8554" />
+      </area>
+      <area id="3" name="Origin3" type="Origin">
+        <point x="78.136299999999991" y="111.5371" />
+        <point x="78.136299999999991" y="111.8621" />
+        <point x="77.2513" y="111.8621" />
+        <point x="77.2513" y="111.5371" />
+      </area>
+      <area id="4" name="Origin4" type="Origin">
+        <point x="75.530899999999988" y="111.3895" />
+        <point x="75.530899999999988" y="111.6795" />
+        <point x="74.6459" y="111.6795" />
+        <point x="74.6459" y="111.3895" />
+      </area>
+      <area id="5" name="Origin5" type="Origin">
+        <point x="76.5754" y="111.3895" />
+        <point x="76.5754" y="111.6795" />
+        <point x="75.690400000000011" y="111.6795" />
+        <point x="75.690400000000011" y="111.3895" />
+      </area>
+      <area id="6" name="Origin6" type="Origin">
+        <point x="76.7385" y="113.5252" />
+        <point x="76.7385" y="114.41019999999999" />
+        <point x="76.4485" y="114.41019999999999" />
+        <point x="76.4485" y="113.5252" />
+      </area>
+      <area id="7" name="Origin7" type="Origin">
+        <point x="76.7385" y="114.52720000000001" />
+        <point x="76.7385" y="115.4122" />
+        <point x="76.4485" y="115.4122" />
+        <point x="76.4485" y="114.52720000000001" />
+      </area>
+      <area id="8" name="Origin8" type="Origin">
+        <point x="76.7385" y="115.60770000000001" />
+        <point x="76.7385" y="116.4927" />
+        <point x="76.4485" y="116.4927" />
+        <point x="76.4485" y="115.60770000000001" />
+      </area>
+      <area id="9" name="Origin9" type="Origin">
+        <point x="76.7385" y="116.6027" />
+        <point x="76.7385" y="117.48769999999999" />
+        <point x="76.4485" y="117.48769999999999" />
+        <point x="76.4485" y="116.6027" />
+      </area>
+      <area id="10" name="Origin10" type="Origin">
+        <point x="71.6015" y="111.7823" />
+        <point x="71.6015" y="112.10730000000001" />
+        <point x="70.716500000000011" y="112.10730000000001" />
+        <point x="70.716500000000011" y="111.7823" />
+      </area>
+      <area id="11" name="Origin11" type="Origin">
+        <point x="78.6743" y="63.7729" />
+        <point x="78.6743" y="64.6579" />
+        <point x="78.3493" y="64.6579" />
+        <point x="78.3493" y="63.7729" />
+      </area>
+      <area id="12" name="Origin12" type="Origin">
+        <point x="69.4431" y="107.9479" />
+        <point x="69.4431" y="108.2729" />
+        <point x="68.55810000000001" y="108.2729" />
+        <point x="68.55810000000001" y="107.9479" />
+      </area>
+      <area id="13" name="Origin13" type="Origin">
+        <point x="58.1804" y="68.1459" />
+        <point x="58.1804" y="69.030899999999988" />
+        <point x="57.8304" y="69.030899999999988" />
+        <point x="57.8304" y="68.1459" />
+      </area>
+      <area id="14" name="Origin14" type="Origin">
+        <point x="55.5624" y="58.422000000000004" />
+        <point x="55.5624" y="60.252" />
+        <point x="54.9124" y="60.252" />
+        <point x="54.9124" y="58.422000000000004" />
+      </area>
+      <area id="15" name="Origin15" type="Origin">
+        <point x="52.484300000000005" y="111.3848" />
+        <point x="52.484300000000005" y="111.7098" />
+        <point x="51.5993" y="111.7098" />
+        <point x="51.5993" y="111.3848" />
+      </area>
+      <area id="16" name="Origin16" type="Origin">
+        <point x="79.199" y="109.28960000000001" />
+        <point x="79.199" y="111.1746" />
+        <point x="78.649" y="111.1746" />
+        <point x="78.649" y="109.28960000000001" />
+      </area>
+      <area id="0" name="Destination0" type="Destination">
+        <point x="81.363334797035932" y="112.2858" />
+        <point x="81.363334797035932" y="115.1658" />
+        <point x="79.360265202964072" y="115.1658" />
+        <point x="79.360265202964072" y="112.2858" />
+      </area>
+      <area id="1" name="Destination1" type="Destination">
+        <point x="68.350449084549879" y="110.73926241632864" />
+        <point x="68.550349084549879" y="110.79306241632864" />
+        <point x="68.316450915450147" y="111.66213758367137" />
+        <point x="68.116550915450148" y="111.60833758367137" />
+      </area>
+      <area id="2" name="Destination2" type="Destination">
+        <point x="71.4815" y="107.8554" />
+        <point x="71.4815" y="108.4054" />
+        <point x="70.5965" y="108.4054" />
+        <point x="70.5965" y="107.8554" />
+      </area>
+      <area id="3" name="Destination3" type="Destination">
+        <point x="78.136299999999991" y="111.5371" />
+        <point x="78.136299999999991" y="111.8621" />
+        <point x="77.2513" y="111.8621" />
+        <point x="77.2513" y="111.5371" />
+      </area>
+      <area id="4" name="Destination4" type="Destination">
+        <point x="75.530899999999988" y="111.3895" />
+        <point x="75.530899999999988" y="111.6795" />
+        <point x="74.6459" y="111.6795" />
+        <point x="74.6459" y="111.3895" />
+      </area>
+      <area id="5" name="Destination5" type="Destination">
+        <point x="76.5754" y="111.3895" />
+        <point x="76.5754" y="111.6795" />
+        <point x="75.690400000000011" y="111.6795" />
+        <point x="75.690400000000011" y="111.3895" />
+      </area>
+      <area id="6" name="Destination6" type="Destination">
+        <point x="76.7385" y="113.5252" />
+        <point x="76.7385" y="114.41019999999999" />
+        <point x="76.4485" y="114.41019999999999" />
+        <point x="76.4485" y="113.5252" />
+      </area>
+      <area id="7" name="Destination7" type="Destination">
+        <point x="76.7385" y="114.52720000000001" />
+        <point x="76.7385" y="115.4122" />
+        <point x="76.4485" y="115.4122" />
+        <point x="76.4485" y="114.52720000000001" />
+      </area>
+      <area id="8" name="Destination8" type="Destination">
+        <point x="76.7385" y="115.60770000000001" />
+        <point x="76.7385" y="116.4927" />
+        <point x="76.4485" y="116.4927" />
+        <point x="76.4485" y="115.60770000000001" />
+      </area>
+      <area id="9" name="Destination9" type="Destination">
+        <point x="76.7385" y="116.6027" />
+        <point x="76.7385" y="117.48769999999999" />
+        <point x="76.4485" y="117.48769999999999" />
+        <point x="76.4485" y="116.6027" />
+      </area>
+      <area id="10" name="Destination10" type="Destination">
+        <point x="71.6015" y="111.7823" />
+        <point x="71.6015" y="112.10730000000001" />
+        <point x="70.716500000000011" y="112.10730000000001" />
+        <point x="70.716500000000011" y="111.7823" />
+      </area>
+      <area id="11" name="Destination11" type="Destination">
+        <point x="78.6743" y="63.7729" />
+        <point x="78.6743" y="64.6579" />
+        <point x="78.3493" y="64.6579" />
+        <point x="78.3493" y="63.7729" />
+      </area>
+      <area id="12" name="Destination12" type="Destination">
+        <point x="69.4431" y="107.9479" />
+        <point x="69.4431" y="108.2729" />
+        <point x="68.55810000000001" y="108.2729" />
+        <point x="68.55810000000001" y="107.9479" />
+      </area>
+      <area id="13" name="Destination13" type="Destination">
+        <point x="58.1804" y="68.1459" />
+        <point x="58.1804" y="69.030899999999988" />
+        <point x="57.8304" y="69.030899999999988" />
+        <point x="57.8304" y="68.1459" />
+      </area>
+      <area id="14" name="Destination14" type="Destination">
+        <point x="55.5624" y="58.422000000000004" />
+        <point x="55.5624" y="60.252" />
+        <point x="54.9124" y="60.252" />
+        <point x="54.9124" y="58.422000000000004" />
+      </area>
+      <area id="15" name="Destination15" type="Destination">
+        <point x="52.484300000000005" y="111.3848" />
+        <point x="52.484300000000005" y="111.7098" />
+        <point x="51.5993" y="111.7098" />
+        <point x="51.5993" y="111.3848" />
+      </area>
+      <area id="16" name="Destination16" type="Destination">
+        <point x="79.199" y="109.28960000000001" />
+        <point x="79.199" y="111.1746" />
+        <point x="78.649" y="111.1746" />
+        <point x="78.649" y="109.28960000000001" />
+      </area>
+      <obstacle id="0" name="Wall0" type="Wall">
+        <point x="51.0918" y="116.8458" />
+        <point x="47.5384" y="116.8458" />
+      </obstacle>
+      <obstacle id="1" name="Wall1" type="Wall">
+        <point x="47.5384" y="116.8458" />
+        <point x="47.5384" y="113.5304" />
+      </obstacle>
+      <obstacle id="2" name="Wall2" type="Wall">
+        <point x="47.5384" y="113.5304" />
+        <point x="47.5384" y="112.8304" />
+      </obstacle>
+      <obstacle id="3" name="Wall3" type="Wall">
+        <point x="47.5384" y="112.8304" />
+        <point x="47.5384" y="108.5104" />
+      </obstacle>
+      <obstacle id="4" name="Wall4" type="Wall">
+        <point x="47.5384" y="108.5104" />
+        <point x="47.4284" y="108.5104" />
+      </obstacle>
+      <obstacle id="5" name="Wall5" type="Wall">
+        <point x="47.4284" y="108.5104" />
+        <point x="47.4284" y="107.8104" />
+      </obstacle>
+      <obstacle id="6" name="Wall6" type="Wall">
+        <point x="47.4284" y="107.8104" />
+        <point x="47.4569" y="107.8104" />
+      </obstacle>
+      <obstacle id="7" name="Wall7" type="Wall">
+        <point x="47.4569" y="107.8104" />
+        <point x="47.4569" y="108.0354" />
+      </obstacle>
+      <obstacle id="8" name="Wall8" type="Wall">
+        <point x="50.6918" y="108.0354" />
+        <point x="50.6918" y="108.4354" />
+      </obstacle>
+      <obstacle id="9" name="Wall9" type="Wall">
+        <point x="50.6918" y="108.4354" />
+        <point x="50.6918" y="111.7098" />
+      </obstacle>
+      <obstacle id="10" name="Wall10" type="Wall">
+        <point x="50.6918" y="111.7098" />
+        <point x="52.4711" y="111.7098" />
+      </obstacle>
+      <obstacle id="11" name="Wall11" type="Wall">
+        <point x="52.4711" y="111.7098" />
+        <point x="54.9818" y="111.7098" />
+      </obstacle>
+      <obstacle id="12" name="Wall12" type="Wall">
+        <point x="54.9818" y="111.7098" />
+        <point x="54.9818" y="108.4354" />
+      </obstacle>
+      <obstacle id="13" name="Wall13" type="Wall">
+        <point x="54.9818" y="108.4354" />
+        <point x="54.9818" y="108.0354" />
+      </obstacle>
+      <obstacle id="14" name="Wall14" type="Wall">
+        <point x="54.9818" y="108.0354" />
+        <point x="58.2318" y="108.0354" />
+      </obstacle>
+      <obstacle id="15" name="Wall15" type="Wall">
+        <point x="58.2318" y="108.0354" />
+        <point x="58.2318" y="108.4354" />
+      </obstacle>
+      <obstacle id="16" name="Wall16" type="Wall">
+        <point x="58.2318" y="108.4354" />
+        <point x="58.2318" y="111.5954" />
+      </obstacle>
+      <obstacle id="17" name="Wall17" type="Wall">
+        <point x="66.3218" y="111.5954" />
+        <point x="66.3218" y="108.4354" />
+      </obstacle>
+      <obstacle id="18" name="Wall18" type="Wall">
+        <point x="66.3218" y="108.4354" />
+        <point x="66.3218" y="108.0979" />
+      </obstacle>
+      <obstacle id="19" name="Wall19" type="Wall">
+        <point x="67.3223" y="108.0979" />
+        <point x="67.3223" y="109.5218" />
+      </obstacle>
+      <obstacle id="20" name="Wall20" type="Wall">
+        <point x="67.3223" y="109.5218" />
+        <point x="67.3223" y="110.1718" />
+      </obstacle>
+      <obstacle id="21" name="Wall21" type="Wall">
+        <point x="67.3223" y="110.1718" />
+        <point x="67.4723" y="110.1718" />
+      </obstacle>
+      <obstacle id="22" name="Wall22" type="Wall">
+        <point x="67.4723" y="110.1718" />
+        <point x="67.4723" y="109.6718" />
+      </obstacle>
+      <obstacle id="23" name="Wall23" type="Wall">
+        <point x="67.4723" y="109.6718" />
+        <point x="67.8573" y="109.6718" />
+      </obstacle>
+      <obstacle id="24" name="Wall24" type="Wall">
+        <point x="67.8573" y="109.6718" />
+        <point x="69.609" y="109.6718" />
+      </obstacle>
+      <obstacle id="25" name="Wall25" type="Wall">
+        <point x="69.609" y="109.6718" />
+        <point x="69.609" y="111.7124" />
+      </obstacle>
+      <obstacle id="26" name="Wall26" type="Wall">
+        <point x="69.609" y="111.7124" />
+        <point x="67.4723" y="111.7124" />
+      </obstacle>
+      <obstacle id="27" name="Wall27" type="Wall">
+        <point x="67.4723" y="111.7124" />
+        <point x="67.4723" y="111.2747" />
+      </obstacle>
+      <obstacle id="28" name="Wall28" type="Wall">
+        <point x="67.4723" y="111.2747" />
+        <point x="67.3223" y="111.2747" />
+      </obstacle>
+      <obstacle id="29" name="Wall29" type="Wall">
+        <point x="67.3223" y="111.2747" />
+        <point x="67.3223" y="111.8624" />
+      </obstacle>
+      <obstacle id="30" name="Wall30" type="Wall">
+        <point x="67.3223" y="111.8624" />
+        <point x="69.609" y="111.8624" />
+      </obstacle>
+      <obstacle id="31" name="Wall31" type="Wall">
+        <point x="69.609" y="111.8624" />
+        <point x="69.609" y="112.0323" />
+      </obstacle>
+      <obstacle id="32" name="Wall32" type="Wall">
+        <point x="66.2813" y="113.8364" />
+        <point x="66.2813" y="113.4554" />
+      </obstacle>
+      <obstacle id="33" name="Wall33" type="Wall">
+        <point x="66.2813" y="113.4554" />
+        <point x="66.3218" y="113.4554" />
+      </obstacle>
+      <obstacle id="34" name="Wall34" type="Wall">
+        <point x="66.3218" y="113.4554" />
+        <point x="66.3218" y="112.9834" />
+      </obstacle>
+      <obstacle id="35" name="Wall35" type="Wall">
+        <point x="66.3218" y="112.9834" />
+        <point x="66.3218" y="112.7554" />
+      </obstacle>
+      <obstacle id="36" name="Wall36" type="Wall">
+        <point x="66.3218" y="112.7554" />
+        <point x="65.7718" y="112.7554" />
+      </obstacle>
+      <obstacle id="37" name="Wall37" type="Wall">
+        <point x="62.5606" y="112.7554" />
+        <point x="62.0106" y="112.7554" />
+      </obstacle>
+      <obstacle id="38" name="Wall38" type="Wall">
+        <point x="58.7818" y="112.7554" />
+        <point x="58.2318" y="112.7554" />
+      </obstacle>
+      <obstacle id="39" name="Wall39" type="Wall">
+        <point x="54.9818" y="112.7554" />
+        <point x="54.4318" y="112.7554" />
+      </obstacle>
+      <obstacle id="40" name="Wall40" type="Wall">
+        <point x="51.2418" y="112.7554" />
+        <point x="50.6918" y="112.7554" />
+      </obstacle>
+      <obstacle id="41" name="Wall41" type="Wall">
+        <point x="50.6918" y="112.7554" />
+        <point x="50.6918" y="112.9834" />
+      </obstacle>
+      <obstacle id="42" name="Wall42" type="Wall">
+        <point x="50.6918" y="112.9834" />
+        <point x="50.6918" y="113.4554" />
+      </obstacle>
+      <obstacle id="43" name="Wall43" type="Wall">
+        <point x="50.6918" y="113.4554" />
+        <point x="51.0918" y="113.4554" />
+      </obstacle>
+      <obstacle id="44" name="Wall44" type="Wall">
+        <point x="51.0918" y="113.4554" />
+        <point x="51.0918" y="116.8458" />
+      </obstacle>
+      <obstacle id="45" name="Wall45" type="Wall">
+        <point x="54.8318" y="116.8458" />
+        <point x="51.2418" y="116.8458" />
+      </obstacle>
+      <obstacle id="46" name="Wall46" type="Wall">
+        <point x="51.2418" y="116.8458" />
+        <point x="51.2418" y="113.4554" />
+      </obstacle>
+      <obstacle id="47" name="Wall47" type="Wall">
+        <point x="51.2418" y="113.4554" />
+        <point x="51.2418" y="112.9054" />
+      </obstacle>
+      <obstacle id="48" name="Wall48" type="Wall">
+        <point x="54.4318" y="112.9054" />
+        <point x="54.4318" y="113.4554" />
+      </obstacle>
+      <obstacle id="49" name="Wall49" type="Wall">
+        <point x="54.4318" y="113.4554" />
+        <point x="54.8318" y="113.4554" />
+      </obstacle>
+      <obstacle id="50" name="Wall50" type="Wall">
+        <point x="54.8318" y="113.4554" />
+        <point x="54.8318" y="116.8458" />
+      </obstacle>
+      <obstacle id="51" name="Wall51" type="Wall">
+        <point x="58.6318" y="116.8458" />
+        <point x="54.9818" y="116.8458" />
+      </obstacle>
+      <obstacle id="52" name="Wall52" type="Wall">
+        <point x="54.9818" y="116.8458" />
+        <point x="54.9818" y="113.4554" />
+      </obstacle>
+      <obstacle id="53" name="Wall53" type="Wall">
+        <point x="54.9818" y="113.4554" />
+        <point x="54.9818" y="112.9054" />
+      </obstacle>
+      <obstacle id="54" name="Wall54" type="Wall">
+        <point x="58.2318" y="112.9054" />
+        <point x="58.2318" y="113.4554" />
+      </obstacle>
+      <obstacle id="55" name="Wall55" type="Wall">
+        <point x="58.2318" y="113.4554" />
+        <point x="58.6318" y="113.4554" />
+      </obstacle>
+      <obstacle id="56" name="Wall56" type="Wall">
+        <point x="58.6318" y="113.4554" />
+        <point x="58.6318" y="116.8458" />
+      </obstacle>
+      <obstacle id="57" name="Wall57" type="Wall">
+        <point x="62.4106" y="116.8458" />
+        <point x="58.7818" y="116.8458" />
+      </obstacle>
+      <obstacle id="58" name="Wall58" type="Wall">
+        <point x="58.7818" y="116.8458" />
+        <point x="58.7818" y="113.4554" />
+      </obstacle>
+      <obstacle id="59" name="Wall59" type="Wall">
+        <point x="58.7818" y="113.4554" />
+        <point x="58.7818" y="112.9054" />
+      </obstacle>
+      <obstacle id="60" name="Wall60" type="Wall">
+        <point x="62.0106" y="112.9054" />
+        <point x="62.0106" y="113.4554" />
+      </obstacle>
+      <obstacle id="61" name="Wall61" type="Wall">
+        <point x="62.0106" y="113.4554" />
+        <point x="62.4106" y="113.4554" />
+      </obstacle>
+      <obstacle id="62" name="Wall62" type="Wall">
+        <point x="62.4106" y="113.4554" />
+        <point x="62.4106" y="116.8458" />
+      </obstacle>
+      <obstacle id="63" name="Wall63" type="Wall">
+        <point x="66.1313" y="116.8458" />
+        <point x="62.5606" y="116.8458" />
+      </obstacle>
+      <obstacle id="64" name="Wall64" type="Wall">
+        <point x="62.5606" y="116.8458" />
+        <point x="62.5606" y="113.4554" />
+      </obstacle>
+      <obstacle id="65" name="Wall65" type="Wall">
+        <point x="62.5606" y="113.4554" />
+        <point x="62.5606" y="112.9054" />
+      </obstacle>
+      <obstacle id="66" name="Wall66" type="Wall">
+        <point x="65.7718" y="112.9054" />
+        <point x="65.7718" y="113.4554" />
+      </obstacle>
+      <obstacle id="67" name="Wall67" type="Wall">
+        <point x="65.7718" y="113.4554" />
+        <point x="66.1313" y="113.4554" />
+      </obstacle>
+      <obstacle id="68" name="Wall68" type="Wall">
+        <point x="66.1313" y="113.4554" />
+        <point x="66.1313" y="113.9114" />
+      </obstacle>
+      <obstacle id="69" name="Wall69" type="Wall">
+        <point x="66.1313" y="113.9114" />
+        <point x="66.1313" y="116.8458" />
+      </obstacle>
+      <obstacle id="70" name="Wall70" type="Wall">
+        <point x="65.7718" y="108.0354" />
+        <point x="65.7718" y="108.4354" />
+      </obstacle>
+      <obstacle id="71" name="Wall71" type="Wall">
+        <point x="65.7718" y="108.4354" />
+        <point x="66.1718" y="108.4354" />
+      </obstacle>
+      <obstacle id="72" name="Wall72" type="Wall">
+        <point x="66.1718" y="108.4354" />
+        <point x="66.1718" y="111.4454" />
+      </obstacle>
+      <obstacle id="73" name="Wall73" type="Wall">
+        <point x="58.3818" y="111.4454" />
+        <point x="58.3818" y="108.4354" />
+      </obstacle>
+      <obstacle id="74" name="Wall74" type="Wall">
+        <point x="58.3818" y="108.4354" />
+        <point x="58.7818" y="108.4354" />
+      </obstacle>
+      <obstacle id="75" name="Wall75" type="Wall">
+        <point x="58.7818" y="108.4354" />
+        <point x="58.7818" y="108.0354" />
+      </obstacle>
+      <obstacle id="76" name="Wall76" type="Wall">
+        <point x="58.7818" y="108.0354" />
+        <point x="62.0106" y="108.0354" />
+      </obstacle>
+      <obstacle id="77" name="Wall77" type="Wall">
+        <point x="62.0106" y="108.0354" />
+        <point x="62.0106" y="108.4354" />
+      </obstacle>
+      <obstacle id="78" name="Wall78" type="Wall">
+        <point x="62.0106" y="108.4354" />
+        <point x="62.5606" y="108.4354" />
+      </obstacle>
+      <obstacle id="79" name="Wall79" type="Wall">
+        <point x="62.5606" y="108.4354" />
+        <point x="62.5606" y="108.0354" />
+      </obstacle>
+      <obstacle id="80" name="Wall80" type="Wall">
+        <point x="62.5606" y="108.0354" />
+        <point x="65.7718" y="108.0354" />
+      </obstacle>
+      <obstacle id="81" name="Wall81" type="Wall">
+        <point x="69.609" y="116.8458" />
+        <point x="66.2813" y="116.8458" />
+      </obstacle>
+      <obstacle id="82" name="Wall82" type="Wall">
+        <point x="66.2813" y="116.8458" />
+        <point x="66.2813" y="113.9864" />
+      </obstacle>
+      <obstacle id="83" name="Wall83" type="Wall">
+        <point x="69.609" y="113.9864" />
+        <point x="69.609" y="116.8458" />
+      </obstacle>
+      <obstacle id="84" name="Wall84" type="Wall">
+        <point x="74.1384" y="116.8458" />
+        <point x="70.059" y="116.8458" />
+      </obstacle>
+      <obstacle id="85" name="Wall85" type="Wall">
+        <point x="70.059" y="116.8458" />
+        <point x="70.059" y="113.9114" />
+      </obstacle>
+      <obstacle id="86" name="Wall86" type="Wall">
+        <point x="70.059" y="112.1073" />
+        <point x="72.1535" y="112.1073" />
+      </obstacle>
+      <obstacle id="87" name="Wall87" type="Wall">
+        <point x="72.1535" y="112.1073" />
+        <point x="72.4596" y="112.1073" />
+      </obstacle>
+      <obstacle id="88" name="Wall88" type="Wall">
+        <point x="72.4596" y="112.1073" />
+        <point x="74.1384" y="112.1073" />
+      </obstacle>
+      <obstacle id="89" name="Wall89" type="Wall">
+        <point x="74.1384" y="112.1073" />
+        <point x="74.1384" y="113.4377" />
+      </obstacle>
+      <obstacle id="90" name="Wall90" type="Wall">
+        <point x="74.1384" y="113.4377" />
+        <point x="74.1384" y="114.4797" />
+      </obstacle>
+      <obstacle id="91" name="Wall91" type="Wall">
+        <point x="74.1384" y="114.4797" />
+        <point x="74.1384" y="115.5358" />
+      </obstacle>
+      <obstacle id="92" name="Wall92" type="Wall">
+        <point x="74.1384" y="115.5358" />
+        <point x="74.1384" y="116.5647" />
+      </obstacle>
+      <obstacle id="93" name="Wall93" type="Wall">
+        <point x="74.1384" y="116.5647" />
+        <point x="74.1384" y="116.8458" />
+      </obstacle>
+      <obstacle id="94" name="Wall94" type="Wall">
+        <point x="70.059" y="104.2906" />
+        <point x="73.9071" y="104.2906" />
+      </obstacle>
+      <obstacle id="95" name="Wall95" type="Wall">
+        <point x="73.9071" y="104.2906" />
+        <point x="73.9071" y="104.2806" />
+      </obstacle>
+      <obstacle id="96" name="Wall96" type="Wall">
+        <point x="73.9071" y="104.2806" />
+        <point x="74.2671" y="104.2806" />
+      </obstacle>
+      <obstacle id="97" name="Wall97" type="Wall">
+        <point x="74.2671" y="104.2806" />
+        <point x="78.649" y="104.2806" />
+      </obstacle>
+      <obstacle id="98" name="Wall98" type="Wall">
+        <point x="78.649" y="107.8554" />
+        <point x="76.6635" y="107.8554" />
+      </obstacle>
+      <obstacle id="99" name="Wall99" type="Wall">
+        <point x="74.4384" y="107.8554" />
+        <point x="72.3065" y="107.8554" />
+      </obstacle>
+      <obstacle id="100" name="Wall100" type="Wall">
+        <point x="72.3065" y="107.8554" />
+        <point x="70.059" y="107.8554" />
+      </obstacle>
+      <obstacle id="101" name="Wall101" type="Wall">
+        <point x="76.5885" y="108.4554" />
+        <point x="76.5885" y="111.3895" />
+      </obstacle>
+      <obstacle id="102" name="Wall102" type="Wall">
+        <point x="76.5885" y="111.3895" />
+        <point x="75.6373" y="111.3895" />
+      </obstacle>
+      <obstacle id="103" name="Wall103" type="Wall">
+        <point x="75.6373" y="111.3895" />
+        <point x="74.7384" y="111.3895" />
+      </obstacle>
+      <obstacle id="104" name="Wall104" type="Wall">
+        <point x="74.7384" y="111.3895" />
+        <point x="74.7384" y="108.4554" />
+      </obstacle>
+      <obstacle id="105" name="Wall105" type="Wall">
+        <point x="76.7385" y="117.4858" />
+        <point x="76.7385" y="116.5647" />
+      </obstacle>
+      <obstacle id="106" name="Wall106" type="Wall">
+        <point x="76.7385" y="116.5647" />
+        <point x="76.7385" y="115.5358" />
+      </obstacle>
+      <obstacle id="107" name="Wall107" type="Wall">
+        <point x="76.7385" y="115.5358" />
+        <point x="76.7385" y="114.4797" />
+      </obstacle>
+      <obstacle id="108" name="Wall108" type="Wall">
+        <point x="76.7385" y="114.4797" />
+        <point x="76.7385" y="113.5907" />
+      </obstacle>
+      <obstacle id="109" name="Wall109" type="Wall">
+        <point x="76.7385" y="113.5907" />
+        <point x="76.7385" y="113.4958" />
+      </obstacle>
+      <obstacle id="110" name="Wall110" type="Wall">
+        <point x="76.7385" y="113.4958" />
+        <point x="76.6985" y="113.4958" />
+      </obstacle>
+      <obstacle id="111" name="Wall111" type="Wall">
+        <point x="76.6985" y="113.4958" />
+        <point x="76.6985" y="111.6871" />
+      </obstacle>
+      <obstacle id="112" name="Wall112" type="Wall">
+        <point x="78.649" y="111.6871" />
+        <point x="78.649" y="117.4858" />
+      </obstacle>
+      <obstacle id="113" name="Wall113" type="Wall">
+        <point x="78.649" y="117.4858" />
+        <point x="76.7385" y="117.4858" />
+      </obstacle>
+      <obstacle id="114" name="Wall114" type="Wall">
+        <point x="87.4976" y="117.4858" />
+        <point x="79.249" y="117.4858" />
+      </obstacle>
+      <obstacle id="115" name="Wall115" type="Wall">
+        <point x="79.249" y="117.4858" />
+        <point x="79.249" y="111.6121" />
+      </obstacle>
+      <obstacle id="116" name="Wall116" type="Wall">
+        <point x="79.249" y="104.2806" />
+        <point x="81.372" y="104.2806" />
+      </obstacle>
+      <obstacle id="117" name="Wall117" type="Wall">
+        <point x="85.3443" y="104.2806" />
+        <point x="87.4976" y="104.2806" />
+      </obstacle>
+      <obstacle id="118" name="Wall118" type="Wall">
+        <point x="87.4976" y="112.0854" />
+        <point x="87.4976" y="117.4858" />
+      </obstacle>
+      <obstacle id="119" name="Wall119" type="Wall">
+        <point x="92.0203" y="117.4858" />
+        <point x="88.0976" y="117.4858" />
+      </obstacle>
+      <obstacle id="120" name="Wall120" type="Wall">
+        <point x="88.0976" y="117.4858" />
+        <point x="88.0976" y="112.1854" />
+      </obstacle>
+      <obstacle id="121" name="Wall121" type="Wall">
+        <point x="92.0203" y="112.1854" />
+        <point x="92.0203" y="117.4858" />
+      </obstacle>
+      <obstacle id="122" name="Wall122" type="Wall">
+        <point x="92.0203" y="108.3554" />
+        <point x="92.0203" y="111.9854" />
+      </obstacle>
+      <obstacle id="123" name="Wall123" type="Wall">
+        <point x="92.0203" y="104.0732" />
+        <point x="92.0203" y="107.8554" />
+      </obstacle>
+      <obstacle id="124" name="Wall124" type="Wall">
+        <point x="47.4284" y="107.8104" />
+        <point x="47.0784" y="107.8104" />
+      </obstacle>
+      <obstacle id="125" name="Wall125" type="Wall">
+        <point x="47.0784" y="107.8104" />
+        <point x="47.0784" y="104.2906" />
+      </obstacle>
+      <obstacle id="126" name="Wall126" type="Wall">
+        <point x="47.0784" y="104.2906" />
+        <point x="69.6074" y="104.2906" />
+      </obstacle>
+      <obstacle id="127" name="Wall127" type="Wall">
+        <point x="69.6074" y="104.2906" />
+        <point x="69.609" y="104.2906" />
+      </obstacle>
+      <obstacle id="128" name="Wall128" type="Wall">
+        <point x="69.609" y="107.8104" />
+        <point x="47.4569" y="107.8104" />
+      </obstacle>
+      <obstacle id="129" name="Wall129" type="Wall">
+        <point x="47.4569" y="107.8104" />
+        <point x="47.4284" y="107.8104" />
+      </obstacle>
+      <obstacle id="130" name="Wall130" type="Wall">
+        <point x="85.4693" y="100.1213" />
+        <point x="85.4693" y="99.6213" />
+      </obstacle>
+      <obstacle id="131" name="Wall131" type="Wall">
+        <point x="85.4693" y="96.0804" />
+        <point x="85.5943" y="96.0804" />
+      </obstacle>
+      <obstacle id="132" name="Wall132" type="Wall">
+        <point x="85.5943" y="96.0804" />
+        <point x="85.5943" y="95.7832" />
+      </obstacle>
+      <obstacle id="133" name="Wall133" type="Wall">
+        <point x="92.0203" y="95.7832" />
+        <point x="92.0203" y="103.7732" />
+      </obstacle>
+      <obstacle id="134" name="Wall134" type="Wall">
+        <point x="87.7976" y="103.7732" />
+        <point x="87.7976" y="103.7306" />
+      </obstacle>
+      <obstacle id="135" name="Wall135" type="Wall">
+        <point x="87.7976" y="103.7306" />
+        <point x="85.4693" y="103.7306" />
+      </obstacle>
+      <obstacle id="136" name="Wall136" type="Wall">
+        <point x="85.4693" y="103.7306" />
+        <point x="85.4693" y="100.1213" />
+      </obstacle>
+      <obstacle id="137" name="Wall137" type="Wall">
+        <point x="74.6671" y="103.7306" />
+        <point x="74.6671" y="95.635" />
+      </obstacle>
+      <obstacle id="138" name="Wall138" type="Wall">
+        <point x="74.6671" y="95.635" />
+        <point x="81.219" y="95.635" />
+      </obstacle>
+      <obstacle id="139" name="Wall139" type="Wall">
+        <point x="81.219" y="95.635" />
+        <point x="81.247" y="95.635" />
+      </obstacle>
+      <obstacle id="140" name="Wall140" type="Wall">
+        <point x="81.247" y="95.635" />
+        <point x="81.247" y="95.9613" />
+      </obstacle>
+      <obstacle id="141" name="Wall141" type="Wall">
+        <point x="81.247" y="99.6213" />
+        <point x="81.247" y="100.1213" />
+      </obstacle>
+      <obstacle id="142" name="Wall142" type="Wall">
+        <point x="81.247" y="100.1213" />
+        <point x="81.247" y="103.7306" />
+      </obstacle>
+      <obstacle id="143" name="Wall143" type="Wall">
+        <point x="81.247" y="103.7306" />
+        <point x="78.949" y="103.7306" />
+      </obstacle>
+      <obstacle id="144" name="Wall144" type="Wall">
+        <point x="78.949" y="103.7306" />
+        <point x="74.6671" y="103.7306" />
+      </obstacle>
+      <obstacle id="145" name="Wall145" type="Wall">
+        <point x="85.4303" y="95.6332" />
+        <point x="85.4303" y="95.5804" />
+      </obstacle>
+      <obstacle id="146" name="Wall146" type="Wall">
+        <point x="85.4303" y="95.5804" />
+        <point x="85.4693" y="95.5804" />
+      </obstacle>
+      <obstacle id="147" name="Wall147" type="Wall">
+        <point x="85.4693" y="91.8213" />
+        <point x="85.4693" y="91.6383" />
+      </obstacle>
+      <obstacle id="148" name="Wall148" type="Wall">
+        <point x="92.0203" y="91.6383" />
+        <point x="92.0203" y="95.6332" />
+      </obstacle>
+      <obstacle id="149" name="Wall149" type="Wall">
+        <point x="85.5943" y="95.6332" />
+        <point x="85.4303" y="95.6332" />
+      </obstacle>
+      <obstacle id="150" name="Wall150" type="Wall">
+        <point x="85.4693" y="91.4883" />
+        <point x="85.4693" y="91.3213" />
+      </obstacle>
+      <obstacle id="151" name="Wall151" type="Wall">
+        <point x="85.4693" y="87.6813" />
+        <point x="85.4693" y="87.4984" />
+      </obstacle>
+      <obstacle id="152" name="Wall152" type="Wall">
+        <point x="92.0203" y="87.4984" />
+        <point x="92.0203" y="91.4883" />
+      </obstacle>
+      <obstacle id="153" name="Wall153" type="Wall">
+        <point x="74.6671" y="95.485" />
+        <point x="74.6671" y="91.67" />
+      </obstacle>
+      <obstacle id="154" name="Wall154" type="Wall">
+        <point x="74.6671" y="91.67" />
+        <point x="81.247" y="91.67" />
+      </obstacle>
+      <obstacle id="155" name="Wall155" type="Wall">
+        <point x="81.247" y="91.67" />
+        <point x="81.247" y="91.8213" />
+      </obstacle>
+      <obstacle id="156" name="Wall156" type="Wall">
+        <point x="81.247" y="95.485" />
+        <point x="74.6671" y="95.485" />
+      </obstacle>
+      <obstacle id="157" name="Wall157" type="Wall">
+        <point x="92.0203" y="83.4381" />
+        <point x="92.0203" y="86.2865" />
+      </obstacle>
+      <obstacle id="158" name="Wall158" type="Wall">
+        <point x="92.0203" y="86.2865" />
+        <point x="92.0203" y="87.3484" />
+      </obstacle>
+      <obstacle id="159" name="Wall159" type="Wall">
+        <point x="85.4693" y="87.3484" />
+        <point x="85.4693" y="87.1813" />
+      </obstacle>
+      <obstacle id="160" name="Wall160" type="Wall">
+        <point x="85.4693" y="83.5513" />
+        <point x="85.4693" y="83.4381" />
+      </obstacle>
+      <obstacle id="161" name="Wall161" type="Wall">
+        <point x="85.4693" y="83.4381" />
+        <point x="92.0203" y="83.4381" />
+      </obstacle>
+      <obstacle id="162" name="Wall162" type="Wall">
+        <point x="74.6671" y="91.52" />
+        <point x="74.6671" y="87.6" />
+      </obstacle>
+      <obstacle id="163" name="Wall163" type="Wall">
+        <point x="81.247" y="87.6" />
+        <point x="81.247" y="87.6813" />
+      </obstacle>
+      <obstacle id="164" name="Wall164" type="Wall">
+        <point x="81.247" y="91.3213" />
+        <point x="81.247" y="91.52" />
+      </obstacle>
+      <obstacle id="165" name="Wall165" type="Wall">
+        <point x="81.247" y="91.52" />
+        <point x="74.6671" y="91.52" />
+      </obstacle>
+      <obstacle id="166" name="Wall166" type="Wall">
+        <point x="92.0203" y="74.9213" />
+        <point x="92.0203" y="83.1381" />
+      </obstacle>
+      <obstacle id="167" name="Wall167" type="Wall">
+        <point x="92.0203" y="83.1381" />
+        <point x="85.4693" y="83.1381" />
+      </obstacle>
+      <obstacle id="168" name="Wall168" type="Wall">
+        <point x="85.4693" y="83.1381" />
+        <point x="85.4693" y="83.0513" />
+      </obstacle>
+      <obstacle id="169" name="Wall169" type="Wall">
+        <point x="85.4693" y="79.3913" />
+        <point x="85.4693" y="78.8913" />
+      </obstacle>
+      <obstacle id="170" name="Wall170" type="Wall">
+        <point x="85.4693" y="78.8913" />
+        <point x="85.4693" y="75.2713" />
+      </obstacle>
+      <obstacle id="171" name="Wall171" type="Wall">
+        <point x="85.4693" y="75.2713" />
+        <point x="85.4693" y="74.9213" />
+      </obstacle>
+      <obstacle id="172" name="Wall172" type="Wall">
+        <point x="74.6671" y="87.3" />
+        <point x="74.6671" y="83.3882" />
+      </obstacle>
+      <obstacle id="173" name="Wall173" type="Wall">
+        <point x="74.6671" y="83.3882" />
+        <point x="81.247" y="83.3882" />
+      </obstacle>
+      <obstacle id="174" name="Wall174" type="Wall">
+        <point x="81.247" y="83.3882" />
+        <point x="81.247" y="83.5513" />
+      </obstacle>
+      <obstacle id="175" name="Wall175" type="Wall">
+        <point x="81.247" y="87.1813" />
+        <point x="81.247" y="87.3" />
+      </obstacle>
+      <obstacle id="176" name="Wall176" type="Wall">
+        <point x="74.6671" y="83.2382" />
+        <point x="74.6671" y="79.1041" />
+      </obstacle>
+      <obstacle id="177" name="Wall177" type="Wall">
+        <point x="74.6671" y="79.1041" />
+        <point x="81.219" y="79.1041" />
+      </obstacle>
+      <obstacle id="178" name="Wall178" type="Wall">
+        <point x="81.219" y="79.1041" />
+        <point x="81.247" y="79.1041" />
+      </obstacle>
+      <obstacle id="179" name="Wall179" type="Wall">
+        <point x="81.247" y="79.1041" />
+        <point x="81.247" y="79.3913" />
+      </obstacle>
+      <obstacle id="180" name="Wall180" type="Wall">
+        <point x="81.247" y="83.0513" />
+        <point x="81.247" y="83.2382" />
+      </obstacle>
+      <obstacle id="181" name="Wall181" type="Wall">
+        <point x="81.247" y="83.2382" />
+        <point x="74.6671" y="83.2382" />
+      </obstacle>
+      <obstacle id="182" name="Wall182" type="Wall">
+        <point x="92.0203" y="70.782" />
+        <point x="92.0203" y="74.7713" />
+      </obstacle>
+      <obstacle id="183" name="Wall183" type="Wall">
+        <point x="85.4693" y="74.7713" />
+        <point x="85.4693" y="71.132" />
+      </obstacle>
+      <obstacle id="184" name="Wall184" type="Wall">
+        <point x="85.4693" y="71.132" />
+        <point x="85.4693" y="70.782" />
+      </obstacle>
+      <obstacle id="185" name="Wall185" type="Wall">
+        <point x="74.6671" y="78.9541" />
+        <point x="74.6671" y="74.9213" />
+      </obstacle>
+      <obstacle id="186" name="Wall186" type="Wall">
+        <point x="74.6671" y="74.9213" />
+        <point x="81.247" y="74.9213" />
+      </obstacle>
+      <obstacle id="187" name="Wall187" type="Wall">
+        <point x="81.247" y="74.9213" />
+        <point x="81.247" y="75.2713" />
+      </obstacle>
+      <obstacle id="188" name="Wall188" type="Wall">
+        <point x="81.247" y="78.9541" />
+        <point x="74.6671" y="78.9541" />
+      </obstacle>
+      <obstacle id="189" name="Wall189" type="Wall">
+        <point x="92.0203" y="66.992" />
+        <point x="92.0203" y="70.632" />
+      </obstacle>
+      <obstacle id="190" name="Wall190" type="Wall">
+        <point x="81.3708" y="74.7713" />
+        <point x="81.247" y="74.7713" />
+      </obstacle>
+      <obstacle id="191" name="Wall191" type="Wall">
+        <point x="81.247" y="74.7713" />
+        <point x="74.6415" y="74.7713" />
+      </obstacle>
+      <obstacle id="192" name="Wall192" type="Wall">
+        <point x="74.6415" y="74.7713" />
+        <point x="74.6415" y="69.5984" />
+      </obstacle>
+      <obstacle id="193" name="Wall193" type="Wall">
+        <point x="74.6415" y="69.5984" />
+        <point x="74.6415" y="66.8884" />
+      </obstacle>
+      <obstacle id="194" name="Wall194" type="Wall">
+        <point x="74.6415" y="66.8884" />
+        <point x="78.4243" y="66.8884" />
+      </obstacle>
+      <obstacle id="195" name="Wall195" type="Wall">
+        <point x="78.4243" y="66.8884" />
+        <point x="81.247" y="66.8884" />
+      </obstacle>
+      <obstacle id="196" name="Wall196" type="Wall">
+        <point x="81.247" y="66.8884" />
+        <point x="81.3708" y="74.7713" />
+      </obstacle>
+      <obstacle id="197" name="Wall197" type="Wall">
+        <point x="92.0203" y="62.7154" />
+        <point x="92.0203" y="66.842" />
+      </obstacle>
+      <obstacle id="198" name="Wall198" type="Wall">
+        <point x="85.4693" y="66.842" />
+        <point x="85.4693" y="66.492" />
+      </obstacle>
+      <obstacle id="199" name="Wall199" type="Wall">
+        <point x="85.4693" y="62.7154" />
+        <point x="92.0203" y="62.7154" />
+      </obstacle>
+      <obstacle id="200" name="Wall200" type="Wall">
+        <point x="74.4571" y="69.1984" />
+        <point x="74.2671" y="69.1984" />
+      </obstacle>
+      <obstacle id="201" name="Wall201" type="Wall">
+        <point x="74.2671" y="69.1984" />
+        <point x="65.5855" y="69.1984" />
+      </obstacle>
+      <obstacle id="202" name="Wall202" type="Wall">
+        <point x="65.5855" y="69.1984" />
+        <point x="65.5855" y="62.7154" />
+      </obstacle>
+      <obstacle id="203" name="Wall203" type="Wall">
+        <point x="65.5855" y="62.7154" />
+        <point x="78.3493" y="62.7154" />
+      </obstacle>
+      <obstacle id="204" name="Wall204" type="Wall">
+        <point x="78.3493" y="62.7154" />
+        <point x="78.3493" y="66.8884" />
+      </obstacle>
+      <obstacle id="205" name="Wall205" type="Wall">
+        <point x="78.3493" y="66.8884" />
+        <point x="74.6415" y="66.8884" />
+      </obstacle>
+      <obstacle id="206" name="Wall206" type="Wall">
+        <point x="74.6415" y="66.8884" />
+        <point x="74.4571" y="66.8884" />
+      </obstacle>
+      <obstacle id="207" name="Wall207" type="Wall">
+        <point x="74.4571" y="66.8884" />
+        <point x="74.4571" y="69.1984" />
+      </obstacle>
+      <obstacle id="208" name="Wall208" type="Wall">
+        <point x="92.0203" y="58.0969" />
+        <point x="92.0203" y="62.1654" />
+      </obstacle>
+      <obstacle id="209" name="Wall209" type="Wall">
+        <point x="92.0203" y="62.1654" />
+        <point x="85.3443" y="62.1654" />
+      </obstacle>
+      <obstacle id="210" name="Wall210" type="Wall">
+        <point x="85.3443" y="62.1654" />
+        <point x="85.3191" y="62.1654" />
+      </obstacle>
+      <obstacle id="211" name="Wall211" type="Wall">
+        <point x="85.3191" y="58.0969" />
+        <point x="87.2106" y="58.0969" />
+      </obstacle>
+      <obstacle id="212" name="Wall212" type="Wall">
+        <point x="87.2106" y="58.0969" />
+        <point x="92.0203" y="58.0969" />
+      </obstacle>
+      <obstacle id="213" name="Wall213" type="Wall">
+        <point x="65.4355" y="69.1984" />
+        <point x="61.7355" y="69.1984" />
+      </obstacle>
+      <obstacle id="214" name="Wall214" type="Wall">
+        <point x="61.7355" y="69.1984" />
+        <point x="61.7355" y="62.7154" />
+      </obstacle>
+      <obstacle id="215" name="Wall215" type="Wall">
+        <point x="65.4355" y="62.7154" />
+        <point x="65.4355" y="69.1984" />
+      </obstacle>
+      <obstacle id="216" name="Wall216" type="Wall">
+        <point x="87.2856" y="53.2865" />
+        <point x="92.0203" y="53.2865" />
+      </obstacle>
+      <obstacle id="217" name="Wall217" type="Wall">
+        <point x="92.0203" y="53.2865" />
+        <point x="92.0203" y="57.7969" />
+      </obstacle>
+      <obstacle id="218" name="Wall218" type="Wall">
+        <point x="92.0203" y="57.7969" />
+        <point x="87.2856" y="57.7969" />
+      </obstacle>
+      <obstacle id="219" name="Wall219" type="Wall">
+        <point x="61.4355" y="69.1984" />
+        <point x="58.0304" y="69.1984" />
+      </obstacle>
+      <obstacle id="220" name="Wall220" type="Wall">
+        <point x="58.0304" y="67.0404" />
+        <point x="55.7124" y="67.0404" />
+      </obstacle>
+      <obstacle id="221" name="Wall221" type="Wall">
+        <point x="55.7124" y="67.0404" />
+        <point x="55.7124" y="62.7154" />
+      </obstacle>
+      <obstacle id="222" name="Wall222" type="Wall">
+        <point x="61.4355" y="62.7154" />
+        <point x="61.4355" y="69.1984" />
+      </obstacle>
+      <obstacle id="223" name="Wall223" type="Wall">
+        <point x="82.8896" y="53.2865" />
+        <point x="87.1356" y="53.2865" />
+      </obstacle>
+      <obstacle id="224" name="Wall224" type="Wall">
+        <point x="87.1356" y="57.7969" />
+        <point x="85.1691" y="57.7969" />
+      </obstacle>
+      <obstacle id="225" name="Wall225" type="Wall">
+        <point x="79.1266" y="53.2865" />
+        <point x="82.7396" y="53.2865" />
+      </obstacle>
+      <obstacle id="226" name="Wall226" type="Wall">
+        <point x="82.7396" y="57.7969" />
+        <point x="79.1266" y="57.7969" />
+      </obstacle>
+      <obstacle id="227" name="Wall227" type="Wall">
+        <point x="74.6461" y="53.2865" />
+        <point x="78.9766" y="53.2865" />
+      </obstacle>
+      <obstacle id="228" name="Wall228" type="Wall">
+        <point x="74.4961" y="57.7969" />
+        <point x="74.4961" y="58.0969" />
+      </obstacle>
+      <obstacle id="229" name="Wall229" type="Wall">
+        <point x="79.0516" y="58.0969" />
+        <point x="82.8146" y="58.0969" />
+      </obstacle>
+      <obstacle id="230" name="Wall230" type="Wall">
+        <point x="81.4293" y="62.1654" />
+        <point x="78.4243" y="62.1654" />
+      </obstacle>
+      <obstacle id="231" name="Wall231" type="Wall">
+        <point x="78.4243" y="62.1654" />
+        <point x="65.5105" y="62.1654" />
+      </obstacle>
+      <obstacle id="232" name="Wall232" type="Wall">
+        <point x="55.7124" y="58.037" />
+        <point x="61.8897" y="58.037" />
+      </obstacle>
+      <obstacle id="233" name="Wall233" type="Wall">
+        <point x="61.8897" y="58.037" />
+        <point x="62.0897" y="58.037" />
+      </obstacle>
+      <obstacle id="234" name="Wall234" type="Wall">
+        <point x="62.0897" y="58.037" />
+        <point x="61.8897" y="57.6113" />
+      </obstacle>
+      <obstacle id="235" name="Wall235" type="Wall">
+        <point x="61.8897" y="57.6113" />
+        <point x="74.2461" y="57.6113" />
+      </obstacle>
+      <obstacle id="236" name="Wall236" type="Wall">
+        <point x="74.2461" y="57.6113" />
+        <point x="74.4961" y="57.6113" />
+      </obstacle>
+      <obstacle id="237" name="Wall237" type="Wall">
+        <point x="74.4961" y="57.6113" />
+        <point x="74.4961" y="56.8113" />
+      </obstacle>
+      <obstacle id="238" name="Wall238" type="Wall">
+        <point x="74.4961" y="56.8113" />
+        <point x="74.6461" y="56.8113" />
+      </obstacle>
+      <obstacle id="239" name="Wall239" type="Wall">
+        <point x="74.6461" y="56.8113" />
+        <point x="74.6461" y="53.2865" />
+      </obstacle>
+      <obstacle id="240" name="Wall240" type="Wall">
+        <point x="74.6461" y="53.2865" />
+        <point x="78.9766" y="53.2865" />
+      </obstacle>
+      <obstacle id="241" name="Wall241" type="Wall">
+        <point x="74.4961" y="57.7969" />
+        <point x="74.4961" y="58.0969" />
+      </obstacle>
+      <obstacle id="242" name="Wall242" type="Wall">
+        <point x="79.0516" y="58.0969" />
+        <point x="82.8146" y="58.0969" />
+      </obstacle>
+      <obstacle id="243" name="Wall243" type="Wall">
+        <point x="81.4293" y="62.1654" />
+        <point x="78.4243" y="62.1654" />
+      </obstacle>
+      <obstacle id="244" name="Wall244" type="Wall">
+        <point x="78.4243" y="62.1654" />
+        <point x="65.5105" y="62.1654" />
+      </obstacle>
+      <obstacle id="245" name="Wall245" type="Wall">
+        <point x="55.7124" y="58.037" />
+        <point x="61.8897" y="58.037" />
+      </obstacle>
+      <obstacle id="246" name="Wall246" type="Wall">
+        <point x="61.8897" y="58.037" />
+        <point x="62.0897" y="58.037" />
+      </obstacle>
+      <obstacle id="247" name="Wall247" type="Wall">
+        <point x="62.0897" y="58.037" />
+        <point x="61.8897" y="57.6113" />
+      </obstacle>
+      <obstacle id="248" name="Wall248" type="Wall">
+        <point x="61.8897" y="57.6113" />
+        <point x="74.2461" y="57.6113" />
+      </obstacle>
+      <obstacle id="249" name="Wall249" type="Wall">
+        <point x="74.2461" y="57.6113" />
+        <point x="74.4961" y="57.6113" />
+      </obstacle>
+      <obstacle id="250" name="Wall250" type="Wall">
+        <point x="74.4961" y="57.6113" />
+        <point x="74.4961" y="56.8113" />
+      </obstacle>
+      <obstacle id="251" name="Wall251" type="Wall">
+        <point x="74.4961" y="56.8113" />
+        <point x="74.6461" y="56.8113" />
+      </obstacle>
+      <obstacle id="252" name="Wall252" type="Wall">
+        <point x="74.6461" y="56.8113" />
+        <point x="74.6461" y="53.2865" />
+      </obstacle>
+      <obstacle id="253" name="Wall253" type="Wall">
+        <point x="85.1691" y="62.7154" />
+        <point x="85.2193" y="62.7154" />
+      </obstacle>
+      <obstacle id="254" name="Wall254" type="Wall">
+        <point x="85.2193" y="66.492" />
+        <point x="85.0193" y="66.492" />
+      </obstacle>
+      <obstacle id="255" name="Wall255" type="Wall">
+        <point x="85.0193" y="66.492" />
+        <point x="85.0193" y="66.992" />
+      </obstacle>
+      <obstacle id="256" name="Wall256" type="Wall">
+        <point x="85.0193" y="66.992" />
+        <point x="85.2193" y="66.992" />
+      </obstacle>
+      <obstacle id="257" name="Wall257" type="Wall">
+        <point x="85.2193" y="70.632" />
+        <point x="85.0193" y="70.632" />
+      </obstacle>
+      <obstacle id="258" name="Wall258" type="Wall">
+        <point x="85.0193" y="70.632" />
+        <point x="85.0193" y="71.132" />
+      </obstacle>
+      <obstacle id="259" name="Wall259" type="Wall">
+        <point x="85.0193" y="71.132" />
+        <point x="85.2193" y="71.132" />
+      </obstacle>
+      <obstacle id="260" name="Wall260" type="Wall">
+        <point x="85.2193" y="71.132" />
+        <point x="85.2193" y="74.7713" />
+      </obstacle>
+      <obstacle id="261" name="Wall261" type="Wall">
+        <point x="85.2193" y="74.7713" />
+        <point x="85.0193" y="74.7713" />
+      </obstacle>
+      <obstacle id="262" name="Wall262" type="Wall">
+        <point x="85.0193" y="74.7713" />
+        <point x="85.0193" y="75.2713" />
+      </obstacle>
+      <obstacle id="263" name="Wall263" type="Wall">
+        <point x="85.0193" y="75.2713" />
+        <point x="85.2193" y="75.2713" />
+      </obstacle>
+      <obstacle id="264" name="Wall264" type="Wall">
+        <point x="85.2193" y="75.2713" />
+        <point x="85.2193" y="78.8913" />
+      </obstacle>
+      <obstacle id="265" name="Wall265" type="Wall">
+        <point x="85.2193" y="78.8913" />
+        <point x="85.0193" y="78.8913" />
+      </obstacle>
+      <obstacle id="266" name="Wall266" type="Wall">
+        <point x="85.0193" y="78.8913" />
+        <point x="85.0193" y="79.3913" />
+      </obstacle>
+      <obstacle id="267" name="Wall267" type="Wall">
+        <point x="85.0193" y="79.3913" />
+        <point x="85.2193" y="79.3913" />
+      </obstacle>
+      <obstacle id="268" name="Wall268" type="Wall">
+        <point x="85.2193" y="83.0513" />
+        <point x="85.0193" y="83.0513" />
+      </obstacle>
+      <obstacle id="269" name="Wall269" type="Wall">
+        <point x="85.0193" y="83.0513" />
+        <point x="85.0193" y="83.5513" />
+      </obstacle>
+      <obstacle id="270" name="Wall270" type="Wall">
+        <point x="85.0193" y="83.5513" />
+        <point x="85.2193" y="83.5513" />
+      </obstacle>
+      <obstacle id="271" name="Wall271" type="Wall">
+        <point x="85.2193" y="87.1813" />
+        <point x="85.0193" y="87.1813" />
+      </obstacle>
+      <obstacle id="272" name="Wall272" type="Wall">
+        <point x="85.0193" y="87.1813" />
+        <point x="85.0193" y="87.6813" />
+      </obstacle>
+      <obstacle id="273" name="Wall273" type="Wall">
+        <point x="85.0193" y="87.6813" />
+        <point x="85.2193" y="87.6813" />
+      </obstacle>
+      <obstacle id="274" name="Wall274" type="Wall">
+        <point x="85.2193" y="91.3213" />
+        <point x="85.0193" y="91.3213" />
+      </obstacle>
+      <obstacle id="275" name="Wall275" type="Wall">
+        <point x="85.0193" y="91.3213" />
+        <point x="85.0193" y="91.8213" />
+      </obstacle>
+      <obstacle id="276" name="Wall276" type="Wall">
+        <point x="85.0193" y="91.8213" />
+        <point x="85.2193" y="91.8213" />
+      </obstacle>
+      <obstacle id="277" name="Wall277" type="Wall">
+        <point x="85.2193" y="95.4613" />
+        <point x="85.1443" y="95.5804" />
+      </obstacle>
+      <obstacle id="278" name="Wall278" type="Wall">
+        <point x="85.1443" y="95.5804" />
+        <point x="85.1443" y="96.0804" />
+      </obstacle>
+      <obstacle id="279" name="Wall279" type="Wall">
+        <point x="85.1443" y="96.0804" />
+        <point x="85.2193" y="96.0804" />
+      </obstacle>
+      <obstacle id="280" name="Wall280" type="Wall">
+        <point x="85.2193" y="99.6213" />
+        <point x="85.0193" y="99.6213" />
+      </obstacle>
+      <obstacle id="281" name="Wall281" type="Wall">
+        <point x="85.0193" y="99.6213" />
+        <point x="85.0193" y="100.1213" />
+      </obstacle>
+      <obstacle id="282" name="Wall282" type="Wall">
+        <point x="85.0193" y="100.1213" />
+        <point x="85.2193" y="100.1213" />
+      </obstacle>
+      <obstacle id="283" name="Wall283" type="Wall">
+        <point x="85.2193" y="100.1213" />
+        <point x="85.2193" y="103.7306" />
+      </obstacle>
+      <obstacle id="284" name="Wall284" type="Wall">
+        <point x="81.497" y="103.7306" />
+        <point x="81.497" y="100.1213" />
+      </obstacle>
+      <obstacle id="285" name="Wall285" type="Wall">
+        <point x="81.497" y="100.1213" />
+        <point x="81.697" y="100.1213" />
+      </obstacle>
+      <obstacle id="286" name="Wall286" type="Wall">
+        <point x="81.697" y="100.1213" />
+        <point x="81.697" y="99.6213" />
+      </obstacle>
+      <obstacle id="287" name="Wall287" type="Wall">
+        <point x="81.697" y="99.6213" />
+        <point x="81.497" y="99.6213" />
+      </obstacle>
+      <obstacle id="288" name="Wall288" type="Wall">
+        <point x="81.497" y="95.9613" />
+        <point x="81.697" y="95.9613" />
+      </obstacle>
+      <obstacle id="289" name="Wall289" type="Wall">
+        <point x="81.697" y="95.9613" />
+        <point x="81.697" y="95.4613" />
+      </obstacle>
+      <obstacle id="290" name="Wall290" type="Wall">
+        <point x="81.697" y="95.4613" />
+        <point x="81.497" y="95.4613" />
+      </obstacle>
+      <obstacle id="291" name="Wall291" type="Wall">
+        <point x="81.497" y="95.4613" />
+        <point x="81.497" y="95.407" />
+      </obstacle>
+      <obstacle id="292" name="Wall292" type="Wall">
+        <point x="81.497" y="91.8213" />
+        <point x="81.697" y="91.8213" />
+      </obstacle>
+      <obstacle id="293" name="Wall293" type="Wall">
+        <point x="81.697" y="91.8213" />
+        <point x="81.697" y="91.3213" />
+      </obstacle>
+      <obstacle id="294" name="Wall294" type="Wall">
+        <point x="81.697" y="91.3213" />
+        <point x="81.497" y="91.3213" />
+      </obstacle>
+      <obstacle id="295" name="Wall295" type="Wall">
+        <point x="81.497" y="87.6813" />
+        <point x="81.697" y="87.6813" />
+      </obstacle>
+      <obstacle id="296" name="Wall296" type="Wall">
+        <point x="81.697" y="87.6813" />
+        <point x="81.697" y="87.1813" />
+      </obstacle>
+      <obstacle id="297" name="Wall297" type="Wall">
+        <point x="81.697" y="87.1813" />
+        <point x="81.497" y="87.1813" />
+      </obstacle>
+      <obstacle id="298" name="Wall298" type="Wall">
+        <point x="81.497" y="83.5513" />
+        <point x="81.697" y="83.5513" />
+      </obstacle>
+      <obstacle id="299" name="Wall299" type="Wall">
+        <point x="81.697" y="83.5513" />
+        <point x="81.697" y="83.0513" />
+      </obstacle>
+      <obstacle id="300" name="Wall300" type="Wall">
+        <point x="81.697" y="83.0513" />
+        <point x="81.497" y="83.0513" />
+      </obstacle>
+      <obstacle id="301" name="Wall301" type="Wall">
+        <point x="81.497" y="79.3913" />
+        <point x="81.697" y="79.3913" />
+      </obstacle>
+      <obstacle id="302" name="Wall302" type="Wall">
+        <point x="81.697" y="79.3913" />
+        <point x="81.697" y="78.8913" />
+      </obstacle>
+      <obstacle id="303" name="Wall303" type="Wall">
+        <point x="81.697" y="78.8913" />
+        <point x="81.497" y="78.8913" />
+      </obstacle>
+      <obstacle id="304" name="Wall304" type="Wall">
+        <point x="81.497" y="78.8913" />
+        <point x="81.497" y="78.8761" />
+      </obstacle>
+      <obstacle id="305" name="Wall305" type="Wall">
+        <point x="81.497" y="75.2713" />
+        <point x="81.697" y="75.2713" />
+      </obstacle>
+      <obstacle id="306" name="Wall306" type="Wall">
+        <point x="81.697" y="75.2713" />
+        <point x="81.697" y="74.7713" />
+      </obstacle>
+      <obstacle id="307" name="Wall307" type="Wall">
+        <point x="81.697" y="74.7713" />
+        <point x="81.497" y="74.7713" />
+      </obstacle>
+      <obstacle id="308" name="Wall308" type="Wall">
+        <point x="81.497" y="71.132" />
+        <point x="81.697" y="71.132" />
+      </obstacle>
+      <obstacle id="309" name="Wall309" type="Wall">
+        <point x="81.697" y="71.132" />
+        <point x="81.697" y="70.632" />
+      </obstacle>
+      <obstacle id="310" name="Wall310" type="Wall">
+        <point x="81.697" y="70.632" />
+        <point x="81.497" y="70.632" />
+      </obstacle>
+      <obstacle id="311" name="Wall311" type="Wall">
+        <point x="81.497" y="70.632" />
+        <point x="81.497" y="66.992" />
+      </obstacle>
+      <obstacle id="312" name="Wall312" type="Wall">
+        <point x="81.497" y="66.992" />
+        <point x="81.697" y="66.992" />
+      </obstacle>
+      <obstacle id="313" name="Wall313" type="Wall">
+        <point x="81.697" y="66.992" />
+        <point x="81.697" y="66.492" />
+      </obstacle>
+      <obstacle id="314" name="Wall314" type="Wall">
+        <point x="81.697" y="66.492" />
+        <point x="81.5793" y="66.492" />
+      </obstacle>
+      <obstacle id="315" name="Wall315" type="Wall">
+        <point x="81.5793" y="66.492" />
+        <point x="81.5793" y="62.7154" />
+      </obstacle>
+      <obstacle id="316" name="Wall316" type="Wall">
+        <point x="76.6635" y="107.8554" />
+        <point x="76.0209" y="107.8554" />
+      </obstacle>
+      <obstacle id="317" name="Wall317" type="Wall">
+        <point x="75.1359" y="107.8554" />
+        <point x="74.4384" y="107.8554" />
+      </obstacle>
+      <obstacle id="318" name="Wall318" type="Wall">
+        <point x="74.7384" y="108.4554" />
+        <point x="75.1359" y="108.4554" />
+      </obstacle>
+      <obstacle id="319" name="Wall319" type="Wall">
+        <point x="76.0209" y="108.4554" />
+        <point x="76.5885" y="108.4554" />
+      </obstacle>
+      <obstacle id="320" name="Wall320" type="Wall">
+        <point x="76.6985" y="111.6871" />
+        <point x="77.2513" y="111.6871" />
+      </obstacle>
+      <obstacle id="321" name="Wall321" type="Wall">
+        <point x="78.136299999999991" y="111.6871" />
+        <point x="78.649" y="111.6871" />
+      </obstacle>
+      <obstacle id="322" name="Wall322" type="Wall">
+        <point x="69.609" y="112.0323" />
+        <point x="69.609000000000009" y="112.26480000000001" />
+      </obstacle>
+      <obstacle id="323" name="Wall323" type="Wall">
+        <point x="69.609000000000009" y="113.1498" />
+        <point x="69.609" y="113.8364" />
+      </obstacle>
+      <obstacle id="324" name="Wall324" type="Wall">
+        <point x="70.059" y="113.9114" />
+        <point x="70.059" y="113.1498" />
+      </obstacle>
+      <obstacle id="325" name="Wall325" type="Wall">
+        <point x="70.059" y="112.26480000000001" />
+        <point x="70.059" y="112.1073" />
+      </obstacle>
+      <obstacle id="326" name="Wall326" type="Wall">
+        <point x="88.0976" y="112.1854" />
+        <point x="89.2551" y="112.1854" />
+      </obstacle>
+      <obstacle id="327" name="Wall327" type="Wall">
+        <point x="90.14009999999999" y="112.1854" />
+        <point x="92.0203" y="112.1854" />
+      </obstacle>
+      <obstacle id="328" name="Wall328" type="Wall">
+        <point x="92.0203" y="111.9854" />
+        <point x="90.14009999999999" y="111.98540000000001" />
+      </obstacle>
+      <obstacle id="329" name="Wall329" type="Wall">
+        <point x="89.2551" y="111.98540000000001" />
+        <point x="88.0976" y="111.9854" />
+      </obstacle>
+      <obstacle id="330" name="Wall330" type="Wall">
+        <point x="88.0976" y="108.3554" />
+        <point x="88.9551" y="108.3554" />
+      </obstacle>
+      <obstacle id="331" name="Wall331" type="Wall">
+        <point x="89.840099999999993" y="108.3554" />
+        <point x="92.0203" y="108.3554" />
+      </obstacle>
+      <obstacle id="332" name="Wall332" type="Wall">
+        <point x="92.0203" y="107.8554" />
+        <point x="89.840099999999993" y="107.8554" />
+      </obstacle>
+      <obstacle id="333" name="Wall333" type="Wall">
+        <point x="88.9551" y="107.8554" />
+        <point x="88.0976" y="107.8554" />
+      </obstacle>
+      <obstacle id="334" name="Wall334" type="Wall">
+        <point x="92.0203" y="103.7732" />
+        <point x="89.4401" y="103.77319999999999" />
+      </obstacle>
+      <obstacle id="335" name="Wall335" type="Wall">
+        <point x="88.55510000000001" y="103.77319999999999" />
+        <point x="87.7976" y="103.7732" />
+      </obstacle>
+      <obstacle id="336" name="Wall336" type="Wall">
+        <point x="88.0976" y="104.0732" />
+        <point x="88.55510000000001" y="104.0732" />
+      </obstacle>
+      <obstacle id="337" name="Wall337" type="Wall">
+        <point x="89.4401" y="104.0732" />
+        <point x="92.0203" y="104.0732" />
+      </obstacle>
+      <obstacle id="338" name="Wall338" type="Wall">
+        <point x="81.247" y="95.9613" />
+        <point x="81.247" y="97.348800000000011" />
+      </obstacle>
+      <obstacle id="339" name="Wall339" type="Wall">
+        <point x="81.247" y="98.2338" />
+        <point x="81.247" y="99.6213" />
+      </obstacle>
+      <obstacle id="340" name="Wall340" type="Wall">
+        <point x="81.497" y="99.6213" />
+        <point x="81.497" y="98.2338" />
+      </obstacle>
+      <obstacle id="341" name="Wall341" type="Wall">
+        <point x="81.497" y="97.348800000000011" />
+        <point x="81.497" y="95.9613" />
+      </obstacle>
+      <obstacle id="342" name="Wall342" type="Wall">
+        <point x="85.2193" y="96.0804" />
+        <point x="85.2193" y="97.348800000000011" />
+      </obstacle>
+      <obstacle id="343" name="Wall343" type="Wall">
+        <point x="85.2193" y="98.2338" />
+        <point x="85.2193" y="99.6213" />
+      </obstacle>
+      <obstacle id="344" name="Wall344" type="Wall">
+        <point x="85.4693" y="99.6213" />
+        <point x="85.4693" y="98.2338" />
+      </obstacle>
+      <obstacle id="345" name="Wall345" type="Wall">
+        <point x="85.4693" y="97.348800000000011" />
+        <point x="85.4693" y="96.0804" />
+      </obstacle>
+      <obstacle id="346" name="Wall346" type="Wall">
+        <point x="92.0203" y="91.4883" />
+        <point x="87.0118" y="91.4883" />
+      </obstacle>
+      <obstacle id="347" name="Wall347" type="Wall">
+        <point x="86.1268" y="91.4883" />
+        <point x="85.4693" y="91.4883" />
+      </obstacle>
+      <obstacle id="348" name="Wall348" type="Wall">
+        <point x="85.4693" y="91.6383" />
+        <point x="86.1268" y="91.6383" />
+      </obstacle>
+      <obstacle id="349" name="Wall349" type="Wall">
+        <point x="87.0118" y="91.6383" />
+        <point x="92.0203" y="91.6383" />
+      </obstacle>
+      <obstacle id="350" name="Wall350" type="Wall">
+        <point x="85.4693" y="87.4984" />
+        <point x="86.026800000000009" y="87.4984" />
+      </obstacle>
+      <obstacle id="351" name="Wall351" type="Wall">
+        <point x="86.9118" y="87.4984" />
+        <point x="92.0203" y="87.4984" />
+      </obstacle>
+      <obstacle id="352" name="Wall352" type="Wall">
+        <point x="92.0203" y="87.3484" />
+        <point x="86.9118" y="87.3484" />
+      </obstacle>
+      <obstacle id="353" name="Wall353" type="Wall">
+        <point x="86.026800000000009" y="87.3484" />
+        <point x="85.4693" y="87.3484" />
+      </obstacle>
+      <obstacle id="354" name="Wall354" type="Wall">
+        <point x="81.247" y="87.6813" />
+        <point x="81.247" y="89.0588" />
+      </obstacle>
+      <obstacle id="355" name="Wall355" type="Wall">
+        <point x="81.247" y="89.9438" />
+        <point x="81.247" y="91.3213" />
+      </obstacle>
+      <obstacle id="356" name="Wall356" type="Wall">
+        <point x="81.497" y="91.3213" />
+        <point x="81.497" y="89.9438" />
+      </obstacle>
+      <obstacle id="357" name="Wall357" type="Wall">
+        <point x="81.497" y="89.0588" />
+        <point x="81.497" y="87.6813" />
+      </obstacle>
+      <obstacle id="358" name="Wall358" type="Wall">
+        <point x="85.2193" y="87.6813" />
+        <point x="85.2193" y="89.0588" />
+      </obstacle>
+      <obstacle id="359" name="Wall359" type="Wall">
+        <point x="85.2193" y="89.9438" />
+        <point x="85.2193" y="91.3213" />
+      </obstacle>
+      <obstacle id="360" name="Wall360" type="Wall">
+        <point x="85.4693" y="91.3213" />
+        <point x="85.4693" y="89.9438" />
+      </obstacle>
+      <obstacle id="361" name="Wall361" type="Wall">
+        <point x="85.4693" y="89.0588" />
+        <point x="85.4693" y="87.6813" />
+      </obstacle>
+      <obstacle id="362" name="Wall362" type="Wall">
+        <point x="92.0203" y="95.6332" />
+        <point x="88.272799999999989" y="95.6332" />
+      </obstacle>
+      <obstacle id="363" name="Wall363" type="Wall">
+        <point x="87.3878" y="95.6332" />
+        <point x="85.5943" y="95.6332" />
+      </obstacle>
+      <obstacle id="364" name="Wall364" type="Wall">
+        <point x="85.5943" y="95.7832" />
+        <point x="87.3878" y="95.783200000000008" />
+      </obstacle>
+      <obstacle id="365" name="Wall365" type="Wall">
+        <point x="88.272799999999989" y="95.783200000000008" />
+        <point x="92.0203" y="95.7832" />
+      </obstacle>
+      <obstacle id="366" name="Wall366" type="Wall">
+        <point x="85.4693" y="74.9213" />
+        <point x="86.6268" y="74.9213" />
+      </obstacle>
+      <obstacle id="367" name="Wall367" type="Wall">
+        <point x="87.5118" y="74.9213" />
+        <point x="92.0203" y="74.9213" />
+      </obstacle>
+      <obstacle id="368" name="Wall368" type="Wall">
+        <point x="92.0203" y="74.7713" />
+        <point x="87.5118" y="74.7713" />
+      </obstacle>
+      <obstacle id="369" name="Wall369" type="Wall">
+        <point x="86.6268" y="74.7713" />
+        <point x="85.4693" y="74.7713" />
+      </obstacle>
+      <obstacle id="370" name="Wall370" type="Wall">
+        <point x="85.4693" y="66.992" />
+        <point x="85.9268" y="66.992" />
+      </obstacle>
+      <obstacle id="371" name="Wall371" type="Wall">
+        <point x="86.811799999999991" y="66.992" />
+        <point x="92.0203" y="66.992" />
+      </obstacle>
+      <obstacle id="372" name="Wall372" type="Wall">
+        <point x="92.0203" y="66.842" />
+        <point x="86.811799999999991" y="66.842" />
+      </obstacle>
+      <obstacle id="373" name="Wall373" type="Wall">
+        <point x="85.9268" y="66.842" />
+        <point x="85.4693" y="66.842" />
+      </obstacle>
+      <obstacle id="374" name="Wall374" type="Wall">
+        <point x="85.4693" y="66.492" />
+        <point x="85.4693" y="65.5345" />
+      </obstacle>
+      <obstacle id="375" name="Wall375" type="Wall">
+        <point x="85.4693" y="64.6495" />
+        <point x="85.4693" y="62.7154" />
+      </obstacle>
+      <obstacle id="376" name="Wall376" type="Wall">
+        <point x="85.2193" y="62.7154" />
+        <point x="85.2193" y="64.6495" />
+      </obstacle>
+      <obstacle id="377" name="Wall377" type="Wall">
+        <point x="85.2193" y="65.5345" />
+        <point x="85.2193" y="66.492" />
+      </obstacle>
+      <obstacle id="378" name="Wall378" type="Wall">
+        <point x="79.1266" y="57.7969" />
+        <point x="79.1266" y="56.839400000000005" />
+      </obstacle>
+      <obstacle id="379" name="Wall379" type="Wall">
+        <point x="79.1266" y="55.9544" />
+        <point x="79.1266" y="53.2865" />
+      </obstacle>
+      <obstacle id="380" name="Wall380" type="Wall">
+        <point x="78.9766" y="53.2865" />
+        <point x="78.976599999999991" y="55.9544" />
+      </obstacle>
+      <obstacle id="381" name="Wall381" type="Wall">
+        <point x="78.976599999999991" y="56.839400000000005" />
+        <point x="78.9766" y="57.7969" />
+      </obstacle>
+      <obstacle id="382" name="Wall382" type="Wall">
+        <point x="78.9766" y="53.2865" />
+        <point x="78.976599999999991" y="55.9544" />
+      </obstacle>
+      <obstacle id="383" name="Wall383" type="Wall">
+        <point x="78.976599999999991" y="56.839400000000005" />
+        <point x="78.9766" y="57.7969" />
+      </obstacle>
+      <obstacle id="384" name="Wall384" type="Wall">
+        <point x="82.8896" y="57.7969" />
+        <point x="82.8896" y="57.2394" />
+      </obstacle>
+      <obstacle id="385" name="Wall385" type="Wall">
+        <point x="82.8896" y="56.3544" />
+        <point x="82.8896" y="53.2865" />
+      </obstacle>
+      <obstacle id="386" name="Wall386" type="Wall">
+        <point x="82.7396" y="53.2865" />
+        <point x="82.7396" y="56.3544" />
+      </obstacle>
+      <obstacle id="387" name="Wall387" type="Wall">
+        <point x="82.7396" y="57.2394" />
+        <point x="82.7396" y="57.7969" />
+      </obstacle>
+      <obstacle id="388" name="Wall388" type="Wall">
+        <point x="87.2856" y="57.7969" />
+        <point x="87.2856" y="56.7394" />
+      </obstacle>
+      <obstacle id="389" name="Wall389" type="Wall">
+        <point x="87.2856" y="55.8544" />
+        <point x="87.2856" y="53.2865" />
+      </obstacle>
+      <obstacle id="390" name="Wall390" type="Wall">
+        <point x="87.1356" y="53.2865" />
+        <point x="87.1356" y="55.8544" />
+      </obstacle>
+      <obstacle id="391" name="Wall391" type="Wall">
+        <point x="87.1356" y="56.7394" />
+        <point x="87.1356" y="57.7969" />
+      </obstacle>
+      <obstacle id="392" name="Wall392" type="Wall">
+        <point x="61.7355" y="62.7154" />
+        <point x="63.892999999999994" y="62.715399999999995" />
+      </obstacle>
+      <obstacle id="393" name="Wall393" type="Wall">
+        <point x="64.777999999999992" y="62.715399999999995" />
+        <point x="65.4355" y="62.7154" />
+      </obstacle>
+      <obstacle id="394" name="Wall394" type="Wall">
+        <point x="65.5105" y="62.1654" />
+        <point x="64.777999999999992" y="62.1654" />
+      </obstacle>
+      <obstacle id="395" name="Wall395" type="Wall">
+        <point x="63.892999999999994" y="62.1654" />
+        <point x="61.5855" y="62.1654" />
+      </obstacle>
+      <obstacle id="396" name="Wall396" type="Wall">
+        <point x="65.5105" y="62.1654" />
+        <point x="64.777999999999992" y="62.1654" />
+      </obstacle>
+      <obstacle id="397" name="Wall397" type="Wall">
+        <point x="63.892999999999994" y="62.1654" />
+        <point x="61.5855" y="62.1654" />
+      </obstacle>
+      <obstacle id="398" name="Wall398" type="Wall">
+        <point x="55.7124" y="62.7154" />
+        <point x="56.869899999999994" y="62.715399999999995" />
+      </obstacle>
+      <obstacle id="399" name="Wall399" type="Wall">
+        <point x="57.7549" y="62.715399999999995" />
+        <point x="61.4355" y="62.7154" />
+      </obstacle>
+      <obstacle id="400" name="Wall400" type="Wall">
+        <point x="61.5855" y="62.1654" />
+        <point x="57.7549" y="62.1654" />
+      </obstacle>
+      <obstacle id="401" name="Wall401" type="Wall">
+        <point x="56.869899999999994" y="62.1654" />
+        <point x="55.7124" y="62.1654" />
+      </obstacle>
+      <obstacle id="402" name="Wall402" type="Wall">
+        <point x="61.5855" y="62.1654" />
+        <point x="57.7549" y="62.1654" />
+      </obstacle>
+      <obstacle id="403" name="Wall403" type="Wall">
+        <point x="56.869899999999994" y="62.1654" />
+        <point x="55.7124" y="62.1654" />
+      </obstacle>
+      <obstacle id="404" name="Wall404" type="Wall">
+        <point x="66.2813" y="113.9864" />
+        <point x="66.538800000000009" y="113.9864" />
+      </obstacle>
+      <obstacle id="405" name="Wall405" type="Wall">
+        <point x="67.4238" y="113.9864" />
+        <point x="69.609" y="113.9864" />
+      </obstacle>
+      <obstacle id="406" name="Wall406" type="Wall">
+        <point x="69.609" y="113.8364" />
+        <point x="67.4238" y="113.8364" />
+      </obstacle>
+      <obstacle id="407" name="Wall407" type="Wall">
+        <point x="66.538800000000009" y="113.8364" />
+        <point x="66.2813" y="113.8364" />
+      </obstacle>
+      <obstacle id="408" name="Wall408" type="Wall">
+        <point x="62.5606" y="112.9054" />
+        <point x="64.3793" y="112.9054" />
+      </obstacle>
+      <obstacle id="409" name="Wall409" type="Wall">
+        <point x="65.264299999999992" y="112.9054" />
+        <point x="65.7718" y="112.9054" />
+      </obstacle>
+      <obstacle id="410" name="Wall410" type="Wall">
+        <point x="65.7718" y="112.7554" />
+        <point x="65.264299999999992" y="112.7554" />
+      </obstacle>
+      <obstacle id="411" name="Wall411" type="Wall">
+        <point x="64.3793" y="112.7554" />
+        <point x="62.5606" y="112.7554" />
+      </obstacle>
+      <obstacle id="412" name="Wall412" type="Wall">
+        <point x="58.7818" y="112.9054" />
+        <point x="60.479299999999995" y="112.9054" />
+      </obstacle>
+      <obstacle id="413" name="Wall413" type="Wall">
+        <point x="61.3643" y="112.9054" />
+        <point x="62.0106" y="112.9054" />
+      </obstacle>
+      <obstacle id="414" name="Wall414" type="Wall">
+        <point x="62.0106" y="112.7554" />
+        <point x="61.3643" y="112.7554" />
+      </obstacle>
+      <obstacle id="415" name="Wall415" type="Wall">
+        <point x="60.479299999999995" y="112.7554" />
+        <point x="58.7818" y="112.7554" />
+      </obstacle>
+      <obstacle id="416" name="Wall416" type="Wall">
+        <point x="54.9818" y="112.9054" />
+        <point x="56.7793" y="112.9054" />
+      </obstacle>
+      <obstacle id="417" name="Wall417" type="Wall">
+        <point x="57.664300000000004" y="112.9054" />
+        <point x="58.2318" y="112.9054" />
+      </obstacle>
+      <obstacle id="418" name="Wall418" type="Wall">
+        <point x="58.2318" y="112.7554" />
+        <point x="57.664300000000004" y="112.7554" />
+      </obstacle>
+      <obstacle id="419" name="Wall419" type="Wall">
+        <point x="56.7793" y="112.7554" />
+        <point x="54.9818" y="112.7554" />
+      </obstacle>
+      <obstacle id="420" name="Wall420" type="Wall">
+        <point x="51.2418" y="112.9054" />
+        <point x="53.049299999999995" y="112.9054" />
+      </obstacle>
+      <obstacle id="421" name="Wall421" type="Wall">
+        <point x="53.9343" y="112.9054" />
+        <point x="54.4318" y="112.9054" />
+      </obstacle>
+      <obstacle id="422" name="Wall422" type="Wall">
+        <point x="54.4318" y="112.7554" />
+        <point x="53.9343" y="112.7554" />
+      </obstacle>
+      <obstacle id="423" name="Wall423" type="Wall">
+        <point x="53.049299999999995" y="112.7554" />
+        <point x="51.2418" y="112.7554" />
+      </obstacle>
+      <obstacle id="424" name="Wall424" type="Wall">
+        <point x="47.4569" y="108.0354" />
+        <point x="48.9493" y="108.03540000000001" />
+      </obstacle>
+      <obstacle id="425" name="Wall425" type="Wall">
+        <point x="49.834300000000006" y="108.03540000000001" />
+        <point x="50.6918" y="108.0354" />
+      </obstacle>
+      <obstacle id="426" name="Wall426" type="Wall">
+        <point x="66.3218" y="108.0979" />
+        <point x="66.435600000000008" y="108.09790000000001" />
+      </obstacle>
+      <obstacle id="427" name="Wall427" type="Wall">
+        <point x="67.3206" y="108.09790000000001" />
+        <point x="67.3223" y="108.0979" />
+      </obstacle>
+      <obstacle id="428" name="Wall428" type="Wall">
+        <point x="58.0304" y="69.1984" />
+        <point x="58.0304" y="69.030899999999988" />
+      </obstacle>
+      <obstacle id="429" name="Wall429" type="Wall">
+        <point x="58.0304" y="68.1459" />
+        <point x="58.0304" y="67.0404" />
+      </obstacle>
+      <obstacle id="430" name="Wall430" type="Wall">
+        <point x="70.059" y="104.9281" />
+        <point x="70.059" y="104.2906" />
+      </obstacle>
+      <obstacle id="431" name="Wall431" type="Wall">
+        <point x="69.609" y="104.2906" />
+        <point x="69.609000000000009" y="104.9281" />
+      </obstacle>
+      <obstacle id="432" name="Wall432" type="Wall">
+        <point x="70.059" y="107.8554" />
+        <point x="70.059" y="106.8731" />
+      </obstacle>
+      <obstacle id="433" name="Wall433" type="Wall">
+        <point x="70.059" y="105.9881" />
+        <point x="70.059" y="105.81309999999999" />
+      </obstacle>
+      <obstacle id="434" name="Wall434" type="Wall">
+        <point x="69.609000000000009" y="105.81309999999999" />
+        <point x="69.609000000000009" y="105.9881" />
+      </obstacle>
+      <obstacle id="435" name="Wall435" type="Wall">
+        <point x="69.609000000000009" y="106.8731" />
+        <point x="69.609" y="107.8104" />
+      </obstacle>
+      <obstacle id="436" name="Wall436" type="Wall">
+        <point x="79.249" y="108.1554" />
+        <point x="79.249" y="106.983" />
+      </obstacle>
+      <obstacle id="437" name="Wall437" type="Wall">
+        <point x="79.249" y="105.15299999999999" />
+        <point x="79.249" y="104.2806" />
+      </obstacle>
+      <obstacle id="438" name="Wall438" type="Wall">
+        <point x="78.649" y="104.2806" />
+        <point x="78.649" y="105.15299999999999" />
+      </obstacle>
+      <obstacle id="439" name="Wall439" type="Wall">
+        <point x="78.649" y="106.983" />
+        <point x="78.649" y="107.8554" />
+      </obstacle>
+      <obstacle id="440" name="Wall440" type="Wall">
+        <point x="81.372" y="104.2806" />
+        <point x="82.297000000000011" y="104.2806" />
+      </obstacle>
+      <obstacle id="441" name="Wall441" type="Wall">
+        <point x="84.497" y="104.2806" />
+        <point x="85.3443" y="104.2806" />
+      </obstacle>
+      <obstacle id="442" name="Wall442" type="Wall">
+        <point x="85.2193" y="103.7306" />
+        <point x="84.497" y="103.7306" />
+      </obstacle>
+      <obstacle id="443" name="Wall443" type="Wall">
+        <point x="82.297000000000011" y="103.7306" />
+        <point x="81.497" y="103.7306" />
+      </obstacle>
+      <obstacle id="444" name="Wall444" type="Wall">
+        <point x="81.5793" y="62.7154" />
+        <point x="82.1992" y="62.715399999999995" />
+      </obstacle>
+      <obstacle id="445" name="Wall445" type="Wall">
+        <point x="84.3992" y="62.715399999999995" />
+        <point x="85.1691" y="62.7154" />
+      </obstacle>
+      <obstacle id="446" name="Wall446" type="Wall">
+        <point x="85.0191" y="62.1654" />
+        <point x="84.3992" y="62.1654" />
+      </obstacle>
+      <obstacle id="447" name="Wall447" type="Wall">
+        <point x="82.1992" y="62.1654" />
+        <point x="81.4293" y="62.1654" />
+      </obstacle>
+      <obstacle id="448" name="Wall448" type="Wall">
+        <point x="85.0191" y="62.1654" />
+        <point x="84.3992" y="62.1654" />
+      </obstacle>
+      <obstacle id="449" name="Wall449" type="Wall">
+        <point x="82.1992" y="62.1654" />
+        <point x="81.4293" y="62.1654" />
+      </obstacle>
+      <obstacle id="450" name="Wall450" type="Wall">
+        <point x="81.247" y="91.8213" />
+        <point x="81.247" y="92.6988" />
+      </obstacle>
+      <obstacle id="451" name="Wall451" type="Wall">
+        <point x="81.247" y="94.5838" />
+        <point x="81.247" y="95.485" />
+      </obstacle>
+      <obstacle id="452" name="Wall452" type="Wall">
+        <point x="81.497" y="95.407" />
+        <point x="81.497" y="94.5838" />
+      </obstacle>
+      <obstacle id="453" name="Wall453" type="Wall">
+        <point x="81.497" y="92.6988" />
+        <point x="81.497" y="91.8213" />
+      </obstacle>
+      <obstacle id="454" name="Wall454" type="Wall">
+        <point x="85.2193" y="91.8213" />
+        <point x="85.2193" y="92.6988" />
+      </obstacle>
+      <obstacle id="455" name="Wall455" type="Wall">
+        <point x="85.2193" y="94.5838" />
+        <point x="85.2193" y="95.4613" />
+      </obstacle>
+      <obstacle id="456" name="Wall456" type="Wall">
+        <point x="85.4693" y="95.5804" />
+        <point x="85.4693" y="94.5838" />
+      </obstacle>
+      <obstacle id="457" name="Wall457" type="Wall">
+        <point x="85.4693" y="92.6988" />
+        <point x="85.4693" y="91.8213" />
+      </obstacle>
+      <obstacle id="458" name="Wall458" type="Wall">
+        <point x="81.247" y="87.3" />
+        <point x="81.0645" y="87.3" />
+      </obstacle>
+      <obstacle id="459" name="Wall459" type="Wall">
+        <point x="79.1795" y="87.3" />
+        <point x="74.6671" y="87.3" />
+      </obstacle>
+      <obstacle id="460" name="Wall460" type="Wall">
+        <point x="74.6671" y="87.6" />
+        <point x="79.1795" y="87.600000000000009" />
+      </obstacle>
+      <obstacle id="461" name="Wall461" type="Wall">
+        <point x="81.0645" y="87.600000000000009" />
+        <point x="81.247" y="87.6" />
+      </obstacle>
+      <obstacle id="462" name="Wall462" type="Wall">
+        <point x="81.247" y="83.5513" />
+        <point x="81.247" y="84.4238" />
+      </obstacle>
+      <obstacle id="463" name="Wall463" type="Wall">
+        <point x="81.247" y="86.308799999999991" />
+        <point x="81.247" y="87.1813" />
+      </obstacle>
+      <obstacle id="464" name="Wall464" type="Wall">
+        <point x="81.497" y="87.1813" />
+        <point x="81.497" y="86.308799999999991" />
+      </obstacle>
+      <obstacle id="465" name="Wall465" type="Wall">
+        <point x="81.497" y="84.4238" />
+        <point x="81.497" y="83.5513" />
+      </obstacle>
+      <obstacle id="466" name="Wall466" type="Wall">
+        <point x="85.2193" y="79.3913" />
+        <point x="85.2193" y="80.2788" />
+      </obstacle>
+      <obstacle id="467" name="Wall467" type="Wall">
+        <point x="85.2193" y="82.1638" />
+        <point x="85.2193" y="83.0513" />
+      </obstacle>
+      <obstacle id="468" name="Wall468" type="Wall">
+        <point x="85.4693" y="83.0513" />
+        <point x="85.4693" y="82.1638" />
+      </obstacle>
+      <obstacle id="469" name="Wall469" type="Wall">
+        <point x="85.4693" y="80.2788" />
+        <point x="85.4693" y="79.3913" />
+      </obstacle>
+      <obstacle id="470" name="Wall470" type="Wall">
+        <point x="81.247" y="79.3913" />
+        <point x="81.247" y="80.2788" />
+      </obstacle>
+      <obstacle id="471" name="Wall471" type="Wall">
+        <point x="81.247" y="82.1638" />
+        <point x="81.247" y="83.0513" />
+      </obstacle>
+      <obstacle id="472" name="Wall472" type="Wall">
+        <point x="81.497" y="83.0513" />
+        <point x="81.497" y="82.1638" />
+      </obstacle>
+      <obstacle id="473" name="Wall473" type="Wall">
+        <point x="81.497" y="80.2788" />
+        <point x="81.497" y="79.3913" />
+      </obstacle>
+      <obstacle id="474" name="Wall474" type="Wall">
+        <point x="81.247" y="75.2713" />
+        <point x="81.247" y="75.9538" />
+      </obstacle>
+      <obstacle id="475" name="Wall475" type="Wall">
+        <point x="81.247" y="77.838799999999992" />
+        <point x="81.247" y="78.9541" />
+      </obstacle>
+      <obstacle id="476" name="Wall476" type="Wall">
+        <point x="81.497" y="78.8761" />
+        <point x="81.497" y="77.838799999999992" />
+      </obstacle>
+      <obstacle id="477" name="Wall477" type="Wall">
+        <point x="81.497" y="75.9538" />
+        <point x="81.497" y="75.2713" />
+      </obstacle>
+      <obstacle id="478" name="Wall478" type="Wall">
+        <point x="81.497" y="74.7713" />
+        <point x="81.497" y="73.8942" />
+      </obstacle>
+      <obstacle id="479" name="Wall479" type="Wall">
+        <point x="81.497" y="72.0092" />
+        <point x="81.497" y="71.132" />
+      </obstacle>
+      <obstacle id="480" name="Wall480" type="Wall">
+        <point x="85.4693" y="70.782" />
+        <point x="85.8318" y="70.782" />
+      </obstacle>
+      <obstacle id="481" name="Wall481" type="Wall">
+        <point x="87.716799999999992" y="70.782" />
+        <point x="92.0203" y="70.782" />
+      </obstacle>
+      <obstacle id="482" name="Wall482" type="Wall">
+        <point x="92.0203" y="70.632" />
+        <point x="87.716799999999992" y="70.631999999999991" />
+      </obstacle>
+      <obstacle id="483" name="Wall483" type="Wall">
+        <point x="85.8318" y="70.631999999999991" />
+        <point x="85.4693" y="70.632" />
+      </obstacle>
+      <obstacle id="484" name="Wall484" type="Wall">
+        <point x="85.2193" y="66.992" />
+        <point x="85.2193" y="67.8695" />
+      </obstacle>
+      <obstacle id="485" name="Wall485" type="Wall">
+        <point x="85.2193" y="69.7545" />
+        <point x="85.2193" y="70.632" />
+      </obstacle>
+      <obstacle id="486" name="Wall486" type="Wall">
+        <point x="85.4693" y="70.632" />
+        <point x="85.4693" y="69.7545" />
+      </obstacle>
+      <obstacle id="487" name="Wall487" type="Wall">
+        <point x="85.4693" y="67.8695" />
+        <point x="85.4693" y="66.992" />
+      </obstacle>
+      <obstacle id="488" name="Wall488" type="Wall">
+        <point x="87.4976" y="108.1054" />
+        <point x="87.4976" y="109.3079" />
+      </obstacle>
+      <obstacle id="489" name="Wall489" type="Wall">
+        <point x="87.4976" y="111.1929" />
+        <point x="87.4976" y="112.0854" />
+      </obstacle>
+      <obstacle id="490" name="Wall490" type="Wall">
+        <point x="88.0976" y="111.9854" />
+        <point x="88.0976" y="111.1929" />
+      </obstacle>
+      <obstacle id="491" name="Wall491" type="Wall">
+        <point x="88.0976" y="109.3079" />
+        <point x="88.0976" y="108.3554" />
+      </obstacle>
+      <obstacle id="492" name="Wall492" type="Wall">
+        <point x="87.4976" y="104.2806" />
+        <point x="87.4976" y="105.1057" />
+      </obstacle>
+      <obstacle id="493" name="Wall493" type="Wall">
+        <point x="87.4976" y="106.99069999999999" />
+        <point x="87.4976" y="108.1054" />
+      </obstacle>
+      <obstacle id="494" name="Wall494" type="Wall">
+        <point x="88.0976" y="107.8554" />
+        <point x="88.0976" y="106.99069999999999" />
+      </obstacle>
+      <obstacle id="495" name="Wall495" type="Wall">
+        <point x="88.0976" y="105.1057" />
+        <point x="88.0976" y="104.0732" />
+      </obstacle>
+      <obstacle id="496" name="Wall496" type="Wall">
+        <point x="85.3191" y="62.1654" />
+        <point x="85.3191" y="61.0737" />
+      </obstacle>
+      <obstacle id="497" name="Wall497" type="Wall">
+        <point x="85.3191" y="59.1887" />
+        <point x="85.3191" y="58.0969" />
+      </obstacle>
+      <obstacle id="498" name="Wall498" type="Wall">
+        <point x="85.0191" y="58.0969" />
+        <point x="85.0191" y="59.1887" />
+      </obstacle>
+      <obstacle id="499" name="Wall499" type="Wall">
+        <point x="85.0191" y="61.0737" />
+        <point x="85.0191" y="62.1654" />
+      </obstacle>
+      <obstacle id="500" name="Wall500" type="Wall">
+        <point x="85.0191" y="58.0969" />
+        <point x="85.0191" y="59.1887" />
+      </obstacle>
+      <obstacle id="501" name="Wall501" type="Wall">
+        <point x="85.0191" y="61.0737" />
+        <point x="85.0191" y="62.1654" />
+      </obstacle>
+      <obstacle id="502" name="Wall502" type="Wall">
+        <point x="85.1691" y="57.7969" />
+        <point x="84.8968" y="57.7969" />
+      </obstacle>
+      <obstacle id="503" name="Wall503" type="Wall">
+        <point x="83.011800000000008" y="57.7969" />
+        <point x="82.8896" y="57.7969" />
+      </obstacle>
+      <obstacle id="504" name="Wall504" type="Wall">
+        <point x="82.8146" y="58.0969" />
+        <point x="83.011800000000008" y="58.0969" />
+      </obstacle>
+      <obstacle id="505" name="Wall505" type="Wall">
+        <point x="84.8968" y="58.0969" />
+        <point x="85.0191" y="58.0969" />
+      </obstacle>
+      <obstacle id="506" name="Wall506" type="Wall">
+        <point x="82.8146" y="58.0969" />
+        <point x="83.011800000000008" y="58.0969" />
+      </obstacle>
+      <obstacle id="507" name="Wall507" type="Wall">
+        <point x="84.8968" y="58.0969" />
+        <point x="85.0191" y="58.0969" />
+      </obstacle>
+      <obstacle id="508" name="Wall508" type="Wall">
+        <point x="78.9766" y="57.7969" />
+        <point x="78.5941" y="57.7969" />
+      </obstacle>
+      <obstacle id="509" name="Wall509" type="Wall">
+        <point x="76.7091" y="57.7969" />
+        <point x="74.4961" y="57.7969" />
+      </obstacle>
+      <obstacle id="510" name="Wall510" type="Wall">
+        <point x="78.9766" y="57.7969" />
+        <point x="78.5941" y="57.7969" />
+      </obstacle>
+      <obstacle id="511" name="Wall511" type="Wall">
+        <point x="76.7091" y="57.7969" />
+        <point x="74.4961" y="57.7969" />
+      </obstacle>
+      <obstacle id="512" name="Wall512" type="Wall">
+        <point x="74.4961" y="58.0969" />
+        <point x="76.7091" y="58.0969" />
+      </obstacle>
+      <obstacle id="513" name="Wall513" type="Wall">
+        <point x="78.5941" y="58.0969" />
+        <point x="79.0516" y="58.0969" />
+      </obstacle>
+      <obstacle id="514" name="Wall514" type="Wall">
+        <point x="74.4961" y="58.0969" />
+        <point x="76.7091" y="58.0969" />
+      </obstacle>
+      <obstacle id="515" name="Wall515" type="Wall">
+        <point x="78.5941" y="58.0969" />
+        <point x="79.0516" y="58.0969" />
+      </obstacle>
+      <obstacle id="516" name="Wall516" type="Wall">
+        <point x="55.7124" y="62.1654" />
+        <point x="55.712399999999995" y="60.252" />
+      </obstacle>
+      <obstacle id="517" name="Wall517" type="Wall">
+        <point x="55.712399999999995" y="58.422000000000004" />
+        <point x="55.7124" y="58.037" />
+      </obstacle>
+      <obstacle id="518" name="Wall518" type="Wall">
+        <point x="55.7124" y="62.1654" />
+        <point x="55.712399999999995" y="60.252" />
+      </obstacle>
+      <obstacle id="519" name="Wall519" type="Wall">
+        <point x="55.712399999999995" y="58.422000000000004" />
+        <point x="55.7124" y="58.037" />
+      </obstacle>
+      <obstacle id="520" name="Wall520" type="Wall">
+        <point x="85.2193" y="83.5513" />
+        <point x="85.2193" y="84.9238" />
+      </obstacle>
+      <obstacle id="521" name="Wall521" type="Wall">
+        <point x="85.2193" y="85.808799999999991" />
+        <point x="85.2193" y="87.1813" />
+      </obstacle>
+      <obstacle id="522" name="Wall522" type="Wall">
+        <point x="85.4693" y="87.1813" />
+        <point x="85.4693" y="85.808799999999991" />
+      </obstacle>
+      <obstacle id="523" name="Wall523" type="Wall">
+        <point x="85.4693" y="84.9238" />
+        <point x="85.4693" y="83.5513" />
+      </obstacle>
+      <obstacle id="524" name="Wall524" type="Wall">
+        <point x="58.2318" y="111.5954" />
+        <point x="60.7393" y="111.5954" />
+      </obstacle>
+      <obstacle id="525" name="Wall525" type="Wall">
+        <point x="61.624300000000005" y="111.5954" />
+        <point x="66.3218" y="111.5954" />
+      </obstacle>
+      <obstacle id="526" name="Wall526" type="Wall">
+        <point x="66.1718" y="111.4454" />
+        <point x="61.624300000000005" y="111.44539999999999" />
+      </obstacle>
+      <obstacle id="527" name="Wall527" type="Wall">
+        <point x="60.7393" y="111.44539999999999" />
+        <point x="58.3818" y="111.4454" />
+      </obstacle>
+      <obstacle id="528" name="Wall528" type="Wall">
+        <point x="79.249" y="111.6121" />
+        <point x="79.249" y="111.1746" />
+      </obstacle>
+      <obstacle id="529" name="Wall529" type="Wall">
+        <point x="79.249" y="109.28960000000001" />
+        <point x="79.249" y="108.1554" />
+      </obstacle>
+      <obstacle id="530" name="Wall530" type="Wall">
+        <point x="76.0209" y="107.8554" />
+        <point x="76.0209" y="108.4554" />
+      </obstacle>
+      <obstacle id="531" name="Wall531" type="Wall">
+        <point x="75.1359" y="107.8554" />
+        <point x="75.1359" y="108.4554" />
+      </obstacle>
+      <obstacle id="532" name="Wall532" type="Wall">
+        <point x="71.4815" y="107.8554" />
+        <point x="71.4815" y="108.4554" />
+      </obstacle>
+      <obstacle id="533" name="Wall533" type="Wall">
+        <point x="70.5965" y="107.8554" />
+        <point x="70.5965" y="108.4554" />
+      </obstacle>
+      <obstacle id="534" name="Wall534" type="Wall">
+        <point x="70.5965" y="107.8554" />
+        <point x="71.4815" y="107.8554" />
+      </obstacle>
+      <obstacle id="535" name="Wall535" type="Wall">
+        <point x="77.2513" y="111.6871" />
+        <point x="77.2513" y="111.5371" />
+      </obstacle>
+      <obstacle id="536" name="Wall536" type="Wall">
+        <point x="78.136299999999991" y="111.6871" />
+        <point x="78.136299999999991" y="111.5371" />
+      </obstacle>
+      <obstacle id="537" name="Wall537" type="Wall">
+        <point x="78.136299999999991" y="111.5371" />
+        <point x="77.2513" y="111.5371" />
+      </obstacle>
+      <obstacle id="538" name="Wall538" type="Wall">
+        <point x="74.6459" y="111.46950000000001" />
+        <point x="74.6459" y="111.3895" />
+      </obstacle>
+      <obstacle id="539" name="Wall539" type="Wall">
+        <point x="75.530899999999988" y="111.46950000000001" />
+        <point x="75.530899999999988" y="111.3895" />
+      </obstacle>
+      <obstacle id="540" name="Wall540" type="Wall">
+        <point x="75.530899999999988" y="111.3895" />
+        <point x="74.6459" y="111.3895" />
+      </obstacle>
+      <obstacle id="541" name="Wall541" type="Wall">
+        <point x="75.690400000000011" y="111.46950000000001" />
+        <point x="75.690400000000011" y="111.3895" />
+      </obstacle>
+      <obstacle id="542" name="Wall542" type="Wall">
+        <point x="76.5754" y="111.46950000000001" />
+        <point x="76.5754" y="111.3895" />
+      </obstacle>
+      <obstacle id="543" name="Wall543" type="Wall">
+        <point x="76.5754" y="111.3895" />
+        <point x="75.690400000000011" y="111.3895" />
+      </obstacle>
+      <obstacle id="544" name="Wall544" type="Wall">
+        <point x="76.7385" y="114.41019999999999" />
+        <point x="76.658499999999989" y="114.41019999999999" />
+      </obstacle>
+      <obstacle id="545" name="Wall545" type="Wall">
+        <point x="76.7385" y="113.5252" />
+        <point x="76.658499999999989" y="113.5252" />
+      </obstacle>
+      <obstacle id="546" name="Wall546" type="Wall">
+        <point x="76.7385" y="113.5252" />
+        <point x="76.7385" y="114.41019999999999" />
+      </obstacle>
+      <obstacle id="547" name="Wall547" type="Wall">
+        <point x="76.7385" y="115.4122" />
+        <point x="76.658499999999989" y="115.4122" />
+      </obstacle>
+      <obstacle id="548" name="Wall548" type="Wall">
+        <point x="76.7385" y="114.52720000000001" />
+        <point x="76.658499999999989" y="114.52720000000001" />
+      </obstacle>
+      <obstacle id="549" name="Wall549" type="Wall">
+        <point x="76.7385" y="114.52720000000001" />
+        <point x="76.7385" y="115.4122" />
+      </obstacle>
+      <obstacle id="550" name="Wall550" type="Wall">
+        <point x="76.7385" y="116.4927" />
+        <point x="76.658499999999989" y="116.4927" />
+      </obstacle>
+      <obstacle id="551" name="Wall551" type="Wall">
+        <point x="76.7385" y="115.60770000000001" />
+        <point x="76.658499999999989" y="115.60770000000001" />
+      </obstacle>
+      <obstacle id="552" name="Wall552" type="Wall">
+        <point x="76.7385" y="115.60770000000001" />
+        <point x="76.7385" y="116.4927" />
+      </obstacle>
+      <obstacle id="553" name="Wall553" type="Wall">
+        <point x="76.7385" y="117.48769999999999" />
+        <point x="76.658499999999989" y="117.48769999999999" />
+      </obstacle>
+      <obstacle id="554" name="Wall554" type="Wall">
+        <point x="76.7385" y="116.6027" />
+        <point x="76.658499999999989" y="116.6027" />
+      </obstacle>
+      <obstacle id="555" name="Wall555" type="Wall">
+        <point x="76.7385" y="116.6027" />
+        <point x="76.7385" y="117.48769999999999" />
+      </obstacle>
+      <obstacle id="556" name="Wall556" type="Wall">
+        <point x="71.6015" y="111.9573" />
+        <point x="71.6015" y="112.10730000000001" />
+      </obstacle>
+      <obstacle id="557" name="Wall557" type="Wall">
+        <point x="70.716500000000011" y="111.9573" />
+        <point x="70.716500000000011" y="112.10730000000001" />
+      </obstacle>
+      <obstacle id="558" name="Wall558" type="Wall">
+        <point x="70.716500000000011" y="112.10730000000001" />
+        <point x="71.6015" y="112.10730000000001" />
+      </obstacle>
+      <obstacle id="559" name="Wall559" type="Wall">
+        <point x="69.609000000000009" y="112.26480000000001" />
+        <point x="70.059" y="112.26480000000001" />
+      </obstacle>
+      <obstacle id="560" name="Wall560" type="Wall">
+        <point x="69.609000000000009" y="113.1498" />
+        <point x="70.059" y="113.1498" />
+      </obstacle>
+      <obstacle id="561" name="Wall561" type="Wall">
+        <point x="89.2551" y="112.1854" />
+        <point x="89.2551" y="111.98540000000001" />
+      </obstacle>
+      <obstacle id="562" name="Wall562" type="Wall">
+        <point x="90.14009999999999" y="112.1854" />
+        <point x="90.14009999999999" y="111.98540000000001" />
+      </obstacle>
+      <obstacle id="563" name="Wall563" type="Wall">
+        <point x="88.9551" y="108.3554" />
+        <point x="88.9551" y="107.8554" />
+      </obstacle>
+      <obstacle id="564" name="Wall564" type="Wall">
+        <point x="89.840099999999993" y="108.3554" />
+        <point x="89.840099999999993" y="107.8554" />
+      </obstacle>
+      <obstacle id="565" name="Wall565" type="Wall">
+        <point x="89.4401" y="103.77319999999999" />
+        <point x="89.4401" y="104.0732" />
+      </obstacle>
+      <obstacle id="566" name="Wall566" type="Wall">
+        <point x="88.55510000000001" y="103.77319999999999" />
+        <point x="88.55510000000001" y="104.0732" />
+      </obstacle>
+      <obstacle id="567" name="Wall567" type="Wall">
+        <point x="81.247" y="97.348800000000011" />
+        <point x="81.497" y="97.348800000000011" />
+      </obstacle>
+      <obstacle id="568" name="Wall568" type="Wall">
+        <point x="81.247" y="98.2338" />
+        <point x="81.497" y="98.2338" />
+      </obstacle>
+      <obstacle id="569" name="Wall569" type="Wall">
+        <point x="85.2193" y="97.348800000000011" />
+        <point x="85.4693" y="97.348800000000011" />
+      </obstacle>
+      <obstacle id="570" name="Wall570" type="Wall">
+        <point x="85.2193" y="98.2338" />
+        <point x="85.4693" y="98.2338" />
+      </obstacle>
+      <obstacle id="571" name="Wall571" type="Wall">
+        <point x="87.0118" y="91.4883" />
+        <point x="87.0118" y="91.6383" />
+      </obstacle>
+      <obstacle id="572" name="Wall572" type="Wall">
+        <point x="86.1268" y="91.4883" />
+        <point x="86.1268" y="91.6383" />
+      </obstacle>
+      <obstacle id="573" name="Wall573" type="Wall">
+        <point x="86.026800000000009" y="87.4984" />
+        <point x="86.026800000000009" y="87.3484" />
+      </obstacle>
+      <obstacle id="574" name="Wall574" type="Wall">
+        <point x="86.9118" y="87.4984" />
+        <point x="86.9118" y="87.3484" />
+      </obstacle>
+      <obstacle id="575" name="Wall575" type="Wall">
+        <point x="81.247" y="89.0588" />
+        <point x="81.497" y="89.0588" />
+      </obstacle>
+      <obstacle id="576" name="Wall576" type="Wall">
+        <point x="81.247" y="89.9438" />
+        <point x="81.497" y="89.9438" />
+      </obstacle>
+      <obstacle id="577" name="Wall577" type="Wall">
+        <point x="85.2193" y="89.0588" />
+        <point x="85.4693" y="89.0588" />
+      </obstacle>
+      <obstacle id="578" name="Wall578" type="Wall">
+        <point x="85.2193" y="89.9438" />
+        <point x="85.4693" y="89.9438" />
+      </obstacle>
+      <obstacle id="579" name="Wall579" type="Wall">
+        <point x="88.272799999999989" y="95.6332" />
+        <point x="88.272799999999989" y="95.783200000000008" />
+      </obstacle>
+      <obstacle id="580" name="Wall580" type="Wall">
+        <point x="87.3878" y="95.6332" />
+        <point x="87.3878" y="95.783200000000008" />
+      </obstacle>
+      <obstacle id="581" name="Wall581" type="Wall">
+        <point x="86.6268" y="74.9213" />
+        <point x="86.6268" y="74.7713" />
+      </obstacle>
+      <obstacle id="582" name="Wall582" type="Wall">
+        <point x="87.5118" y="74.9213" />
+        <point x="87.5118" y="74.7713" />
+      </obstacle>
+      <obstacle id="583" name="Wall583" type="Wall">
+        <point x="85.9268" y="66.992" />
+        <point x="85.9268" y="66.842" />
+      </obstacle>
+      <obstacle id="584" name="Wall584" type="Wall">
+        <point x="86.811799999999991" y="66.992" />
+        <point x="86.811799999999991" y="66.842" />
+      </obstacle>
+      <obstacle id="585" name="Wall585" type="Wall">
+        <point x="85.4693" y="65.5345" />
+        <point x="85.2193" y="65.5345" />
+      </obstacle>
+      <obstacle id="586" name="Wall586" type="Wall">
+        <point x="85.4693" y="64.6495" />
+        <point x="85.2193" y="64.6495" />
+      </obstacle>
+      <obstacle id="587" name="Wall587" type="Wall">
+        <point x="78.4993" y="64.6579" />
+        <point x="78.3493" y="64.6579" />
+      </obstacle>
+      <obstacle id="588" name="Wall588" type="Wall">
+        <point x="78.4993" y="63.7729" />
+        <point x="78.3493" y="63.7729" />
+      </obstacle>
+      <obstacle id="589" name="Wall589" type="Wall">
+        <point x="78.3493" y="63.7729" />
+        <point x="78.3493" y="64.6579" />
+      </obstacle>
+      <obstacle id="590" name="Wall590" type="Wall">
+        <point x="75.47399999999999" y="66.49199999999999" />
+        <point x="75.47399999999999" y="66.892" />
+      </obstacle>
+      <obstacle id="591" name="Wall591" type="Wall">
+        <point x="74.589" y="66.49199999999999" />
+        <point x="74.589" y="66.892" />
+      </obstacle>
+      <obstacle id="592" name="Wall592" type="Wall">
+        <point x="79.1266" y="56.839400000000005" />
+        <point x="78.976599999999991" y="56.839400000000005" />
+      </obstacle>
+      <obstacle id="593" name="Wall593" type="Wall">
+        <point x="79.1266" y="55.9544" />
+        <point x="78.976599999999991" y="55.9544" />
+      </obstacle>
+      <obstacle id="594" name="Wall594" type="Wall">
+        <point x="82.8896" y="57.2394" />
+        <point x="82.7396" y="57.2394" />
+      </obstacle>
+      <obstacle id="595" name="Wall595" type="Wall">
+        <point x="82.8896" y="56.3544" />
+        <point x="82.7396" y="56.3544" />
+      </obstacle>
+      <obstacle id="596" name="Wall596" type="Wall">
+        <point x="87.2856" y="56.7394" />
+        <point x="87.1356" y="56.7394" />
+      </obstacle>
+      <obstacle id="597" name="Wall597" type="Wall">
+        <point x="87.2856" y="55.8544" />
+        <point x="87.1356" y="55.8544" />
+      </obstacle>
+      <obstacle id="598" name="Wall598" type="Wall">
+        <point x="63.892999999999994" y="62.715399999999995" />
+        <point x="63.892999999999994" y="62.1654" />
+      </obstacle>
+      <obstacle id="599" name="Wall599" type="Wall">
+        <point x="64.777999999999992" y="62.715399999999995" />
+        <point x="64.777999999999992" y="62.1654" />
+      </obstacle>
+      <obstacle id="600" name="Wall600" type="Wall">
+        <point x="56.869899999999994" y="62.715399999999995" />
+        <point x="56.869899999999994" y="62.1654" />
+      </obstacle>
+      <obstacle id="601" name="Wall601" type="Wall">
+        <point x="57.7549" y="62.715399999999995" />
+        <point x="57.7549" y="62.1654" />
+      </obstacle>
+      <obstacle id="602" name="Wall602" type="Wall">
+        <point x="66.538800000000009" y="113.9864" />
+        <point x="66.538800000000009" y="113.8364" />
+      </obstacle>
+      <obstacle id="603" name="Wall603" type="Wall">
+        <point x="67.4238" y="113.9864" />
+        <point x="67.4238" y="113.8364" />
+      </obstacle>
+      <obstacle id="604" name="Wall604" type="Wall">
+        <point x="64.3793" y="112.9054" />
+        <point x="64.3793" y="112.7554" />
+      </obstacle>
+      <obstacle id="605" name="Wall605" type="Wall">
+        <point x="65.264299999999992" y="112.9054" />
+        <point x="65.264299999999992" y="112.7554" />
+      </obstacle>
+      <obstacle id="606" name="Wall606" type="Wall">
+        <point x="60.479299999999995" y="112.9054" />
+        <point x="60.479299999999995" y="112.7554" />
+      </obstacle>
+      <obstacle id="607" name="Wall607" type="Wall">
+        <point x="61.3643" y="112.9054" />
+        <point x="61.3643" y="112.7554" />
+      </obstacle>
+      <obstacle id="608" name="Wall608" type="Wall">
+        <point x="56.7793" y="112.9054" />
+        <point x="56.7793" y="112.7554" />
+      </obstacle>
+      <obstacle id="609" name="Wall609" type="Wall">
+        <point x="57.664300000000004" y="112.9054" />
+        <point x="57.664300000000004" y="112.7554" />
+      </obstacle>
+      <obstacle id="610" name="Wall610" type="Wall">
+        <point x="53.049299999999995" y="112.9054" />
+        <point x="53.049299999999995" y="112.7554" />
+      </obstacle>
+      <obstacle id="611" name="Wall611" type="Wall">
+        <point x="53.9343" y="112.9054" />
+        <point x="53.9343" y="112.7554" />
+      </obstacle>
+      <obstacle id="612" name="Wall612" type="Wall">
+        <point x="49.834300000000006" y="107.8854" />
+        <point x="49.834300000000006" y="108.03540000000001" />
+      </obstacle>
+      <obstacle id="613" name="Wall613" type="Wall">
+        <point x="48.9493" y="107.8854" />
+        <point x="48.9493" y="108.03540000000001" />
+      </obstacle>
+      <obstacle id="614" name="Wall614" type="Wall">
+        <point x="67.3206" y="107.9479" />
+        <point x="67.3206" y="108.09790000000001" />
+      </obstacle>
+      <obstacle id="615" name="Wall615" type="Wall">
+        <point x="66.435600000000008" y="107.9479" />
+        <point x="66.435600000000008" y="108.09790000000001" />
+      </obstacle>
+      <obstacle id="616" name="Wall616" type="Wall">
+        <point x="68.55810000000001" y="108.09790000000001" />
+        <point x="68.55810000000001" y="107.9479" />
+      </obstacle>
+      <obstacle id="617" name="Wall617" type="Wall">
+        <point x="69.4431" y="108.09790000000001" />
+        <point x="69.4431" y="107.9479" />
+      </obstacle>
+      <obstacle id="618" name="Wall618" type="Wall">
+        <point x="69.4431" y="107.9479" />
+        <point x="68.55810000000001" y="107.9479" />
+      </obstacle>
+      <obstacle id="619" name="Wall619" type="Wall">
+        <point x="57.8304" y="68.1459" />
+        <point x="58.0304" y="68.1459" />
+      </obstacle>
+      <obstacle id="620" name="Wall620" type="Wall">
+        <point x="57.8304" y="69.030899999999988" />
+        <point x="58.0304" y="69.030899999999988" />
+      </obstacle>
+      <obstacle id="621" name="Wall621" type="Wall">
+        <point x="57.8304" y="69.030899999999988" />
+        <point x="57.8304" y="68.1459" />
+      </obstacle>
+      <obstacle id="622" name="Wall622" type="Wall">
+        <point x="70.059" y="105.81309999999999" />
+        <point x="69.609000000000009" y="105.81309999999999" />
+      </obstacle>
+      <obstacle id="623" name="Wall623" type="Wall">
+        <point x="70.059" y="104.9281" />
+        <point x="69.609000000000009" y="104.9281" />
+      </obstacle>
+      <obstacle id="624" name="Wall624" type="Wall">
+        <point x="70.059" y="106.67309999999999" />
+        <point x="69.609000000000009" y="106.67309999999999" />
+      </obstacle>
+      <obstacle id="625" name="Wall625" type="Wall">
+        <point x="70.059" y="105.7881" />
+        <point x="69.609000000000009" y="105.7881" />
+      </obstacle>
+      <obstacle id="626" name="Wall626" type="Wall">
+        <point x="70.059" y="106.2131" />
+        <point x="69.609000000000009" y="106.2131" />
+      </obstacle>
+      <obstacle id="627" name="Wall627" type="Wall">
+        <point x="70.059" y="105.3281" />
+        <point x="69.609000000000009" y="105.3281" />
+      </obstacle>
+      <obstacle id="628" name="Wall628" type="Wall">
+        <point x="70.059" y="106.8731" />
+        <point x="69.609000000000009" y="106.8731" />
+      </obstacle>
+      <obstacle id="629" name="Wall629" type="Wall">
+        <point x="70.059" y="105.9881" />
+        <point x="69.609000000000009" y="105.9881" />
+      </obstacle>
+      <obstacle id="630" name="Wall630" type="Wall">
+        <point x="79.249" y="106.983" />
+        <point x="78.649" y="106.983" />
+      </obstacle>
+      <obstacle id="631" name="Wall631" type="Wall">
+        <point x="79.249" y="105.15299999999999" />
+        <point x="78.649" y="105.15299999999999" />
+      </obstacle>
+      <obstacle id="632" name="Wall632" type="Wall">
+        <point x="82.297000000000011" y="104.2806" />
+        <point x="82.297000000000011" y="103.7306" />
+      </obstacle>
+      <obstacle id="633" name="Wall633" type="Wall">
+        <point x="84.497" y="104.2806" />
+        <point x="84.497" y="103.7306" />
+      </obstacle>
+      <obstacle id="634" name="Wall634" type="Wall">
+        <point x="82.1992" y="62.715399999999995" />
+        <point x="82.1992" y="62.1654" />
+      </obstacle>
+      <obstacle id="635" name="Wall635" type="Wall">
+        <point x="84.3992" y="62.715399999999995" />
+        <point x="84.3992" y="62.1654" />
+      </obstacle>
+      <obstacle id="636" name="Wall636" type="Wall">
+        <point x="81.247" y="92.6988" />
+        <point x="81.497" y="92.6988" />
+      </obstacle>
+      <obstacle id="637" name="Wall637" type="Wall">
+        <point x="81.247" y="94.5838" />
+        <point x="81.497" y="94.5838" />
+      </obstacle>
+      <obstacle id="638" name="Wall638" type="Wall">
+        <point x="85.2193" y="92.6988" />
+        <point x="85.4693" y="92.6988" />
+      </obstacle>
+      <obstacle id="639" name="Wall639" type="Wall">
+        <point x="85.2193" y="94.5838" />
+        <point x="85.4693" y="94.5838" />
+      </obstacle>
+      <obstacle id="640" name="Wall640" type="Wall">
+        <point x="81.0645" y="87.3" />
+        <point x="81.0645" y="87.600000000000009" />
+      </obstacle>
+      <obstacle id="641" name="Wall641" type="Wall">
+        <point x="79.1795" y="87.3" />
+        <point x="79.1795" y="87.600000000000009" />
+      </obstacle>
+      <obstacle id="642" name="Wall642" type="Wall">
+        <point x="81.247" y="84.4238" />
+        <point x="81.497" y="84.4238" />
+      </obstacle>
+      <obstacle id="643" name="Wall643" type="Wall">
+        <point x="81.247" y="86.308799999999991" />
+        <point x="81.497" y="86.308799999999991" />
+      </obstacle>
+      <obstacle id="644" name="Wall644" type="Wall">
+        <point x="85.2193" y="80.2788" />
+        <point x="85.4693" y="80.2788" />
+      </obstacle>
+      <obstacle id="645" name="Wall645" type="Wall">
+        <point x="85.2193" y="82.1638" />
+        <point x="85.4693" y="82.1638" />
+      </obstacle>
+      <obstacle id="646" name="Wall646" type="Wall">
+        <point x="81.247" y="80.2788" />
+        <point x="81.497" y="80.2788" />
+      </obstacle>
+      <obstacle id="647" name="Wall647" type="Wall">
+        <point x="81.247" y="82.1638" />
+        <point x="81.497" y="82.1638" />
+      </obstacle>
+      <obstacle id="648" name="Wall648" type="Wall">
+        <point x="81.247" y="75.9538" />
+        <point x="81.497" y="75.9538" />
+      </obstacle>
+      <obstacle id="649" name="Wall649" type="Wall">
+        <point x="81.247" y="77.838799999999992" />
+        <point x="81.497" y="77.838799999999992" />
+      </obstacle>
+      <obstacle id="650" name="Wall650" type="Wall">
+        <point x="81.247" y="72.0092" />
+        <point x="81.497" y="72.0092" />
+      </obstacle>
+      <obstacle id="651" name="Wall651" type="Wall">
+        <point x="81.247" y="73.8942" />
+        <point x="81.497" y="73.8942" />
+      </obstacle>
+      <obstacle id="652" name="Wall652" type="Wall">
+        <point x="85.8318" y="70.782" />
+        <point x="85.8318" y="70.631999999999991" />
+      </obstacle>
+      <obstacle id="653" name="Wall653" type="Wall">
+        <point x="87.716799999999992" y="70.782" />
+        <point x="87.716799999999992" y="70.631999999999991" />
+      </obstacle>
+      <obstacle id="654" name="Wall654" type="Wall">
+        <point x="85.2193" y="67.8695" />
+        <point x="85.4693" y="67.8695" />
+      </obstacle>
+      <obstacle id="655" name="Wall655" type="Wall">
+        <point x="85.2193" y="69.7545" />
+        <point x="85.4693" y="69.7545" />
+      </obstacle>
+      <obstacle id="656" name="Wall656" type="Wall">
+        <point x="87.4976" y="109.3079" />
+        <point x="88.0976" y="109.3079" />
+      </obstacle>
+      <obstacle id="657" name="Wall657" type="Wall">
+        <point x="87.4976" y="111.1929" />
+        <point x="88.0976" y="111.1929" />
+      </obstacle>
+      <obstacle id="658" name="Wall658" type="Wall">
+        <point x="87.4976" y="105.1057" />
+        <point x="88.0976" y="105.1057" />
+      </obstacle>
+      <obstacle id="659" name="Wall659" type="Wall">
+        <point x="87.4976" y="106.99069999999999" />
+        <point x="88.0976" y="106.99069999999999" />
+      </obstacle>
+      <obstacle id="660" name="Wall660" type="Wall">
+        <point x="85.3191" y="61.0737" />
+        <point x="85.0191" y="61.0737" />
+      </obstacle>
+      <obstacle id="661" name="Wall661" type="Wall">
+        <point x="85.3191" y="59.1887" />
+        <point x="85.0191" y="59.1887" />
+      </obstacle>
+      <obstacle id="662" name="Wall662" type="Wall">
+        <point x="84.8968" y="57.7969" />
+        <point x="84.8968" y="58.0969" />
+      </obstacle>
+      <obstacle id="663" name="Wall663" type="Wall">
+        <point x="83.011800000000008" y="57.7969" />
+        <point x="83.011800000000008" y="58.0969" />
+      </obstacle>
+      <obstacle id="664" name="Wall664" type="Wall">
+        <point x="78.5941" y="57.7969" />
+        <point x="78.5941" y="58.0969" />
+      </obstacle>
+      <obstacle id="665" name="Wall665" type="Wall">
+        <point x="76.7091" y="57.7969" />
+        <point x="76.7091" y="58.0969" />
+      </obstacle>
+      <obstacle id="666" name="Wall666" type="Wall">
+        <point x="54.9124" y="58.422000000000004" />
+        <point x="55.712399999999995" y="58.422000000000004" />
+      </obstacle>
+      <obstacle id="667" name="Wall667" type="Wall">
+        <point x="54.9124" y="60.252" />
+        <point x="55.712399999999995" y="60.252" />
+      </obstacle>
+      <obstacle id="668" name="Wall668" type="Wall">
+        <point x="54.9124" y="60.252" />
+        <point x="54.9124" y="58.422000000000004" />
+      </obstacle>
+      <obstacle id="669" name="Wall669" type="Wall">
+        <point x="85.2193" y="84.9238" />
+        <point x="85.4693" y="84.9238" />
+      </obstacle>
+      <obstacle id="670" name="Wall670" type="Wall">
+        <point x="85.2193" y="85.808799999999991" />
+        <point x="85.4693" y="85.808799999999991" />
+      </obstacle>
+      <obstacle id="671" name="Wall671" type="Wall">
+        <point x="60.7393" y="111.5954" />
+        <point x="60.7393" y="111.44539999999999" />
+      </obstacle>
+      <obstacle id="672" name="Wall672" type="Wall">
+        <point x="61.624300000000005" y="111.5954" />
+        <point x="61.624300000000005" y="111.44539999999999" />
+      </obstacle>
+      <obstacle id="673" name="Wall673" type="Wall">
+        <point x="51.5993" y="111.7098" />
+        <point x="51.5993" y="111.5598" />
+      </obstacle>
+      <obstacle id="674" name="Wall674" type="Wall">
+        <point x="52.484300000000005" y="111.7098" />
+        <point x="52.484300000000005" y="111.5598" />
+      </obstacle>
+      <obstacle id="675" name="Wall675" type="Wall">
+        <point x="52.484300000000005" y="111.7098" />
+        <point x="51.5993" y="111.7098" />
+      </obstacle>
+      <obstacle id="676" name="Wall676" type="Wall">
+        <point x="79.249" y="111.1746" />
+        <point x="78.649" y="111.1746" />
+      </obstacle>
+      <obstacle id="677" name="Wall677" type="Wall">
+        <point x="79.249" y="109.28960000000001" />
+        <point x="78.649" y="109.28960000000001" />
+      </obstacle>
+      <obstacle id="678" name="Wall678" type="Wall">
+        <point x="78.649" y="109.28960000000001" />
+        <point x="78.649" y="111.1746" />
+      </obstacle>
+    </scenario>
+  </layouts>
+</simulator>

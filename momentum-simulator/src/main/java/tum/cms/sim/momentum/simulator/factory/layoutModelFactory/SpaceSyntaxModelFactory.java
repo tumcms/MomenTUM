@@ -40,7 +40,7 @@ import tum.cms.sim.momentum.configuration.model.spaceSyntax.SpaceSyntaxOperation
 import tum.cms.sim.momentum.configuration.scenario.ScenarioConfiguration;
 import tum.cms.sim.momentum.model.layout.spaceSyntax.SpaceSyntaxModel;
 import tum.cms.sim.momentum.model.layout.spaceSyntax.SpaceSyntaxOperation;
-import tum.cms.sim.momentum.model.layout.spaceSyntax.depthMapModel.DepthMapModel;
+import tum.cms.sim.momentum.model.layout.spaceSyntax.depthMap.DepthMapOperation;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -86,7 +86,7 @@ public class SpaceSyntaxModelFactory extends ModelFactory<SpaceSyntaxModelConfig
 		
 		switch (spaceSyntaxOperationConfiguration.getType()) {
 		case DepthMap:
-			spaceSyntaxOperation = new DepthMapModel();
+			spaceSyntaxOperation = new DepthMapOperation();
 		}
 		
 		return spaceSyntaxOperation;

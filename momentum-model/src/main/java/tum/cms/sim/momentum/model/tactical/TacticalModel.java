@@ -33,13 +33,12 @@
 package tum.cms.sim.momentum.model.tactical;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.infrastructure.logging.LoggingManager;
@@ -50,7 +49,6 @@ import tum.cms.sim.momentum.model.tactical.queuing.QueuingModel;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
 import tum.cms.sim.momentum.model.tactical.searching.SearchingModel;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
-import tum.cms.sim.momentum.utility.graph.Vertex;
 
 public class TacticalModel extends PedestrianBehaviorModel {
 	
@@ -58,15 +56,11 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	protected final static String navigationDistanceRadiusName = "navigationDistanceRadius";
 	protected final static String tacticalControlName = "tacticalControl";
 	protected final static String routeMemoryName = "routeMemory";
-//	protected final static String dynamicNodeReachedName = "dynamicNodeReached";
 	
-	//protected double dynamicNodeDistance = 3.0;
 	protected double goalDistanceRadius = 0.15;
 	protected double navigationDistanceRadius = 0.15;
 	protected boolean tacticalControl = true;
 	protected boolean routeMemory = true;
-	//protected boolean dynamicNodeReached = false;
-	//protected HashMap<Vertex, Integer> pedestrianNearNavigationNode = new HashMap<>();
 
 	private RoutingModel routingModel = null;
 	
@@ -115,7 +109,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	}
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return null; 
 	}
@@ -352,7 +346,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	 */
 	private boolean isGoalTargetVisible(IRichPedestrian pedestrian) {
 		
-		return perception.isVisible(pedestrian.getPosition(), pedestrian.getNextNavigationTarget().getPointOfInterest());
+		return perception.isVisible(pedestrian, pedestrian.getNextNavigationTarget().getPointOfInterest());
 	}
 	
 	/**

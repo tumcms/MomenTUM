@@ -72,8 +72,7 @@ public class PedestrianSimulationSetup {
 		componentManager.createGenerators(configuration.getGenerators());
 		componentManager.createAbsorbers(configuration.getAbsorbers());
 		
-		// Support Models
-		componentManager.createQueryModel();
+		// Perception Models
 		componentManager.createPerceptualModels(configuration.getPerceptualModels());
 		
 		// Operational Models
@@ -110,7 +109,6 @@ public class PedestrianSimulationSetup {
 		preProcessingList.addAll(componentManager.getSpaceSyntaxModels());
 		
 		preProcessingList.addAll(componentManager.getPerceptionalModels());
-		preProcessingList.addAll(componentManager.getQueryModels());
 		
 		preProcessingList.addAll(componentManager.getAbsorbers());
 		preProcessingList.addAll(componentManager.getGenerators());
@@ -147,7 +145,6 @@ public class PedestrianSimulationSetup {
 		postProcessingList.addAll(componentManager.getStrategicalModels());	
 		postProcessingList.addAll(componentManager.getStayingModels());		
 		postProcessingList.addAll(componentManager.getRoutingModels());
-		postProcessingList.addAll(componentManager.getQueryModels());
 		
 		postProcessingList.addAll(componentManager.getOperationalModels());
 		postProcessingList.addAll(componentManager.getWalkingModels());
@@ -159,7 +156,6 @@ public class PedestrianSimulationSetup {
 		postProcessingList.addAll(componentManager.getGenerators());
 
 		postProcessingList.addAll(componentManager.getPerceptionalModels());
-		postProcessingList.addAll(componentManager.getQueryModels());
 
 		postProcessingList.addAll(componentManager.getGraphModels());
 		postProcessingList.addAll(componentManager.getLatticeModels());
