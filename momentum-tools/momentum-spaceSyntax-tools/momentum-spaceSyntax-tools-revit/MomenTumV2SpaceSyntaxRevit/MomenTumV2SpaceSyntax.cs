@@ -43,10 +43,10 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         //var floors = RevitUtils.GetAllFloorsFromSelectedLevel(level);
         //var allFaces = RevitUtils.CollectAllFacesFromAllFloors(app, floors);
         //var topAndBottomFace = FilterTopAndBottomFaceIntoList(allFaces);
+        
+        Reference faceReference = uiApp.ActiveUIDocument.Selection.PickObject(ObjectType.Face);
+        Face selectedFace = doc.GetElement(faceReference).GetGeometryObjectFromReference(faceReference) as Face;
 
-        IList<Reference> refList = new List<Reference>();
-        refList = uiApp.ActiveUIDocument.Selection.PickObjects(ObjectType.Face);
-        Face selectedFace = doc.GetElement(refList[0]).GetGeometryObjectFromReference(refList[0]) as Face;
         // TODO get stable reference from selectionpicker..........
         var topAndBottomFace = new List<Face>();
         topAndBottomFace.Add(selectedFace);
@@ -56,7 +56,7 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
 
         try
         {
-            RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topAndBottomFace);
+            RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topAndBottomFace, faceReference);
         }
         catch (Exception e)
         {

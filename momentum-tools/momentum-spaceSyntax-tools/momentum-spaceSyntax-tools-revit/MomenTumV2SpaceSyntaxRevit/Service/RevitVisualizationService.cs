@@ -11,7 +11,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 {
     class RevitVisualizationService
     {
-        public static void CreateSpaceSyntaxAnalysisResult(Document doc, SpaceSyntax spaceSyntax, List<Face> topAndBottomFace)
+        public static void CreateSpaceSyntaxAnalysisResult(Document doc, SpaceSyntax spaceSyntax, List<Face> topAndBottomFace, Reference faceReference)
         {
             var trans = new Transaction(doc, "SpaceSyntax Visualization");
             trans.Start();
@@ -70,7 +70,16 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
                 var points = new FieldDomainPointsByUV(uvPts);
                 var values = new FieldValues(valList);
 
-                int index = sfm.AddSpatialFieldPrimitive(face.Reference);
+                int index;
+                if (face.Reference == null)
+                {
+                    index = sfm.AddSpatialFieldPrimitive(faceReference);
+                }
+                else
+                {
+                    index = sfm.AddSpatialFieldPrimitive(face.Reference);
+                }
+
                 var resultSchema = new AnalysisResultSchema(
                     // the name value of an AnalysisResultSchema must be unique (hence Date-Milliseconds), else an exception is thrown
                     "Space Syntax from " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.ffff"),
