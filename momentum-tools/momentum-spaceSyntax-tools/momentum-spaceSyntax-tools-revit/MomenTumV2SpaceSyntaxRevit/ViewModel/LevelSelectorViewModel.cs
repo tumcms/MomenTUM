@@ -106,7 +106,7 @@ namespace MomenTumV2SpaceSyntaxRevit.ViewModel
         {
             if (SelectedLevel != null)
             {
-                RevitUtils.LevelSelectedByUser = SelectedLevel;
+                UserLevelSelectService.LevelSelectedByUser = SelectedLevel;
             }
 
             _hostRef.Close();

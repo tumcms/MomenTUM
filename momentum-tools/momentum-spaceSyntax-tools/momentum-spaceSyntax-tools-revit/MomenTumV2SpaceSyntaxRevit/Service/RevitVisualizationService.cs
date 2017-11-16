@@ -3,6 +3,7 @@ using Autodesk.Revit.DB.Analysis;
 using MomenTumV2SpaceSyntaxRevit.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,13 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 {
     class RevitVisualizationService
     {
+        private static string _defaultSpaceSyntaxDisplayStyleName = "SpaceSyntax default style";
+
         public static void CreateSpaceSyntaxAnalysisResult(Document doc, SpaceSyntax spaceSyntax, List<Face> topAndBottomFace, Reference faceReference)
         {
+            spaceSyntax.DomainColumns -= 2;
+            spaceSyntax.DomainRows -= 2;
+
             var trans = new Transaction(doc, "SpaceSyntax Visualization");
             trans.Start();
 
@@ -27,8 +33,12 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
                 var uvPts = new List<UV>();
                 var doubleList = new List<double>();
                 var valList = new List<ValueAtPoint>();
-
+                
                 BoundingBoxUV bb = face.GetBoundingBox();
+                var min = face.Evaluate(bb.Min);
+                var max = face.Evaluate(bb.Max);
+                
+                Debug.WriteLine("Bounding Box: Max " + bb.Max + " Min " +  bb.Min);
 
                 double minU = bb.Min.U;
                 double minV = bb.Min.V;
@@ -38,8 +48,8 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
                 double distanceU = Math.Abs(minU - maxU);
                 double distanceV = Math.Abs(minV - maxV);
 
-                double deltaU = distanceU / (double)(spaceSyntax.DomainColumns - 2);
-                double deltaV = distanceV / (double)(spaceSyntax.DomainRows - 2);
+                double deltaU = distanceU / (double)(spaceSyntax.DomainColumns);
+                double deltaV = distanceV / (double)(spaceSyntax.DomainRows);
 
                 maxU -= deltaU;
                 maxV -= deltaV;
@@ -52,7 +62,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
                     for (double u = minU + deltaU / 2.0; u < maxU; u += deltaU)
                     {
-                        if (u == minU + deltaU / 2.0) column = spaceSyntax.DomainColumns - 2;
+                        if (u == minU + deltaU / 2.0) column = spaceSyntax.DomainColumns;
 
                         var uv = new UV(u, v);
                         if (face.IsInside(uv))
@@ -103,6 +113,54 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
             }
 
             return spaceSyntax.MinValue;
+        }
+        
+
+        public static void CheckForAnalysisDisplayStyle(Document doc)
+        {
+            FilteredElementCollector analysisDisplayStyleCollector = new FilteredElementCollector(doc);
+            ICollection<Element> analysisDisplayStyles = analysisDisplayStyleCollector.OfClass(typeof(AnalysisDisplayStyle)).ToElements();
+            var defaultDisplayStyle = from element in analysisDisplayStyles
+                                      where element.Name == _defaultSpaceSyntaxDisplayStyleName
+                                      select element;
+
+            if (defaultDisplayStyle.Count() == 0)
+            {
+                CreateDefaultSpaceSyntaxAnalysisDisplayStyle(doc);
+            }
+        }
+
+        private static void CreateDefaultSpaceSyntaxAnalysisDisplayStyle(Document doc)
+        {
+
+            AnalysisDisplayColoredSurfaceSettings coloredSurfaceSettings =
+                new AnalysisDisplayColoredSurfaceSettings();
+            coloredSurfaceSettings.ShowGridLines = false;
+            coloredSurfaceSettings.ShowContourLines = false;
+
+            AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
+
+            colorSettings.ColorSettingsType = AnalysisDisplayStyleColorSettingsType.GradientColor;
+            colorSettings.MaxColor = new Color(255, 0, 255); // Magenta
+            colorSettings.MinColor = new Color(255, 255, 0); // Yellow
+
+            AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
+            legendSettings.ShowLegend = true;
+            legendSettings.ShowUnits = true;
+            legendSettings.ShowDataDescription = false;
+
+            var transaction = new Transaction(doc, "Default Analysis Display Style Creation for Space Syntax.");
+            transaction.Start();
+
+            var analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(
+                doc,
+                _defaultSpaceSyntaxDisplayStyleName,
+                coloredSurfaceSettings,
+                colorSettings,
+                legendSettings);
+
+            doc.ActiveView.AnalysisDisplayStyleId = analysisDisplayStyle.Id;
+            transaction.Commit();
         }
     }
 }

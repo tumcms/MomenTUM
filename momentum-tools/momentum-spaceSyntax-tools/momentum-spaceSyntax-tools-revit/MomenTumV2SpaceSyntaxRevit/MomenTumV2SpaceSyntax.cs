@@ -29,34 +29,42 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         }
         SpaceSyntax spaceSyntax = kvSpaceSyntax.Value;
 
-        KeyValuePair<Result, Level> kvSelectedLevel = RevitUtils.LetUserPickLevelFromDialog(doc);
+        KeyValuePair<Result, Level> kvSelectedLevel = UserLevelSelectService.LetUserPickLevelFromDialog(doc);
         if (kvSelectedLevel.Key != Result.Succeeded)
         {
             return kvSelectedLevel.Key;
         }
         Level level = kvSelectedLevel.Value;
 
-        // could retrieve face by selection from user!
-        // For now we assume: We select the both Faces with the biggest Area 
-        // from the floors (which is assumed to be top and bottom face of the same element)
+        KeyValuePair<Result, PlanarFace> kvTopFace = RevitUtils.GetTopFaceFromLevel(app, level);
+        if (kvSelectedLevel.Key != Result.Succeeded)
+        {
+            return kvSelectedLevel.Key;
+        }
+        PlanarFace topFace = kvTopFace.Value;
 
-        //var floors = RevitUtils.GetAllFloorsFromSelectedLevel(level);
-        //var allFaces = RevitUtils.CollectAllFacesFromAllFloors(app, floors);
-        //var topAndBottomFace = FilterTopAndBottomFaceIntoList(allFaces);
+        var faces = new List<Face>();
+        faces.Add(topFace);
         
-        Reference faceReference = uiApp.ActiveUIDocument.Selection.PickObject(ObjectType.Face);
-        Face selectedFace = doc.GetElement(faceReference).GetGeometryObjectFromReference(faceReference) as Face;
+        //Reference faceReference = uiApp.ActiveUIDocument.Selection.PickObject((ObjectType.Face);
+        //Reference elementReference = uiApp.ActiveUIDocument.Selection.PickObject(ObjectType.Element);
+        
+        //TOTEST: _getGeometry(view)?
+        //var element = doc.GetElement(faceReference);
+        //var list = new List<Floor>(); list.Add(element as Floor); var elementFloorFaces = RevitUtils.CollectAllFacesFromAllFloors(app, list);
+
+        //Face selectedFace = element.GetGeometryObjectFromReference(faceReference) as Face;
 
         // TODO get stable reference from selectionpicker..........
-        var topAndBottomFace = new List<Face>();
-        topAndBottomFace.Add(selectedFace);
+        //var topAndBottomFace = new List<Face>();
+        //topAndBottomFace.Add(selectedFace);
 
         // A (default) AnalysisDisplayStyle must exist, otherwise Revit does not know how to display/interpret anything
-        RevitUtils.CheckForAnalysisDisplayStyle(doc);
+        RevitVisualizationService.CheckForAnalysisDisplayStyle(doc);
 
         try
         {
-            RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topAndBottomFace, faceReference);
+            RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, faces, null);
         }
         catch (Exception e)
         {
@@ -65,19 +73,5 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         }
 
         return Result.Succeeded;
-    }
-
-    private List<Face> FilterTopAndBottomFaceIntoList(List<Face> allFaces)
-    {
-        var topAndBottomFace = new List<Face>();
-
-        Face firstFaceWithMaxArea = allFaces.OrderByDescending(face => face.Area).First();
-        allFaces.Remove(firstFaceWithMaxArea);
-        Face secondFaceWithMaxArea = allFaces.OrderByDescending(face => face.Area).First();
-
-        topAndBottomFace.Add(firstFaceWithMaxArea);
-        topAndBottomFace.Add(secondFaceWithMaxArea);
-
-        return topAndBottomFace;
     }
 }

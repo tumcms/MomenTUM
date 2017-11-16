@@ -80,6 +80,7 @@
     <Compile Include="Service\FileOpenService.cs" />
     <Compile Include="Service\RevitUtils.cs" />
     <Compile Include="Service\RevitVisualizationService.cs" />
+    <Compile Include="Service\UserLevelSelectService.cs" />
     <Compile Include="ViewModel\LevelSelectorViewModel.cs" />
     <Compile Include="View\LevelSelector.xaml.cs">
       <DependentUpon>LevelSelector.xaml</DependentUpon>

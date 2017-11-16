@@ -4,129 +4,99 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MomenTumV2SpaceSyntaxRevit.View;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.DB.Analysis;
-using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.ApplicationServices;
 
 namespace MomenTumV2SpaceSyntaxRevit.Service
 {
     public class RevitUtils
     {
-        public static Level LevelSelectedByUser { private get; set; }
-        private static string _defaultSpaceSyntaxDisplayStyleName = "SpaceSyntax default style";
-
-        public static KeyValuePair<Result, Level> LetUserPickLevelFromDialog(Document doc)
+        public static KeyValuePair<Result, PlanarFace> GetTopFaceFromLevel(Application app, Level level)
         {
-            FilteredElementCollector levelCollector = new FilteredElementCollector(doc);
-            ICollection<Element> levelCollection = levelCollector.OfClass(typeof(Level)).ToElements();
+            var allFloorsForLevel = GetAllFloorsFromSelectedLevel(level);
+            var allFaces = CollectAllFacesFromAllFloors(app, allFloorsForLevel);
 
-            var levels = new List<Level>();
-            foreach (Element element in levelCollection)
+            if (allFaces.Count == 0)
             {
-                Level level = element as Level;
-                if (level != null)
+                PromtService.DisplayErrorToUser("No Surfaces for visualization found!");
+                return new KeyValuePair<Result, PlanarFace>(Result.Failed, null);
+            }
+
+            // For now we assume: We select the both Faces with the biggest Area 
+            // from the floors (which is assumed to be top and bottom face of the same floor element)
+            var topAndBottomFaces = FilterTwoFacesWithBiggestArea(allFaces);
+            var topFace = FilterTopFace(topAndBottomFaces);
+
+            if (topFace == null)
+            {
+                PromtService.DisplayInformationToUser("The top of the surface could not be determined. Visualization failed.");
+                return new KeyValuePair<Result, PlanarFace>(Result.Failed, null);
+            }
+
+            return new KeyValuePair<Result, PlanarFace>(Result.Succeeded, topFace); ;
+        }
+
+        private static PlanarFace FilterTopFace(IList<Face> topAndBottomFaces)
+        {
+            PlanarFace topFace = null;
+            foreach (var face in topAndBottomFaces)
+            {
+                PlanarFace planarFace = face as PlanarFace;
+                if (planarFace != null && IsHorizontal(planarFace))
                 {
-                    levels.Add(level);
+                    if (topFace == null || topFace.Origin.Z < planarFace.Origin.Z)
+                    {
+                        topFace = planarFace;
+                    }
                 }
             }
 
-            if (levels.Count == 0)
-            {
-                PromtService.DisplayErrorToUser("The project does not contain any levels.");
-                return new KeyValuePair<Result, Level>(Result.Failed, null);
-            }
-
-            return OpenLevelSelector(levels);
+            return topFace;
         }
 
-        private static KeyValuePair<Result, Level> OpenLevelSelector(List<Level> levels)
+        private const double _eps = 1.0e-9; 
+        private static bool IsHorizontal(PlanarFace planarFace)
         {
-            var levelSelectorDialog = new LevelSelectorHost();
-            levelSelectorDialog.InitializeLevelListBox(levels);
-
-            levelSelectorDialog.ShowDialog();
-
-            if (LevelSelectedByUser == null)
-            {
-                PromtService.DisplayInformationToUser("Operation cancelled by User.");
-                return new KeyValuePair<Result, Level>(Result.Cancelled, null);
-            }
-
-            return new KeyValuePair<Result, Level>(Result.Succeeded, LevelSelectedByUser);
+            XYZ faceNormal = planarFace.FaceNormal;
+            // a plane is horizontal when the normal is vertical <=> normal.X == 0 and normal.Y == 0
+            double x = faceNormal.X;
+            double y = faceNormal.Y;
+            
+            return _eps > Math.Abs(x)  && _eps > Math.Abs(y);
         }
 
-        public static KeyValuePair<Result, Floor> GetFloorFromLevel()
+        private static IList<Face> FilterTwoFacesWithBiggestArea(IList<Face> allFaces)
         {
-            return new KeyValuePair<Result, Floor>();
+            var topAndBottomFace = new List<Face>();
+
+            Face firstFaceWithMaxArea = allFaces.OrderByDescending(face => face.Area).First();
+            allFaces.Remove(firstFaceWithMaxArea);
+            Face secondFaceWithMaxArea = allFaces.OrderByDescending(face => face.Area).First();
+
+            topAndBottomFace.Add(firstFaceWithMaxArea);
+            topAndBottomFace.Add(secondFaceWithMaxArea);
+
+            return topAndBottomFace;
         }
-
-        public static void CheckForAnalysisDisplayStyle(Document doc)
-        {
-            FilteredElementCollector analysisDisplayStyleCollector = new FilteredElementCollector(doc);
-            ICollection<Element> analysisDisplayStyles = analysisDisplayStyleCollector.OfClass(typeof(AnalysisDisplayStyle)).ToElements();
-            var defaultDisplayStyle = from element in analysisDisplayStyles
-                                      where element.Name == _defaultSpaceSyntaxDisplayStyleName
-                                      select element;
-
-            if (defaultDisplayStyle.Count() == 0)
-            {
-                CreateDefaultSpaceSyntaxAnalysisDisplayStyle(doc);
-            }
-        }
-
-        private static void CreateDefaultSpaceSyntaxAnalysisDisplayStyle(Document doc)
-        {
-
-            AnalysisDisplayColoredSurfaceSettings coloredSurfaceSettings =
-                new AnalysisDisplayColoredSurfaceSettings();
-            coloredSurfaceSettings.ShowGridLines = false;
-            coloredSurfaceSettings.ShowContourLines = false;
-
-            AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
-
-            colorSettings.ColorSettingsType = AnalysisDisplayStyleColorSettingsType.GradientColor;
-            colorSettings.MaxColor = new Color(255, 0, 255); // Magenta
-            colorSettings.MinColor = new Color(255, 255, 0); // Yellow
-
-            AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
-            legendSettings.ShowLegend = true;
-            legendSettings.ShowUnits = true;
-            legendSettings.ShowDataDescription = false;
-
-            var transaction = new Transaction(doc, "Default Analysis Display Style Creation for Space Syntax.");
-            transaction.Start();
-
-            var analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(
-                doc,
-                _defaultSpaceSyntaxDisplayStyleName,
-                coloredSurfaceSettings,
-                colorSettings,
-                legendSettings);
-
-            doc.ActiveView.AnalysisDisplayStyleId = analysisDisplayStyle.Id;
-            transaction.Commit();
-        }
-
-        public static List<Floor> GetAllFloorsFromSelectedLevel(Level selectedLevel)
+        
+        private static IList<Floor> GetAllFloorsFromSelectedLevel(Level selectedLevel)
         {
             var floors = new List<Floor>();
             var floorsOnLevel = new FilteredElementCollector(selectedLevel.Document).OfClass(typeof(Floor)).ToElements();
 
             foreach (var spatialElement in floorsOnLevel)
             {
-                Floor floor1 = spatialElement as Floor;
-                if (floor1 != null)
+                Floor floor = spatialElement as Floor;
+                if (floor != null && selectedLevel.Id.Equals(floor.LevelId))
                 {
-                    floors.Add(floor1);
+                    floors.Add(floor);
                 }
             }
 
             return floors;
         }
 
-        public static List<Face> CollectAllFacesFromAllFloors(Application app, List<Floor> floors)
+        public static IList<Face> CollectAllFacesFromAllFloors(Application app, IList<Floor> floors)
         {
             var geometryOptions = app.Create.NewGeometryOptions();
             geometryOptions.ComputeReferences = true;
