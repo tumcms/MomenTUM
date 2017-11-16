@@ -12,12 +12,12 @@
 		 scenario, the scenario id that points to the layout in which the origin is
 		 seed, the seed id that provides the initial properties of all generated pedestrians
 		 
-		 However, the generator type "Instant" and "Multiple" do not have the origin id
+		 However, the generator type "Instant", "Csv", and "Multiple" do not have the origin id
 		  -->
 	<generator id="0" name="myGeneratorName" type="Plan" scenario="0" origin="0" seed="0">
 	
 		<!-- Based on the type of generator the contents of the generator is different. -->
-		<!-- However, there are some property that are valid for all generators. -->
+		<!-- However, there are some property that are valid for most generators. -->
 		
 		<!-- The startTime provides a time in seconds. This is the time the generator may starts create pedestrians. -->
 		<!-- The generator type "External" and "Instant" do not have the startTime. -->
@@ -246,7 +246,7 @@
 		<!-- The Csv generator does not have a startTime, endTime, maximalPedestrians, safetyDistance or a geometryType-->
 		
 		<!-- Typically, use a CsvMatrix to provide the pedestrian data. -->
-		<!-- The content of the CsvMatrix containts input data that should be used to generated pedestrians. -->
+		<!-- The content of the CsvMatrix contains input data that should be used to generated pedestrians. -->
 		<!-- The structure is defined in csvMapping property. -->
 		<complexProperty name="csvInput" type="CsvMatrix" valueType="Double">
 			<entry file="./inputMatrix.csv" separator=";" comment="#"/>
@@ -257,7 +257,7 @@
 		<!-- The Csv mapping enables the user to define which header of mapped to MomenTUM pedestrian data types. -->
 		<!-- The value of entries define the type of MomenTUM and the index where the item is in the input matrix. -->
 		<!-- In case no header exists, the value is not used (but may be helpful). -->
-		<!-- In case the input data misses a type, remove the entry regarding the index. -->
+		<!-- Use the index of the csvMapping to define the position of the data type in the csv file. -->
 		<!-- You can use the MomenTUM types: id, x, y, timeStep -->
 		<!-- An example: -->
 		<complexProperty name="csvMapping" type="List" valueType="String"> 
@@ -267,7 +267,7 @@
 			<entry index="3" value="y"/>
 		</complexProperty>
 		
-		<!-- Set containsHEader to true if the csv data has a header. -->
+		<!-- Set containsHeader to true if the csv data has a header. -->
 		<property name="containsHeader" type="Boolean" value="False"/>
 		
 		<!-- Typically the timeStep of the input data are not aligned with the simulation timeStep. -->
@@ -275,7 +275,7 @@
 		<!-- In order to compute the differences, use the timeStepMapping property.-->
 		<!-- The values defines the length of a time step of the input data in seconds. -->
 		<property name="timeStepMapping" type="Double" value="0.04"/>
-		</generator>
+	</generator>
 	
 	<!-- This is a Multiple generator example. -->
 	<!-- A Multiple generator helps you to define multiple identical generators for multiple origins. -->
@@ -324,7 +324,7 @@
 			<complexProperty name="interval" type="List" valueType="Double">
 				<entry index="0" value="0"/>
 				<entry index="1" value="50"/>  
-			</complexProperty>		
+			</complexProperty>
 			<complexProperty name="percentage" type="List" valueType="Double">
 				<entry index="0" value="1.0"/>
 				<entry index="1" value="0.0"/>

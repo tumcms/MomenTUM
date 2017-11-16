@@ -72,22 +72,14 @@ public class CsvGenerator extends Generator {
 			int id = Integer.parseInt(data.get(idIndex));
 			long dataTimeStep = Long.parseLong(data.get(timeStepIndex));
 			
-			// Translate data time step to simulation time step
-			// E.g. 
-			// timeStepMapping is 0.04 -> means 1 dataTimeStep is 0.04 seconds
-			// getTimeStepDuration is 0.1 ->  means 1 simulationTimeStep is 0.1 seconds
-			// Caluclation with 132 dataTime Step 
-			// (int)(131 * 0.04 seconds / 0.1 seconds) + 0.5 = (int)(5.24 seconds / 0.1 seconds) + 0.5 
-			// = (int)(52.4 + 0.5) = (int)(52.9) = 52 simulation time step
-			// that is 52 * 0.1 = 5.2 seconds in simulation time
-			long simulationTimeStep = (long)((this.timeStepMapping * dataTimeStep) / simulationState.getTimeStepDuration() + 0.5);
+			long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
 			
 			this.generationSet.putIfAbsent(simulationTimeStep, new HashMap<>());
 			
 			// add pedestrian to be generated in the generation set
-			if(!this.generationSet.get(dataTimeStep).containsKey(id)) {
+			if(!this.generationSet.get(simulationTimeStep).containsKey(id)) {
 				
-				this.generationSet.get(dataTimeStep).put(id, new CsvGeneratorDataObject(data));
+				this.generationSet.get(simulationTimeStep).put(id, new CsvGeneratorDataObject(data));
 			} 
 			else if(!this.generationNextSet.containsKey(id)) {
 				

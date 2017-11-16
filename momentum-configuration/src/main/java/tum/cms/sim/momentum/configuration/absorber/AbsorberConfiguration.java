@@ -45,6 +45,7 @@ public class AbsorberConfiguration extends PropertyContainerNode {
 
 	public enum AbsorberType {
 		
+		CsvAbsorver,
 		DestinationInstantly,
 		DestinationSelected
 	}
@@ -55,6 +56,7 @@ public class AbsorberConfiguration extends PropertyContainerNode {
 		HashMap<String, AbsorberType> map = new HashMap<>();
 		map.put(AbsorberType.DestinationInstantly.toString(), AbsorberType.DestinationInstantly);
 		map.put(AbsorberType.DestinationSelected.toString(), AbsorberType.DestinationSelected);
+		map.put(AbsorberType.CsvAbsorver.toString(), AbsorberType.CsvAbsorver);
 		
 		return new EnumToStringConverter<>(AbsorberType.class, map);
 	}

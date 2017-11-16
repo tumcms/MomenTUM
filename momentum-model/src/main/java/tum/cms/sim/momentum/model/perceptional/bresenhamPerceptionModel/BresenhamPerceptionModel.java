@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.BehaviorType;
@@ -260,6 +261,18 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 	
 		return this.perceptionCells;
 	}
+
+	@Override
+	public List<Vector2D> getPerceptedObstaclePositions(IPedestrian pedestrian, SimulationState simulationState) {
+		
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public List<IPedestrian> getPerceptedPedestrianPositions(IPedestrian pedestrian, SimulationState simulationState) {
+		throw new NotImplementedException();
+	}
+
 
 // this is old shadow mapping code that had some bugs, we use shadow perception model for this now
 	

@@ -94,6 +94,11 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 		return pedestrianContainer.getAllPedestriansImmutable();
 	}
 	
+	public IPedestrian getPedestrian(Integer id) {
+		
+		return pedestrianContainer.getPedestrian(id);
+	}
+	
 	public Collection<IPedestrian> getPedestrians(List<Integer> ids) {
 		
 		return pedestrianContainer.getPedestriansForList(ids);

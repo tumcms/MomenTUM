@@ -57,10 +57,61 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	private ILattice areaMap = null;
 	
 	private HashMap<Integer, HashSet<Integer>> pedestrainToPedestrian = new HashMap<>();
+	private HashMap<Integer, ArrayList<Integer>> pedestrainToPedestrianPositions = new HashMap<>();
 	private HashMap<Integer, HashSet<Integer>> pedestrainToVertex = new HashMap<>();
 	private HashMap<Integer, HashSet<CellIndex>> pedestrainToObstacle = new HashMap<>();
+	private HashMap<Integer, ArrayList<CellIndex>> pedestrainToObstaclePositions = new HashMap<>();
 	private HashMap<Integer, HashMap<Integer, HashSet<CellIndex>>> pedestrainToArea = new HashMap<>();
+
+	
 	private List<CellIndex> perceptionHorizon = null;
+	
+	@Override
+	public List<Vector2D> getPerceptedObstaclePositions(IPedestrian pedestrian, SimulationState simulationState) {
+		
+		List<Vector2D> obstaclePositions = new ArrayList<Vector2D>();
+		
+		pedestrainToObstaclePositions.get(pedestrian.getId()).stream().forEach(
+				
+				cellObstalce -> {
+					
+					if(cellObstalce == null) {
+						
+						obstaclePositions.add(null);
+					}
+					else {
+						
+						obstaclePositions.add(this.pedestrianMap.getCenterPosition(cellObstalce));
+					}
+				
+				}
+			);
+		
+		return obstaclePositions;
+	}
+	
+	@Override
+	public List<IPedestrian> getPerceptedPedestrianPositions(IPedestrian pedestrian, SimulationState simulationState) {
+		
+		List<IPedestrian> pedestrians = new ArrayList<IPedestrian>();
+		
+		pedestrainToPedestrianPositions.get(pedestrian.getId()).stream().forEach(
+				
+				pedestrianId -> {
+					
+					if(pedestrianId == null) {
+						
+						pedestrians.add(null);
+					}
+					else {
+						
+						pedestrians.add(pedestrianManager.getPedestrian(pedestrianId));
+					}
+				}
+			);
+		
+		return pedestrians;
+	}
 	
 	@Override
 	public Collection<IPedestrian> getPerceptedPedestrians(IPedestrian pedestrian, SimulationState simulationState) {
@@ -179,14 +230,19 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		
 		// 0. cleanup visibility maps
 		pedestrainToPedestrian.clear();
+		pedestrainToPedestrianPositions.clear();
 		pedestrainToVertex.clear();
 		pedestrainToObstacle.clear();
+		pedestrainToObstaclePositions.clear();
 		pedestrainToArea.clear();
 		
 		this.pedestrianManager.getAllPedestrians().stream().forEach(pedestrian -> {
+			
 			pedestrainToPedestrian.put(pedestrian.getId(), new HashSet<>());
+			pedestrainToPedestrianPositions.put(pedestrian.getId(), new ArrayList<>());
 			pedestrainToVertex.put(pedestrian.getId(), new HashSet<>());
 			pedestrainToObstacle.put(pedestrian.getId(), new HashSet<>());
+			pedestrainToObstaclePositions.put(pedestrian.getId(), new ArrayList<>());
 			pedestrainToArea.put(pedestrian.getId(), new HashMap<>());
 		});
 		
@@ -249,7 +305,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			// Send ray from position to border cell
 			// Because the border cell is the target (and defines the distance), we use Max for distance
 			// Because we like to stop the ray at any value, we give null to stopValue
-			// Because we do not like to stop the ray at the pedestrian sending the ray, we its id as ignore value
+			// Because we do not like to stop the ray at the pedestrian sending the ray, we set its id as ignore value
 			List<Pair<Double,CellIndex>> hitRay = this.pedestrianMap.breshamLineCastTrace(viewPort,
 					borderCell,
 					null,
@@ -265,11 +321,15 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			if(Occupation.convertOccupationToDouble(Occupation.Fixed).equals(hitValue)) {
 				
 				this.pedestrainToObstacle.get(pedestrianId).add(cellValue);
+				this.pedestrainToObstaclePositions.get(pedestrianId).add(cellValue);
+				this.pedestrainToPedestrianPositions.get(pedestrianId).add(null);
 			}
 			else if(hitValue > 0.0) { // else if a pedestrian (id > 0) was hit, also store this
 				
 				// store the pedestrian id
 				this.pedestrainToPedestrian.get(pedestrianId).add(hitValue.intValue() - encodeShift);
+				this.pedestrainToPedestrianPositions.get(pedestrianId).add(hitValue.intValue() - encodeShift);
+				this.pedestrainToObstaclePositions.get(pedestrianId).add(null);
 			}
 			// if a nothing was hit, ignore it
 		});

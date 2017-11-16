@@ -59,6 +59,8 @@ public class WalkingModelFactory extends ModelFactory<WalkingModelConfiguration,
 		
 		switch (configuration.getType()) {
 		
+		
+		
 		case NoInteraction:
 			walkingModel = new NoInteractionOperational();
 			break;

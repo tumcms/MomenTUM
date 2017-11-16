@@ -148,7 +148,19 @@ public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, 
 	    return String.format(format, currentPedestrian.getId());
 	}
 	
+	/**
+	 * Here return true if it is ok to extract the data of the pedestrian extensions.
+	 * @param currentPedestrianExtension
+	 * @return
+	 */
 	protected abstract boolean canWrite(K currentPedestrianExtension);
 	
+	/**
+	 * Here implement the data extraction from the pedestrian extensions
+	 * @param currentPedestrianExtension
+	 * @param format
+	 * @param dataElement
+	 * @return The data as string for dataElement in format from currentPedestrianExtension
+	 */
 	protected abstract String getPedestrianData(K currentPedestrianExtension, String format, String dataElement);
 }
