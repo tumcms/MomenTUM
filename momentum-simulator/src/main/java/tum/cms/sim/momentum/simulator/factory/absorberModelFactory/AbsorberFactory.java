@@ -51,7 +51,7 @@ public class AbsorberFactory extends ModelFactory<AbsorberConfiguration, Absorbe
 		
 		switch(configuration.getType()) {
 		
-		case CsvAbsorver:
+		case Csv:
 			
 			absorber = new CsvAbsorber();
 			break;

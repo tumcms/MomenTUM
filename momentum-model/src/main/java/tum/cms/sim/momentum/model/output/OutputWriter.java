@@ -174,12 +174,12 @@ public class OutputWriter extends Callable implements IHasProperties, IGenericCa
 		}
 		
 		if(0 < this.call && this.call < Integer.MAX_VALUE) {
-		
+
 			WriterData resultsData = new WriterData();
-			this.writerContents.forEach(dataItem -> resultsData.setData(dataItem.getData()));
-			this.writerContents.clear();
+			writerContents.forEach(dataItem -> resultsData.setWriterData(dataItem));
+			writerContents.clear();
 			
-			this.writerTarget.writeData(resultsData);
+			writerTarget.writeData(resultsData);
 			this.writerTarget.close();
 		}
 	}

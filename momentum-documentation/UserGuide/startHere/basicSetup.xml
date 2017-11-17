@@ -297,11 +297,11 @@
 	</executionOrder>
 	
 	<!-- Agent can perceive objects and other agents. The model of perception is defined here. -->
-	<!-- At the moment only a single model exists, which is of type BlockingGeometries. -->
+	<!-- At the moment two model exists, which is of type Shadow and Bresenham. -->
 	<!-- Adding future approaches demands other fall-back strategies in dead-lock situations (e.g. wayfinding deadlock). -->
 	<!-- Thus, most of the time this block is identical. Also, the id attribute must be unique! -->
 	<perceptualModels>
-		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+		<perceptual id="0" name="Bresenham" type="Bresenham">
 			<property name="accuracy" type="Double" value="0.23"/>
 		</perceptual>
 	</perceptualModels>
@@ -402,7 +402,19 @@
 			<!-- Hence, the tacticalControl helps to reduce nonsense behavior like being "stuck". -->
 			<!-- However, do set this to false in case pedestrian should strictly follow a routing path, -->
 			<!-- smart behavior leads to taking short-cuts and perception based re-routing. -->
-			<propety name="tacticalControl" type="Boolean" value="True"/>
+			<property name="tacticalControl" type="Boolean" value="True"/>
+			
+			<!-- In some simulations one does not like to include a strategical model. -->
+			<!-- For those simulations the agent will get a Do Nothing Command from the non exist strategical model. -->
+			<!-- In order to guide simulations without strategical model set here the command a pedestrian will receive. -->
+			<!-- Make sure you have added to corresponding tactical model (e.g. queuing or routing) in the configuration. -->
+			<!-- Do not use this if you have a strategical model. -->
+			<!-- The given types are:
+				 Routing,
+				 Staying,
+				 Searching,
+				 Queuing -->
+			<property name="strategicCommand" type="String" value="Routing"/>
 			
 			<!-- The routeMemory indicates if a pedestrian should remember and avoid already visited route nodes. -->
 			<!-- Typically, in linear scenarios that address wayfinding, this is true. -->

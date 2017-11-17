@@ -11,8 +11,14 @@ import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
-public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 
+public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
+	
+	private static int freeCode = 0;
+	private static int groupCode = 1;
+	private static int pedestrianCode = 2;
+	private static int obstacleCode = 3;
+	
 	private boolean firstDataSet = true;
 	
 	public boolean isFirstDataSet() {
@@ -26,7 +32,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	private List<Double> perceptionDistanceSpace = new ArrayList<Double>();
 	private List<Double> perceptionVelocityXSpace = new ArrayList<Double>();
 	private List<Double> perceptionVelocityYSpace = new ArrayList<Double>();
-	private List<Double> perceptionTypeSpace = new ArrayList<Double>();
+	private List<Integer> perceptionTypeSpace = new ArrayList<Integer>();
 	
 	private Double pedestrianWalkingGoalX = 0.0;
 	private Double pedestrianWalkingGoalY = 0.0;
@@ -47,7 +53,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		return perceptionVelocityYSpace;
 	}
 
-	public List<Double> getPerceptionTypeSpace() {
+	public List<Integer> getPerceptionTypeSpace() {
 		return perceptionTypeSpace;
 	}
 
@@ -92,7 +98,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				perceptionDistanceSpace.add(pedestrianPosition.distance(obstaclePositions.get(iter)) - pedestrian.getBodyRadius());
 				perceptionVelocityXSpace.add(0.0);
 				perceptionVelocityYSpace.add(0.0);
-				perceptionTypeSpace.add(-1.0);
+				perceptionTypeSpace.add(obstacleCode);
 			}
 			else if(pedestrianPositions.get(iter) != null) {
 				
@@ -101,22 +107,26 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 						- (pedestrian.getBodyRadius() + other.getBodyRadius()));
 				perceptionVelocityXSpace.add(other.getVelocity().getXComponent());
 				perceptionVelocityYSpace.add(other.getVelocity().getYComponent());
-				perceptionTypeSpace.add(other.getGroupId() == pedestrian.getGroupId() ? 1.0 : 0.0);
+				perceptionTypeSpace.add(other.getGroupId() == pedestrian.getGroupId() ? groupCode : pedestrianCode);
 			}
 			else {
 			
 				perceptionDistanceSpace.add(perception.getPerceptionDistance());
 				perceptionVelocityXSpace.add(0.0);
 				perceptionVelocityYSpace.add(0.0);
-				perceptionTypeSpace.add(-1.0);
+				perceptionTypeSpace.add(freeCode);
 			}
 		}
 	}
 
 	public void updatePedestrianSpace(IOperationalPedestrian pedestrian, WalkingState newWalkingStat) {
 		
-		pedestrianWalkingGoalX = pedestrian.getNextWalkingTarget().getXComponent();
-		pedestrianWalkingGoalY = pedestrian.getNextWalkingTarget().getXComponent();
+		if(pedestrian.getNextWalkingTarget() != null) {
+			
+			pedestrianWalkingGoalX = pedestrian.getNextWalkingTarget().getXComponent();
+			pedestrianWalkingGoalY = pedestrian.getNextWalkingTarget().getXComponent();
+		}
+		
 		pedestrianVelocityX = newWalkingStat.getWalkingVelocity().getXComponent();
 		pedestrianVelocityY = newWalkingStat.getWalkingVelocity().getYComponent();
 		pedestrianVelocityXLast = pedestrian.getVelocity().getXComponent();

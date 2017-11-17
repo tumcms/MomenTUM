@@ -59,21 +59,33 @@ public class TacticalModelFactory extends ModelFactory<TacticalModelConfiguratio
 		
 		this.fillComposition(tacticalModel, perceptualModel, componentManager);
 		
-		StayingModel participatingModel = componentManager.getStayingModel(configuration.getStayingReference().getModelId());
-		this.fillComposition(participatingModel, perceptualModel, componentManager);	
-		tacticalModel.setParticipatingModel(participatingModel);
+		if(configuration.getStayingReference() != null) {
+			
+			StayingModel participatingModel = componentManager.getStayingModel(configuration.getStayingReference().getModelId());
+			this.fillComposition(participatingModel, perceptualModel, componentManager);	
+			tacticalModel.setParticipatingModel(participatingModel);
+		}
+
+		if(configuration.getQueuingReference() != null) {
+			
+			QueuingModel queuingModel = componentManager.getQueuingModel(configuration.getQueuingReference().getModelId());
+			this.fillComposition(queuingModel, perceptualModel, componentManager);	
+			tacticalModel.setQueuingModel(queuingModel);
+		}
 		
-		QueuingModel queuingModel = componentManager.getQueuingModel(configuration.getQueuingReference().getModelId());
-		this.fillComposition(queuingModel, perceptualModel, componentManager);	
-		tacticalModel.setQueuingModel(queuingModel);
+		if(configuration.getRoutingReference() != null) {
+			
+			RoutingModel routingModel = componentManager.getRoutingModel(configuration.getRoutingReference().getModelId());
+			this.fillComposition(routingModel, perceptualModel, componentManager);	
+			tacticalModel.setRoutingModel(routingModel);
+		}
 		
-		RoutingModel routingModel = componentManager.getRoutingModel(configuration.getRoutingReference().getModelId());
-		this.fillComposition(routingModel, perceptualModel, componentManager);	
-		tacticalModel.setRoutingModel(routingModel);
-		
-		SearchingModel searchingModel = componentManager.getSearchingModel(configuration.getSerachingReference().getModelId());
-		this.fillComposition(searchingModel, perceptualModel, componentManager);
-		tacticalModel.setSearchingModel(searchingModel);
+		if(configuration.getSerachingReference() != null) {
+			
+			SearchingModel searchingModel = componentManager.getSearchingModel(configuration.getSerachingReference().getModelId());
+			this.fillComposition(searchingModel, perceptualModel, componentManager);
+			tacticalModel.setSearchingModel(searchingModel);
+		}
 		
 		return tacticalModel;
 	}

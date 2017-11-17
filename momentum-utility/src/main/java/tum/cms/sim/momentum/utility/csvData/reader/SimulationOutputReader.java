@@ -215,47 +215,58 @@ public class SimulationOutputReader {
 		return indexExists;
 	}
 
-	public void clearBuffer(double index) {
+	public void clearBuffer() {
 
-		if (this.clearBuffer && index > -1L && bufferedSetIndexLeft != null && bufferedSetIndexRight != null) {
+		if (this.clearBuffer && bufferedSetIndexLeft != null && bufferedSetIndexRight != null) {
 
-			double fromIndex = 0;
-			double toIndex = this.getEndCluster();
+			double fromIndex = bufferedSetIndexLeft;
+			double toIndex = bufferedSetIndexRight;
 
-			if (bufferedSetIndexLeft < index - (int) (currentBufferSize / 2) * getTimeStepDifference()) {
+			double iter = fromIndex;
 
-				fromIndex = bufferedSetIndexLeft;
-				toIndex = index - ((int) (currentBufferSize / 2) - 1) * getTimeStepDifference();
-				double iter = fromIndex;
+			while (iter <= toIndex) {
 
-				while (iter <= toIndex) {
+				if (this.dataSetBuffer.get(iter) != null) {
 
-					if (this.dataSetBuffer.get(iter) != null) {
-
-						this.dataSetBuffer.get(iter).clearBuffer();
-					}
-					iter += getTimeStepDifference();
+					this.dataSetBuffer.get(iter).clearBuffer();
 				}
+				iter += getTimeStepDifference();
 			}
-
-			if (bufferedSetIndexRight > index + currentBufferSize * getTimeStepDifference()) {
-
-				fromIndex = index + (currentBufferSize + 1) * getTimeStepDifference();
-				toIndex = bufferedSetIndexRight;
-				double iter = fromIndex;
-
-				while (iter <= toIndex) {
-
-					SimulationOutputCluster current = this.dataSetBuffer.get(iter);
-
-					if (current != null) {
-
-						current.clearBuffer();
-					}
-
-					iter += getTimeStepDifference();
-				}
-			}
+//			
+//			if (bufferedSetIndexLeft < index - (int) (currentBufferSize / 2) * getTimeStepDifference()) {
+//
+//				fromIndex = bufferedSetIndexLeft;
+//				toIndex = index - ((int) (currentBufferSize / 2) - 1) * getTimeStepDifference();
+//				double iter = fromIndex;
+//
+//				while (iter <= toIndex) {
+//
+//					if (this.dataSetBuffer.get(iter) != null) {
+//
+//						this.dataSetBuffer.get(iter).clearBuffer();
+//					}
+//					iter += getTimeStepDifference();
+//				}
+//			}
+//
+//			if (bufferedSetIndexRight > index + currentBufferSize * getTimeStepDifference()) {
+//
+//				fromIndex = index + (currentBufferSize + 1) * getTimeStepDifference();
+//				toIndex = bufferedSetIndexRight;
+//				double iter = fromIndex;
+//
+//				while (iter <= toIndex) {
+//
+//					SimulationOutputCluster current = this.dataSetBuffer.get(iter);
+//
+//					if (current != null) {
+//
+//						current.clearBuffer();
+//					}
+//
+//					iter += getTimeStepDifference();
+//				}
+//			}
 		}
 	}
 
@@ -305,9 +316,6 @@ public class SimulationOutputReader {
 	}
 
 	public void startReadDataSetAsync() {
-
-		this.bufferedSetIndexRight = 0d;
-		this.bufferedSetIndexLeft = 0d;
 
 		workerPool = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1));
 
@@ -481,68 +489,63 @@ public class SimulationOutputReader {
 
 			while (!this.shutDownDemanded) {
 
-				double fromIndex = 0;
-				double toIndex = SimulationOutputReader.this.getEndCluster();
+				if (this.lastReadIndex != currentAsyncIndex) {
 
-				if (this.lastReadIndex != SimulationOutputReader.this.currentAsyncIndex) {
-
-					SimulationOutputReader.this.clearBuffer(this.lastReadIndex);
-
-					this.lastReadIndex = SimulationOutputReader.this.currentAsyncIndex;
-
-					if (this.lastReadIndex
-							- (int) (currentBufferSize / 2) < SimulationOutputReader.this.bufferedSetIndexLeft) {
-
-						// load from buffer fill/2 to last filled index
-						if (this.lastReadIndex - (int) (currentBufferSize / 2) > 0) {
-
-							fromIndex = this.lastReadIndex - (int) (currentBufferSize / 2)
-									* SimulationOutputReader.this.getTimeStepDifference();
+					boolean rebuffer = true;
+					
+					// Is data buffered?
+					if(bufferedSetIndexLeft != null && bufferedSetIndexRight != null) {
+						
+						// Is the buffered data what we look for?
+						if(bufferedSetIndexLeft > currentAsyncIndex || currentAsyncIndex > bufferedSetIndexRight) {
+							
+							clearBuffer(); // no we need to rebuffer
 						}
-
-						toIndex = SimulationOutputReader.this.bufferedSetIndexLeft
-								- SimulationOutputReader.this.getTimeStepDifference();
-
-						try {
-
-							if (toIndex > 0 && fromIndex > 0) {
-
-								SimulationOutputReader.this.asyncWorkerReadDataSet(fromIndex, toIndex);
-								bufferedSetIndexLeft = fromIndex;
-							}
-						} catch (Exception e) {
-
-							e.printStackTrace();
+						else {
+							
+							rebuffer = false;
 						}
 					}
-
-					if (this.lastReadIndex + currentBufferSize > SimulationOutputReader.this.bufferedSetIndexRight) {
-
-						fromIndex = SimulationOutputReader.this.bufferedSetIndexRight
-								+ SimulationOutputReader.this.getTimeStepDifference();
-						toIndex = this.lastReadIndex
-								+ currentBufferSize * SimulationOutputReader.this.getTimeStepDifference();
-
-						if (toIndex > SimulationOutputReader.this.getEndCluster()) {
-
-							toIndex = SimulationOutputReader.this.getEndCluster();
+					
+					if(rebuffer) {
+						
+						// find new buffer boundaries
+						double targetLeftReadIndex = currentAsyncIndex - (currentBufferSize / 2);				
+						
+						if(targetLeftReadIndex < 0) {
+							
+							targetLeftReadIndex = 0;
 						}
+						
+						bufferedSetIndexLeft = targetLeftReadIndex;
+				
+						double targetRightReadIndex = currentAsyncIndex + currentBufferSize;
+						
+						if(targetRightReadIndex > getEndCluster()) {
+							
+							targetRightReadIndex = getEndCluster();
+						}				
+						
+						bufferedSetIndexRight = targetRightReadIndex;
+						
+						try { // read buffer
 
-						try {
-
-							SimulationOutputReader.this.asyncWorkerReadDataSet(fromIndex, toIndex);
-							bufferedSetIndexRight = toIndex;
-						} catch (Exception e) {
+							asyncWorkerReadDataSet(bufferedSetIndexLeft, bufferedSetIndexRight);
+						}
+						catch (Exception e) {
 
 							e.printStackTrace();
-						}
-					}
+						}						
+					}	
 				}
-
+				
+				this.lastReadIndex = currentAsyncIndex;
+				
 				try {
 
 					Thread.sleep(50L);
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
 
 					e.printStackTrace();
 				}

@@ -10,6 +10,13 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.absorber.Absorber;
 
+/**
+ * This absorber model will get a csv data set and will remove all pedestrians
+ * which exists in the simulation (based on id) and are not in the csv data set.
+ * 
+ * @author Peter Kielar
+ *
+ */
 public class CsvAbsorber extends Absorber {
 
 	private static String csvInputName = "csvInput";
@@ -18,20 +25,18 @@ public class CsvAbsorber extends Absorber {
 	private static String containsHeaderName = "containsHeader";
 	
 	private double timeStepMapping = 0.0;
-	private int timeStepIndex = -1;
-	private int idIndex = -1;
-	private int xIndex = -1;
-	private int yIndex = -1;
+
  
-	private HashMap<Integer, ArrayList<String>> csvMapping;
+	private HashMap<Integer, ArrayList<Double>> csvMapping;
 	private HashMap<Long, HashSet<Integer>> absorberSet = new HashMap<>();
 
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
-		List<String> csvInput = this.properties.<String>getListProperty(csvInputName);
-		
+		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
+		int timeStepIndex = -1;
+		int idIndex = -1;
 		for(int iter = 0; iter < csvInput.size(); iter++) {
 			
 			if(OutputType.valueOf(csvInput.get(iter)) == OutputType.timeStep) {
@@ -43,51 +48,56 @@ public class CsvAbsorber extends Absorber {
 				
 				idIndex = iter;
 			}
-			
-			if(OutputType.valueOf(csvInput.get(iter)) == OutputType.x) {
-						
-				xIndex = iter;
-			}
-			
-			if(OutputType.valueOf(csvInput.get(iter)) == OutputType.y) {
-				
-				yIndex = iter;
-			}
 		}
 		
-		this.csvMapping = this.properties.<String>getMatrixProperty(csvMappingName);
+		this.csvMapping = this.properties.<Double>getMatrixProperty(csvInputName);
 		
 		if(this.properties.getBooleanProperty(containsHeaderName)) {
 			this.csvMapping.remove(0);
 		}
 		
+		// ignore the first time step because it is never used
+		// the absorber looks ahead a single time step and checks
+		// if pedestrian data is given.
+		long sciptTimeStep = csvMapping.values().stream().findFirst().get().get(timeStepIndex).longValue();
+
 		// compute generation map
-		for(ArrayList<String> data : csvMapping.values()) {
+		for(ArrayList<Double> data : csvMapping.values()) {
+
+			long dataTimeStep = data.get(timeStepIndex).longValue();
 			
-			int id = Integer.parseInt(data.get(idIndex));
-			long dataTimeStep = Long.parseLong(data.get(timeStepIndex));
-			
-			long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
-			
-			this.absorberSet.putIfAbsent(simulationTimeStep, new HashSet<>());
-			this.absorberSet.get(simulationTimeStep).add(id);
+			if(sciptTimeStep != dataTimeStep) {
+				
+				int id = data.get(idIndex).intValue();
+				
+				long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
+				
+				this.absorberSet.putIfAbsent(simulationTimeStep, new HashSet<>());
+				this.absorberSet.get(simulationTimeStep).add(id);
+			}
+
 		}
 	}
 
 	@Override
 	public void execute(Collection<? extends Void> splittTask, SimulationState simulationState) {
 		
-		if(this.absorberSet.containsKey(simulationState.getCurrentTimeStep() + 1)) {
+		if(this.absorberSet.isEmpty()) {
+			
+			this.pedestrianManager.removeAllPedestrians();
+		}
+		else if(this.absorberSet.containsKey(simulationState.getCurrentTimeStep() + 1)) {
 			
 			ArrayList<Integer> pedestriansToDelete = new ArrayList<>();
 			boolean exists = false;
 			for(IPedestrian existingPedestrian : this.pedestrianManager.getAllPedestrians()) {
 				
-				for(Integer pedestrianID : this.absorberSet.get(simulationState.getCurrentTimeStep())) {
+				for(Integer pedestrianID : this.absorberSet.get(simulationState.getCurrentTimeStep() + 1)) {
 					
 					if(pedestrianID.equals(existingPedestrian.getId())) {
 						
 						exists = true;
+						break;
 					}
 				}
 				
@@ -95,37 +105,21 @@ public class CsvAbsorber extends Absorber {
 					
 					pedestriansToDelete.add(existingPedestrian.getId());
 				}
+				
+				exists = false;
 			}
 			
 			if(pedestriansToDelete.size() > 0) {
 				
 				this.pedestrianManager.removePedestrians(pedestriansToDelete);
 			}
-		}
+			
+			this.absorberSet.remove(simulationState.getCurrentTimeStep() + 1);
+		}	
 	}
 
 	@Override
 	public void callPostProcessing(SimulationState simulationState) {
 		// Nothing to do
-	}
-	
-	private class CsvGeneratorDataObject {
-		
-		private ArrayList<String> dataObject = null;
-		
-		CsvGeneratorDataObject(ArrayList<String> dataObject) {
-			
-			this.dataObject = dataObject;
-		}
-		
-		public int getInteger(int index) {
-			
-			return Integer.parseInt(dataObject.get(index));
-		}
-		
-		public double getDouble(int index) {
-			
-			return Double.parseDouble(dataObject.get(index));
-		}
 	}
 }

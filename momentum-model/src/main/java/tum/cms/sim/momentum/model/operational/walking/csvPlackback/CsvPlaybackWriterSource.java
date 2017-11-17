@@ -26,6 +26,7 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 		switch(dataElement) {
 		
 		case "perceptionDistance":
+			
 			currentPedestrianExtension.getPerceptionDistanceSpace().forEach(distance -> {
 				builder.append(String.format(format,distance));
 				builder.append("|");
@@ -88,5 +89,4 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 		
 		return dataText;
 	}
-
 }

@@ -136,7 +136,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			
 			return false;
 		}
-
+		
 		Occupation result = Occupation.convertDoubleToOccupation(
 				this.pedestrianMap.breshamLineCast(from,
 						towards,
@@ -285,6 +285,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 				//this.perceiveVertices(pedestrian.getId(), pedestriansViewPort, perceptionBorder);
 				// 2.3 area perception
 				//this.perceiveAreas(pedestrian.getId(), pedestriansViewPort, perceptionBorder);
+				int i = 0;
 			}
 		});
 		
@@ -300,7 +301,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	 */
 	private void perceivePedestriansAndObstacles(Integer pedestrianId, CellIndex viewPort, List<CellIndex> perceptionBorder) {
 		
-		perceptionBorder.parallelStream().forEach(borderCell -> {
+		perceptionBorder.stream().forEach(borderCell -> {
 			
 			// Send ray from position to border cell
 			// Because the border cell is the target (and defines the distance), we use Max for distance
@@ -331,8 +332,14 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 				this.pedestrainToPedestrianPositions.get(pedestrianId).add(hitValue.intValue() - encodeShift);
 				this.pedestrainToObstaclePositions.get(pedestrianId).add(null);
 			}
+			else {
+				
+				this.pedestrainToPedestrianPositions.get(pedestrianId).add(null);
+				this.pedestrainToObstaclePositions.get(pedestrianId).add(null);
+			}
 			// if a nothing was hit, ignore it
 		});
+		
 	}
 	
 	/**
@@ -468,7 +475,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		else { // breaks at the end of the list
 			
 			perceptionBorder.addAll(this.perceptionHorizon.subList(indexOptimalCellLeft, this.perceptionHorizon.size() - 1));
-			perceptionBorder.addAll(this.perceptionHorizon.subList(0, indexOptimalCellRight));
+			perceptionBorder.addAll(this.perceptionHorizon.subList(0, indexOptimalCellRight + 1));
 		}
 		
 		// transpose all border cells by the agent's cell

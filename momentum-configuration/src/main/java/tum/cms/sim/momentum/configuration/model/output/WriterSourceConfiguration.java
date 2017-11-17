@@ -98,6 +98,7 @@ public class WriterSourceConfiguration extends PropertyContainerNode {
 		CSC,
 		TransitZones,
 		ClassicLWR,
+		CsvPlayback,
 		// Absorber output
 		Absorber
 	}
@@ -119,6 +120,7 @@ public class WriterSourceConfiguration extends PropertyContainerNode {
 		map.put(SourceType.TransitZones.toString(), SourceType.TransitZones);
 		map.put(SourceType.ClassicLWR.toString(), SourceType.ClassicLWR);
 		map.put(SourceType.Absorber.toString(), SourceType.Absorber);
+		map.put(SourceType.CsvPlayback.toString(), SourceType.CsvPlayback);
 		
 		return new EnumToStringConverter<>(SourceType.class, map);
 	}

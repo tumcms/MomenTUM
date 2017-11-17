@@ -37,6 +37,7 @@ import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.model.operational.walking.cellularAutomatons.cellularStockModel_Biedermann2015.ParallelStockOperational;
 import tum.cms.sim.momentum.model.operational.walking.cellularAutomatons.cellularStockModel_Biedermann2015.StockOperational;
 import tum.cms.sim.momentum.model.operational.walking.cellularAutomatons.dynamicFloorfield_Kneidl2012.DynamicFloorfieldOperational;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackOperational;
 import tum.cms.sim.momentum.model.operational.walking.empiricallyGrounded_Bonneaud2014.BonneaudOperational;
 import tum.cms.sim.momentum.model.operational.walking.groupBehaviour_Moussaid2010.MoussaidOperational;
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWR;
@@ -59,8 +60,10 @@ public class WalkingModelFactory extends ModelFactory<WalkingModelConfiguration,
 		
 		switch (configuration.getType()) {
 		
-		
-		
+		case CsvPlayback:
+			walkingModel = new CsvPlaybackOperational();
+			break;
+			
 		case NoInteraction:
 			walkingModel = new NoInteractionOperational();
 			break;

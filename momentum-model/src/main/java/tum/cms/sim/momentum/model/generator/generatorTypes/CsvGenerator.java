@@ -3,6 +3,7 @@ package tum.cms.sim.momentum.model.generator.generatorTypes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -12,6 +13,15 @@ import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.generator.Generator;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 
+/**
+ * This generator model will get a csv data set and will create pedestrians
+ * which exists in the csv data set for a given point in time.
+ * The input may have a different time scale (1 time step = x seconds).
+ * This is be solved by providing the timeStepMapping property for this class.
+ * 
+ * @author Peter Kielar
+ *
+ */
 public class CsvGenerator extends Generator {
 
 	private static String csvInputName = "csvInput";
@@ -25,7 +35,7 @@ public class CsvGenerator extends Generator {
 	private int xIndex = -1;
 	private int yIndex = -1;
  
-	private HashMap<Integer, ArrayList<String>> csvMapping;
+	private HashMap<Integer, ArrayList<Double>> csvMapping;
 	private HashMap<Long, HashMap<Integer, CsvGeneratorDataObject>> generationSet = new HashMap<>();
 	// the next set is used to compute the heading of a pedestrian and the velocity
 	private HashMap<Integer, CsvGeneratorDataObject> generationNextSet = new HashMap<>();
@@ -34,7 +44,7 @@ public class CsvGenerator extends Generator {
 	public void callPreProcessing(SimulationState simulationState) {
 		
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
-		List<String> csvInput = this.properties.<String>getListProperty(csvInputName);
+		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
 		
 		for(int iter = 0; iter < csvInput.size(); iter++) {
 			
@@ -59,27 +69,29 @@ public class CsvGenerator extends Generator {
 			}
 		}
 		
-		this.csvMapping = this.properties.<String>getMatrixProperty(csvMappingName);
+		this.csvMapping = this.properties.<Double>getMatrixProperty(csvInputName);
 		
 		if(this.properties.getBooleanProperty(containsHeaderName)) {
 			this.csvMapping.remove(0);
 		}
 		
 		// compute generation map
-
-		for(ArrayList<String> data : csvMapping.values()) {
+		HashSet<Integer> knownIds = new HashSet<>();
+		
+		for(ArrayList<Double> data : csvMapping.values()) {
 			
-			int id = Integer.parseInt(data.get(idIndex));
-			long dataTimeStep = Long.parseLong(data.get(timeStepIndex));
+			int id = data.get(idIndex).intValue();
+			long dataTimeStep = data.get(timeStepIndex).longValue();
 			
 			long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
 			
 			this.generationSet.putIfAbsent(simulationTimeStep, new HashMap<>());
 			
 			// add pedestrian to be generated in the generation set
-			if(!this.generationSet.get(simulationTimeStep).containsKey(id)) {
+			if(!knownIds.contains(id)) {
 				
 				this.generationSet.get(simulationTimeStep).put(id, new CsvGeneratorDataObject(data));
+				knownIds.add(id);
 			} 
 			else if(!this.generationNextSet.containsKey(id)) {
 				
@@ -97,8 +109,8 @@ public class CsvGenerator extends Generator {
 			for(Entry<Integer, CsvGeneratorDataObject> data : this.generationSet.get(simulationState.getCurrentTimeStep()).entrySet()) {
 				
 				int id = data.getKey();
-				double x = data.getValue().getDouble(xIndex);
-				double y = data.getValue().getDouble(yIndex);
+				double x = data.getValue().getValue(xIndex);
+				double y = data.getValue().getValue(yIndex);
 				
 				double velocityX = 0.0;
 				double velocityY = 0.0;
@@ -108,9 +120,9 @@ public class CsvGenerator extends Generator {
 				// get next state if exists 
 				if(this.generationNextSet.containsKey(id)) {
 					
-					double xNext = this.generationNextSet.get(id).getDouble(xIndex);
-					double yNext = this.generationNextSet.get(id).getDouble(yIndex);	
-					double timeDifference = (this.generationNextSet.get(id).getInteger(timeStepIndex) - data.getValue().getInteger(timeStepIndex))
+					double xNext = this.generationNextSet.get(id).getValue(xIndex);
+					double yNext = this.generationNextSet.get(id).getValue(yIndex);	
+					double timeDifference = (this.generationNextSet.get(id).getValue(timeStepIndex) - data.getValue().getValue(timeStepIndex))
 							* simulationState.getTimeStepDuration();
 					
 					// compute velocity
@@ -118,8 +130,8 @@ public class CsvGenerator extends Generator {
 					velocityY = (yNext - y) * timeDifference;
 					
 					// compute heading
-					velocityX = (xNext - x);
-					velocityY = (yNext - y);
+					headingX = (xNext - x);
+					headingY = (yNext - y);
 				}
 			
 				StaticState staticState = pedestrianSeed.generateStaticState(-1, this.scenarioManager.getScenarios().getId());
@@ -127,8 +139,8 @@ public class CsvGenerator extends Generator {
 				pedestrianManager.createPedestrian(staticState, 
 						null,
 						GeometryFactory.createVector(x, y), 
-						GeometryFactory.createVector(headingX, headingY), 
-						GeometryFactory.createVector(velocityX, velocityY).getNormalized(), 
+						GeometryFactory.createVector(headingX, headingY).getNormalized(), 
+						GeometryFactory.createVector(velocityX, velocityY), 
 						simulationState.getCurrentTime());
 			}
 			
@@ -143,21 +155,16 @@ public class CsvGenerator extends Generator {
 	
 	private class CsvGeneratorDataObject {
 		
-		private ArrayList<String> dataObject = null;
+		private ArrayList<Double> dataObject = null;
 		
-		CsvGeneratorDataObject(ArrayList<String> dataObject) {
+		CsvGeneratorDataObject(ArrayList<Double> dataObject) {
 			
 			this.dataObject = dataObject;
 		}
 		
-		public int getInteger(int index) {
+		public double getValue(int index) {
 			
-			return Integer.parseInt(dataObject.get(index));
-		}
-		
-		public double getDouble(int index) {
-			
-			return Double.parseDouble(dataObject.get(index));
+			return dataObject.get(index);
 		}
 	}
 }

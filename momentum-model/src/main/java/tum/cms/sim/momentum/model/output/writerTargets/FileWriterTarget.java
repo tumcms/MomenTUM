@@ -105,8 +105,10 @@ public class FileWriterTarget extends WriterTarget {
 		if(!data.isEmpty()) {
 			
 			try {
+				
 				// moves the file pointer to the end of the file (on linux getFilePointer() always returns 0)
 				outputFile.skipBytes((int)outputFile.length());
+				
 				// get the current pointer position in the data file
 				long currentDataFilePosition = outputFile.getFilePointer();
 				
@@ -118,9 +120,12 @@ public class FileWriterTarget extends WriterTarget {
 				// write the results
 				dataBuffer.put(data.getData().getBytes());
 				
-				if(data.hasIndex() && this.indexFile != null) { // if an index content is given and is allowed 
+				// if an index content is given and is allowed 
+				if(data.hasIndex() && this.indexFile != null) { 
+					
 					// moves the file pointer to the end of the file (on linux getFilePointer() always returns 0)
 					indexFile.skipBytes((int)indexFile.length());
+					
 					// get the current pointer position in the index file
 					long currentIndexFilePosition = indexFile.getFilePointer();
 					

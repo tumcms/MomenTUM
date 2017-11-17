@@ -160,7 +160,9 @@ public abstract class RoutingModel extends SubTacticalModel {
 		
 		boolean shortCutSuccessful = false;
 		
-		if(pedestrian.getRoutingState() != null && pedestrian.getRoutingState().getNextVisit() != null) {
+		if(pedestrian.getRoutingState() != null &&
+		   pedestrian.getRoutingState().getNextVisit() != null &&
+		   pedestrian.getNextNavigationTarget() != null) {
 			
 			boolean goalAreaEqualsPointOfInterest = pedestrian.getNextNavigationTarget().getGeometry().getCenter().equals(
 					pedestrian.getNextNavigationTarget().getPointOfInterest());

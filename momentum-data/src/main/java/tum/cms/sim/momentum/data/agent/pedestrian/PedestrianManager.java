@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.StandingState;
@@ -228,6 +229,25 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 		}
 	}
 
+	public synchronized void removeAllPedestrians() {
+		
+		List<Integer> pedestriansToRemove = pedestrianContainer.getAllPedestrians().stream()
+				.map(IRichPedestrian::getId)
+				.collect(Collectors.toList());
+		
+		for(Integer pedestrianId : pedestriansToRemove) {
+			
+			Pedestrian pedestrianToDelete = pedestrianContainer.getPedestrian(pedestrianId);
+			
+			for(IExtendsPedestrian extender : extenders) {
+				
+				extender.onPedestrianRemoval(pedestrianToDelete);				
+			}
+		
+			pedestrianContainer.remove(pedestrianToDelete);
+		}
+	}
+	
 	public synchronized void removePedestrian(int pedestrianId) {
 		
 		if(pedestrianContainer.containsKey(pedestrianId)) {

@@ -15,8 +15,18 @@ import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 
 /**
- * Works only with ShadowPerceptionModel
- * @author ga37sib
+ * This operational model will get a csv data set and will steer pedestrians
+ * which exists in the simulation (id mapping) regarding the csv data.
+ * 
+ * Futhermore, the model provides a writer source to extract detailed movement
+ * and perception data of the agents for later computations (e.g. ML).
+ * 
+ * The input may have a different time scale (1 time step = x seconds).
+ * This is be solved by providing the timeStepMapping property for this class.
+ * 
+ *
+ * Warning: This method works only with ShadowPerceptionModel
+ * @author Peter Kielar
  *
  */
 public class CsvPlaybackOperational extends WalkingModel {
@@ -32,8 +42,8 @@ public class CsvPlaybackOperational extends WalkingModel {
 	private int xIndex = -1;
 	private int yIndex = -1;
 	
-	private HashMap<Long, ArrayList<ArrayList<String>>> movementData = new HashMap<>();
-	private HashMap<Integer, ArrayList<String>> nextMovementData = new HashMap<>();
+	private HashMap<Long, ArrayList<ArrayList<Double>>> movementData = new HashMap<>();
+	private HashMap<Integer, ArrayList<Double>> nextMovementData = new HashMap<>();
 	
 	@Override
 	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
@@ -43,16 +53,18 @@ public class CsvPlaybackOperational extends WalkingModel {
 
 	@Override
 	public void onPedestrianRemoval(IRichPedestrian pedestrian) {
-		// TODO Auto-generated method stub
-		
+		// Nothing to do
 	}
 
 	@Override
 	public void callBeforeBehavior(SimulationState simulationState, Collection<IRichPedestrian> pedestrians) {
 		
 		// Read the next time step
-		ArrayList<ArrayList<String>> currentData = movementData.get(simulationState.getCurrentTimeStep() + 1);
-		currentData.stream().forEach(dataSet -> nextMovementData.put(Integer.parseInt(dataSet.get(idIndex)), dataSet));
+		ArrayList<ArrayList<Double>> currentData = movementData.get(simulationState.getCurrentTimeStep() + 1);
+		
+		if(currentData != null) {
+			currentData.stream().forEach(dataSet -> nextMovementData.put(dataSet.get(idIndex).intValue(), dataSet));
+		}
 	}
 
 	@Override
@@ -64,18 +76,19 @@ public class CsvPlaybackOperational extends WalkingModel {
 	@Override
 	public void callPedestrianBehavior(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 
+		try {
 		CsvPlaybackPedestrianExtensions extension = (CsvPlaybackPedestrianExtensions) pedestrian.getExtensionState(this); 
 		
 		// Get the data for pedestrian id
 		// in case there is multiple data mapped, it will automatically get last data step (close to current time)
 		
-		ArrayList<String> pedestrianDataSet = nextMovementData.get(pedestrian.getId());
+		ArrayList<Double> pedestrianDataSet = nextMovementData.get(pedestrian.getId());
 		
 		double x = pedestrian.getPosition().getXComponent();
 		double y = pedestrian.getPosition().getYComponent();
 
-		double xNext = Double.parseDouble(pedestrianDataSet.get(xIndex));
-		double yNext = Double.parseDouble(pedestrianDataSet.get(yIndex));	
+		double xNext = pedestrianDataSet.get(xIndex);
+		double yNext = pedestrianDataSet.get(yIndex);	
 		
 		double velocityXNext = (xNext - x) * simulationState.getTimeStepDuration();
 		double velocityYNext = (yNext - y) * simulationState.getTimeStepDuration();
@@ -85,19 +98,24 @@ public class CsvPlaybackOperational extends WalkingModel {
 		WalkingState newWalkingState = new WalkingState(
 				GeometryFactory.createVector(xNext, yNext),
 				GeometryFactory.createVector(velocityXNext, velocityYNext),
-				GeometryFactory.createVector(headingXNext, headingYNext));
+				GeometryFactory.createVector(headingXNext, headingYNext).getNormalized());
 	
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
 		extension.updatePedestrianSpace(pedestrian, newWalkingState);
 		
 		pedestrian.setWalkingState(newWalkingState);
+		}
+		catch(Exception ex) {
+			
+			ex = null;
+		}
 	}
 
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
-		List<String> csvInput = this.properties.<String>getListProperty(csvInputName);
+		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
 		
 		for(int iter = 0; iter < csvInput.size(); iter++) {
 			
@@ -122,15 +140,15 @@ public class CsvPlaybackOperational extends WalkingModel {
 			}
 		}
 		
-		HashMap<Integer, ArrayList<String>> csvMapping = this.properties.<String>getMatrixProperty(csvMappingName);
+		HashMap<Integer, ArrayList<Double>> csvMapping = this.properties.<Double>getMatrixProperty(csvInputName);
 		
 		if(this.properties.getBooleanProperty(containsHeaderName)) {
 			csvMapping.remove(0);
 		}
 		
-		for(ArrayList<String> data : csvMapping.values()) {
+		for(ArrayList<Double> data : csvMapping.values()) {
 			
-			long dataTimeStep = Long.parseLong(data.get(timeStepIndex));
+			long dataTimeStep = data.get(timeStepIndex).longValue();
 			long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
 			
 			// add time step			
