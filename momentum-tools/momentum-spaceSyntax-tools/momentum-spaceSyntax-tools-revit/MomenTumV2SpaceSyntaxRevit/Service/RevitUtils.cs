@@ -62,6 +62,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
             double x = faceNormal.X;
             double y = faceNormal.Y;
             
+            // Revit sometimes has rounding issues and stores values like 0.000000001 or similar
             return _eps > Math.Abs(x)  && _eps > Math.Abs(y);
         }
 

@@ -43,35 +43,12 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         }
         PlanarFace topFace = kvTopFace.Value;
 
-        var faces = new List<Face>();
-        faces.Add(topFace);
-        
-        //Reference faceReference = uiApp.ActiveUIDocument.Selection.PickObject((ObjectType.Face);
-        //Reference elementReference = uiApp.ActiveUIDocument.Selection.PickObject(ObjectType.Element);
-        
-        //TOTEST: _getGeometry(view)?
-        //var element = doc.GetElement(faceReference);
-        //var list = new List<Floor>(); list.Add(element as Floor); var elementFloorFaces = RevitUtils.CollectAllFacesFromAllFloors(app, list);
-
-        //Face selectedFace = element.GetGeometryObjectFromReference(faceReference) as Face;
-
-        // TODO get stable reference from selectionpicker..........
-        //var topAndBottomFace = new List<Face>();
-        //topAndBottomFace.Add(selectedFace);
-
         // A (default) AnalysisDisplayStyle must exist, otherwise Revit does not know how to display/interpret anything
+        // TODO create default 3D view?
         RevitVisualizationService.CheckForAnalysisDisplayStyle(doc);
 
-        try
-        {
-            RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, faces, null);
-        }
-        catch (Exception e)
-        {
-            PromtService.DisplayErrorToUser(e.ToString());
-            return Result.Failed;
-        }
+        var result = RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topFace);
 
-        return Result.Succeeded;
+        return result;
     }
 }
