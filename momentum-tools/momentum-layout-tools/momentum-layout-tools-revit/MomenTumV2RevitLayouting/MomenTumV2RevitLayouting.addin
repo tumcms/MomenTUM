@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">    
+    <Assembly>
+	MomenTumV2RevitLayouting.dll
+    </Assembly>
+    <ClientId>502fe383-2648-4e98-adf8-133713f9dc34</ClientId>
+    <FullClassName>MomenTumV2RevitLayouting.MomenTumV2RevitLayouting</FullClassName>
+    <Text>MomenTumV2RevitLayouting</Text>
+    <VendorId>ADSK</VendorId>
+    <VisibilityMode>AlwaysVisible</VisibilityMode>
+  </AddIn>
+</RevitAddIns>
