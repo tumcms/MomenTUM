@@ -70,11 +70,8 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 
 	@Override
 	public String readSingleValue(String outputTypeName) {
-
-		String xml;
-		xml = this.xStream.toXML(this.spaceSyntaxResult);
 		
-		return xml;
+		return this.xStream.toXML(this.spaceSyntaxResult);
 	}
 
 	@Override
