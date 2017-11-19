@@ -27,29 +27,62 @@ namespace MomenTumV2SpaceSyntaxRevit.Model
         // When reading in layouts from the Layouting Plugin, there will always be at least
         // two additional rows and columns because the outermost layers are always walls or do 
         // not have a value. 
+        private int _domainRows;
         [XmlAttribute("domainRows")]
-        public int DomainRows { get { return DomainRows; } set { value -= 2; } }
+        public int DomainRows
+        {
+            set { _domainRows = value - 2; }
+            get { return _domainRows; }
+        }
 
+        private int _domainColumns;
         [XmlAttribute("domainColumns")]
-        public int DomainColumns { get { return DomainColumns; } set { value -= 2; } }
+        public int DomainColumns
+        {
+            set { _domainColumns = value - 2; }
+            get { return _domainColumns; }
+        }
 
         // convert meters back to feet
+        private double _maxX;
         [XmlAttribute("maxX")]
-        public double MaxX { get { return MaxX; } set { value /= _feetInMeter; } }
+        public double MaxX
+        {
+            set { _maxX = value / _feetInMeter; }
+            get { return _maxX; }
+        }
 
+        private double _minX;
         [XmlAttribute("minX")]
-        public double MinX { get { return MinX; } set { value /= _feetInMeter; } }
+        public double MinX
+        {
+            set { _minX = value / _feetInMeter; }
+            get { return _minX; }
+        }
 
+        private double _maxY;
         [XmlAttribute("maxY")]
-        public double MaxY { get { return MaxY; } set { value /= _feetInMeter; } }
+        public double MaxY
+        {
+            set { _maxY = value / _feetInMeter; }
+            get { return _maxY; }
+        }
 
+        private double _minY;
         [XmlAttribute("minY")]
-        public double MinY { get { return MinY; } set { value /= _feetInMeter; } }
+        public double MinY
+        {
+            set { _minY = value / _feetInMeter; }
+            get { return _minY; }
+        }
 
         [XmlAttribute("minValue")]
         public double MinValue { get; set; }
 
         [XmlAttribute("maxValue")]
         public double MaxValue { get; set; }
+
+        [XmlAttribute("scenarioName")]
+        public string ScenarioName { get; set; }
     }
 }

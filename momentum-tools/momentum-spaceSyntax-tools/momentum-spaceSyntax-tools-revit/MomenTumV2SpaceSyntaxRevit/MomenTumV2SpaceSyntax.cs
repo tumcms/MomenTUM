@@ -31,9 +31,9 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
 
         KeyValuePair<Result, Level> kvSelectedLevel = new KeyValuePair<Result, Level>(Result.Failed, null);
 
-        if (!string.IsNullOrEmpty(spaceSyntax.Name))
+        if (!string.IsNullOrEmpty(spaceSyntax.ScenarioName))
         {
-            kvSelectedLevel = RevitUtils.AttemptToGetLevelBySpaceSyntaxName(doc, spaceSyntax.Name);
+            kvSelectedLevel = RevitUtils.AttemptToGetLevelBySpaceSyntaxName(doc, spaceSyntax.ScenarioName);
         }
 
         if (kvSelectedLevel.Key != Result.Succeeded)
