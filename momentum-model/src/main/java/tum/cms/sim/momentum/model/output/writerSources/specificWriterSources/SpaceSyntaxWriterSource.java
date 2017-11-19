@@ -82,8 +82,7 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 				.filter(spaceSyntaxRes -> spaceSyntaxRes.getId().intValue() == this.additionalId.intValue())
 				.findFirst().get();
 		
-		this.xStream = new XStream();
-		this.configureXStream(this.xStream, spaceSyntaxResult.getlattice());
+		this.xStream = this.configureXStream(spaceSyntaxResult.getlattice());
 		
 		this.dataItemNames.add("adding fake key");
 	}
@@ -100,7 +99,9 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 	 * @param xStream an instance of xStream that is used to convert the object to a string
 	 * @param lattice
 	 */
-	private void configureXStream(XStream xStream, ILattice lattice) {
+	private XStream configureXStream(ILattice lattice) {
+		
+		XStream xStream = new XStream();
 
 		xStream.processAnnotations(SpaceSyntax.class);
 		xStream.processAnnotations(DepthMap.class);
@@ -132,5 +133,7 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 				
 			}
 		}, 5000);
+		
+		return xStream;
 	}
 }
