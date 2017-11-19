@@ -16,7 +16,7 @@
 			<!--<property name="buffer" type="Integer" value="50"/>-->
 
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="./spaceSyntaxDepthMapResult4.xml"/>
+				<property name="file" type="File" value="./test-geb7-output.xml"/>
 				<property name="index" type="Boolean" value="True"/>
 			</writerTarget>
 
@@ -47,10 +47,11 @@
 			latticeType="Quadratic" 
 			cellEdgeSize="0.2"
 			neigborhoodType="Touching">
-			<!-- 	the default for additional cells is True. 
+			<!-- 	
+					the default for additional cells is True. 
 					This means the cellEdgeSize * 2 is added to the max width and height of the lattice.
 					False implies that no additional cells are created and the max width and height of 
-					the lattice is not altered.
+					the lattice is not altered. !! And no behaviourtype is specified...
 			-->
 			<property name="addAdditionalCells" type="Boolean" value="False"/>
 		</lattice>
@@ -63,7 +64,7 @@
 			</spaceSyntaxOperation>
 		</spaceSyntaxModel>
 	</spaceSyntaxes>
-	
+	<!--<test bb.maxX="92,0203" bb.maxY="53,2865" bb.minX="47,1068" bb.minY="117,4857" />-->
   <layouts>
     <scenario id="0" name="Ebene 1" maxX="92.0203" maxY="117.4858" minX="47.0784" minY="53.2865">
       <area id="0" name="Origin0" type="Origin">

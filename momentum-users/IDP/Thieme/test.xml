@@ -15,7 +15,7 @@
 			<!--<property name="buffer" type="Integer" value="50"/>-->
 
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="./spaceSyntaxDepthMapResult4.xml"/>
+				<property name="file" type="File" value="./test-spacesyntax-output.xml"/>
 				<property name="index" type="Boolean" value="True"/>
 			</writerTarget>
 
@@ -44,7 +44,7 @@
 	<lattices>
 		<lattice name="SpaceSyntaxLattice" id="3" scenarioId="0" 
 			latticeType="Quadratic" 
-			cellEdgeSize="0.5"
+			cellEdgeSize="0.2"
 			neigborhoodType="Touching">
 			<!-- 	the default for additional cells is True. 
 					This means the cellEdgeSize * 2 is added to the max width and height of the lattice.
