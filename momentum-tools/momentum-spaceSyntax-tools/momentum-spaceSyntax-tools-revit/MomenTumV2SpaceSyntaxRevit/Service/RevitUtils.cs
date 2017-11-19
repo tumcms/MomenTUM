@@ -11,6 +11,23 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 {
     public class RevitUtils
     {
+        public static KeyValuePair<Result, Level> AttemptToGetLevelBySpaceSyntaxName(Document doc, string levelname)
+        {
+            FilteredElementCollector levelCollector = new FilteredElementCollector(doc);
+            ICollection<Element> levelCollection = levelCollector.OfClass(typeof(Level)).ToElements();
+            
+            foreach (Element element in levelCollection)
+            {
+                Level level = element as Level;
+                if (level != null && level.Name.Equals(levelname))
+                {
+                    return new KeyValuePair<Result, Level>(Result.Succeeded, level);
+                }
+            }
+
+            return new KeyValuePair<Result, Level>(Result.Failed, null);
+        }
+
         public static KeyValuePair<Result, PlanarFace> GetTopFaceFromLevel(Application app, Level level)
         {
             var allFloorsForLevel = GetAllFloorsFromSelectedLevel(level);

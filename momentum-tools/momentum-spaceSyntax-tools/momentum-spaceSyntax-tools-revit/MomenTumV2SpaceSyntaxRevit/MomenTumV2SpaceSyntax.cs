@@ -29,7 +29,18 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         }
         SpaceSyntax spaceSyntax = kvSpaceSyntax.Value;
 
-        KeyValuePair<Result, Level> kvSelectedLevel = UserLevelSelectService.LetUserPickLevelFromDialog(doc);
+        KeyValuePair<Result, Level> kvSelectedLevel = new KeyValuePair<Result, Level>(Result.Failed, null);
+
+        if (!string.IsNullOrEmpty(spaceSyntax.Name))
+        {
+            kvSelectedLevel = RevitUtils.AttemptToGetLevelBySpaceSyntaxName(doc, spaceSyntax.Name);
+        }
+
+        if (kvSelectedLevel.Key != Result.Succeeded)
+        {
+            kvSelectedLevel = UserLevelSelectService.LetUserPickLevelFromDialog(doc);
+        }
+
         if (kvSelectedLevel.Key != Result.Succeeded)
         {
             return kvSelectedLevel.Key;
