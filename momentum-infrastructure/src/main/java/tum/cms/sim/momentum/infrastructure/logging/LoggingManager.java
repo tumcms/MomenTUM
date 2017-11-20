@@ -91,6 +91,7 @@ public class LoggingManager {
 		if(loggerInitalized) {
 			
 			LoggingManager.logDebug(LoggerStrings.LogExists);
+			return;
 		}
 		
 		boolean doesConsoleLoggerExitsts = false;
