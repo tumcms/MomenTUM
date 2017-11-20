@@ -135,9 +135,12 @@ public class SimulatorManager {
 		if(configurationManager == null) {
 			
 			configurationManager = new ConfigurationManager();
+			configurationManager.setLoadExternalFiles(false);
 			configurationManager.deserializeCompleteConfiguration(argumentContainer.getConfigFileName());
 		}
 
+		configurationManager.setLoadExternalFiles(true);
+		
 		if(configurationManager.getSimulatorConfiguration().getLoop() != null) {
 		
 			if(loopManager == null) {
@@ -150,6 +153,10 @@ public class SimulatorManager {
 					loopManager.getLoopVariableUpdates());
 			
 			loopManager.updateLoopVariables();
+		}
+		else {
+			
+			configurationManager.deserializeCompleteConfiguration(argumentContainer.getConfigFileName());
 		}
 	}
 	

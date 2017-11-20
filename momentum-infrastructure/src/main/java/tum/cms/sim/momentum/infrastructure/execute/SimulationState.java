@@ -130,6 +130,6 @@ public class SimulationState {
 		
 		// 
 		// that is 52 * 0.1 = 5.2 seconds in simulation time
-		return (long)((timeStepToScaleDuration * timeStepToScale) / this.getTimeStepDuration() + 0.5);
+		return (long)(((timeStepToScaleDuration * timeStepToScale) / this.getTimeStepDuration()) + 0.5);
 	}
 }

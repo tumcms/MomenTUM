@@ -52,6 +52,7 @@ public class WriterSourceConfiguration extends PropertyContainerNode {
 		y,
 		time,
 		timeStep,
+		timeStepDuration,
 		endTime,
 		
 		runTime,

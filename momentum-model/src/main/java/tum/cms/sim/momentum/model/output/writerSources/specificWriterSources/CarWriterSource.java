@@ -85,6 +85,11 @@ public class CarWriterSource extends SingleSetWriterSource {
 	    return String.format(format, this.timeManager.getCurrentTimeStep());
 	}
 	
+	private String getTimeStepDuration(String format) {
+		
+		return String.format(format, this.timeManager.getTimeStepDuration());
+	}
+	
 	private String getCurrentId(String format) {
 		
 	    return String.format(format, currentCar.getId());
@@ -140,6 +145,9 @@ public class CarWriterSource extends SingleSetWriterSource {
 		
 		switch(outputType) {
 
+		case timeStepDuration:
+			result = this.getTimeStepDuration(format);
+			break;
 		case timeStep:
 			result = this.getTimeStep(format);
 			break;

@@ -83,6 +83,11 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 
 	public void updatePerceptionSpace(IOperationalPedestrian pedestrian, PerceptionalModel perception, SimulationState simulationState) {
 		
+		perceptionDistanceSpace.clear();
+		perceptionVelocityXSpace.clear();
+		perceptionVelocityYSpace.clear();
+		perceptionTypeSpace.clear();
+		
 		Vector2D pedestrianPosition = pedestrian.getPosition();
 		
 		// this collection is of constant size, null if no obstacle was found
@@ -90,7 +95,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	
 		// this collection is of constant size, null if no pedestrian was found
 		List<IPedestrian> pedestrianPositions = perception.getPerceptedPedestrianPositions(pedestrian, simulationState);
-	
+		
 		for(int iter = 0; iter < obstaclePositions.size(); iter++) {
 			
 			if(obstaclePositions.get(iter) != null) {
@@ -120,11 +125,12 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	}
 
 	public void updatePedestrianSpace(IOperationalPedestrian pedestrian, WalkingState newWalkingStat) {
-		
+	
 		if(pedestrian.getNextWalkingTarget() != null) {
 			
-			pedestrianWalkingGoalX = pedestrian.getNextWalkingTarget().getXComponent();
-			pedestrianWalkingGoalY = pedestrian.getNextWalkingTarget().getXComponent();
+			Vector2D towardsGoal = pedestrian.getNextWalkingTarget().subtract(pedestrian.getPosition()).getNormalized();
+			pedestrianWalkingGoalX = towardsGoal.getXComponent();
+			pedestrianWalkingGoalY = towardsGoal.getYComponent();
 		}
 		
 		pedestrianVelocityX = newWalkingStat.getWalkingVelocity().getXComponent();

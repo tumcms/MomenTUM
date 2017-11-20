@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -285,7 +286,6 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 				//this.perceiveVertices(pedestrian.getId(), pedestriansViewPort, perceptionBorder);
 				// 2.3 area perception
 				//this.perceiveAreas(pedestrian.getId(), pedestriansViewPort, perceptionBorder);
-				int i = 0;
 			}
 		});
 		
@@ -431,51 +431,55 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	 */
 	private List<CellIndex> findPerceptionBorder(ILattice visibilityLattice, CellIndex pedestrianViewPoint, Vector2D viewDirection) {
 		
-		// find "left" cwclockwise horizon intersection
-		Vector2D cwclockRotateViewDirection = viewDirection.rotate(this.perceptionRadiant)
-				.scale(this.perceptionDistance);
+		// get the center cell in view direction
+		Vector2D viewDirectionEnd = viewDirection.scale(this.perceptionDistance);
+
+		double distanceViewCenterCell = Double.MAX_VALUE;
+		int indexViewCenterCell = -1;
 		
-		// find "right" clockwise horizon intersection
-		Vector2D clockRotateViewDirection = viewDirection.rotate(-1.0 * this.perceptionRadiant)
-				.scale(this.perceptionDistance);
-		
-		// find left and right
-		double distanceToOptimalCellLeft = Double.MAX_VALUE;
-		int indexOptimalCellLeft = -1;
-		double distanceToOptimalCellRight = Double.MAX_VALUE;
-		int indexOptimalCellRight = -1;
-		
-		// find all border cells regarding the zero,zero origin cell
 		for(int iter = 0; iter < this.perceptionHorizon.size(); iter++) {
 			
 			CellIndex horizon = this.perceptionHorizon.get(iter);
 			Vector2D horizonPosition = visibilityLattice.getCenterPosition(horizon);
-			double distanceToLeft = horizonPosition.distance(cwclockRotateViewDirection);
-			double distanceToRight = horizonPosition.distance(clockRotateViewDirection);
-			
-			if(distanceToOptimalCellLeft > distanceToLeft) {
+			double distancetoViewCenter = viewDirectionEnd.distance(horizonPosition);
+	
+			if(distanceViewCenterCell > distancetoViewCenter) {
 				
-				distanceToOptimalCellLeft = distanceToLeft;
-				indexOptimalCellLeft = iter;
-			}
-			
-			if(distanceToOptimalCellRight > distanceToRight) {
-				
-				distanceToOptimalCellRight = distanceToRight;
-				indexOptimalCellRight = iter;
+				distanceViewCenterCell = distancetoViewCenter;
+				indexViewCenterCell = iter;
 			}
 		}
 		
+		// get the angle (in radiant) which is a single cell on the horizon
+		double radiantForCell = (2*FastMath.PI)/this.perceptionHorizon.size();
+		int cellsForViewAngle = (int)((this.perceptionRadiant / radiantForCell) + 0.5);
+		int currentShift = 1;
+		
 		List<CellIndex> perceptionBorder = new ArrayList<>();
-		// get all border cells 
-		if(indexOptimalCellLeft < indexOptimalCellRight) { // ok
+		perceptionBorder.add(this.perceptionHorizon.get(cellsForViewAngle));
+		
+		while(cellsForViewAngle > 0) {
 			
-			perceptionBorder.addAll(this.perceptionHorizon.subList(indexOptimalCellLeft, indexOptimalCellRight));
-		}
-		else { // breaks at the end of the list
+			int horizonLeftCell = indexViewCenterCell - currentShift;
 			
-			perceptionBorder.addAll(this.perceptionHorizon.subList(indexOptimalCellLeft, this.perceptionHorizon.size() - 1));
-			perceptionBorder.addAll(this.perceptionHorizon.subList(0, indexOptimalCellRight + 1));
+			if(horizonLeftCell < 0) {
+				
+				horizonLeftCell = this.perceptionHorizon.size() + horizonLeftCell;
+			}
+			
+			perceptionBorder.add(this.perceptionHorizon.get(horizonLeftCell));
+			
+			int horizonRightCell = indexViewCenterCell + currentShift;
+			
+			if(horizonRightCell > this.perceptionHorizon.size() - 1) {
+				
+				horizonRightCell = horizonRightCell - this.perceptionHorizon.size();
+			}
+			
+			perceptionBorder.add(this.perceptionHorizon.get(horizonRightCell));
+			
+			cellsForViewAngle--;
+			currentShift++;
 		}
 		
 		// transpose all border cells by the agent's cell
