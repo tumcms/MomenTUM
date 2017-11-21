@@ -24,6 +24,9 @@ import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
  */
 public class CsvGenerator extends Generator {
 
+	private static String startTimeName = "startTime";
+	private static String endTimeName = "endTime";
+	
 	private static String csvInputName = "csvInput";
 	private static String csvMappingName = "csvMapping";
 	private static String timeStepMappingName = "timeStepMapping";
@@ -34,14 +37,21 @@ public class CsvGenerator extends Generator {
 	private int idIndex = -1;
 	private int xIndex = -1;
 	private int yIndex = -1;
- 
+	
+	private double generatorStartTime;
+	private double generatorEndTime;
+	
 	private HashMap<Integer, ArrayList<Double>> csvMapping;
 	private HashMap<Long, HashMap<Integer, CsvGeneratorDataObject>> generationSet = new HashMap<>();
 	// the next set is used to compute the heading of a pedestrian and the velocity
 	private HashMap<Integer, CsvGeneratorDataObject> generationNextSet = new HashMap<>();
+
 	
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
+		
+		generatorStartTime = this.properties.getDoubleProperty(startTimeName);
+		generatorEndTime = this.properties.getDoubleProperty(endTimeName);
 		
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
 		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
@@ -104,47 +114,52 @@ public class CsvGenerator extends Generator {
 	@Override
 	public void execute(Collection<? extends Void> splittTask, SimulationState simulationState) {
 		
-		if(this.generationSet.containsKey(simulationState.getCurrentTimeStep())) {
+		if(this.generatorStartTime <= simulationState.getCurrentTime() &&
+		   simulationState.getCurrentTime() <= this.generatorEndTime) {
 			
-			for(Entry<Integer, CsvGeneratorDataObject> data : this.generationSet.get(simulationState.getCurrentTimeStep()).entrySet()) {
+			if(this.generationSet.containsKey(simulationState.getCurrentTimeStep())) {
 				
-				int id = data.getKey();
-				double x = data.getValue().getValue(xIndex);
-				double y = data.getValue().getValue(yIndex);
+				for(Entry<Integer, CsvGeneratorDataObject> data : this.generationSet.get(simulationState.getCurrentTimeStep()).entrySet()) {
+					
+					int id = data.getKey();
+					double x = data.getValue().getValue(xIndex);
+					double y = data.getValue().getValue(yIndex);
+					
+					double velocityX = 0.0;
+					double velocityY = 0.0;
+					double headingX = 0.0;
+					double headingY = 1.0;
+					
+					// get next state if exists 
+					if(this.generationNextSet.containsKey(id)) {
+						
+						double xNext = this.generationNextSet.get(id).getValue(xIndex);
+						double yNext = this.generationNextSet.get(id).getValue(yIndex);	
+						double timeDifference = (this.generationNextSet.get(id).getValue(timeStepIndex) - data.getValue().getValue(timeStepIndex))
+								* simulationState.getTimeStepDuration();
+						
+						// compute velocity
+						velocityX = (xNext - x) * timeDifference;
+						velocityY = (yNext - y) * timeDifference;
+						
+						// compute heading
+						headingX = (xNext - x);
+						headingY = (yNext - y);
+					}
 				
-				double velocityX = 0.0;
-				double velocityY = 0.0;
-				double headingX = 0.0;
-				double headingY = 1.0;
-				
-				// get next state if exists 
-				if(this.generationNextSet.containsKey(id)) {
-					
-					double xNext = this.generationNextSet.get(id).getValue(xIndex);
-					double yNext = this.generationNextSet.get(id).getValue(yIndex);	
-					double timeDifference = (this.generationNextSet.get(id).getValue(timeStepIndex) - data.getValue().getValue(timeStepIndex))
-							* simulationState.getTimeStepDuration();
-					
-					// compute velocity
-					velocityX = (xNext - x) * timeDifference;
-					velocityY = (yNext - y) * timeDifference;
-					
-					// compute heading
-					headingX = (xNext - x);
-					headingY = (yNext - y);
+					StaticState staticState = pedestrianSeed.generateStaticState(-1, this.scenarioManager.getScenarios().getId());
+					staticState.setId(id);
+					staticState.setGroupId(id);
+					pedestrianManager.createPedestrian(staticState, 
+							null,
+							GeometryFactory.createVector(x, y), 
+							GeometryFactory.createVector(headingX, headingY).getNormalized(), 
+							GeometryFactory.createVector(velocityX, velocityY), 
+							simulationState.getCurrentTime());
 				}
-			
-				StaticState staticState = pedestrianSeed.generateStaticState(-1, this.scenarioManager.getScenarios().getId());
 				
-				pedestrianManager.createPedestrian(staticState, 
-						null,
-						GeometryFactory.createVector(x, y), 
-						GeometryFactory.createVector(headingX, headingY).getNormalized(), 
-						GeometryFactory.createVector(velocityX, velocityY), 
-						simulationState.getCurrentTime());
+				this.generationSet.remove(simulationState.getCurrentTimeStep());
 			}
-			
-			this.generationSet.remove(simulationState.getCurrentTimeStep());
 		}
 	}
 

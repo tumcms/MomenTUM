@@ -243,7 +243,14 @@
 	<!-- The Csv generator is also able to generated pedestrians based on time steps and positions. -->
 	<!-- This means that the Csv generator will check if the input for a new time step comprises a new pedestrian and generate it. -->
 	<generator id="5" name="generator" type="Csv" scenario="0" seed="0">
-		<!-- The Csv generator does not have a startTime, endTime, maximalPedestrians, safetyDistance or a geometryType-->
+		<!-- The Csv generator does not have maximalPedestrians, safetyDistance or a geometryType-->
+		
+		<!-- The startTime provides a time in seconds. This is the time the generator may starts create pedestrians. -->
+		<property name="startTime" type="Double" value="0"/>
+		
+		<!-- The endTime provides a time in seconds. -->
+		<!-- This is the time the generator stops to generate pedestrians. -->
+		<property name="endTime" type="Double" value="Infinity"/> <!-- Yes you can use java style doubles definitions. -->
 		
 		<!-- Typically, use a CsvMatrix to provide the pedestrian data. -->
 		<!-- The content of the CsvMatrix contains input data that should be used to generated pedestrians. -->

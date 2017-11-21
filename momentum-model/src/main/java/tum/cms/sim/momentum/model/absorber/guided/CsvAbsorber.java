@@ -65,17 +65,14 @@ public class CsvAbsorber extends Absorber {
 		for(ArrayList<Double> data : csvMapping.values()) {
 
 			long dataTimeStep = data.get(timeStepIndex).longValue();
+			long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
 			
-			if(sciptTimeStep != dataTimeStep) {
+			if(sciptTimeStep != simulationTimeStep) {
 				
 				int id = data.get(idIndex).intValue();
-				
-				long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
-				
 				this.absorberSet.putIfAbsent(simulationTimeStep, new HashSet<>());
 				this.absorberSet.get(simulationTimeStep).add(id);
 			}
-
 		}
 	}
 

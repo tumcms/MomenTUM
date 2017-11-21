@@ -85,7 +85,7 @@ public class ComplexPropertyConverter implements Converter {
 
 		case Matrix:
 
-			HashMap<Integer, ArrayList<Object>> matrix = comPro.getValueAsMatrix();
+			LinkedHashMap<Integer, ArrayList<Object>> matrix = comPro.getValueAsMatrix();
 
 			for(int i = 0; i < matrix.size(); i++) {
 
@@ -127,6 +127,7 @@ public class ComplexPropertyConverter implements Converter {
 			}
 
 			break;
+			
 		case LinkedHashMap:
 			LinkedHashMap<Integer,Object> linkedHashMap = (LinkedHashMap<Integer, Object>) comPro.getValueAsLinkedHashMap();
 
