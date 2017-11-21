@@ -32,19 +32,10 @@
 
 package tum.cms.sim.momentum.model.layout.spaceSyntax.depthMap;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -83,7 +74,8 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 
 		DepthMap depthMap = new DepthMap(
 				lattice, 
-				connectedIndices
+				connectedIndices,
+				scenarioManager.getScenarios().getName()
 		);
 		depthMap.setId(this.getId());
 		depthMap.setName(this.getName());
@@ -115,8 +107,8 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 	private Set<CellIndex> floodLatticeFromOrigins(List<CellIndex> originCenterCells, ILattice lattice) {
 
 		if (originCenterCells == null || originCenterCells.size() < 1) {
-			LoggingManager.logUser("Error: No 'Origins' were specified by the layout.\n"
-					+ "There must be at least one 'Origin' where the center does not lie within an obstacle.");
+			LoggingManager.logUser("Error: No 'Origins' were specified by the layout or failed in initialization phase.\n"
+					+ "There must be at least one 'Origin' whose the center does not lie within an obstacle.");
 		}
 		
 		List<Set<CellIndex>> connectedAreas = new ArrayList<Set<CellIndex>>();
@@ -139,8 +131,8 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 		}
 		
 		if (connectedAreas.size() > 1) {
-			LoggingManager.logUser("Warning: Flooding from origins define multiple connected areas. \n"
-					+ "All 'Origin' should be reachable from eachother in terms of walking pedestrians.");
+			LoggingManager.logUser("Warning: Not all 'Origin's are connected to each other. \n"
+					+ "All 'Origin's should be reachable from each other.");
 		}
 
 		return connectedAreas.get(0);

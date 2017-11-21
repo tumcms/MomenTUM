@@ -29,55 +29,37 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         }
         SpaceSyntax spaceSyntax = kvSpaceSyntax.Value;
 
-        KeyValuePair<Result, Level> kvSelectedLevel = RevitUtils.LetUserPickLevelFromDialog(doc);
+        KeyValuePair<Result, Level> kvSelectedLevel = new KeyValuePair<Result, Level>(Result.Failed, null);
+
+        if (!string.IsNullOrEmpty(spaceSyntax.ScenarioName))
+        {
+            kvSelectedLevel = RevitUtils.AttemptToGetLevelBySpaceSyntaxName(doc, spaceSyntax.ScenarioName);
+        }
+
+        if (kvSelectedLevel.Key != Result.Succeeded)
+        {
+            kvSelectedLevel = UserLevelSelectService.LetUserPickLevelFromDialog(doc);
+        }
+
         if (kvSelectedLevel.Key != Result.Succeeded)
         {
             return kvSelectedLevel.Key;
         }
         Level level = kvSelectedLevel.Value;
 
-        // could retrieve face by selection from user!
-        // For now we assume: We select the both Faces with the biggest Area 
-        // from the floors (which is assumed to be top and bottom face of the same element)
-
-        //var floors = RevitUtils.GetAllFloorsFromSelectedLevel(level);
-        //var allFaces = RevitUtils.CollectAllFacesFromAllFloors(app, floors);
-        //var topAndBottomFace = FilterTopAndBottomFaceIntoList(allFaces);
-
-        IList<Reference> refList = new List<Reference>();
-        refList = uiApp.ActiveUIDocument.Selection.PickObjects(ObjectType.Face);
-        Face selectedFace = doc.GetElement(refList[0]).GetGeometryObjectFromReference(refList[0]) as Face;
-        // TODO get stable reference from selectionpicker..........
-        var topAndBottomFace = new List<Face>();
-        topAndBottomFace.Add(selectedFace);
+        KeyValuePair<Result, PlanarFace> kvTopFace = RevitUtils.GetTopFaceFromLevel(app, level);
+        if (kvSelectedLevel.Key != Result.Succeeded)
+        {
+            return kvSelectedLevel.Key;
+        }
+        PlanarFace topFace = kvTopFace.Value;
 
         // A (default) AnalysisDisplayStyle must exist, otherwise Revit does not know how to display/interpret anything
-        RevitUtils.CheckForAnalysisDisplayStyle(doc);
+        // TODO create default 3D view?
+        RevitVisualizationService.CheckForAnalysisDisplayStyle(doc);
 
-        try
-        {
-            RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topAndBottomFace);
-        }
-        catch (Exception e)
-        {
-            PromtService.DisplayErrorToUser(e.ToString());
-            return Result.Failed;
-        }
+        var result = RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topFace);
 
-        return Result.Succeeded;
-    }
-
-    private List<Face> FilterTopAndBottomFaceIntoList(List<Face> allFaces)
-    {
-        var topAndBottomFace = new List<Face>();
-
-        Face firstFaceWithMaxArea = allFaces.OrderByDescending(face => face.Area).First();
-        allFaces.Remove(firstFaceWithMaxArea);
-        Face secondFaceWithMaxArea = allFaces.OrderByDescending(face => face.Area).First();
-
-        topAndBottomFace.Add(firstFaceWithMaxArea);
-        topAndBottomFace.Add(secondFaceWithMaxArea);
-
-        return topAndBottomFace;
+        return result;
     }
 }
