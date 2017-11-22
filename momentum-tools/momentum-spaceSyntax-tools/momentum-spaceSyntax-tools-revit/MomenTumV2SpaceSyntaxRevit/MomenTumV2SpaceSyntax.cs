@@ -33,7 +33,7 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
 
         if (!string.IsNullOrEmpty(spaceSyntax.ScenarioName))
         {
-            kvSelectedLevel = RevitUtils.AttemptToGetLevelBySpaceSyntaxName(doc, spaceSyntax.ScenarioName);
+            kvSelectedLevel = RevitUtils.AttemptToGetLevelByScenarioName(doc, spaceSyntax.ScenarioName);
         }
 
         if (kvSelectedLevel.Key != Result.Succeeded)
@@ -54,10 +54,7 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         }
         PlanarFace topFace = kvTopFace.Value;
 
-        // A (default) AnalysisDisplayStyle must exist, otherwise Revit does not know how to display/interpret anything
-        // TODO create default 3D view?
-        RevitVisualizationService.CheckForAnalysisDisplayStyle(doc);
-
+        
         var result = RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topFace);
 
         return result;

@@ -11,7 +11,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 {
     public class RevitUtils
     {
-        public static KeyValuePair<Result, Level> AttemptToGetLevelBySpaceSyntaxName(Document doc, string levelname)
+        public static KeyValuePair<Result, Level> AttemptToGetLevelByScenarioName(Document doc, string levelname)
         {
             FilteredElementCollector levelCollector = new FilteredElementCollector(doc);
             ICollection<Element> levelCollection = levelCollector.OfClass(typeof(Level)).ToElements();
