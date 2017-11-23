@@ -11,45 +11,63 @@ using System.Threading.Tasks;
 
 namespace MomenTumV2SpaceSyntaxRevit.Service
 {
-    class RevitVisualizationService
+    public class RevitVisualizationService
     {
-        private static string _defaultSpaceSyntaxDisplayStyleName = "SpaceSyntax default style";
+        private const string _defaultSpaceSyntaxDisplayStyleName = "SpaceSyntax default style";
 
-        public static void CheckForAnalysisDisplayStyle(Document doc)
+        public static void ActivateAnalysisDisplayStyle(Document doc)
         {
-            FilteredElementCollector analysisDisplayStyleCollector = new FilteredElementCollector(doc);
-            ICollection<Element> analysisDisplayStyles = analysisDisplayStyleCollector.OfClass(typeof(AnalysisDisplayStyle)).ToElements();
-            var defaultDisplayStyle = from displaystyle in analysisDisplayStyles
-                                      where displaystyle.Name == _defaultSpaceSyntaxDisplayStyleName
-                                      select displaystyle;
+            AnalysisDisplayStyle analysisDisplayStyle = GetDefaultAnalysisDisplayStyle(doc);
+
+            SetAnalysisDisplayStyle(doc, analysisDisplayStyle);
+        }
+
+        private static AnalysisDisplayStyle GetDefaultAnalysisDisplayStyle(Document doc)
+        {
+            AnalysisDisplayStyle analysisDisplayStyle = null;
+
+            var defaultDisplayStyle = FilterDefaultSpaceSyntaxAnalysisDisplayStyle(doc);
 
             if (defaultDisplayStyle.Count() == 0)
             {
-                CreateDefaultSpaceSyntaxAnalysisDisplayStyle(doc);
+                analysisDisplayStyle = CreateDefaultSpaceSyntaxAnalysisDisplayStyle(doc);
             }
+            else
+            {
+                analysisDisplayStyle = defaultDisplayStyle.Cast<AnalysisDisplayStyle>().ElementAt(0);
+            }
+
+            return analysisDisplayStyle;
         }
 
-        private static void CreateDefaultSpaceSyntaxAnalysisDisplayStyle(Document doc)
+        private static IEnumerable<AnalysisDisplayStyle> FilterDefaultSpaceSyntaxAnalysisDisplayStyle(Document doc)
         {
+            FilteredElementCollector analysisDisplayStyleCollector = new FilteredElementCollector(doc);
+            ICollection<Element> analysisDisplayStyles = analysisDisplayStyleCollector.OfClass(typeof(AnalysisDisplayStyle)).ToElements();
 
+            var defaultDisplayStyle = from displayStyle in analysisDisplayStyles
+                                      where displayStyle.Name == _defaultSpaceSyntaxDisplayStyleName
+                                      select displayStyle;
+
+            return defaultDisplayStyle.Cast<AnalysisDisplayStyle>();
+        }
+
+        private static AnalysisDisplayStyle CreateDefaultSpaceSyntaxAnalysisDisplayStyle(Document doc)
+        {
             AnalysisDisplayColoredSurfaceSettings coloredSurfaceSettings =
                 new AnalysisDisplayColoredSurfaceSettings();
             coloredSurfaceSettings.ShowGridLines = false;
             coloredSurfaceSettings.ShowContourLines = false;
 
             AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
-
             colorSettings.ColorSettingsType = AnalysisDisplayStyleColorSettingsType.GradientColor;
             colorSettings.MaxColor = new Color(255, 0, 255); // Magenta
             colorSettings.MinColor = new Color(255, 255, 0); // Yellow
 
             AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
             legendSettings.ShowLegend = true;
-            legendSettings.ShowUnits = true;
+            legendSettings.ShowUnits = false;
             legendSettings.ShowDataDescription = false;
-
-            var transaction = new Transaction(doc, "Default Analysis Display Style Creation for Space Syntax.");
-            transaction.Start();
 
             var analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(
                 doc,
@@ -58,79 +76,94 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
                 colorSettings,
                 legendSettings);
 
-            doc.ActiveView.AnalysisDisplayStyleId = analysisDisplayStyle.Id;
-            transaction.Commit();
+            return analysisDisplayStyle;
+        }
+
+        private static void SetAnalysisDisplayStyle(Document doc, AnalysisDisplayStyle analysisDisplayStyle)
+        {
+            using (var transaction = new Transaction(doc, "Setting Default Analysis Display Style for Space Syntax."))
+            {
+                transaction.Start();
+
+                doc.ActiveView.AnalysisDisplayStyleId = analysisDisplayStyle.Id;
+
+                transaction.Commit();
+            }
         }
 
         public static Result CreateSpaceSyntaxAnalysisResult(Document doc, SpaceSyntax spaceSyntax, Face face)
         {
+            // A (default) AnalysisDisplayStyle must exist, otherwise Revit does not know how to display/interpret anything
+            ActivateAnalysisDisplayStyle(doc);
             return CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, face, face.Reference);
         }
 
         public static Result CreateSpaceSyntaxAnalysisResult(Document doc, SpaceSyntax spaceSyntax, Face face, Reference faceReference)
         {
-            var transaction = new Transaction(doc, "SpaceSyntax Visualization");
-            transaction.Start();
-
-            try
+            using (var transaction = new Transaction(doc, "SpaceSyntax Visualization"))
             {
-                SpatialFieldManager sfm = SpatialFieldManager.GetSpatialFieldManager(doc.ActiveView);
-                if (sfm == null)
+                transaction.Start();
+                try
                 {
-                    sfm = SpatialFieldManager.CreateSpatialFieldManager(doc.ActiveView, 1);
-                }
-
-                // mapping u to x and v to y 
-                double deltaX = Math.Abs(spaceSyntax.MinX - spaceSyntax.MaxX) / spaceSyntax.DomainColumns;
-                double deltaY = Math.Abs(spaceSyntax.MinY - spaceSyntax.MaxY) / spaceSyntax.DomainRows;
-
-                double minX = spaceSyntax.MinX + deltaX / 2.0;
-                double minY = spaceSyntax.MinY + deltaY / 2.0;
-
-                var localOriginInGlobalVector = face.Evaluate(new UV(0.0, 0.0));
-                var matrixAInverted = CalculateMatrixForGlobalToLocalCoordinateSystem(face, localOriginInGlobalVector);
-
-                var uvPts = new List<UV>();
-                var doubleList = new List<double>();
-                var valList = new List<ValueAtPoint>();
-                
-                for (double y = minY, i = 1.0; y < spaceSyntax.MaxY; y += deltaY, i += 1.0)
-                {
-                    for (double x = minX, j = 1.0; x < spaceSyntax.MaxX; x += deltaX, j += 1.0)
+                    SpatialFieldManager sfm = SpatialFieldManager.GetSpatialFieldManager(doc.ActiveView);
+                    if (sfm == null)
                     {
-                        var globalPoint = new XYZ(x, y, 0.0);
-                        var localUV = GlobalToLocalCoordinate(matrixAInverted, localOriginInGlobalVector, globalPoint);
+                        sfm = SpatialFieldManager.CreateSpatialFieldManager(doc.ActiveView, 1);
+                    }
 
-                        if (face.IsInside(localUV))
+                    // mapping u to x and v to y 
+                    double deltaX = Math.Abs(spaceSyntax.MinX - spaceSyntax.MaxX) / spaceSyntax.DomainColumns;
+                    double deltaY = Math.Abs(spaceSyntax.MinY - spaceSyntax.MaxY) / spaceSyntax.DomainRows;
+
+                    double minX = spaceSyntax.MinX + deltaX / 2.0;
+                    double minY = spaceSyntax.MinY + deltaY / 2.0;
+
+                    var localOriginInGlobalVector = face.Evaluate(new UV(0.0, 0.0));
+                    var matrixAInverted = CalculateMatrixForGlobalToLocalCoordinateSystem(face, localOriginInGlobalVector);
+
+                    var uvPts = new List<UV>();
+                    var doubleList = new List<double>();
+                    var valList = new List<ValueAtPoint>();
+
+                    for (double y = minY, i = 1.0; y < spaceSyntax.MaxY; y += deltaY, i += 1.0)
+                    {
+                        for (double x = minX, j = 1.0; x < spaceSyntax.MaxX; x += deltaX, j += 1.0)
                         {
-                            uvPts.Add(localUV);
-                            doubleList.Add(GetValueFromSpaceSyntaxFor(spaceSyntax, (int)j, (int)i));
-                            valList.Add(new ValueAtPoint(doubleList));
-                            doubleList.Clear();
+                            var globalPoint = new XYZ(x, y, 0.0);
+                            var localUV = GlobalToLocalCoordinate(matrixAInverted, localOriginInGlobalVector, globalPoint);
+
+                            if (face.IsInside(localUV))
+                            {
+                                uvPts.Add(localUV);
+                                doubleList.Add(GetValueFromSpaceSyntax(spaceSyntax, (int)j, (int)i));
+                                valList.Add(new ValueAtPoint(doubleList));
+                                doubleList.Clear();
+                            }
                         }
                     }
+
+                    var points = new FieldDomainPointsByUV(uvPts);
+                    var values = new FieldValues(valList);
+                    int index = sfm.AddSpatialFieldPrimitive(faceReference);
+
+                    var resultSchema = new AnalysisResultSchema(
+                        // the name value of an AnalysisResultSchema must be unique (hence Date-Milliseconds), else an exception is thrown
+                        "Space Syntax from " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.ffff"),
+                        "Space Syntax");
+
+                    sfm.UpdateSpatialFieldPrimitive(index, points, values, sfm.RegisterResult(resultSchema));
+
+                    transaction.Commit();
                 }
-
-                var points = new FieldDomainPointsByUV(uvPts);
-                var values = new FieldValues(valList);
-                int index = sfm.AddSpatialFieldPrimitive(faceReference);
-
-                var resultSchema = new AnalysisResultSchema(
-                    // the name value of an AnalysisResultSchema must be unique (hence Date-Milliseconds), else an exception is thrown
-                    "Space Syntax from " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss.ffff"),
-                    "DepthMap");
-
-                sfm.UpdateSpatialFieldPrimitive(index, points, values, sfm.RegisterResult(resultSchema));
-
-                transaction.Commit();
-                return Result.Succeeded;
+                catch (Exception e)
+                {
+                    PromtService.DisplayErrorToUser(e.ToString());
+                    transaction.RollBack();
+                    return Result.Failed;
+                }
             }
-            catch (Exception e)
-            {
-                PromtService.DisplayErrorToUser(e.ToString());
-                transaction.RollBack();
-                return Result.Failed;
-            }
+
+            return Result.Succeeded;
         }
 
         private static double[,] CalculateMatrixForGlobalToLocalCoordinateSystem(Face face, XYZ vector_t)
@@ -180,7 +213,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
                 matrix[1, 0] * xyz.X + matrix[1, 1] * xyz.Y);
         }
 
-        private static double GetValueFromSpaceSyntaxFor(SpaceSyntax spaceSyntax, int column, int row)
+        private static double GetValueFromSpaceSyntax(SpaceSyntax spaceSyntax, int column, int row)
         {
             foreach (CellIndex cellIndex in spaceSyntax.CellIndices)
             {
