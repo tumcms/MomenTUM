@@ -35,7 +35,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
             if (allFaces.Count == 0)
             {
-                PromtService.DisplayErrorToUser("No Surfaces for visualization found!");
+                PromtService.ShowErrorToUser("No Surfaces for visualization found!");
                 return new KeyValuePair<Result, PlanarFace>(Result.Failed, null);
             }
 
@@ -46,7 +46,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
             if (topFace == null)
             {
-                PromtService.DisplayInformationToUser("The top of the surface could not be determined. Visualization failed.");
+                PromtService.ShowInformationToUser("The top of the surface could not be determined. Visualization failed.");
                 return new KeyValuePair<Result, PlanarFace>(Result.Failed, null);
             }
 

@@ -23,13 +23,13 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
             if (!(openFileDialog.ShowDialog() == DialogResult.OK))
             {
-                PromtService.DisplayInformationToUser("SpaceSyntax Addin cancelled by user.");
+                PromtService.ShowInformationToUser("SpaceSyntax Addin cancelled by user.");
                 return new KeyValuePair<Result, SpaceSyntax>(Result.Cancelled, null);
             }
 
             if (!openFileDialog.CheckFileExists)
             {
-                PromtService.DisplayInformationToUser("File does not exist.");
+                PromtService.ShowInformationToUser("File does not exist.");
                 return new KeyValuePair<Result, SpaceSyntax>(Result.Failed, null);
             }
 
@@ -40,7 +40,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
                 xmlDeserializer = new XmlSerializer(typeof(SpaceSyntax));
             } catch(Exception)
             {
-                PromtService.DisplayErrorToUser("The provided xml file could not be parsed correctly.");
+                PromtService.ShowErrorToUser("The provided xml file could not be parsed correctly.");
                 return new KeyValuePair<Result, SpaceSyntax>(Result.Failed, null);
             }
 

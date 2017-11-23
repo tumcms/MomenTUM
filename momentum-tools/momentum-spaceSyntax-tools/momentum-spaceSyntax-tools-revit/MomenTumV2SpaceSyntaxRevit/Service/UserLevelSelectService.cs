@@ -30,7 +30,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
             if (levels.Count == 0)
             {
-                PromtService.DisplayErrorToUser("The project does not contain any levels.");
+                PromtService.ShowErrorToUser("The project does not contain any levels.");
                 return new KeyValuePair<Result, Level>(Result.Failed, null);
             }
 
@@ -46,7 +46,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
             if (LevelSelectedByUser == null)
             {
-                PromtService.DisplayInformationToUser("Operation cancelled by User.");
+                PromtService.ShowInformationToUser("Operation cancelled by User.");
                 return new KeyValuePair<Result, Level>(Result.Cancelled, null);
             }
 

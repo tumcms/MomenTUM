@@ -9,7 +9,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 {
     class PromtService
     {
-        public static void DisplayErrorToUser(string errorMessage)
+        public static void ShowErrorToUser(string errorMessage)
         {
             TaskDialog mainDialog = new TaskDialog("Error Information");
             mainDialog.MainInstruction = "An error occured:";
@@ -18,7 +18,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
             mainDialog.Show();
         }
 
-        public static void DisplayInformationToUser(string message)
+        public static void ShowInformationToUser(string message)
         {
             TaskDialog mainDialog = new TaskDialog("Information");
             mainDialog.MainContent = message;

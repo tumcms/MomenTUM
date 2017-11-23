@@ -53,7 +53,6 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
             return kvSelectedLevel.Key;
         }
         PlanarFace topFace = kvTopFace.Value;
-
         
         var result = RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topFace);
 
