@@ -13,11 +13,8 @@ namespace MomenTumV2RevitLayouting
     {
         public static readonly string BASE_LEVEL_KEY = "base";
         public static readonly string TOP_LEVEL_KEY = "top";
-        //internal -> assemblywide -> default access
         public RevitObjectManager() { }
 
-        // MEPackage diagPackage = section.GetSectionPart<MEPackage>().Where((package) => package.Name == section.Name).FirstOrDefault();
-        // var roomList = allSpatialElements.Where(element => (element as Room != null)).ToList();
         public List<Level> GetAllLevels(Document doc)
         {
             var levelList = new List<Level>();
@@ -33,7 +30,6 @@ namespace MomenTumV2RevitLayouting
 
         public List<Room> GetAllRoomsFromLevel(Level level)
         {
-            // ToTest: warum lesen wir nicht SpatialElement statt Room aus? 
             var roomList = new List<Room>();
             var allSpatialElements = new FilteredElementCollector(level.Document).OfClass(typeof(SpatialElement)).ToElements();
 
