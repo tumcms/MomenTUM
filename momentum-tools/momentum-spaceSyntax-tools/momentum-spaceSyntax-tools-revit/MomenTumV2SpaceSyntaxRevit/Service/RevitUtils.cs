@@ -9,7 +9,7 @@ using Autodesk.Revit.ApplicationServices;
 
 namespace MomenTumV2SpaceSyntaxRevit.Service
 {
-    public class RevitUtils
+    class RevitUtils
     {
         public static KeyValuePair<Result, Level> AttemptToGetLevelByScenarioName(Document doc, string levelname)
         {

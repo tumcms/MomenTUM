@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MomenTumV2SpaceSyntaxRevit.Service
 {
-    public class RevitVisualizationService
+    class RevitVisualizationService
     {
         private const string _defaultSpaceSyntaxDisplayStyleName = "SpaceSyntax default style";
 

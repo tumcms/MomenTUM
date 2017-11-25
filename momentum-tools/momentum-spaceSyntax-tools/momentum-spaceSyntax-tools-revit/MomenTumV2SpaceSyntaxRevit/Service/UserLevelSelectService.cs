@@ -1,11 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using MomenTumV2SpaceSyntaxRevit.View;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MomenTumV2SpaceSyntaxRevit.Service
 {
@@ -41,6 +37,9 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
         {
             var levelSelectorDialog = new LevelSelectorHost();
             levelSelectorDialog.InitializeLevelListBox(levels);
+            
+            // reset from previous plugin execution
+            LevelSelectedByUser = null; 
 
             levelSelectorDialog.ShowDialog();
 

@@ -1,16 +1,10 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using MomenTumV2SpaceSyntaxRevit.Model;
 using MomenTumV2SpaceSyntaxRevit.Service;
-using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.UI.Selection;
 
 [TransactionAttribute(TransactionMode.Manual)]
 [RegenerationAttribute(RegenerationOption.Manual)]
@@ -54,7 +48,7 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         }
         PlanarFace topFace = kvTopFace.Value;
         
-        var result = RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topFace);
+        Result result = RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topFace);
 
         return result;
     }
