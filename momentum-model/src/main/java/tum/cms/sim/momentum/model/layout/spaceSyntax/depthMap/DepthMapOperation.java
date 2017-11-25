@@ -48,7 +48,7 @@ import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
 
 public class DepthMapOperation extends SpaceSyntaxOperation {
 	
-	private static String scenarioLatticeIdName = "scenarioLatticeId";
+	private static final String scenarioLatticeIdName = "scenarioLatticeId";
 
 	@Override
 	public void callPreProcessing(SimulationState simlationState) {
@@ -68,7 +68,6 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 				.map(center -> lattice.getCellIndexFromPosition(center))
 				.collect(Collectors.toList());
 
-
 		Set<CellIndex> connectedIndices = this.floodLatticeFromOrigins(originCenterCells, lattice);
 		this.computeDepthMap(connectedIndices, lattice);
 
@@ -81,8 +80,6 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 		depthMap.setName(this.getName());
 		
 		this.scenarioManager.getSpaceSyntaxes().add(depthMap);
-
-		//this.writeResultAsImage(depthMap, lattice);
 	}
 
 	@Override
@@ -160,58 +157,4 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 				}
 			}));
 	}
-	/*
-	private void writeResultAsImage(DepthMap depthMap, ILattice lattice) {
-
-		int width = depthMap.getDomainColumns();
-		int height = depthMap.getDomainRows();
-		int heightImage = height - 1;
-
-		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-		Double colorMax = depthMap.getMaxValue() - depthMap.getMinValue();
-
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-
-				Double currentValue = lattice.getCellNumberValue(y, x);
-				short r = 0;
-				short g = 0;
-				short b = 0;
-
-				if (currentValue.equals(Double.NaN)) {
-					r = 255;
-					g = 255;
-					b = 255;
-				} else {
-
-					Double newValue = currentValue - depthMap.getMinValue();
-					b = (short) FastMath.round((newValue / colorMax) * 255.0);
-				}
-
-				int p = (r << 16) | (g << 8) | b; // pixel
-				// int p = new java.awt.Color(r, g, b, a).getRGB();
-				img.setRGB(x, heightImage - y, p);
-			}
-		}
-		
-		LoggingManager.logUser("DepthMap #" + depthMap.getId() 
-			+ " MinAbs: " + depthMap.getMinValue() 
-			+ " MaxAbs: " + depthMap.getMaxValue());
-		
-
-		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
-		String outputPath = "./" + dateFormat.format(date) + "_" + depthMap.getName() + ".jpg";
-		File output = new File(outputPath);
-
-		try {
-			if (ImageIO.write(img, "jpg", output))
-				LoggingManager.logUser("Successfully written image to: " + output.toString());
-			else
-				LoggingManager.logUser("Something else happened!?");
-		} catch (IOException e) {
-			LoggingManager.logUser("Schreiben des Bildes fehlgeschlagen...");
-		}
-	}*/
 }
