@@ -104,7 +104,7 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 	private Set<CellIndex> floodLatticeFromOrigins(List<CellIndex> originCenterCells, ILattice lattice) {
 
 		if (originCenterCells == null || originCenterCells.size() < 1) {
-			LoggingManager.logUser("Error: No 'Origins' were specified by the layout or failed in initialization phase.\n"
+			LoggingManager.logDebug("Error: No 'Origins' were specified by the layout or failed in initialization phase.\n"
 					+ "There must be at least one 'Origin' whose the center does not lie within an obstacle.");
 		}
 		
