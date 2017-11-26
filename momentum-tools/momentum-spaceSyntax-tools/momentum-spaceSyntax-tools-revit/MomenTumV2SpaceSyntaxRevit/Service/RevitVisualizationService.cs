@@ -65,7 +65,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
             AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
             legendSettings.ShowLegend = true;
-            legendSettings.ShowUnits = false;
+            legendSettings.ShowUnits = true;
             legendSettings.ShowDataDescription = false;
 
             var analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(
@@ -100,9 +100,9 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
                 transaction.Start();
                 try
                 {
-                    var result = CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, face, face.Reference);
+                    CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, face, face.Reference);
                     transaction.Commit();
-                    return result;
+                    return Result.Succeeded;
                 }
                 catch (Exception e)
                 {
@@ -113,14 +113,25 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
             }
         }
 
-        public static Result CreateSpaceSyntaxAnalysisResult(Document doc, SpaceSyntax spaceSyntax, Face face, Reference faceReference)
+        /// <summary>
+        /// This method creates points from the space syntax meta data and maps the cell 
+        /// indices value to those points. 
+        /// Note: If the provided face was aquired by user selection, the face.Reference is null,
+        /// and the Reference, which is returned by the selection must be passed to this method.
+        /// </summary>
+        /// <param name="doc">the document of the active view</param>
+        /// <param name="spaceSyntax">the object parsed from xml</param>
+        /// <param name="face">the face of the a floor on which it i</param>
+        /// <param name="faceReference">the reference to the face</param>
+        /// <returns>whether the computation succeeded or was</returns>
+        public static void CreateSpaceSyntaxAnalysisResult(Document doc, SpaceSyntax spaceSyntax, Face face, Reference faceReference)
         {
             SpatialFieldManager sfm = SpatialFieldManager.GetSpatialFieldManager(doc.ActiveView);
             if (sfm == null)
             {
                 sfm = SpatialFieldManager.CreateSpatialFieldManager(doc.ActiveView, 1);
             }
-            
+
             var uvPts = new List<UV>();
             var doubleList = new List<double>();
             var valList = new List<ValueAtPoint>();
@@ -156,14 +167,9 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
             var values = new FieldValues(valList);
             int index = sfm.AddSpatialFieldPrimitive(faceReference);
 
-            var resultSchema = new AnalysisResultSchema(
-                // the name value of an AnalysisResultSchema must be unique, hence Date-Seconds
-                "Space Syntax from " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
-                "Space Syntax");
+            var resultSchema = CreateResultSchemaWithUnitNames();
 
             sfm.UpdateSpatialFieldPrimitive(index, points, values, sfm.RegisterResult(resultSchema));
-            
-            return Result.Succeeded;
         }
 
         /// <summary>
@@ -218,6 +224,24 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
             }
 
             return spaceSyntax.MinValue;
+        }
+
+        private static AnalysisResultSchema CreateResultSchemaWithUnitNames()
+        {
+            var resultSchema = new AnalysisResultSchema(
+                // the name value of an AnalysisResultSchema must be unique, hence Date-Seconds
+                "Space Syntax from " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"),
+                "Space Syntax");
+
+            var unitNames = new List<string>();
+            unitNames.Add("Points");
+
+            var multipliers = new List<double>();
+            multipliers.Add(1.0);
+
+            resultSchema.SetUnits(unitNames, multipliers);
+
+            return resultSchema;
         }
     }
 }

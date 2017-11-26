@@ -16,6 +16,7 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         Document doc = uiApp.ActiveUIDocument.Document;
         Application app = commandData.Application.Application;
 
+        // internal agreement: abuse KeyValuePair to pass plugin operation state and objects
         KeyValuePair<Result, SpaceSyntax> kvSpaceSyntax = FileOpenService.PromtUserForSpaceSyntaxXml();
         if (kvSpaceSyntax.Key != Result.Succeeded)
         {
