@@ -76,7 +76,6 @@ public class CsvPlaybackOperational extends WalkingModel {
 	@Override
 	public void callPedestrianBehavior(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 
-		try {
 		CsvPlaybackPedestrianExtensions extension = (CsvPlaybackPedestrianExtensions) pedestrian.getExtensionState(this); 
 		
 		// Get the data for pedestrian id
@@ -89,9 +88,9 @@ public class CsvPlaybackOperational extends WalkingModel {
 
 		double xNext = pedestrianDataSet.get(xIndex);
 		double yNext = pedestrianDataSet.get(yIndex);	
-		
-		double velocityXNext = (xNext - x) * simulationState.getTimeStepDuration();
-		double velocityYNext = (yNext - y) * simulationState.getTimeStepDuration();
+
+		double velocityXNext = (xNext - x); // distance m in timeStepDuration seconds
+		double velocityYNext = (yNext - y); // distance m in timeStepDuration seconds
 		double headingXNext = (xNext - x);
 		double headingYNext = (yNext - y);
 		
@@ -101,14 +100,9 @@ public class CsvPlaybackOperational extends WalkingModel {
 				GeometryFactory.createVector(headingXNext, headingYNext).getNormalized());
 	
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
-		extension.updatePedestrianSpace(pedestrian, newWalkingState);
+		extension.updatePedestrianSpace(pedestrian, newWalkingState, simulationState);
 		
 		pedestrian.setWalkingState(newWalkingState);
-		}
-		catch(Exception ex) {
-			
-			ex = null;
-		}
 	}
 
 	@Override

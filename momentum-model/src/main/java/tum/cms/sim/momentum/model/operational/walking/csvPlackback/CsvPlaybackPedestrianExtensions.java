@@ -14,10 +14,10 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	
-	private static int freeCode = 0;
-	private static int groupCode = 1;
-	private static int pedestrianCode = 2;
-	private static int obstacleCode = 3;
+	private static double freeCode = -0.25;
+	private static double groupCode = 0.0;
+	private static double pedestrianCode = 0.25;
+	private static double obstacleCode = 0.5;
 	
 	private boolean firstDataSet = true;
 	
@@ -29,10 +29,20 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		this.firstDataSet = firstDataSet;
 	}
 
+	private double distancePerception = 0.0;
+	
+	public double getDistancePerception() {
+		return distancePerception;
+	}
+
+	public void setDistancePerception(double distancePerception) {
+		this.distancePerception = distancePerception;
+	}
+	
 	private List<Double> perceptionDistanceSpace = new ArrayList<Double>();
 	private List<Double> perceptionVelocityXSpace = new ArrayList<Double>();
 	private List<Double> perceptionVelocityYSpace = new ArrayList<Double>();
-	private List<Integer> perceptionTypeSpace = new ArrayList<Integer>();
+	private List<Double> perceptionTypeSpace = new ArrayList<Double>();
 	
 	private Double pedestrianWalkingGoalX = 0.0;
 	private Double pedestrianWalkingGoalY = 0.0;
@@ -53,7 +63,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		return perceptionVelocityYSpace;
 	}
 
-	public List<Integer> getPerceptionTypeSpace() {
+	public List<Double> getPerceptionTypeSpace() {
 		return perceptionTypeSpace;
 	}
 
@@ -81,7 +91,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		return pedestrianVelocityYLast;
 	}
 
-	public void updatePerceptionSpace(IOperationalPedestrian pedestrian, PerceptionalModel perception, SimulationState simulationState) {
+	public void updatePerceptionSpace(IOperationalPedestrian pedestrian,PerceptionalModel perception, SimulationState simulationState) {
 		
 		perceptionDistanceSpace.clear();
 		perceptionVelocityXSpace.clear();
@@ -96,36 +106,46 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		// this collection is of constant size, null if no pedestrian was found
 		List<IPedestrian> pedestrianPositions = perception.getPerceptedPedestrianPositions(pedestrian, simulationState);
 		
+		// gives the walked distance between to time steps thus it is already in distance/timeStepDuration
+		// e.g. 5cm (/0.05sec), now we scale it to seconds = 5*20cm/1s = 1m/1s
+		// time scale
+		double scaleTime = 1.0/simulationState.getTimeStepDuration();
+		double scaleDistance = 1.0/perception.getPerceptionDistance();
+				
 		for(int iter = 0; iter < obstaclePositions.size(); iter++) {
 			
 			if(obstaclePositions.get(iter) != null) {
 				
-				perceptionDistanceSpace.add(pedestrianPosition.distance(obstaclePositions.get(iter)) - pedestrian.getBodyRadius());
-				perceptionVelocityXSpace.add(0.0);
-				perceptionVelocityYSpace.add(0.0);
-				perceptionTypeSpace.add(obstacleCode);
+				perceptionDistanceSpace.add((pedestrianPosition.distance(obstaclePositions.get(iter)) 
+						- pedestrian.getBodyRadius()) * scaleDistance);
+				perceptionVelocityXSpace.add(-pedestrian.getVelocity().getXComponent() * scaleTime);
+				perceptionVelocityYSpace.add(-pedestrian.getVelocity().getXComponent() * scaleTime);
+				perceptionTypeSpace.add(obstacleCode); 
 			}
 			else if(pedestrianPositions.get(iter) != null) {
 				
 				IPedestrian other = pedestrianPositions.get(iter);
-				perceptionDistanceSpace.add(pedestrianPosition.distance(pedestrianPositions.get(iter).getPosition()) 
-						- (pedestrian.getBodyRadius() + other.getBodyRadius()));
-				perceptionVelocityXSpace.add(other.getVelocity().getXComponent());
-				perceptionVelocityYSpace.add(other.getVelocity().getYComponent());
+				perceptionDistanceSpace.add((pedestrianPosition.distance(pedestrianPositions.get(iter).getPosition()) 
+						- pedestrian.getBodyRadius()) * scaleDistance);
+				perceptionVelocityXSpace.add(other.getVelocity().getXComponent()  * scaleTime); //- pedestrian.getVelocity().getXComponent()) * scaleTime); 
+				perceptionVelocityYSpace.add(other.getVelocity().getYComponent()  * scaleTime); //- pedestrian.getVelocity().getYComponent()) * scaleTime);
 				perceptionTypeSpace.add(other.getGroupId() == pedestrian.getGroupId() ? groupCode : pedestrianCode);
 			}
 			else {
 			
-				perceptionDistanceSpace.add(perception.getPerceptionDistance());
+				perceptionDistanceSpace.add(perception.getPerceptionDistance() * scaleDistance);
 				perceptionVelocityXSpace.add(0.0);
 				perceptionVelocityYSpace.add(0.0);
-				perceptionTypeSpace.add(freeCode);
+				perceptionTypeSpace.add(freeCode); 
 			}
 		}
 	}
 
-	public void updatePedestrianSpace(IOperationalPedestrian pedestrian, WalkingState newWalkingStat) {
-	
+	public void updatePedestrianSpace(IOperationalPedestrian pedestrian, WalkingState newWalkingStat, SimulationState simulationState) {
+		// gives the walked distance between to time steps thus it is already in distance/timeStepDuration
+		// e.g. 5cm (/0.05sec), now we scale it to seconds = 5*20cm/1s = 1m/1s
+		// time scale
+		double scaleTime = 1.0/simulationState.getTimeStepDuration();
 		if(pedestrian.getNextWalkingTarget() != null) {
 			
 			Vector2D towardsGoal = pedestrian.getNextWalkingTarget().subtract(pedestrian.getPosition()).getNormalized();
@@ -133,9 +153,9 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			pedestrianWalkingGoalY = towardsGoal.getYComponent();
 		}
 		
-		pedestrianVelocityX = newWalkingStat.getWalkingVelocity().getXComponent();
-		pedestrianVelocityY = newWalkingStat.getWalkingVelocity().getYComponent();
-		pedestrianVelocityXLast = pedestrian.getVelocity().getXComponent();
-		pedestrianVelocityYLast = pedestrian.getVelocity().getYComponent();
+		pedestrianVelocityX = newWalkingStat.getWalkingVelocity().getXComponent() * scaleTime;
+		pedestrianVelocityY = newWalkingStat.getWalkingVelocity().getYComponent() * scaleTime;
+		pedestrianVelocityXLast = pedestrian.getVelocity().getXComponent() * scaleTime;
+		pedestrianVelocityYLast = pedestrian.getVelocity().getYComponent() * scaleTime;
 	}
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphs>
+	<graphModel name="routing" id="0">
+		<!-- The fromConfig operation loads a graph that is present in the layout. -->
+		<graphOperation id="0" name="fromConfig" type="FromConfiguration" order="0">
+			<property name="graphId" type="Integer" value="0"/>
+			<!-- The operation will associate known areas from the layout to graph nodes. -->
+			<!-- Use precisionSeed or insideAreaSeed. -->
+			<!-- In case of precisionSeed a vertex will be associated to an area if it is close its the area's center. -->
+			<!-- In case of insideAreaSeed the first vertex found inside the area will be the area's vertex. -->
+			<property name="precisionSeed" type="Double" value="0.1"/>
+			<property name="insideAreaSeed" type="Boolean" value="True"/>
+			</graphOperation>
+	</graphModel>
+	
+	<graphModel name="routing" id="1">
+		<!-- The toConfiguration operation stores a graph of the simulation in the layout. -->
+		<!-- Using the layout writer, the graph can be saved for lated users. -->
+		<graphOperation id="0" name="toConfiguration" type="ToConfiguration" order="0">
+			<property name="scenarioId" type="Integer" value="0"/>
+		</graphOperation>
+	</graphModel>
+</graphs>

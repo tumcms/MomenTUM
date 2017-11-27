@@ -493,20 +493,8 @@
 		<!-- Therefore, all models are directly added to the strategicModels tag. -->
 		<!-- The strategical model has an unique id, a type a user-friendly name, and a perception model id reference. -->
 		<strategical id="9" name="odMatrx" type="ODMatrix" perceptualModel="0">
-			<complexProperty name="originDestination" type="Matrix" valueType="Double">
-				<row index="0">
-					<column index="1" value="0.1"/>
-					<column index="2" value="0.4"/>
-					<column index="3" value="0.5"/>
-				</row>
-				<row index="1">
-					<column index="2" value="0.1"/>
-					<column index="3" value="0.9"/>
-				</row>
-				<row index="2">
-					<column index="1" value="0.1"/>
-					<column index="3" value="0.9"/>
-				</row>
+			<complexProperty name="originDestination" type="CsvMatrix" valueType="Double">
+				<entry file="PATH TO ODMatrix.csv" separator=";"/>
 			</complexProperty>
 			<complexProperty name="behaviorType" type="List" valueType="String">
 			    <entry index="1" value="Staying"/>
@@ -528,7 +516,7 @@
 	<!-- There is always a dummy model, e.g. noSearching or noRouting. -->
 	<!-- Such dummy models provide most basic and unrealistic behavior for a model type. -->
 	<!-- This exists for all models (standing, walking, routing, staying, queuing and searching. -->
-	<!-- Dummy models are of type "noBehavior". -->
+	<!-- Dummy models are of type "no'Behavior'". -->
 	<!-- These models are helpful to test specific models only, e.g. routing model without proper walking. -->
 	
 	<!-- *********************************************** -->
@@ -694,7 +682,7 @@
 			<!-- The target is a file in the file system -->
 			<writerTarget targetType="File">
 				<!-- The place to save the file. -->
-				<property name="file" type="File" value="./2017_Pedestrian_$LOOP$.csv"/>
+				<property name="file" type="File" value="./2017_Pedestrian.csv"/>
 				<!-- Create an index file for fast visualization -->
 				<property name="index" type="Boolean" value="True"/> 
 			</writerTarget>
@@ -739,9 +727,9 @@
 		
 		<!-- This writes stores the occupancy data from the analysis model id=0. -->
 		<!-- Why? The outputSource is of type Analysis. -->
-		<!-- The data is exists for each call=2 time-step (see analysis model occupancy) -->
+		<!-- The data exists only for each call=2 time-step (see analysis model occupancy) -->
 		<outputWriter id="2" name="occupancyAnalysisOutput">
-			<property name="call" type="Integer" value="2"/> <!-- Every 1 seconds -->
+			<property name="call" type="Integer" value="2"/>
 			<property name="buffer" type="Integer" value="100"/>
 			<!-- Data into file -->
 			<writerTarget targetType="File">
@@ -763,9 +751,9 @@
 		
 		<!-- This writer stores the density data form the analysis model id=1. -->
 		<!-- Why? The outputSource is of type Analysis. -->
-		<!-- The data is exists for each call=10 time-step (see analysis model density) -->
+		<!-- The data exists only for each call=10 time-step (see analysis model density) -->
 		<outputWriter id="3" name="densityAnalysisOutput">
-			<property name="call" type="Integer" value="10"/> <!-- Every 5 seconds -->
+			<property name="call" type="Integer" value="10"/>
 			<property name="buffer" type="Integer" value="1000"/>
 			<!-- Data into file -->
 			<writerTarget targetType="File">

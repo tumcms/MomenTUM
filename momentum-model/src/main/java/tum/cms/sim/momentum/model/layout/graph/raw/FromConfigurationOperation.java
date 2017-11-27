@@ -54,6 +54,7 @@ public class FromConfigurationOperation extends GraphOperation {
 
 	private static String graphIdName = "graphId";
 	private static String precisionSeedName = "precisionSeed";
+	private static String insideAreaSeedName = "insideAreaSeed";
 	
 	private ArrayList<ScenarioConfiguration> configurations = null;
 	
@@ -67,6 +68,8 @@ public class FromConfigurationOperation extends GraphOperation {
 		
 		Integer graphId = this.properties.getIntegerProperty(graphIdName);
 		Double precisionSeed = this.properties.getDoubleProperty(precisionSeedName);
+		Boolean insideAreaSeed = this.properties.getBooleanProperty(insideAreaSeedName);
+		
 		GraphScenarioConfiguration graphConfiguration = null;
 		
 		for(GraphScenarioConfiguration graphScenarioConfiguration : configurations.get(0).getGraphs()) {
@@ -92,15 +95,40 @@ public class FromConfigurationOperation extends GraphOperation {
 			
 			boolean isSeed = this.scenarioManager.getAreas()
 					.stream()
-					.filter(area -> FastMath.abs(area.getPointOfInterest().distance(center)) < precisionSeed)
+					.filter(area -> {
+						
+						 if(precisionSeed != null && FastMath.abs(area.getPointOfInterest().distance(center)) < precisionSeed) {
+							 
+							 return true;
+						 }
+						 else if (insideAreaSeed != null && insideAreaSeed && area.getGeometry().contains(center)) {
+							 
+							 return true;
+						 }
+						 
+						 return false;
+					 })
 					.count() > 0;	
 					
 			if(isSeed) {
 				
 				Area area = this.scenarioManager.getAreas()
 						.stream()
-						.filter(existingArea -> FastMath.abs(existingArea.getPointOfInterest().distance(center)) < precisionSeed &&
-								!alreadySeedAreas.contains(existingArea))
+						.filter(existingArea -> {
+			
+							if(!alreadySeedAreas.contains(existingArea)) {
+								
+								if(precisionSeed != null && FastMath.abs(existingArea.getPointOfInterest().distance(center)) < precisionSeed) {
+									 
+									 return true;
+								}
+								else if (insideAreaSeed != null && insideAreaSeed && existingArea.getGeometry().contains(center)) {
+									 
+									 return true;
+								}
+							}
+							return false;
+						})
 						.findFirst()
 						.get();
 				
