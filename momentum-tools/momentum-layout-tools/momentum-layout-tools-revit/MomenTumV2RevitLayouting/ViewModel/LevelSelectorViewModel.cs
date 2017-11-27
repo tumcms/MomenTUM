@@ -1,13 +1,14 @@
 ﻿using Autodesk.Revit.DB;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using MomenTumV2SpaceSyntaxRevit.Service;
-using MomenTumV2SpaceSyntaxRevit.View;
+using MomenTumV2RevitLayouting.Service;
+using MomenTumV2RevitLayouting.View;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 
-namespace MomenTumV2SpaceSyntaxRevit.ViewModel
+namespace MomenTumV2RevitLayouting.ViewModel
 {
     class LevelSelectorViewModel : ViewModelBase
     {
@@ -27,7 +28,7 @@ namespace MomenTumV2SpaceSyntaxRevit.ViewModel
         }
 
         private static readonly string _textBoxTextLevelSelect = "Please select a Level from the dropdown. "
-                        + "Press 'OK' to start the Space Syntax computation for the selected level.";
+                        + "Press 'OK' to continue.";
         public string TextBoxTextLevelSelect
         {
             get { return _textBoxTextLevelSelect; }
@@ -44,6 +45,44 @@ namespace MomenTumV2SpaceSyntaxRevit.ViewModel
         {
             get { return _buttonContentCancel; }
         }
+
+        private static readonly string _textBoxTextSelectAllLevels = "Select All Levels";
+        public string TextBoxTextSelectAllLevels
+        {
+            get { return _textBoxTextSelectAllLevels; }
+        }
+
+        private bool _isCheckedAllLevelsSelected = false;
+        public bool IsCheckedAllLevelsSelected
+        {
+            get { return _isCheckedAllLevelsSelected; }
+            set
+            {
+                if (SelectedLevel == null)
+                {
+                    if (value == true)
+                    {
+                        IsEnabledOKButton = true;
+                        IsEnabledComboBox = false;
+                    }
+                    else
+                    {
+                        IsEnabledOKButton = false;
+                        IsEnabledComboBox = true;
+                    }
+                }
+                else
+                {
+                    if (value == true) { IsEnabledComboBox = false; }
+                    else { IsEnabledComboBox = true; }
+                }
+
+                Set(ref _isCheckedAllLevelsSelected, value);
+            }
+        }
+
+        private bool _isEnabledComboBox = true;
+        public bool IsEnabledComboBox { get { return _isEnabledComboBox; } set { Set(ref _isEnabledComboBox, value); } }
 
         private ObservableCollection<Level> _levels = new ObservableCollection<Level>();
         public ObservableCollection<Level> Levels
@@ -102,8 +141,33 @@ namespace MomenTumV2SpaceSyntaxRevit.ViewModel
         {
             if (SelectedLevel != null)
             {
-                UserLevelSelectService.LevelSelectedByUser = SelectedLevel;
+                UserInteractionService.SelectedLevels.Add(SelectedLevel);
             }
+            if (IsCheckedAllLevelsSelected == true)
+            {
+                UserInteractionService.SelectedLevels.AddRange(Levels);
+            }
+
+            _hostRef.Close();
+        }
+
+        private ICommand _clickAddAllLevelsButton;
+        public ICommand ClickAddAllLevelsButton
+        {
+            get
+            {
+                if (_clickAddAllLevelsButton == null)
+                {
+                    _clickAddAllLevelsButton = new RelayCommand(OnClickSelectAllLevelsButton);
+                }
+
+                return _clickAddAllLevelsButton;
+            }
+        }
+
+        private void OnClickSelectAllLevelsButton()
+        {
+            UserInteractionService.SelectedLevels.AddRange(Levels);
 
             _hostRef.Close();
         }

@@ -93,11 +93,10 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 	 * 
 	 * Developer note: This method need to supplement the CellIndex with an according 
 	 * value from the lattice/grid. This is because CellIndex class stores the indices 
-	 * in a generic class (Pair<Integer, Integer>) which can not be handeled properly 
+	 * in a generic class (Pair<Integer, Integer>) which can not be handled properly 
 	 * by XStream.
 	 * 
-	 * @param xStream an instance of xStream that is used to convert the object to a string
-	 * @param lattice
+	 * @param lattice the lattice associated with the space syntax operation
 	 */
 	private XStream configureXStream(ILattice lattice) {
 		

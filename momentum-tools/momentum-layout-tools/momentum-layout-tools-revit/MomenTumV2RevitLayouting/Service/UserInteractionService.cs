@@ -8,11 +8,27 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml.Serialization;
+using Autodesk.Revit.DB;
+using MomenTumV2RevitLayouting.View;
 
 namespace MomenTumV2RevitLayouting.Service
 {
     class UserInteractionService
     {
+        public static List<Level> SelectedLevels { get; set; } = new List<Level>();
+
+        public static List<Level> LetUserPickLevels(Document doc, RevitObjectManager rom)
+        {
+            var levelSelector = new LevelSelectorHost();
+            levelSelector.InitializeLevelListBox(rom.GetAllLevels(doc));
+            // clear list from previous selection in case of exporting multiple times
+            SelectedLevels.Clear(); 
+            levelSelector.ShowDialog();
+            
+            // Levels were added by the dialog
+            return SelectedLevels;
+        }
+
         public void SaveSimulatorToXml(Simulator simulator)
         {
             var serializer = new XmlSerializer(typeof(Simulator));

@@ -55,8 +55,6 @@ import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 
 public class LatticeModel extends Callable implements IHasProperties {
 	
-	private static String addAdditionalCellsName = "addAdditionalCells";
-	
    	protected ScenarioManager scenarioManager = null;
 	protected ILattice lattice = null;
 	
@@ -90,33 +88,16 @@ public class LatticeModel extends Callable implements IHasProperties {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
-		Boolean addAdditionalCells = this.properties.getBooleanProperty(this.addAdditionalCellsName);
-		
-		if (addAdditionalCells == null || addAdditionalCells == false) {
-			this.lattice = LatticeTheoryFactory.createLattice(				
-					latticeConfiguration.getName(), 
-					latticeConfiguration.getBehaviorType(),
-					latticeConfiguration.getLatticeType(), 
-					latticeConfiguration.getNeigborhoodType(), 
-					latticeConfiguration.getCellEdgeSize(), 
-					scenarioManager.getScenarios().getMaxX(), 
-					scenarioManager.getScenarios().getMinX(), 
-					scenarioManager.getScenarios().getMaxY(), 
-					scenarioManager.getScenarios().getMinY());
-		} else {
-			this.lattice = LatticeTheoryFactory.createLattice(				
+		this.lattice = LatticeTheoryFactory.createLattice(				
 				latticeConfiguration.getName(), 
 				latticeConfiguration.getBehaviorType(),
 				latticeConfiguration.getLatticeType(), 
 				latticeConfiguration.getNeigborhoodType(), 
-				latticeConfiguration.getCellEdgeSize(), 
-				scenarioManager.getScenarios().getMaxX() + latticeConfiguration.getCellEdgeSize(), 
-				scenarioManager.getScenarios().getMinX() - latticeConfiguration.getCellEdgeSize(), 
-				scenarioManager.getScenarios().getMaxY() + latticeConfiguration.getCellEdgeSize(), 
-				scenarioManager.getScenarios().getMinY() - latticeConfiguration.getCellEdgeSize());
-		}
-		
-		
+				latticeConfiguration.getCellEdgeSize(),
+				scenarioManager.getScenarios().getMaxX(), 
+				scenarioManager.getScenarios().getMinX(), 
+				scenarioManager.getScenarios().getMaxY(), 
+				scenarioManager.getScenarios().getMinY());
 		
 		lattice.setPropertyBackPack(this.properties);
 		Unique.generateUnique(lattice, latticeConfiguration);		
