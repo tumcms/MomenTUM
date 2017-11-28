@@ -59,6 +59,7 @@ The View and ViewModel folder represent graphical user interface for the level p
 If any more external librarys (or nuget packages) are needed, you have to add them into the ilmerge post-build process. Otherwise you have to copy the references by hand into the plugin folder of Revit and make sure the paths are correct.
 
 ## Developer Todos
+* Fix non-deterministic 'face.Reference' error when visualizing results on floor plans. ([Hint](http://thebuildingcoder.typepad.com/blog/2016/04/stable-reference-string-magic-voodoo.html))
 * Find a way to get the floor on which a room is placed in order to have a visualization for every room.
 * Combine the SpaceSyntax and Layouting Plugin into one Project to simplify the visualization workflow  and register a Ribbon.
 
