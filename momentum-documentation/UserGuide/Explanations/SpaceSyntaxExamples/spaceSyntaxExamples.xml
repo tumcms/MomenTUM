@@ -25,6 +25,7 @@
 	
 	<lattices>
 		<!-- A Space Syntax operation needs a lattice which has at least the following configuration. -->
+		<!-- Also works with behaviorType="Unsynchronized"-->
 		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neigborhoodType="Touching"/>
 	</lattices>
 	
