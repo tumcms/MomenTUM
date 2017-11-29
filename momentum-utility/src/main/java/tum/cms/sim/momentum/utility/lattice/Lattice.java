@@ -1519,6 +1519,18 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
         int y_inc = towards.getRow() > from.getRow() ? 1 : -1;
         
         int error = dx - dy;
+        
+        if (error > 0) {
+        	
+            x += x_inc;
+            error -= dy;
+        }
+        else {
+        	
+            y += y_inc;
+            error += dx;
+        }
+        
         dx *= 2;
         dy *= 2;
         double value = -1.0;

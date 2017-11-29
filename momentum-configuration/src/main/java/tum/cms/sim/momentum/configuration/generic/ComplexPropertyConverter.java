@@ -85,7 +85,7 @@ public class ComplexPropertyConverter implements Converter {
 
 		case Matrix:
 
-			HashMap<Integer, ArrayList<Object>> matrix = comPro.getValueAsMatrix();
+			LinkedHashMap<Integer, ArrayList<Object>> matrix = comPro.getValueAsMatrix();
 
 			for(int i = 0; i < matrix.size(); i++) {
 
@@ -127,6 +127,7 @@ public class ComplexPropertyConverter implements Converter {
 			}
 
 			break;
+			
 		case LinkedHashMap:
 			LinkedHashMap<Integer,Object> linkedHashMap = (LinkedHashMap<Integer, Object>) comPro.getValueAsLinkedHashMap();
 
@@ -420,7 +421,8 @@ public class ComplexPropertyConverter implements Converter {
 					
 					String subFileName = reader.getAttribute("file");
 					String subSeparator = reader.getAttribute("separator");
-							
+					String subComment = reader.getAttribute("comment");
+					
 					File subCsvFile = null;
 					
 					try {
@@ -429,6 +431,10 @@ public class ComplexPropertyConverter implements Converter {
 						List<String> input = Files.readAllLines(subCsvFile.toPath());
 						
 						for(String line : input) {	
+							
+							if(subComment != null && line.startsWith(subComment)) {
+								continue;
+							}
 							
 							String [] items = line.toString().split(subSeparator);		
 							String itemValue = null;

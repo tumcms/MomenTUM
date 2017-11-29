@@ -61,7 +61,7 @@ public class PropertyBackPack extends Unique {
 	
 	private LinkedHashMap<String, ArrayList<ArrayList<Object>>> listOfListsProperty = new LinkedHashMap<String, ArrayList<ArrayList<Object>>>();
 	
-	private LinkedHashMap<String, HashMap<Integer, ArrayList<Object>>> matrixProperties = new LinkedHashMap<String, HashMap<Integer, ArrayList<Object>>>();
+	private LinkedHashMap<String, LinkedHashMap<Integer, ArrayList<Object>>> matrixProperties = new LinkedHashMap<String, LinkedHashMap<Integer, ArrayList<Object>>>();
 
 	private LinkedHashMap<String, LinkedHashMap<Integer, Object>> linkedHashMapProperties = new LinkedHashMap<>();
 	
@@ -172,7 +172,7 @@ public class PropertyBackPack extends Unique {
 			
 			case Matrix:
 				
-				HashMap<Integer, ArrayList<Object>> propertyMatrix = complexPropertyConfiguration.getValueAsMatrix();
+				LinkedHashMap<Integer, ArrayList<Object>> propertyMatrix = complexPropertyConfiguration.getValueAsMatrix();
 			
 				if(propertyMatrix != null) {
 				
@@ -349,7 +349,7 @@ public class PropertyBackPack extends Unique {
 			return null;
 		}
 		
-		HashMap<Integer, ArrayList<T>> resultMatrix = new HashMap<Integer, ArrayList<T>>();
+		LinkedHashMap<Integer, ArrayList<T>> resultMatrix = new LinkedHashMap<Integer, ArrayList<T>>();
 		matrix.forEach((raw,column) -> resultMatrix.put(raw, (ArrayList<T>)column));
 		
 		return resultMatrix;

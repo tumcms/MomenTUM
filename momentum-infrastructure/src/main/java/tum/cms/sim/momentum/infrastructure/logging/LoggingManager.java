@@ -74,6 +74,7 @@ import tum.cms.sim.momentum.utility.generic.IUnique;
  */
 public class LoggingManager {
 
+	private static boolean loggerInitalized = false;
 	private static ArrayList<Logger> loggers = new ArrayList<>();
 	private LoggingManager() {}
 	/**
@@ -86,6 +87,13 @@ public class LoggingManager {
 			throws BadConfigurationException {
 	
 		LoggingManager.logDebug(LoggerStrings.LogEntry);
+		
+		if(loggerInitalized) {
+			
+			LoggingManager.logDebug(LoggerStrings.LogExists);
+			return;
+		}
+		
 		boolean doesConsoleLoggerExitsts = false;
 	    int nameIter = 0;
 	    
@@ -147,6 +155,8 @@ public class LoggingManager {
 
 			}
 	    }
+	    
+	    loggerInitalized = true;
 	}
 
 	/**

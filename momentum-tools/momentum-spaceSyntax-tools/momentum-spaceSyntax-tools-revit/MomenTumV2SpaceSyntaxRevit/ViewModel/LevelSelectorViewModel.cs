@@ -3,19 +3,15 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MomenTumV2SpaceSyntaxRevit.Service;
 using MomenTumV2SpaceSyntaxRevit.View;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace MomenTumV2SpaceSyntaxRevit.ViewModel
 {
     class LevelSelectorViewModel : ViewModelBase
     {
-        LevelSelectorHost _hostRef;
+        private LevelSelectorHost _hostRef;
         public LevelSelectorViewModel(LevelSelectorHost hostRef, List<Level> levels)
         {
             _hostRef = hostRef;
@@ -26,31 +22,31 @@ namespace MomenTumV2SpaceSyntaxRevit.ViewModel
         {
             foreach (Level level in levels)
             {
-                this.levels.Add(level);
+                this.Levels.Add(level);
             }
         }
 
-        private static string _TEXTBOX_TEXT_LEVEL_SELECT = "Please select a Level from the dropdown. "
+        private static readonly string _textBoxTextLevelSelect = "Please select a Level from the dropdown. "
                         + "Press 'OK' to start the Space Syntax computation for the selected level.";
-        public string TEXTBOX_TEXT_LEVEL_SELECT
+        public string TextBoxTextLevelSelect
         {
-            get { return _TEXTBOX_TEXT_LEVEL_SELECT; }
+            get { return _textBoxTextLevelSelect; }
         }
 
-        private static string _BUTTON_CONTENT_OK = "OK";
-        public string BUTTON_CONTENT_OK
+        private static readonly string _buttonContentOk = "OK";
+        public string ButtonContentOk
         {
-            get { return _BUTTON_CONTENT_OK; }
+            get { return _buttonContentOk; }
         }
 
-        private static string _BUTTON_CONTENT_CANCEL = "Cancel";
-        public string BUTTON_CONTENT_CANCEL
+        private static readonly string _buttonContentCancel = "Cancel";
+        public string ButtonContentCancel
         {
-            get { return _BUTTON_CONTENT_CANCEL; }
+            get { return _buttonContentCancel; }
         }
 
         private ObservableCollection<Level> _levels = new ObservableCollection<Level>();
-        public ObservableCollection<Level> levels
+        public ObservableCollection<Level> Levels
         {
             get { return _levels; }
         }
@@ -69,31 +65,31 @@ namespace MomenTumV2SpaceSyntaxRevit.ViewModel
         private bool _isEnabledOKButton = false;
         public bool IsEnabledOKButton { get { return _isEnabledOKButton; } set { Set(ref _isEnabledOKButton, value); } }
 
-        private ICommand _ClickOKButton;
+        private ICommand _clickOKButton;
         public ICommand ClickOKButton
         {
             get
             {
-                if (_ClickOKButton == null)
+                if (_clickOKButton == null)
                 {
-                    _ClickOKButton = new RelayCommand(OnClickOKButton);
+                    _clickOKButton = new RelayCommand(OnClickOKButton);
                 }
 
-                return _ClickOKButton;
+                return _clickOKButton;
             }
         }
 
-        private ICommand _ClickCancelButton;
+        private ICommand _clickCancelButton;
         public ICommand ClickCancelButton
         {
             get
             {
-                if (_ClickCancelButton == null)
+                if (_clickCancelButton == null)
                 {
-                    _ClickCancelButton = new RelayCommand(OnClickCancelButton);
+                    _clickCancelButton = new RelayCommand(OnClickCancelButton);
                 }
 
-                return _ClickCancelButton;
+                return _clickCancelButton;
             }
         }
 
@@ -106,7 +102,7 @@ namespace MomenTumV2SpaceSyntaxRevit.ViewModel
         {
             if (SelectedLevel != null)
             {
-                RevitUtils.LevelSelectedByUser = SelectedLevel;
+                UserLevelSelectService.LevelSelectedByUser = SelectedLevel;
             }
 
             _hostRef.Close();

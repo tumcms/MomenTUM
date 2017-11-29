@@ -12,12 +12,12 @@
 		 scenario, the scenario id that points to the layout in which the origin is
 		 seed, the seed id that provides the initial properties of all generated pedestrians
 		 
-		 However, the generator type "Instant" and "Multiple" do not have the origin id
+		 However, the generator type "Instant", "Csv", and "Multiple" do not have the origin id
 		  -->
 	<generator id="0" name="myGeneratorName" type="Plan" scenario="0" origin="0" seed="0">
 	
 		<!-- Based on the type of generator the contents of the generator is different. -->
-		<!-- However, there are some property that are valid for all generators. -->
+		<!-- However, there are some property that are valid for most generators. -->
 		
 		<!-- The startTime provides a time in seconds. This is the time the generator may starts create pedestrians. -->
 		<!-- The generator type "External" and "Instant" do not have the startTime. -->
@@ -235,7 +235,55 @@
 			<entry file="./startPositions.csv" separator=";"/>
 		</complexProperty>
 	</generator>
+	
+	<!-- This is an example of an Csv generator. It does not have an origin id. -->
+	<!-- The csv generator creates multiple pedestrian at the start of the simulation. -->
+	<!-- Thus, it is quite similar to the Instant generator. -->
+	<!-- However, Csv generator is able define the input types of the Csv and therefore is more flexible. -->
+	<!-- The Csv generator is also able to generated pedestrians based on time steps and positions. -->
+	<!-- This means that the Csv generator will check if the input for a new time step comprises a new pedestrian and generate it. -->
+	<generator id="5" name="generator" type="Csv" scenario="0" seed="0">
+		<!-- The Csv generator does not have maximalPedestrians, safetyDistance or a geometryType-->
 		
+		<!-- The startTime provides a time in seconds. This is the time the generator may starts create pedestrians. -->
+		<property name="startTime" type="Double" value="0"/>
+		
+		<!-- The endTime provides a time in seconds. -->
+		<!-- This is the time the generator stops to generate pedestrians. -->
+		<property name="endTime" type="Double" value="Infinity"/> <!-- Yes you can use java style doubles definitions. -->
+		
+		<!-- Typically, use a CsvMatrix to provide the pedestrian data. -->
+		<!-- The content of the CsvMatrix contains input data that should be used to generated pedestrians. -->
+		<!-- The structure is defined in csvMapping property. -->
+		<complexProperty name="csvInput" type="CsvMatrix" valueType="Double">
+			<entry file="./inputMatrix.csv" separator=";" comment="#"/>
+			<!-- the separator defines the value in which the data is organized -->
+			<!-- the comment enables to skip lines that start with that value -->
+		</complexProperty>
+		
+		<!-- The Csv mapping enables the user to define which header of mapped to MomenTUM pedestrian data types. -->
+		<!-- The value of entries define the type of MomenTUM and the index where the item is in the input matrix. -->
+		<!-- In case no header exists, the value is not used (but may be helpful). -->
+		<!-- Use the index of the csvMapping to define the position of the data type in the csv file. -->
+		<!-- You can use the MomenTUM types: id, x, y, timeStep -->
+		<!-- An example: -->
+		<complexProperty name="csvMapping" type="List" valueType="String"> 
+			<entry index="0" value="id"/> 
+			<entry index="1" value="timeStep"/> 
+			<entry index="2" value="x"/>
+			<entry index="3" value="y"/>
+		</complexProperty>
+		
+		<!-- Set containsHeader to true if the csv data has a header. -->
+		<property name="containsHeader" type="Boolean" value="False"/>
+		
+		<!-- Typically the timeStep of the input data are not aligned with the simulation timeStep. -->
+		<!-- E.g. in the data 1 means 1/25 seconds from pedestrian tracing data but the simulator has 1 timeStep = 1/10 seconds. -->
+		<!-- In order to compute the differences, use the timeStepMapping property.-->
+		<!-- The values defines the length of a time step of the input data in seconds. -->
+		<property name="timeStepMapping" type="Double" value="0.04"/>
+	</generator>
+	
 	<!-- This is a Multiple generator example. -->
 	<!-- A Multiple generator helps you to define multiple identical generators for multiple origins. -->
 	<!-- This concept works for Plan, Distribution and Stock generator types. -->
@@ -283,7 +331,7 @@
 			<complexProperty name="interval" type="List" valueType="Double">
 				<entry index="0" value="0"/>
 				<entry index="1" value="50"/>  
-			</complexProperty>		
+			</complexProperty>
 			<complexProperty name="percentage" type="List" valueType="Double">
 				<entry index="0" value="1.0"/>
 				<entry index="1" value="0.0"/>

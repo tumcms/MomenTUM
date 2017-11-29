@@ -18,11 +18,11 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="{Binding TEXTBOX_TEXT_LEVEL_SELECT}"
+        <TextBlock Text="{Binding TextBoxTextLevelSelect}"
                    Grid.ColumnSpan="3" Margin="15,20,15,10" Background="White"
                    TextWrapping="WrapWithOverflow" FontSize="14"
                    />
-        <ComboBox ItemsSource="{Binding levels, Mode=OneWay}" 
+        <ComboBox ItemsSource="{Binding Levels, Mode=OneWay}" 
                  SelectedItem="{Binding SelectedLevel, Mode=TwoWay}"
                  Grid.Row="1" Grid.ColumnSpan="3" 
                  Margin="30,10,30,10">
@@ -34,14 +34,14 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <Button Content="{Binding BUTTON_CONTENT_CANCEL}" 
+        <Button Content="{Binding ButtonContentCancel}" 
                 Command="{Binding ClickCancelButton}"
                 Grid.Row="2" Grid.Column="1" 
                 Margin="15,10,15,10"
                 MinHeight="20" MinWidth="80"
                 MaxHeight="20" MaxWidth="80"
                 FontSize="12" FontWeight="SemiBold"/>
-        <Button Content="{Binding BUTTON_CONTENT_OK}" 
+        <Button Content="{Binding ButtonContentOk}" 
                 Command="{Binding ClickOKButton}"
                 IsEnabled="{Binding IsEnabledOKButton}"
                 Grid.Row="2" Grid.Column="2" 
