@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -23,7 +23,7 @@ public class CognitiveRoutingModel extends RoutingModel {
 	private HashMap<Integer, CognitiveRoutingAlgorithm> cognitiveRoutingAlgorithms = null;
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		CognitiveRoutingExtension pedestrianExtension = new CognitiveRoutingExtension();
 		

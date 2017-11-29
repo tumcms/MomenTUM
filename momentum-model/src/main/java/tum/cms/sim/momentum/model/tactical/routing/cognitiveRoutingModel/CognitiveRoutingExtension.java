@@ -3,10 +3,10 @@ package tum.cms.sim.momentum.model.tactical.routing.cognitiveRoutingModel;
 import java.util.Collection;
 import java.util.HashSet;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.utility.graph.Vertex;
 
-public class CognitiveRoutingExtension implements IPedestrianExtansion {
+public class CognitiveRoutingExtension implements IPedestrianExtension {
 
 	/**
 	 * Defines a distribution which is used to model the pedestrians reactivity

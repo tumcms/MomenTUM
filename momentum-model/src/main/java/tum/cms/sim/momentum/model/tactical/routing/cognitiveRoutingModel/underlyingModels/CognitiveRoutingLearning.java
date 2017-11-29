@@ -7,11 +7,11 @@ import java.util.Set;
 import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.model.layout.lattice.LatticeModel;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.routing.cognitiveRoutingModel.CognitiveRoutingConstants;
 import tum.cms.sim.momentum.model.tactical.routing.cognitiveRoutingModel.CognitiveRoutingExtension;
 import tum.cms.sim.momentum.utility.graph.Vertex;
@@ -37,7 +37,7 @@ public class CognitiveRoutingLearning {
 		depthMapLattice = LatticeTheoryFactory.createLattice(
 				"depthMapLattice",
 				LatticeType.Quadratic,
-				NeighbourhoodType.Edge,
+				NeighborhoodType.Edge,
 				depthMapAccuray,
 				scenarioManager.getScenarios().getMaxX(), 
 				scenarioManager.getScenarios().getMinX(),
@@ -51,7 +51,8 @@ public class CognitiveRoutingLearning {
 		connectedCells.parallelStream()
 			.forEach(start -> connectedCells.forEach(end -> {
 				
-				if (depthMapLattice.breshamLineCast(start, end, Integer.MAX_VALUE)) {
+				if (depthMapLattice.breshamLineCast(start, end)) {
+					
 					depthMapLattice.increaseCellNumberValue(start, 1.0);
 				}
 			}));
@@ -87,7 +88,7 @@ public class CognitiveRoutingLearning {
 		
 		closeVertices.stream().forEach(closeVertex -> {
 			
-			if(perception.isVisible(pedestrian.getPosition(), closeVertex)) {
+			if(perception.isVisible(pedestrian, closeVertex)) {
 				
 				learnedVertices.add(closeVertex);
 			}
