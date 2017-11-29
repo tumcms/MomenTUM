@@ -206,7 +206,12 @@ public class PedestrianWriterSource extends SingleSetWriterSource {
 	public String getStartLocationId(String format) {
 		return String.format(format, currentPedestrian.getStartLocationId());
 	}
-
+	
+	private String getTimeStepDuration(String format) {
+		
+		return String.format(format, this.timeManager.getTimeStepDuration());
+	}
+	
 	@Override
 	public String readSingleValue(String outputTypeName) {
 
@@ -216,7 +221,10 @@ public class PedestrianWriterSource extends SingleSetWriterSource {
 		String format = formatter.getFormat();
 		
 		switch(outputType) {
-
+		case timeStepDuration:
+			result = this.getTimeStepDuration(format);
+			break;
+			
 		case timeStep:
 			result = this.getTimeStep(format);
 			break;

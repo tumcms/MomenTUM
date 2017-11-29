@@ -55,7 +55,8 @@ public class WalkingModelConfiguration extends PropertyContainerNode {
 		MoussaidHeuristic,
 		ClassicLWR,
 		ParallelSocialForce,
-		SharedSpaceForce
+		SharedSpaceForce,
+		CsvPlayback
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -73,6 +74,7 @@ public class WalkingModelConfiguration extends PropertyContainerNode {
 		map.put(WalkingModelType.MoussaidHeuristic.toString(), WalkingModelType.MoussaidHeuristic);
 		map.put(WalkingModelType.ClassicLWR.toString(), WalkingModelType.ClassicLWR);
 		map.put(WalkingModelType.SharedSpaceForce.toString(), WalkingModelType.SharedSpaceForce);
+		map.put(WalkingModelType.CsvPlayback.toString(), WalkingModelType.CsvPlayback);
 		
 		return new EnumToStringConverter<>(WalkingModelType.class, map);
 	}

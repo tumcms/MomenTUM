@@ -9,11 +9,6 @@ namespace MomenTumV2RevitLayouting
 {
     class GeometryFactory
     {
-        private static int _originCounter = 0;
-        private static int _intermediateCounter = 0;
-        private static int _destinationCounter = 0;
-        private static int _solidCounter = 0;
-        private static int _wallCounter = 0;
         private static int _decimalPlaces = 4;
         private static double _minX = double.MaxValue;
         private static double _maxX = double.MinValue;
@@ -22,11 +17,6 @@ namespace MomenTumV2RevitLayouting
 
         public static void Reset()
         {
-            _originCounter = 0;
-            _intermediateCounter = 0;
-            _destinationCounter = 0;
-            _solidCounter = 0;
-            _wallCounter = 0;
             _minX = double.MaxValue;
             _maxX = double.MinValue;
             _minY = double.MaxValue;

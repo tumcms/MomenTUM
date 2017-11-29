@@ -113,4 +113,23 @@ public class SimulationState {
 	public String getNetworkDataTopicName() {
 		return networkState.getDataTopicName();
 	}
+
+	/**
+	 * Translates a data time step to simulation time step.
+	 * Bascially you ask here: I have a time stemp X (int) and I known
+	 * the duration (seconds) for X. What is this in simulation time?
+	 * 
+	 * E.g. 
+	 * timeStepMapping is 0.04 -> means 1 dataTimeStep is 0.04 seconds
+	 * getTimeStepDuration is 0.1 ->  means 1 simulationTimeStep is 0.1 seconds
+	 * Caluclation with 132 dataTime Step 
+	 * (int)(131 * 0.04 seconds / 0.1 seconds) + 0.5 = (int)(5.24 seconds / 0.1 seconds) + 0.5 
+	 * = (int)(52.4 + 0.5) = (int)(52.9) = 52 simulation time step
+	 */
+	public long getScaledTimeStep(long timeStepToScale, double timeStepToScaleDuration) {
+		
+		// 
+		// that is 52 * 0.1 = 5.2 seconds in simulation time
+		return (long)(((timeStepToScaleDuration * timeStepToScale) / this.getTimeStepDuration()) + 0.5);
+	}
 }

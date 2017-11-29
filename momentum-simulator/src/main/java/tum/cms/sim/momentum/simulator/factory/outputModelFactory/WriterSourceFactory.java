@@ -40,6 +40,8 @@ import tum.cms.sim.momentum.model.absorber.AbsorberWriterSource;
 import tum.cms.sim.momentum.model.analysis.AnalysisModel;
 import tum.cms.sim.momentum.model.meta.transitum.TransiTumModel;
 import tum.cms.sim.momentum.model.meta.transitum.multiscaleOutputSource.TransitZonesOutputSource;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackOperational;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackWriterSource;
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWR;
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWROutputSource;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForceWriterSource;
@@ -98,7 +100,6 @@ public class WriterSourceFactory extends ModelFactory<WriterSourceConfiguration,
 			
 			writerSource = socialForceSource;
 			break;
-			
 			
 		case Time:
 			
@@ -188,6 +189,20 @@ public class WriterSourceFactory extends ModelFactory<WriterSourceConfiguration,
 			classicLWRSource.setCallable(classicLWRModel);
 			
 			writerSource = classicLWRSource;			
+			break;
+		case CsvPlayback:
+			
+			CsvPlaybackWriterSource csvPlaybackWriterSource = new CsvPlaybackWriterSource();
+			csvPlaybackWriterSource.setTimeManager(componentManager.getTimeManager());
+			csvPlaybackWriterSource.setPedestrianManager(componentManager.getPedestrianManager());
+			
+			CsvPlaybackOperational csvPlaybackOperational = (CsvPlaybackOperational) componentManager.getWalkingModel(configuration.getAdditionalId());
+			csvPlaybackWriterSource.setPedetrianBehavioralModel(csvPlaybackOperational);
+			
+			writerSource = csvPlaybackWriterSource;	
+			break;
+			
+		default:
 			break;
 		}
 		

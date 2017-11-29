@@ -1,0 +1,13 @@
+	<!-- The linear Graph Pursue model is a simple wayfinding model. -->
+	<!-- It finds all next navigation nodes (vertices) that are visible. -->
+	<!-- It will then check which of these nodes are regarding the angle 
+		 vertex - pedestrian positions - heading (unit vector) is the smallest. -->
+	<!-- This vertex will be used as next goal -->
+	
+	<!-- Tactical behavior information: -->
+	<!-- This model can be used for tacticalControl = true | false -->
+	<!-- This model can be used for routeMemory = false -->
+	<routingModels>
+		<!-- The model does not have any parameter. -->
+		<routing id="5" name="linearGraphPursue" type="LinearGraphPursue"/>
+	</routingModels>

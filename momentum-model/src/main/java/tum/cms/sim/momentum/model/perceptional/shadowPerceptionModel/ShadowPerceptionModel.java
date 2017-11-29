@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -57,10 +58,61 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	private ILattice areaMap = null;
 	
 	private HashMap<Integer, HashSet<Integer>> pedestrainToPedestrian = new HashMap<>();
+	private HashMap<Integer, ArrayList<Integer>> pedestrainToPedestrianPositions = new HashMap<>();
 	private HashMap<Integer, HashSet<Integer>> pedestrainToVertex = new HashMap<>();
 	private HashMap<Integer, HashSet<CellIndex>> pedestrainToObstacle = new HashMap<>();
+	private HashMap<Integer, ArrayList<CellIndex>> pedestrainToObstaclePositions = new HashMap<>();
 	private HashMap<Integer, HashMap<Integer, HashSet<CellIndex>>> pedestrainToArea = new HashMap<>();
+
+	
 	private List<CellIndex> perceptionHorizon = null;
+	
+	@Override
+	public List<Vector2D> getPerceptedObstaclePositions(IPedestrian pedestrian, SimulationState simulationState) {
+		
+		List<Vector2D> obstaclePositions = new ArrayList<Vector2D>();
+		
+		pedestrainToObstaclePositions.get(pedestrian.getId()).stream().forEach(
+				
+				cellObstalce -> {
+					
+					if(cellObstalce == null) {
+						
+						obstaclePositions.add(null);
+					}
+					else {
+						
+						obstaclePositions.add(this.pedestrianMap.getCenterPosition(cellObstalce));
+					}
+				
+				}
+			);
+		
+		return obstaclePositions;
+	}
+	
+	@Override
+	public List<IPedestrian> getPerceptedPedestrianPositions(IPedestrian pedestrian, SimulationState simulationState) {
+		
+		List<IPedestrian> pedestrians = new ArrayList<IPedestrian>();
+		
+		pedestrainToPedestrianPositions.get(pedestrian.getId()).stream().forEach(
+				
+				pedestrianId -> {
+					
+					if(pedestrianId == null) {
+						
+						pedestrians.add(null);
+					}
+					else {
+						
+						pedestrians.add(pedestrianManager.getPedestrian(pedestrianId));
+					}
+				}
+			);
+		
+		return pedestrians;
+	}
 	
 	@Override
 	public Collection<IPedestrian> getPerceptedPedestrians(IPedestrian pedestrian, SimulationState simulationState) {
@@ -85,7 +137,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			
 			return false;
 		}
-
+		
 		Occupation result = Occupation.convertDoubleToOccupation(
 				this.pedestrianMap.breshamLineCast(from,
 						towards,
@@ -179,14 +231,19 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		
 		// 0. cleanup visibility maps
 		pedestrainToPedestrian.clear();
+		pedestrainToPedestrianPositions.clear();
 		pedestrainToVertex.clear();
 		pedestrainToObstacle.clear();
+		pedestrainToObstaclePositions.clear();
 		pedestrainToArea.clear();
 		
 		this.pedestrianManager.getAllPedestrians().stream().forEach(pedestrian -> {
+			
 			pedestrainToPedestrian.put(pedestrian.getId(), new HashSet<>());
+			pedestrainToPedestrianPositions.put(pedestrian.getId(), new ArrayList<>());
 			pedestrainToVertex.put(pedestrian.getId(), new HashSet<>());
 			pedestrainToObstacle.put(pedestrian.getId(), new HashSet<>());
+			pedestrainToObstaclePositions.put(pedestrian.getId(), new ArrayList<>());
 			pedestrainToArea.put(pedestrian.getId(), new HashMap<>());
 		});
 		
@@ -244,12 +301,12 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	 */
 	private void perceivePedestriansAndObstacles(Integer pedestrianId, CellIndex viewPort, List<CellIndex> perceptionBorder) {
 		
-		perceptionBorder.parallelStream().forEach(borderCell -> {
+		perceptionBorder.stream().forEach(borderCell -> {
 			
 			// Send ray from position to border cell
 			// Because the border cell is the target (and defines the distance), we use Max for distance
 			// Because we like to stop the ray at any value, we give null to stopValue
-			// Because we do not like to stop the ray at the pedestrian sending the ray, we its id as ignore value
+			// Because we do not like to stop the ray at the pedestrian sending the ray, we set its id as ignore value
 			List<Pair<Double,CellIndex>> hitRay = this.pedestrianMap.breshamLineCastTrace(viewPort,
 					borderCell,
 					null,
@@ -265,14 +322,24 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			if(Occupation.convertOccupationToDouble(Occupation.Fixed).equals(hitValue)) {
 				
 				this.pedestrainToObstacle.get(pedestrianId).add(cellValue);
+				this.pedestrainToObstaclePositions.get(pedestrianId).add(cellValue);
+				this.pedestrainToPedestrianPositions.get(pedestrianId).add(null);
 			}
 			else if(hitValue > 0.0) { // else if a pedestrian (id > 0) was hit, also store this
 				
 				// store the pedestrian id
 				this.pedestrainToPedestrian.get(pedestrianId).add(hitValue.intValue() - encodeShift);
+				this.pedestrainToPedestrianPositions.get(pedestrianId).add(hitValue.intValue() - encodeShift);
+				this.pedestrainToObstaclePositions.get(pedestrianId).add(null);
+			}
+			else {
+				
+				this.pedestrainToPedestrianPositions.get(pedestrianId).add(null);
+				this.pedestrainToObstaclePositions.get(pedestrianId).add(null);
 			}
 			// if a nothing was hit, ignore it
 		});
+		
 	}
 	
 	/**
@@ -364,51 +431,55 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	 */
 	private List<CellIndex> findPerceptionBorder(ILattice visibilityLattice, CellIndex pedestrianViewPoint, Vector2D viewDirection) {
 		
-		// find "left" cwclockwise horizon intersection
-		Vector2D cwclockRotateViewDirection = viewDirection.rotate(this.perceptionRadiant)
-				.scale(this.perceptionDistance);
+		// get the center cell in view direction
+		Vector2D viewDirectionEnd = viewDirection.scale(this.perceptionDistance);
+
+		double distanceViewCenterCell = Double.MAX_VALUE;
+		int indexViewCenterCell = -1;
 		
-		// find "right" clockwise horizon intersection
-		Vector2D clockRotateViewDirection = viewDirection.rotate(-1.0 * this.perceptionRadiant)
-				.scale(this.perceptionDistance);
-		
-		// find left and right
-		double distanceToOptimalCellLeft = Double.MAX_VALUE;
-		int indexOptimalCellLeft = -1;
-		double distanceToOptimalCellRight = Double.MAX_VALUE;
-		int indexOptimalCellRight = -1;
-		
-		// find all border cells regarding the zero,zero origin cell
 		for(int iter = 0; iter < this.perceptionHorizon.size(); iter++) {
 			
 			CellIndex horizon = this.perceptionHorizon.get(iter);
 			Vector2D horizonPosition = visibilityLattice.getCenterPosition(horizon);
-			double distanceToLeft = horizonPosition.distance(cwclockRotateViewDirection);
-			double distanceToRight = horizonPosition.distance(clockRotateViewDirection);
-			
-			if(distanceToOptimalCellLeft > distanceToLeft) {
+			double distancetoViewCenter = viewDirectionEnd.distance(horizonPosition);
+	
+			if(distanceViewCenterCell > distancetoViewCenter) {
 				
-				distanceToOptimalCellLeft = distanceToLeft;
-				indexOptimalCellLeft = iter;
-			}
-			
-			if(distanceToOptimalCellRight > distanceToRight) {
-				
-				distanceToOptimalCellRight = distanceToRight;
-				indexOptimalCellRight = iter;
+				distanceViewCenterCell = distancetoViewCenter;
+				indexViewCenterCell = iter;
 			}
 		}
 		
+		// get the angle (in radiant) which is a single cell on the horizon
+		double radiantForCell = (2*FastMath.PI)/this.perceptionHorizon.size();
+		int cellsForViewAngle = (int)((this.perceptionRadiant / radiantForCell) + 0.5);
+		int currentShift = 1;
+		
 		List<CellIndex> perceptionBorder = new ArrayList<>();
-		// get all border cells 
-		if(indexOptimalCellLeft < indexOptimalCellRight) { // ok
+		perceptionBorder.add(this.perceptionHorizon.get(cellsForViewAngle));
+		
+		while(cellsForViewAngle > 0) {
 			
-			perceptionBorder.addAll(this.perceptionHorizon.subList(indexOptimalCellLeft, indexOptimalCellRight));
-		}
-		else { // breaks at the end of the list
+			int horizonLeftCell = indexViewCenterCell - currentShift;
 			
-			perceptionBorder.addAll(this.perceptionHorizon.subList(indexOptimalCellLeft, this.perceptionHorizon.size() - 1));
-			perceptionBorder.addAll(this.perceptionHorizon.subList(0, indexOptimalCellRight));
+			if(horizonLeftCell < 0) {
+				
+				horizonLeftCell = this.perceptionHorizon.size() + horizonLeftCell;
+			}
+			
+			perceptionBorder.add(this.perceptionHorizon.get(horizonLeftCell));
+			
+			int horizonRightCell = indexViewCenterCell + currentShift;
+			
+			if(horizonRightCell > this.perceptionHorizon.size() - 1) {
+				
+				horizonRightCell = horizonRightCell - this.perceptionHorizon.size();
+			}
+			
+			perceptionBorder.add(this.perceptionHorizon.get(horizonRightCell));
+			
+			cellsForViewAngle--;
+			currentShift++;
 		}
 		
 		// transpose all border cells by the agent's cell

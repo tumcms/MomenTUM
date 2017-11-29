@@ -32,19 +32,10 @@
 
 package tum.cms.sim.momentum.model.layout.spaceSyntax.depthMap;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -57,7 +48,7 @@ import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
 
 public class DepthMapOperation extends SpaceSyntaxOperation {
 	
-	private static String scenarioLatticeIdName = "scenarioLatticeId";
+	private static final String scenarioLatticeIdName = "scenarioLatticeId";
 
 	@Override
 	public void callPreProcessing(SimulationState simlationState) {
@@ -77,20 +68,18 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 				.map(center -> lattice.getCellIndexFromPosition(center))
 				.collect(Collectors.toList());
 
-
 		Set<CellIndex> connectedIndices = this.floodLatticeFromOrigins(originCenterCells, lattice);
 		this.computeDepthMap(connectedIndices, lattice);
 
 		DepthMap depthMap = new DepthMap(
 				lattice, 
-				connectedIndices
+				connectedIndices,
+				scenarioManager.getScenarios().getName()
 		);
 		depthMap.setId(this.getId());
 		depthMap.setName(this.getName());
 		
 		this.scenarioManager.getSpaceSyntaxes().add(depthMap);
-
-		//this.writeResultAsImage(depthMap, lattice);
 	}
 
 	@Override
@@ -115,8 +104,8 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 	private Set<CellIndex> floodLatticeFromOrigins(List<CellIndex> originCenterCells, ILattice lattice) {
 
 		if (originCenterCells == null || originCenterCells.size() < 1) {
-			LoggingManager.logUser("Error: No 'Origins' were specified by the layout.\n"
-					+ "There must be at least one 'Origin' where the center does not lie within an obstacle.");
+			LoggingManager.logDebug("Error: No 'Origins' were specified by the layout or failed in initialization phase.\n"
+					+ "There must be at least one 'Origin' whose the center does not lie within an obstacle.");
 		}
 		
 		List<Set<CellIndex>> connectedAreas = new ArrayList<Set<CellIndex>>();
@@ -139,8 +128,8 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 		}
 		
 		if (connectedAreas.size() > 1) {
-			LoggingManager.logUser("Warning: Flooding from origins define multiple connected areas. \n"
-					+ "All 'Origin' should be reachable from eachother in terms of walking pedestrians.");
+			LoggingManager.logUser("Warning: Not all 'Origin's are connected to each other. \n"
+					+ "All 'Origin's should be reachable from each other.");
 		}
 
 		return connectedAreas.get(0);
@@ -168,58 +157,4 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 				}
 			}));
 	}
-	/*
-	private void writeResultAsImage(DepthMap depthMap, ILattice lattice) {
-
-		int width = depthMap.getDomainColumns();
-		int height = depthMap.getDomainRows();
-		int heightImage = height - 1;
-
-		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-		Double colorMax = depthMap.getMaxValue() - depthMap.getMinValue();
-
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-
-				Double currentValue = lattice.getCellNumberValue(y, x);
-				short r = 0;
-				short g = 0;
-				short b = 0;
-
-				if (currentValue.equals(Double.NaN)) {
-					r = 255;
-					g = 255;
-					b = 255;
-				} else {
-
-					Double newValue = currentValue - depthMap.getMinValue();
-					b = (short) FastMath.round((newValue / colorMax) * 255.0);
-				}
-
-				int p = (r << 16) | (g << 8) | b; // pixel
-				// int p = new java.awt.Color(r, g, b, a).getRGB();
-				img.setRGB(x, heightImage - y, p);
-			}
-		}
-		
-		LoggingManager.logUser("DepthMap #" + depthMap.getId() 
-			+ " MinAbs: " + depthMap.getMinValue() 
-			+ " MaxAbs: " + depthMap.getMaxValue());
-		
-
-		Date date = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
-		String outputPath = "./" + dateFormat.format(date) + "_" + depthMap.getName() + ".jpg";
-		File output = new File(outputPath);
-
-		try {
-			if (ImageIO.write(img, "jpg", output))
-				LoggingManager.logUser("Successfully written image to: " + output.toString());
-			else
-				LoggingManager.logUser("Something else happened!?");
-		} catch (IOException e) {
-			LoggingManager.logUser("Schreiben des Bildes fehlgeschlagen...");
-		}
-	}*/
 }

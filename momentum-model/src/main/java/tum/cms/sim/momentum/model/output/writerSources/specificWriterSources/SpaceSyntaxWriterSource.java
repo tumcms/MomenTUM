@@ -70,11 +70,8 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 
 	@Override
 	public String readSingleValue(String outputTypeName) {
-
-		String xml;
-		xml = this.xStream.toXML(this.spaceSyntaxResult);
 		
-		return xml;
+		return this.xStream.toXML(this.spaceSyntaxResult);
 	}
 
 	@Override
@@ -85,8 +82,7 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 				.filter(spaceSyntaxRes -> spaceSyntaxRes.getId().intValue() == this.additionalId.intValue())
 				.findFirst().get();
 		
-		this.xStream = new XStream();
-		this.configureXStream(this.xStream, spaceSyntaxResult.getlattice());
+		this.xStream = this.configureXStream(spaceSyntaxResult.getlattice());
 		
 		this.dataItemNames.add("adding fake key");
 	}
@@ -97,13 +93,14 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 	 * 
 	 * Developer note: This method need to supplement the CellIndex with an according 
 	 * value from the lattice/grid. This is because CellIndex class stores the indices 
-	 * in a generic class (Pair<Integer, Integer>) which can not be handeled properly 
+	 * in a generic class (Pair<Integer, Integer>) which can not be handled properly 
 	 * by XStream.
 	 * 
-	 * @param xStream an instance of xStream that is used to convert the object to a string
-	 * @param lattice
+	 * @param lattice the lattice associated with the space syntax operation
 	 */
-	private void configureXStream(XStream xStream, ILattice lattice) {
+	private XStream configureXStream(ILattice lattice) {
+		
+		XStream xStream = new XStream();
 
 		xStream.processAnnotations(SpaceSyntax.class);
 		xStream.processAnnotations(DepthMap.class);
@@ -135,5 +132,7 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 				
 			}
 		}, 5000);
+		
+		return xStream;
 	}
 }
