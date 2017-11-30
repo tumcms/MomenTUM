@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<simulator version="MomenTumV2.0.0" simulationName="FromGraphConfigurationOperation_test_layout_pedSimScenario">
+	<graphs>
+		<graphModel name="test" id="0">
+			<graphOperation id="0" name="fromConfig" type="FromConfiguration" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+				<property name="precisionSeed" type="Double" value="0.1"/>
+			</graphOperation>
+		</graphModel>
+  </graphs>
+  <layouts>
+    <scenario id="0" name="pedSim" maxX="10" maxY="10" minX="0" minY="0">
+            <area id="0" name="Destination1" type="Destination">
+			<point x="0" y="0" />
+			<point x="1" y="0" />
+			<point x="1" y="1" />
+			<point x="0" y="1" />
+      </area>
+      <area id="1" name="Destination2" type="Destination">
+			<point x="9" y="0" />
+			<point x="10" y="0" />
+			<point x="10" y="1" />
+			<point x="9" y="1" />
+      </area>
+      <area id="2" name="Intermediate1" type="Intermediate">
+			<point x="9" y="9" />
+			<point x="10" y="9" />
+			<point x="10" y="10" />
+			<point x="9" y="10" />
+      </area>
+      <area id="3" name="Intermediate2" type="Intermediate">
+			<point x="0" y="5" />
+			<point x="1" y="5" />
+			<point x="1" y="6" />
+			<point x="0" y="6" />
+      </area>
+      <area id="4" name="Origin1" type="Origin">
+			<point x="0" y="9" />
+			<point x="1" y="9" />
+			<point x="1" y="10" />
+			<point x="0" y="10" />
+      </area>
+      <graph id="0" name="1" type="Raw">
+        <vertex name="0" id="0">
+          <center x="5" y="5" />
+        </vertex>
+        <vertex name="1" id="1">
+          <center x="0.4895" y="5.2163" />
+        </vertex>
+        <vertex name="2" id="2">
+          <center x="0.687" y="5.8291" />
+        </vertex>
+        <vertex name="3" id="3">
+          <center x="1.0981" y="1.1038" />
+        </vertex>
+        <vertex name="4" id="4">
+          <center x="9.5" y="0.5" />
+        </vertex>
+        <vertex name="5" id="5">
+          <center x="1" y="9" />
+        </vertex>
+        <vertex name="6" id="6">
+          <center x="9.2748" y="9.2748" />
+        </vertex>
+        <edge idLeft="0" idRight="1" />
+        <edge idLeft="1" idRight="2" />
+        <edge idLeft="0" idRight="3" />
+        <edge idLeft="0" idRight="4" />
+        <edge idLeft="0" idRight="5" />
+        <edge idLeft="0" idRight="6" />
+      </graph>
+      <obstacle id="0" name="Wall0" type="Wall">
+        <point x="0" y="0" />
+        <point x="10" y="0" />
+      </obstacle>
+      <obstacle id="1" name="Wall1" type="Wall">
+        <point x="10" y="0" />
+        <point x="10" y="10" />
+      </obstacle>
+      <obstacle id="2" name="Wall2" type="Wall">
+        <point x="10" y="10" />
+        <point x="0" y="10" />
+      </obstacle>
+      <obstacle id="3" name="Wall3" type="Wall">
+        <point x="0" y="10" />
+        <point x="0" y="0" />
+      </obstacle>
+    </scenario>
+  </layouts>
+</simulator>

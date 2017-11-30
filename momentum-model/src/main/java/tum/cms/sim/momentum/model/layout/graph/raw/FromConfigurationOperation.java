@@ -130,14 +130,20 @@ public class FromConfigurationOperation extends GraphOperation {
 							return false;
 						})
 						.findFirst()
-						.get();
+						.orElse(null);
 				
-				alreadySeedAreas.add(area);
-				
-				// select one that was not taken already
-				// put into graph factory
-				
-				newVertex = GraphTheoryFactory.createVertex(area.getGeometry(), vertexConfiguration.getId());
+				if(area != null) {
+					
+					alreadySeedAreas.add(area);	
+					// select one that was not taken already
+					// put into graph factory
+					
+					newVertex = GraphTheoryFactory.createVertex(area.getGeometry(), true, vertexConfiguration.getId());
+				}
+				else {
+					
+					newVertex = GraphTheoryFactory.createVertexCyleBased(center, vertexConfiguration.getId());
+				}
 			}
 			else {
 				

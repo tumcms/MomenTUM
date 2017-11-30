@@ -82,7 +82,15 @@ public class GraphTheoryFactory {
 		edge.setId(GraphTheoryFactory.getNewEdgeId());
 		return edge;
 	}
-
+	public static Vertex createVertex(Geometry2D geometry, boolean isSeed, Integer id) {
+		
+		Vertex vertex = new Vertex(geometry, isSeed);
+		vertex.setId(id);
+		GraphTheoryFactory.updateIds(id);
+		vertex.setName(vertex.getId().toString());
+		return vertex;
+	}
+	
 	public static Vertex createVertex(Geometry2D geometry, boolean isSeed) {
 		
 		Vertex vertex = new Vertex(geometry, isSeed);
