@@ -81,7 +81,7 @@ public abstract class AnimationCalculations {
 	public static ParallelTransition calculateVisualizationOfTimeStep(Double timeStep, CoreController coreController) throws Exception {
 		
 		coreController.waitUntilReadersReady(timeStep);
-		ParallelTransition concurrentMovementsOfPedestrians = createConcurrentAnimation();
+		ParallelTransition concurrentMovements = createConcurrentAnimation();
 		
 		for(SimulationOutputReader simReader : coreController.getOutputReaders()) {
 			
@@ -103,13 +103,21 @@ public abstract class AnimationCalculations {
 								pedestrianDataForStep,
 								coreController);
 						
-						concurrentMovementsOfPedestrians.getChildren().add(pedestrianAnimation);
+						concurrentMovements.getChildren().add(pedestrianAnimation);
 					}
 				}
 			}
 		}
-
-		return concurrentMovementsOfPedestrians;
+		
+		if (concurrentMovements.getTotalDuration().equals(Duration.ZERO)
+			      && coreController.getInteractionViewController().getTimeLineModel().getPlaying()) {
+			
+			double animationDurationInSecond = calculateAnimationDuration(coreController);
+			PauseTransition waitTransition = new PauseTransition(Duration.seconds(animationDurationInSecond));
+			concurrentMovements.getChildren().add(waitTransition);
+		}
+		
+		return concurrentMovements;
 	}
 
 	private static void updateCustomData(SimulationOutputCluster dataStep, CoreController coreController, SimulationOutputReader simulationOutputReader) {
