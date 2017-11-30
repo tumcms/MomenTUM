@@ -32,6 +32,8 @@
 
 package tum.cms.sim.momentum.utility.neuralNetwork;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 /**
  * This factory is used to created neural networks based on Tensorflow.
  * The wrapper approach reduces dependencies by providing classes that use the Tensorflow Api. 
@@ -41,7 +43,6 @@ package tum.cms.sim.momentum.utility.neuralNetwork;
  * 
  * See {@link tum.cms.sim.momentum.utility.probability.distrubution.DistributionFactory} for a similar approach.
  *  
- * 
  * @author Peter M. Kielar
  *
  */
@@ -49,4 +50,21 @@ public class NeuralNetworkFactory {
 
 	/* TODO create load saved model factory */
 	
+	/**
+	 * Private constructor to avoid new objects of {@link NeuralNetworkFactory}.
+	 */
+	private NeuralNetworkFactory() { }
+	
+	/**
+	 * This method creates a new NeuralNetwork object based on the a previously saved
+	 * Tensorflow session. Thus, we hide here the Tensorflow tf.train.Saver() restore operation.
+	 * 
+	 * @param pathToSavedNetwork, a path that points to a saved tensforflow file.
+	 * @return {@link NeuralNetwork}
+	 */
+	public static NeuralNetwork createNeuralNetwork(String pathToSavedNetwork) {
+		
+		// TODO implement @PK
+		throw new NotImplementedException("TODO NeuralNetwork");
+	}
 }
