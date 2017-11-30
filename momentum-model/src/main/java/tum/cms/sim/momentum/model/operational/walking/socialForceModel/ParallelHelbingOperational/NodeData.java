@@ -35,7 +35,6 @@ package tum.cms.sim.momentum.model.operational.walking.socialForceModel.Parallel
 import tum.cms.sim.momentum.data.agent.pedestrian.IExtendsPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.StandingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
-import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MessageState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MetaState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
@@ -250,12 +249,6 @@ public class NodeData implements IOperationalPedestrian, IQuadTreeBody {
 
 	@Override
 	public IPedestrianExtension getExtensionState(IExtendsPedestrian modelReference) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public MessageState getMessageState() {
 		// TODO Auto-generated method stub
 		return null;
 	}

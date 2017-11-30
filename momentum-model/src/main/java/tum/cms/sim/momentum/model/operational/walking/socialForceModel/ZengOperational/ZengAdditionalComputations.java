@@ -132,9 +132,6 @@ public class ZengAdditionalComputations {
 
 	public static TaggedArea findCorrespondingCrosswalk(IOperationalPedestrian pedestrian, List<TaggedArea> crosswalkAreas) {
 
-		pedestrian.getMessageState().clearTopic("crosswalk in");
-		pedestrian.getMessageState().clearTopic("crosswalk out");
-
 		Double currentMinDistance = Double.POSITIVE_INFINITY;
 		double currentDistance = 0;
 		TaggedArea closestCrosswalk = null;
@@ -142,10 +139,8 @@ public class ZengAdditionalComputations {
 		for(TaggedArea crosswalkArea : crosswalkAreas) {
 
 			if(crosswalkArea.getGeometry().contains(pedestrian.getPosition())) {
-				pedestrian.getMessageState().appendMessage("crosswalk in", crosswalkArea.getName());
 				return crosswalkArea;
 			} else {
-				pedestrian.getMessageState().appendMessage("crosswalk out", crosswalkArea.getName());
 				currentDistance = crosswalkArea.getGeometry().distanceBetween(pedestrian.getPosition());
 
 				if(currentDistance < currentMinDistance) {

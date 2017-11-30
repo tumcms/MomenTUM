@@ -73,7 +73,17 @@ public class SightConePerceptionModel extends PerceptionalModel {
 	public void callPostProcessing(SimulationState simulationState) {
 		// nothing to do
 	}
-	
+
+	@Override
+	public List<IPedestrian> getPerceptedPedestrianPositions(IPedestrian pedestrian, SimulationState simulationState) {
+		return null;
+	}
+
+	@Override
+	public List<Vector2D> getPerceptedObstaclePositions(IPedestrian pedestrian, SimulationState simulationState) {
+		return null;
+	}
+
 	@Override
 	public List<IPedestrian> getPerceptedPedestrians(IPedestrian currentPedestrian, SimulationState simulationState) {
 

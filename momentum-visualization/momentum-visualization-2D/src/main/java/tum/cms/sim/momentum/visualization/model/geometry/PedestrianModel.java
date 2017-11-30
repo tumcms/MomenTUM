@@ -76,8 +76,6 @@ public class PedestrianModel extends ShapeModel {
 	private String displayId;
 	private String identificationId;
 
-	private String message;
-
 
 	private double positionX;
 	private double positionY;
@@ -302,17 +300,6 @@ public class PedestrianModel extends ShapeModel {
 		details.put(ShapeModel.leader, this.leader != null ? Boolean.toString(this.leader) : null);
 		details.put(ShapeModel.behavior, this.behavior != null ? this.behavior : null);
 		details.put(ShapeModel.motoric, this.motoric !=  null ? this.motoric : null);
-
-		if(this.message != null) {
-			List<String> messageElements = Arrays.asList(this.message.split("MSGSEP"));
-			for (String element : messageElements) {
-				if(!element.isEmpty()) {
-					List<String> dividedElement = Arrays.asList(element.split("TOPSEP"));
-					details.put(ShapeModel.message + ": " + dividedElement.get(0), dividedElement.get(1));
-				}
-			}
-
-		}
 		
 		return details;
 	}
@@ -363,8 +350,6 @@ public class PedestrianModel extends ShapeModel {
 		this.leader = dataStep.getBooleanData(this.displayId, OutputType.leader.name());
 		this.behavior = dataStep.getStringData(this.displayId, OutputType.behavior.name());
 		this.motoric = dataStep.getStringData(this.displayId, OutputType.motoric.name());
-		if(dataStep.getStringData(this.displayId, OutputType.message.name()) != null)
-			this.message = dataStep.getStringData(this.displayId, OutputType.message.name());
 	}
 	
 	public void createShape(double positionX, 

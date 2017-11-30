@@ -33,7 +33,6 @@
 package tum.cms.sim.momentum.data.agent.pedestrian.types;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.IExtendsPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MessageState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MetaState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
@@ -88,7 +87,5 @@ public interface IPedestrian extends IUnique {
 	public Area getNextNavigationTarget();
 	
 	public IPedestrianExtension getExtensionState(IExtendsPedestrian modelReference);
-
-	public MessageState getMessageState();
 
 }

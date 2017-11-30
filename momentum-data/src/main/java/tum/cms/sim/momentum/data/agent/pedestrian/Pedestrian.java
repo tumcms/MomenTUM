@@ -35,7 +35,6 @@ package tum.cms.sim.momentum.data.agent.pedestrian;
 import java.util.HashMap;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.*;
-import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MessageState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MetaState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.other.StaticState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
@@ -361,11 +360,6 @@ public class Pedestrian extends Unique implements IRichPedestrian {
 	}
 
 	@Override
-	public MessageState getMessageState() {
-		return state.messageState;
-	}
-
-	@Override
 	public void setTacticalState(TacticalState tacticalState) {
 	
 		state.tacticalState = tacticalState;
@@ -448,7 +442,5 @@ public class Pedestrian extends Unique implements IRichPedestrian {
 		MetaState metaState = null;
 
 		HashMap<IExtendsPedestrian, IPedestrianExtension> extensionContainer = new HashMap<IExtendsPedestrian, IPedestrianExtension>();
-
-		MessageState messageState = new MessageState();
 	}
 }

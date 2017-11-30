@@ -162,21 +162,6 @@ public class ZengOperational extends WalkingModel {
             ext.setObstacleInteractionForce(forceObstacle);
         }
 
-		if (verboseMode) {
-			Vector2D xAxis = GeometryFactory.createVector(1, 0);
-
-			pedestrian.getMessageState().addMessage("force driving", String.format("%.5f", drivingForce.getMagnitude()) +
-					", " + String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(drivingForce))));
-			pedestrian.getMessageState().addMessage("force confl oth", String.format("%.5f", repulsiveForceConflictingPedestrians.getMagnitude()) + ", " +
-					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(repulsiveForceConflictingPedestrians))));
-			pedestrian.getMessageState().addMessage("force confl veh", String.format("%.5f", repulsiveForceConflictingVehicle.getMagnitude()) + ", " +
-					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(repulsiveForceConflictingVehicle))));
-			pedestrian.getMessageState().addMessage("force crosswal", String.format("%.5f", forceCrosswalkBoundary.getMagnitude()) + ", " +
-					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(forceCrosswalkBoundary))));
-			pedestrian.getMessageState().addMessage("force obstc", String.format("%.5f", forceObstacle.getMagnitude()) + ", " +
-					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(forceObstacle))));
-		}
-
 		return drivingForce.sum(repulsiveForceConflictingPedestrians)
 				.sum(repulsiveForceConflictingVehicle)
 				.sum(forceCrosswalkBoundary)
@@ -198,13 +183,6 @@ public class ZengOperational extends WalkingModel {
 		// repulsive force from conflicting pedestrian
 
 		Collection<IPedestrian> otherPedestriansInVisualRange = perception.getPerceptedPedestrians(pedestrian, simulationState);
-
-		if (verboseMode) {
-			pedestrian.getMessageState().clearTopic("percepted pedestrians");
-			for (IPedestrian other : otherPedestriansInVisualRange) {
-				pedestrian.getMessageState().appendMessage("percepted pedestrians", other.getName());
-			}
-		}
 
 		Vector2D repulsiveForceConflictingPedestrians = GeometryFactory.createVector(0, 0);
 		if(!fallbackPedestrianInteractionHelbingKoester)
@@ -240,12 +218,6 @@ public class ZengOperational extends WalkingModel {
 		List<IRichCar> carsInVisualRange =  allCars.stream()
 				.filter(currentCar -> this.perception.isVisible(pedestrian, currentCar.getRectangle().getVertices()))
 				.collect(Collectors.toList());
-		if (verboseMode) {
-			pedestrian.getMessageState().clearTopic("percepted cars");
-			for (IRichCar car : carsInVisualRange) {
-				pedestrian.getMessageState().appendMessage("percepted cars", car.getName());
-			}
-		}
 
 		Vector2D force = GeometryFactory.createVector(0, 0);
 		for(IRichCar car : carsInVisualRange) {
@@ -277,14 +249,6 @@ public class ZengOperational extends WalkingModel {
 
         TaggedArea nextCrosswalk = ZengAdditionalComputations.findCorrespondingCrosswalk(pedestrian, crosswalkAreas);
 		Vector2D nearestCrosswalkBoundaryPoint = ZengAdditionalComputations.findNearestCorsswalkBoundaryPoint(pedestrian, nextCrosswalk, zengModelParameters.getComputationalPrecision());
-
-		if (verboseMode) {
-			if (nearestCrosswalkBoundaryPoint == null) {
-				pedestrian.getMessageState().addMessage("nearest crossw point", "null");
-			} else {
-				pedestrian.getMessageState().addMessage("nearest crossw point", nearestCrosswalkBoundaryPoint.toString());
-			}
-		}
 
 		if(nearestCrosswalkBoundaryPoint == null) {
 			return GeometryFactory.createVector(0.0, 0.0);
