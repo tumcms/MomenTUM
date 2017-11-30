@@ -162,7 +162,7 @@
 				<point x="70.0" y="40.0"/>
 				<point x="70.0" y="10.0"/>
 			</obstacle>	
-			<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+			<lattice id="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
 			<graph id="0" type="VisibilityAlpha"> <!-- Raw | Visibility | VisibilityAlpha -->
 		        <property name="cornerDistance" type="Double" value="2"/>
 		        <property name="reductionStrength" type="Double" value="10"/> <!-- only for VisibilityAlpha -->

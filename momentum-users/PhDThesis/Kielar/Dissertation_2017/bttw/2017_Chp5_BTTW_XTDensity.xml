@@ -52,7 +52,7 @@
 	</outputWriters>
 
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="10.0"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="10.0"/>
 	</lattices>
 	
 	<layouts>

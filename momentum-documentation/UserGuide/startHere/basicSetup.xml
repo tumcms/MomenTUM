@@ -217,7 +217,7 @@
 		<lattice name="generatorsLattice" id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46"/>
 		
 		<!-- A Space Syntax operation needs a lattice which has at least the following configuration. -->
-		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neigborhoodType="Touching"/>
+		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neighborhoodType="Touching"/>
 		
 		<!-- Multiple more lattices can be added. -->
 		<!-- For each scenario (floor) a lattice is used. -->

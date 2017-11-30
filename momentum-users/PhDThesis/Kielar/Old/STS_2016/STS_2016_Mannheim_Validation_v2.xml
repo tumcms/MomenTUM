@@ -480,7 +480,7 @@
         <point x="190.0906" y="402.1866" />
         <point x="145.9182" y="328.6162" />
       </obstacle>
-      <lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+      <lattice id="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
     </scenario>
 	</layouts>
 </simulator>
