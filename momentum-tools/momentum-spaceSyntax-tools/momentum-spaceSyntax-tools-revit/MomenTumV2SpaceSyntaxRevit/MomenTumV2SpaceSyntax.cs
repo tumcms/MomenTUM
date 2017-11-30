@@ -1,16 +1,10 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.Attributes;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using MomenTumV2SpaceSyntaxRevit.Model;
 using MomenTumV2SpaceSyntaxRevit.Service;
-using Autodesk.Revit.DB.Analysis;
 using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.UI.Selection;
 
 [TransactionAttribute(TransactionMode.Manual)]
 [RegenerationAttribute(RegenerationOption.Manual)]
@@ -22,6 +16,7 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
         Document doc = uiApp.ActiveUIDocument.Document;
         Application app = commandData.Application.Application;
 
+        // internal agreement: abuse KeyValuePair to pass plugin operation state and objects
         KeyValuePair<Result, SpaceSyntax> kvSpaceSyntax = FileOpenService.PromtUserForSpaceSyntaxXml();
         if (kvSpaceSyntax.Key != Result.Succeeded)
         {
@@ -33,7 +28,7 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
 
         if (!string.IsNullOrEmpty(spaceSyntax.ScenarioName))
         {
-            kvSelectedLevel = RevitUtils.AttemptToGetLevelBySpaceSyntaxName(doc, spaceSyntax.ScenarioName);
+            kvSelectedLevel = RevitUtils.AttemptToGetLevelByScenarioName(doc, spaceSyntax.ScenarioName);
         }
 
         if (kvSelectedLevel.Key != Result.Succeeded)
@@ -53,12 +48,8 @@ public class MomenTumV2SpaceSyntax : IExternalCommand
             return kvSelectedLevel.Key;
         }
         PlanarFace topFace = kvTopFace.Value;
-
-        // A (default) AnalysisDisplayStyle must exist, otherwise Revit does not know how to display/interpret anything
-        // TODO create default 3D view?
-        RevitVisualizationService.CheckForAnalysisDisplayStyle(doc);
-
-        var result = RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topFace);
+        
+        Result result = RevitVisualizationService.CreateSpaceSyntaxAnalysisResult(doc, spaceSyntax, topFace);
 
         return result;
     }

@@ -1,1 +1,37 @@
 <!-- absorber models help to remove pedestrian from a simulation -->
+
+<!-- This is an example of an Csv generator. It does not have an origin id. -->
+	<!-- The csv absorber deletes pedestrians if based on input data. -->
+	<!-- However, Csv absorber is able define the input types of the Csv and therefore is more flexible. -->
+	<!-- This means that the Csv absorber will check if the input for a new time step is missing a pedestrian and deletes. -->
+	<absorber id="5" name="generator" type="Csv" scenario="0" seed="0">
+
+		<!-- Typically, use a CsvMatrix to provide the pedestrian data. -->
+		<!-- The content of the CsvMatrix contains input data that should be used to absorber pedestrians. -->
+		<!-- The structure is defined in csvMapping property. -->
+		<complexProperty name="csvInput" type="CsvMatrix" valueType="Double">
+			<entry file="./inputMatrix.csv" separator=";" comment="#"/>
+			<!-- the separator defines the value in which the data is organized -->
+			<!-- the comment enables to skip lines that start with that value -->
+		</complexProperty>
+		
+		<!-- The Csv mapping enables the user to define which header of mapped to MomenTUM pedestrian data types. -->
+		<!-- The value of entries define the type of MomenTUM and the index where the item is in the input matrix. -->
+		<!-- In case no header exists, the value is not used (but may be helpful). -->
+		<!-- Use the index of the csvMapping to define the position of the data type in the csv file. -->
+		<!-- You can use the MomenTUM types: id, timeStep -->
+		<!-- An example: -->
+		<complexProperty name="csvMapping" type="List" valueType="String"> 
+			<entry index="0" value="id"/> 
+			<entry index="1" value="timeStep"/> 
+		</complexProperty>
+		
+		<!-- Set containsHEader to true if the csv data has a header. -->
+		<property name="containsHeader" type="Boolean" value="False"/>
+		
+		<!-- Typically the timeStep of the input data are not aligned with the simulation timeStep. -->
+		<!-- E.g. in the data 1 means 1/25 seconds from pedestrian tracing data but the simulator has 1 timeStep = 1/10 seconds. -->
+		<!-- In order to compute the differences, use the timeStepMapping property.-->
+		<!-- The values defines the length of a time step of the input data in seconds. -->
+		<property name="timeStepMapping" type="Double" value="0.04"/>
+	</absorber>

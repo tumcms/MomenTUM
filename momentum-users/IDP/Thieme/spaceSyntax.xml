@@ -1,0 +1,28 @@
+﻿<simulator version="2.0.2" name="RevitLayouting">
+
+	<spaceSyntaxes>
+		<spaceSyntaxModel id="5" name="SimpleSpaceSyntax">
+			<spaceSyntaxOperation id="2" name="DepthMapOperation" type="DepthMap">
+				<property name="scenarioLatticeId" type="Integer" value="1"/> 
+			</spaceSyntaxOperation>
+		</spaceSyntaxModel>
+	</spaceSyntaxes>
+	
+	<lattices>
+		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.5" neighborhoodType="Touching"/>
+	</lattices>
+	<outputWriters>
+		<outputWriter id="4" name="spaceSyntaxWriter">
+			<property name="call" type="Integer" value="0"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./SpaceSyntaxResult-g7-e-1.xml"/>
+			</writerTarget>
+			<writerFormat formatType="Single"/> 
+			<writerSource name="spaceSyntaxOperation_DepthMap" sourceType="SpaceSyntax" additionalId="2"/>
+		</outputWriter>
+	</outputWriters>
+	
+	<layouts>
+		<scenario id="0" layoutLink="C:\Users\Chris\Desktop\MomenTUM\momentum-users\IDP\Thieme\g7-ebene-1.xml"/>
+	</layouts>
+</simulator>

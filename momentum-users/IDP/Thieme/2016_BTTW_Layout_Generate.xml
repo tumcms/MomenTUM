@@ -1,44 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<simulator version="2.0.1" simulationName="2016_BTTW_Config_Layout_v1">
-	<timeState simulationEndTime="2.0" timeStepDuration="0.5"/>
-	<logging>
-		<loggingState type="Console" level="User"/>
-	</logging>
-	
-	<outputWriters>
-		<outputWriter id="1337" name="spaceSyntaxWriter">
-			<!-- If value for call is 0, then it is called in preProcessing. Integer.MAX_VALUE-->
-			<property name="call" type="Integer" value="0"/>
-			<!--<property name="buffer" type="Integer" value="50"/>-->
-			
-			<writerTarget targetType="File">
-				<property name="file" type="File" value="./spaceSyntaxDepthMapResult.xml"/>
-				<property name="index" type="Boolean" value="True"/>
-			</writerTarget>
-			
-			<writerFormat formatType="Single"/>
-		
-			<writerSource sourceType="SpaceSyntax">
-				<!-- Hier ggf. targets angeben, welche Space Syntaxen geprintet werden sollen; z.b. property name=depthmap -->
-			</writerSource>
-		</outputWriter>
-	</outputWriters>
-	
-	<lattices>
-		<lattice name="SpaceSyntaxLattice" id="3" scenarioId="0" 
-			latticeType="Quadratic" 
-			cellEdgeSize="0.5"
-			neigborhoodType="Touching"/>
-	</lattices>
-
-	<spaceSyntaxes>
-		<spaceSyntaxModel id="2" name="SimpleSpaceSyntax">
-			<spaceSyntaxOperation id="1" name="DepthMap" type="DepthMap">
-				<property name="scenarioLatticeId" type="Integer" value="3"/> 
-			</spaceSyntaxOperation>
-		</spaceSyntaxModel>
-	</spaceSyntaxes>
-	
+<simulator version="2.0.1" simulationName="2016_BTTW_Config_Layout_v1">	
 	<layouts>
 	  <scenario id="0" name="2016_BTTW_Layout_v1" maxX="470.0977" maxY="0.0" minX="251.3855" minY="-185.5553">
       <area id="0" name="Region_Entrance" type="Origin">

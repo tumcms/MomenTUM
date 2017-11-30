@@ -485,7 +485,7 @@
 				<point x="10" y="5" />
 				<point x="10" y="10" />
 			</obstacle>
-			<lattice id="0" latticeType="Quadratic" neigborhoodType="Edge" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+			<lattice id="0" latticeType="Quadratic" neighborhoodType="Edge" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
 			<graph id="0" type="VisibilityAlpha">
 				<!-- Raw | Visibility | VisibilityAlpha -->
 				<property name="cornerDistance" type="Double" value="1.00"/>

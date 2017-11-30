@@ -36,6 +36,7 @@ import tum.cms.sim.momentum.configuration.generator.GeneratorConfiguration;
 import tum.cms.sim.momentum.model.generator.Generator;
 import tum.cms.sim.momentum.model.generator.GeneratorGeometryFactory;
 import tum.cms.sim.momentum.model.generator.generatorTypes.CarNetworkGenerator;
+import tum.cms.sim.momentum.model.generator.generatorTypes.CsvGenerator;
 import tum.cms.sim.momentum.model.generator.generatorTypes.CarCsvGenerator;
 import tum.cms.sim.momentum.model.generator.generatorTypes.InstantGenerator;
 import tum.cms.sim.momentum.model.generator.generatorTypes.MultipleOriginGenerator;
@@ -83,6 +84,11 @@ public class GeneratorFactory extends ModelFactory<GeneratorConfiguration, Gener
 			
 		case Instant:
 			generator = new InstantGenerator();
+			break;
+			
+		case Csv:
+			generator = new CsvGenerator();
+			break;
 			
 		case CarNetwork:
 			CarNetworkGenerator carNetworkGenerator = new CarNetworkGenerator();

@@ -204,7 +204,7 @@ public class LayerConfigurationController implements Initializable {
 						}
 					}
 	
-					simReader.clearBuffer(timeStep);
+					simReader.clearBuffer();
 				}
 	
 				timeStep += simReader.getTimeStepDifference();

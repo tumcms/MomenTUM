@@ -12,8 +12,8 @@
 	</layouts>
 	
 	<lattices>
-		<lattice name="generator" id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
-		<lattice name="denstiy" id="1" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="10.0"/>
+		<lattice name="generator" id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+		<lattice name="denstiy" id="1" scenarioId="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="10.0"/>
 	</lattices>
 	
 	<graphs>

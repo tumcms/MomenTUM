@@ -216,6 +216,9 @@
 		<!-- A scenario lattice provides empty cells for all areas that are not overlapping obstacles. -->
 		<lattice name="generatorsLattice" id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46"/>
 		
+		<!-- A Space Syntax operation needs a lattice which has at least the following configuration. -->
+		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neighborhoodType="Touching"/>
+		
 		<!-- Multiple more lattices can be added. -->
 		<!-- For each scenario (floor) a lattice is used. -->
 		
@@ -255,6 +258,26 @@
 		<!-- Multiple more graphs can be added. -->
 		<!-- For each scenario (floor) a graph is used. -->
 	</graphs>
+
+	<!-- Space Syntax is a technique to analyse spatial configurations which is usually applied
+	in the context of urban areas. -->
+	<!-- Currently, the Space Syntax operation is only intended to be used by the Revit SpaceSyntax Plugin.  -->
+	<spaceSyntaxes>
+		<spaceSyntaxModel id="0" name="SimpleSpaceSyntax">
+			<!-- Currently only the DepthMap operation is supported. -->
+			<!-- The DepthMap Operation creates a Visibility Graph according to isovist theory. -->
+			<!-- The Visibility Graph is calulated by combining all point isovist graphs. -->
+			<spaceSyntaxOperation id="0" name="DepthMapOperation" type="DepthMap">
+			
+				<!-- It is essential, that the lattice which is associated with a Space Syntax operation
+				defines at least one area of type 'Origin'. The origin used to flood the area for which 
+				the operation is be applied. If multiple Origins are defined and are not reachable from 
+				eachother (e.g. by means of a walking pedestrian) the area for which the operation is applied
+				is non-deterministic. -->
+				<property name="scenarioLatticeId" type="Integer" value="1"/> 
+			</spaceSyntaxOperation>
+		</spaceSyntaxModel>
+	</spaceSyntaxes>
 	
 	<!-- **************************************************** -->
 	<!-- From here on behavior configurations are explained.  -->
@@ -297,11 +320,11 @@
 	</executionOrder>
 	
 	<!-- Agent can perceive objects and other agents. The model of perception is defined here. -->
-	<!-- At the moment only a single model exists, which is of type BlockingGeometries. -->
+	<!-- At the moment two model exists, which is of type Shadow and Bresenham. -->
 	<!-- Adding future approaches demands other fall-back strategies in dead-lock situations (e.g. wayfinding deadlock). -->
 	<!-- Thus, most of the time this block is identical. Also, the id attribute must be unique! -->
 	<perceptualModels>
-		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
+		<perceptual id="0" name="Bresenham" type="Bresenham">
 			<property name="accuracy" type="Double" value="0.23"/>
 		</perceptual>
 	</perceptualModels>
@@ -402,7 +425,19 @@
 			<!-- Hence, the tacticalControl helps to reduce nonsense behavior like being "stuck". -->
 			<!-- However, do set this to false in case pedestrian should strictly follow a routing path, -->
 			<!-- smart behavior leads to taking short-cuts and perception based re-routing. -->
-			<propety name="tacticalControl" type="Boolean" value="True"/>
+			<property name="tacticalControl" type="Boolean" value="True"/>
+			
+			<!-- In some simulations one does not like to include a strategical model. -->
+			<!-- For those simulations the agent will get a Do Nothing Command from the non exist strategical model. -->
+			<!-- In order to guide simulations without strategical model set here the command a pedestrian will receive. -->
+			<!-- Make sure you have added to corresponding tactical model (e.g. queuing or routing) in the configuration. -->
+			<!-- Do not use this if you have a strategical model. -->
+			<!-- The given types are:
+				 Routing,
+				 Staying,
+				 Searching,
+				 Queuing -->
+			<property name="strategicCommand" type="String" value="Routing"/>
 			
 			<!-- The routeMemory indicates if a pedestrian should remember and avoid already visited route nodes. -->
 			<!-- Typically, in linear scenarios that address wayfinding, this is true. -->
@@ -481,20 +516,8 @@
 		<!-- Therefore, all models are directly added to the strategicModels tag. -->
 		<!-- The strategical model has an unique id, a type a user-friendly name, and a perception model id reference. -->
 		<strategical id="9" name="odMatrx" type="ODMatrix" perceptualModel="0">
-			<complexProperty name="originDestination" type="Matrix" valueType="Double">
-				<row index="0">
-					<column index="1" value="0.1"/>
-					<column index="2" value="0.4"/>
-					<column index="3" value="0.5"/>
-				</row>
-				<row index="1">
-					<column index="2" value="0.1"/>
-					<column index="3" value="0.9"/>
-				</row>
-				<row index="2">
-					<column index="1" value="0.1"/>
-					<column index="3" value="0.9"/>
-				</row>
+			<complexProperty name="originDestination" type="CsvMatrix" valueType="Double">
+				<entry file="PATH TO ODMatrix.csv" separator=";"/>
 			</complexProperty>
 			<complexProperty name="behaviorType" type="List" valueType="String">
 			    <entry index="1" value="Staying"/>
@@ -516,7 +539,7 @@
 	<!-- There is always a dummy model, e.g. noSearching or noRouting. -->
 	<!-- Such dummy models provide most basic and unrealistic behavior for a model type. -->
 	<!-- This exists for all models (standing, walking, routing, staying, queuing and searching. -->
-	<!-- Dummy models are of type "noBehavior". -->
+	<!-- Dummy models are of type "no'Behavior'". -->
 	<!-- These models are helpful to test specific models only, e.g. routing model without proper walking. -->
 	
 	<!-- *********************************************** -->
@@ -682,7 +705,7 @@
 			<!-- The target is a file in the file system -->
 			<writerTarget targetType="File">
 				<!-- The place to save the file. -->
-				<property name="file" type="File" value="./2017_Pedestrian_$LOOP$.csv"/>
+				<property name="file" type="File" value="./2017_Pedestrian.csv"/>
 				<!-- Create an index file for fast visualization -->
 				<property name="index" type="Boolean" value="True"/> 
 			</writerTarget>
@@ -727,9 +750,9 @@
 		
 		<!-- This writes stores the occupancy data from the analysis model id=0. -->
 		<!-- Why? The outputSource is of type Analysis. -->
-		<!-- The data is exists for each call=2 time-step (see analysis model occupancy) -->
+		<!-- The data exists only for each call=2 time-step (see analysis model occupancy) -->
 		<outputWriter id="2" name="occupancyAnalysisOutput">
-			<property name="call" type="Integer" value="2"/> <!-- Every 1 seconds -->
+			<property name="call" type="Integer" value="2"/>
 			<property name="buffer" type="Integer" value="100"/>
 			<!-- Data into file -->
 			<writerTarget targetType="File">
@@ -751,9 +774,9 @@
 		
 		<!-- This writer stores the density data form the analysis model id=1. -->
 		<!-- Why? The outputSource is of type Analysis. -->
-		<!-- The data is exists for each call=10 time-step (see analysis model density) -->
+		<!-- The data exists only for each call=10 time-step (see analysis model density) -->
 		<outputWriter id="3" name="densityAnalysisOutput">
-			<property name="call" type="Integer" value="10"/> <!-- Every 5 seconds -->
+			<property name="call" type="Integer" value="10"/>
 			<property name="buffer" type="Integer" value="1000"/>
 			<!-- Data into file -->
 			<writerTarget targetType="File">
@@ -775,6 +798,21 @@
 				<property name="maximalDensity" type="Format" value="%.2f"/>
 			</writerSource>
 		</outputWriter> 
+		
+		<!-- The space syntax writer is currently only intended pass calculation results
+		to the revit space syntax plugin. -->
+		<!-- Currently only xml output is supported. -->
+		<!-- The xml exports cell indices and meta-data of a 2-dimensional array. -->
+		<!-- A cell index is only created, if the index is a walkable tile (e.g. not a wall).-->
+		<outputWriter id="4" name="spaceSyntaxWriter">
+			<property name="call" type="Integer" value="0"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="./SpaceSyntaxResult.xml"/>
+			</writerTarget>
+			<writerFormat formatType="Single"/>
+			<!-- The additionalId has to match a spaceSyntaxOperation id.  -->
+			<writerSource name="spaceSyntaxOperation_DepthMap" sourceType="SpaceSyntax" additionalId="0"/>
+		</outputWriter>
 		
 		<!-- Multiple more writers can be added here if needed by the user. -->
 		

@@ -354,7 +354,7 @@
 		<point x="819.3434" y="493.0458" />
 		<point x="809.4864" y="488.1524" />
 	</obstacle>
-	<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.44"/>
+	<lattice id="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.44"/>
 	<graph id="0" name="0" type="VisibilityAlphaSegregation"> 
 		<property name="cornerDistance" type="Double" value="0.4"/>
 		<property name="reductionStrength" type="Double" value="11"/>

@@ -89,7 +89,9 @@ public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, 
 			String format = formatter.getFormat();
 
 			switch(outputType) {
-
+			case timeStepDuration:
+				result = this.getTimeStepDuration(format);
+				break;
 			case timeStep:
 				result = this.getTimeStep(format);
 				break;
@@ -148,7 +150,23 @@ public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, 
 	    return String.format(format, currentPedestrian.getId());
 	}
 	
+	private String getTimeStepDuration(String format) {
+		
+		return String.format(format, this.timeManager.getTimeStepDuration());
+	}
+	/**
+	 * Here return true if it is ok to extract the data of the pedestrian extensions.
+	 * @param currentPedestrianExtension
+	 * @return
+	 */
 	protected abstract boolean canWrite(K currentPedestrianExtension);
 	
+	/**
+	 * Here implement the data extraction from the pedestrian extensions
+	 * @param currentPedestrianExtension
+	 * @param format
+	 * @param dataElement
+	 * @return The data as string for dataElement in format from currentPedestrianExtension
+	 */
 	protected abstract String getPedestrianData(K currentPedestrianExtension, String format, String dataElement);
 }

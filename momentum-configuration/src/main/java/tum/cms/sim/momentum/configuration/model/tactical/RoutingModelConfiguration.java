@@ -49,7 +49,8 @@ public class RoutingModelConfiguration extends PropertyContainerNode {
 		Dijkstra,
 		DijkstraRisk,
 		Kneidl,
-		UPRM
+		UPRM,
+		LinearGraphPursue
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -61,6 +62,7 @@ public class RoutingModelConfiguration extends PropertyContainerNode {
 		map.put(RoutingModelType.NoRouting.toString(), RoutingModelType.NoRouting);
 		map.put(RoutingModelType.Kneidl.toString(), RoutingModelType.Kneidl);
 		map.put(RoutingModelType.UPRM.toString(), RoutingModelType.UPRM);
+		map.put(RoutingModelType.LinearGraphPursue.toString(), RoutingModelType.LinearGraphPursue);
 		
 		return new EnumToStringConverter<>(RoutingModelType.class, map);
 	}

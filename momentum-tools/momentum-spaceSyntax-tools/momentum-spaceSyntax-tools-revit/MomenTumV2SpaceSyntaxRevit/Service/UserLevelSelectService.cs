@@ -1,11 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using MomenTumV2SpaceSyntaxRevit.View;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MomenTumV2SpaceSyntaxRevit.Service
 {
@@ -30,7 +26,7 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
             if (levels.Count == 0)
             {
-                PromtService.DisplayErrorToUser("The project does not contain any levels.");
+                PromtService.ShowErrorToUser("The project does not contain any levels.");
                 return new KeyValuePair<Result, Level>(Result.Failed, null);
             }
 
@@ -41,12 +37,15 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
         {
             var levelSelectorDialog = new LevelSelectorHost();
             levelSelectorDialog.InitializeLevelListBox(levels);
+            
+            // reset from previous plugin execution
+            LevelSelectedByUser = null; 
 
             levelSelectorDialog.ShowDialog();
 
             if (LevelSelectedByUser == null)
             {
-                PromtService.DisplayInformationToUser("Operation cancelled by User.");
+                PromtService.ShowInformationToUser("Operation cancelled by User.");
                 return new KeyValuePair<Result, Level>(Result.Cancelled, null);
             }
 

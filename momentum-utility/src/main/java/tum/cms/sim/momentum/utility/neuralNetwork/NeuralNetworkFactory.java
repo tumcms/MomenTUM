@@ -30,23 +30,23 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.utility.graph.types;
+package tum.cms.sim.momentum.utility.neuralNetwork;
 
-import java.util.List;
+/**
+ * This factory is used to created neural networks based on Tensorflow.
+ * The wrapper approach reduces dependencies by providing classes that use the Tensorflow Api. 
+ * 
+ * If a developer needs another mechanism from tensorflow he/she have to implement the code in
+ * the neuralNetwork package and provide that via the factory.
+ * 
+ * See {@link tum.cms.sim.momentum.utility.probability.distrubution.DistributionFactory} for a similar approach.
+ *  
+ * 
+ * @author Peter M. Kielar
+ *
+ */
+public class NeuralNetworkFactory {
 
-import tum.cms.sim.momentum.utility.graph.Vertex;
-
-public interface IimmutablePath {
-
-	public double distance();
+	/* TODO create load saved model factory */
 	
-	public List<Vertex> getVertexPath();
-
-	public Vertex getFirstVertex();
-	
-	public Vertex getPreviousVertex();
-	
-	public Vertex getCurrentVertex();
-	
-	public Vertex getFinalVertex();
 }

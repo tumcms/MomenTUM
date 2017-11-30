@@ -109,7 +109,7 @@ namespace MomenTumV2RevitLayouting
 
         private double replaceCommaWithDot(double oldDouble)
         {
-            return Convert.ToDouble(oldDouble, CultureInfo.GetCultureInfoByIetfLanguageTag(MomenTumV2RevitLayouting.LANGUAGE_TAG_US));
+            return Convert.ToDouble(oldDouble, CultureInfo.GetCultureInfoByIetfLanguageTag(MomenTumV2Layouting.LANGUAGE_TAG_US));
         }
 
         public Polygon2D OuterBoundaryPolygon { get; private set; } = null;
