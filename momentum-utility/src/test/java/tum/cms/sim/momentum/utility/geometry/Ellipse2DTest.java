@@ -93,6 +93,16 @@ public class Ellipse2DTest {
     @Test
     public void normal() throws Exception {
 
+        center = GeometryFactory.createVector(1, 1);
+        direction = GeometryFactory.createVector(1, 1);
+        minorAxis = 2;
+        majorAxis = 5;
+        ellipse = GeometryFactory.createEllipse(center, direction, majorAxis, minorAxis);
+        point = GeometryFactory.createVector(1-1/Math.sqrt(2), 1+1/Math.sqrt(2));
+        normal = ellipse.normal(point);
+        Assert.assertEquals(-1/Math.sqrt(2), normal.getXComponent(), PRECISION);
+        Assert.assertEquals(1/Math.sqrt(2), normal.getYComponent(), PRECISION);
+
         F1 = GeometryFactory.createVector(0, 0);
         F2 = GeometryFactory.createVector(2, 0);
         minorAxis = 2;

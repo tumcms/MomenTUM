@@ -224,7 +224,7 @@ public class SocialForce {
 		return repulsiveInteractionForce;
 	}
 	
-	private Vector2D computeObstacleInteractionForce(IOperationalPedestrian pedestrian, Segment2D obstaclePart) {
+	public Vector2D computeObstacleInteractionForce(IOperationalPedestrian pedestrian, Segment2D obstaclePart) {
 		
 		Vector2D bodyForce = this.computeBodyForce(pedestrian, obstaclePart);		
 		Vector2D slidingFrictionForce = this.computeSlidingFrictionForce(pedestrian, obstaclePart);		

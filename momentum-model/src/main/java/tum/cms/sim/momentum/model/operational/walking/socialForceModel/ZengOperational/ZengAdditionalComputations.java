@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2017;
+package tum.cms.sim.momentum.model.operational.walking.socialForceModel.ZengOperational;
 
 import java.util.Collection;
 import java.util.List;
@@ -41,7 +41,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.layout.area.TaggedArea;
 import tum.cms.sim.momentum.utility.geometry.*;
 
-public class SharedSpacesComputations {
+public class ZengAdditionalComputations {
 
 	public static Vector2D computeRepulsiveForceConflictingPedestrians(IOperationalPedestrian pedestrian, Collection<IPedestrian> otherPedestrians, double timeStepDuration,
 																	   double interaction_strength_for_repulsive_force_from_surrounding_pedestrians, double interaction_range_for_relative_distance,
@@ -53,7 +53,7 @@ public class SharedSpacesComputations {
 
 		for(IPedestrian otherPedestrian : otherPedestrians)
 		{
-			double timeToConflictPoint = SharedSpacesComputations.calculateTimeToConflictPoint(pedestrian.getPosition(), pedestrian.getVelocity(), otherPedestrian.getPosition(), otherPedestrian.getVelocity());
+			double timeToConflictPoint = ZengAdditionalComputations.calculateTimeToConflictPoint(pedestrian.getPosition(), pedestrian.getVelocity(), otherPedestrian.getPosition(), otherPedestrian.getVelocity());
 
 			Vector2D distanceVector = pedestrian.getPosition().subtract(otherPedestrian.getPosition());
 			double b = 0.5 * Math.sqrt(
@@ -65,7 +65,7 @@ public class SharedSpacesComputations {
 
 			// normalized vector perpendicular to the tangent line of the elliptical force field of pedestrian b_i
             Ellipse2D forceEllipse = GeometryFactory.createEllipse(otherPedestrian.getPosition(),
-					otherPedestrian.getPosition().sum(otherPedestrian.getVelocity()), b);
+					otherPedestrian.getPosition().sum(otherPedestrian.getVelocity().multiply(timeStepDuration)), b);
 			Vector2D ellipseNormal = forceEllipse.normal(pedestrian.getPosition());
 			//System.out.println("normal: (" + perpendicularVectorToTangent.getXComponent() + "," + perpendicularVectorToTangent.getYComponent() + ")");
 
@@ -96,16 +96,10 @@ public class SharedSpacesComputations {
 
 		Vector2D conflictPoint = currentRay.intersectionPoint(otherRay);
 		if(conflictPoint != null) {
-			double curCos = currentVelocity.getNormalized().dot(conflictPoint.subtract(currentPosition).getNormalized());
-			double othCos = otherVelocity.getNormalized().dot(conflictPoint.subtract(otherPosition).getNormalized());
-			double curTimeToConflictPoint = (conflictPoint.subtract(currentPosition).getMagnitude() / currentVelocity.getMagnitude()) * curCos;
-			double othTimeToConflictPoint = (conflictPoint.subtract(otherPosition).getMagnitude() / otherVelocity.getMagnitude()) * othCos;
+			double curTimeToConflictPoint = (conflictPoint.subtract(currentPosition).getMagnitude() / currentVelocity.getMagnitude());
+			double othTimeToConflictPoint = (conflictPoint.subtract(otherPosition).getMagnitude() / otherVelocity.getMagnitude());
 
-			if (curTimeToConflictPoint > 0 && othTimeToConflictPoint > 0) {
-				return Math.abs(curTimeToConflictPoint - othTimeToConflictPoint);
-			} else {
-				return Double.POSITIVE_INFINITY;
-			}
+			return Math.abs(curTimeToConflictPoint - othTimeToConflictPoint);
 		}
 
 		Segment2D conflictSegment = currentRay.intersectionSegment(otherRay);

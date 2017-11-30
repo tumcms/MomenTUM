@@ -149,7 +149,7 @@ public class CarCsvGenerator extends Generator {
 		}
 
 
-		if (!dataStepFloor.isEmpty()) {
+		if (dataStepFloor != null && !dataStepFloor.isEmpty()) {
 
 			for (String id : dataStepFloor.getIdentifications()) {
 
@@ -158,10 +158,15 @@ public class CarCsvGenerator extends Generator {
 
 				if(!carManager.containsCar(idInteger)) {
 					// new car
+					double height = 0;
+					if(dataStepFloor.getDoubleData(id, VariableHeight) != null) {
+						height = dataStepFloor.getDoubleData(id, VariableHeight);
+					}
+
 					StaticState staticState = new StaticState(
 							dataStepFloor.getDoubleData(id, VariableLength),
 							dataStepFloor.getDoubleData(id, VariableWidth),
-							dataStepFloor.getDoubleData(id, VariableHeight));
+							height);
 					staticState.setId(idInteger);
 
 					this.carManager.createCar(staticState);

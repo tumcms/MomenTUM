@@ -36,6 +36,7 @@ import tum.cms.sim.momentum.configuration.model.other.PerceptualModelConfigurati
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.perceptional.bresenhamPerceptionModel.BresenhamPerceptionModel;
 import tum.cms.sim.momentum.model.perceptional.shadowPerceptionModel.ShadowPerceptionModel;
+import tum.cms.sim.momentum.model.perceptional.sightConePerceptionModel.SightConePerceptionModel;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -54,6 +55,9 @@ public class PerceptionalModelFactory extends ModelFactory<PerceptualModelConfig
 			break;
 		case Bresenham:
 			perceptualModel = new BresenhamPerceptionModel();
+			break;
+		case SightCone:
+			perceptualModel = new SightConePerceptionModel();
 			break;
 		default:
 			break;

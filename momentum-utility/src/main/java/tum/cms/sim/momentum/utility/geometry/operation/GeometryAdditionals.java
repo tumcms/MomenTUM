@@ -330,7 +330,7 @@ public class GeometryAdditionals {
 	    	}
 	    	else {
 	    		
-	    		segmentsToSee = ((Segment2D) objectToSee).calculateLineSegmentsToEquallySplitted(discretisation, null);
+	    		segmentsToSee = ((Segment2D) objectToSee).calculateLineSegmentsToEquallySplit(discretisation, null);
 	    	}
 
 	    	for(int iter = 0; iter < starts.size(); iter++) {

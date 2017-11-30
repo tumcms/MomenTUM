@@ -1,4 +1,4 @@
-package tum.cms.sim.momentum.model.perceptional.sightConeModel;
+package tum.cms.sim.momentum.model.perceptional.sightConePerceptionModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 import static org.junit.Assert.*;
 
-public class SightConePerceptionTest {
+public class SightConePerceptionModelTest {
 
     Pedestrian currentPedestrian;
     Pedestrian otherPedestrian;
@@ -26,9 +26,9 @@ public class SightConePerceptionTest {
 
     @Test
     public void isVisible() throws Exception {
-        SightConePerception sightConePerceptionModel = new SightConePerception();
-        sightConePerceptionModel.setAngle(90);
-        sightConePerceptionModel.setRadius(30);
+        SightConePerceptionModel sightConePerceptionModelModel = new SightConePerceptionModel();
+        sightConePerceptionModelModel.setAngle(90);
+        sightConePerceptionModelModel.setRadius(30);
 
         Vector2D curPedPos, curPedHead, otherPedPos, otherPedHead;
 
@@ -39,41 +39,41 @@ public class SightConePerceptionTest {
         currentPedestrian.setWalkingState(new WalkingState(curPedPos, curPedHead, curPedHead));
         otherPedestrian.setWalkingState(new WalkingState(otherPedPos, otherPedHead, otherPedHead));
 
-        assertTrue(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertTrue(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(30.1, 0);
-        assertFalse(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertFalse(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(20, 20);
-        assertTrue(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertTrue(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(0, 20);
-        assertFalse(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertFalse(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(Math.cos(Math.toRadians(-46)), Math.sin(Math.toRadians(-46)));
-        assertFalse(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertFalse(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(Math.cos(Math.toRadians(-44)), Math.sin(Math.toRadians(-44)));
-        assertTrue(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertTrue(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
 
         curPedPos.set(10,10);
         curPedHead.set(0,-1);
 
         otherPedPos.set(10, 11);
-        assertFalse(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertFalse(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(10, 11);
-        assertFalse(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertFalse(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(10, 9);
-        assertTrue(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertTrue(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(10 + Math.cos(-46), 10 + Math.sin(-46));
-        assertTrue(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertTrue(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
         otherPedPos.set(10 + Math.cos(-44.5)*5, 10 + Math.sin(-44.5)*5);
-        assertFalse(sightConePerceptionModel.isVisible(currentPedestrian, otherPedestrian));
+        assertFalse(sightConePerceptionModelModel.isVisible(currentPedestrian, otherPedestrian));
 
     }
 

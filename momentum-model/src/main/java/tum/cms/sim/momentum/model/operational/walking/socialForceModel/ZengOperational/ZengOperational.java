@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2017;
+package tum.cms.sim.momentum.model.operational.walking.socialForceModel.ZengOperational;
 
 import java.util.Collection;
 import java.util.List;
@@ -44,18 +44,21 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.area.TaggedArea;
+import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForce;
+import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForcePedestrianExtension;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Rectangle2D;
+import tum.cms.sim.momentum.utility.geometry.Segment2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
-public class SharedSpaceForceOperational extends WalkingModel {
+public class ZengOperational extends WalkingModel {
 
 	private SocialForce socialForce;
 	private CarManager carManager = null;
-	private ModelVariables modelVariables = null;
+	private ZengModelParameters zengModelParameters = null;
 
 	public CarManager getCarManager() {
 		return carManager;
@@ -66,10 +69,14 @@ public class SharedSpaceForceOperational extends WalkingModel {
 
 	private boolean verboseMode = true;
 
+
+	private boolean fallbackPedestrianInteractionHelbingKoester = false;
+
 	@Override
 	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
-		// TODO Auto-generated method stub
-		return null;
+		ZengPedestrianExtension newExtension = new ZengPedestrianExtension();
+
+		return newExtension;
 	}
 
 	@Override
@@ -98,11 +105,11 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		Vector2D deltaVelocity = acceleration.multiply(simulationState.getTimeStepDuration());
 		Vector2D velocity = pedestrian.getVelocity().sum(deltaVelocity);
 
-		/*if(velocity.getMagnitude() > pedestrian.getMaximalVelocity() ) {
+		if(velocity.getMagnitude() > pedestrian.getMaximalVelocity() ) {
 		
 			velocity = velocity.getNormalized()
 					.multiply(pedestrian.getMaximalVelocity());
-		}*/
+		}
 		
 		Vector2D deltaPosition = velocity.multiply(simulationState.getTimeStepDuration());
 		Vector2D position = pedestrian.getPosition().sum(deltaPosition);
@@ -111,13 +118,20 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		WalkingState novelState = new WalkingState(position, velocity, heading);
 		
 		pedestrian.setWalkingState(novelState);
+
+        ZengPedestrianExtension ext = (ZengPedestrianExtension) pedestrian.getExtensionState(this);
+        if(ext != null) {
+            ext.setAcceleration(acceleration);
+            ext.setIndividualDirection(heading);
+        }
 	}
 
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 
 		socialForce = new SocialForce(this);
-		modelVariables = new ModelVariables(properties);
+		zengModelParameters = new ZengModelParameters(properties);
+		this.fallbackPedestrianInteractionHelbingKoester = properties.getBooleanProperty("pedestrian_interaction_helbing_koester");
 	}
 
 	private Vector2D computeHeading(IOperationalPedestrian me, Vector2D target) {
@@ -132,11 +146,21 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	
 	private Vector2D computeSharedSpaceAcceleration(IOperationalPedestrian pedestrian, SimulationState simulationState)
 	{
+        ZengPedestrianExtension ext = (ZengPedestrianExtension) pedestrian.getExtensionState(this);
+
 		Vector2D drivingForce = this.computeDrivingForce(pedestrian);
 		Vector2D repulsiveForceConflictingPedestrians = this.computeRepulsiveConflictingPedestrians(pedestrian, simulationState);
-		Vector2D attractiveForceLeadingPedestrians = this.computeAttractiveForceLeadingPedestrians();
 		Vector2D repulsiveForceConflictingVehicle = this.computeRepulsiveForceConflictingVehicle(pedestrian);
 		Vector2D forceCrosswalkBoundary = this.computeForceCrosswalkBoundary(pedestrian);
+		Vector2D forceObstacle = this.computeObstacleInteractionForce(pedestrian);
+
+        if(ext != null) {
+            ext.setSelfDrivingForce(drivingForce);
+            ext.setPedestrianInteractionForce(repulsiveForceConflictingPedestrians);
+            ext.setCarInteractionForce(repulsiveForceConflictingVehicle);
+            ext.setCrosswalkInteractionForce(forceCrosswalkBoundary);
+            ext.setObstacleInteractionForce(forceObstacle);
+        }
 
 		if (verboseMode) {
 			Vector2D xAxis = GeometryFactory.createVector(1, 0);
@@ -149,13 +173,14 @@ public class SharedSpaceForceOperational extends WalkingModel {
 					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(repulsiveForceConflictingVehicle))));
 			pedestrian.getMessageState().addMessage("force crosswal", String.format("%.5f", forceCrosswalkBoundary.getMagnitude()) + ", " +
 					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(forceCrosswalkBoundary))));
+			pedestrian.getMessageState().addMessage("force obstc", String.format("%.5f", forceObstacle.getMagnitude()) + ", " +
+					String.format("%.2f deg", Math.toDegrees(xAxis.getAngleBetween(forceObstacle))));
 		}
 
-		Vector2D newAcceleration = drivingForce.sum(repulsiveForceConflictingPedestrians)
-				.sum(attractiveForceLeadingPedestrians).sum(repulsiveForceConflictingVehicle)
-				.sum(forceCrosswalkBoundary);
-		
-		return newAcceleration;
+		return drivingForce.sum(repulsiveForceConflictingPedestrians)
+				.sum(repulsiveForceConflictingVehicle)
+				.sum(forceCrosswalkBoundary)
+				.sum(forceObstacle);
 	}
 	
 	private Vector2D computeDrivingForce(IOperationalPedestrian pedestrian)
@@ -164,9 +189,8 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		Vector2D individualDirection = pedestrian.getHeading().getNormalized();
 		double desiredVelocity = pedestrian.getDesiredVelocity();
 		Vector2D currentVelocity = pedestrian.getVelocity();
-		Vector2D drivingForce = individualDirection.multiply(desiredVelocity).subtract(currentVelocity).multiply(1.0/modelVariables.getRelaxationTime());
-		
-		return drivingForce;
+
+		return individualDirection.multiply(desiredVelocity).subtract(currentVelocity).multiply(1.0/ zengModelParameters.getRelaxationTime());
 	}
 	
 	private Vector2D computeRepulsiveConflictingPedestrians(IOperationalPedestrian pedestrian, SimulationState simulationState)
@@ -181,16 +205,14 @@ public class SharedSpaceForceOperational extends WalkingModel {
 				pedestrian.getMessageState().appendMessage("percepted pedestrians", other.getName());
 			}
 		}
-		
-		boolean newVersion = true;
-		
+
 		Vector2D repulsiveForceConflictingPedestrians = GeometryFactory.createVector(0, 0);
-		if(newVersion)
+		if(!fallbackPedestrianInteractionHelbingKoester)
 		{
-			repulsiveForceConflictingPedestrians = SharedSpacesComputations.computeRepulsiveForceConflictingPedestrians(pedestrian,
+			repulsiveForceConflictingPedestrians = ZengAdditionalComputations.computeRepulsiveForceConflictingPedestrians(pedestrian,
 					otherPedestriansInVisualRange, simulationState.getTimeStepDuration(),
-					modelVariables.getInteractionStrengthForRepulsiveForceFromSurroundingPedestrians(), modelVariables.getInteractionRangeForRelativeDistance(),
-					modelVariables.getInteractionRangForRelativeConflictingTime(), modelVariables.getStrengthOfForcesExertedFromOtherPedestrians());
+					zengModelParameters.getConflictingPedestrianInteractionStrength(), zengModelParameters.getConflictingPedestrianInteractionRangeRelativeDistance(),
+					zengModelParameters.getConflictingPedestrianInteractionRangeRelativeTime(), zengModelParameters.getConflictingPedestrianStrengthAngularEffect());
 		}
 		else {
 			Vector2D pedestrianInteractionForce;
@@ -204,12 +226,11 @@ public class SharedSpaceForceOperational extends WalkingModel {
 	}
 
 	
-	private Vector2D computeAttractiveForceLeadingPedestrians()
-	{
-		// attractive force from leading pedestrians
-		Vector2D force = GeometryFactory.createVector(0, 0);
-		return force;
-	}
+	//private Vector2D computeAttractiveForceLeadingPedestrians()
+	//{
+	//	// attractive force from leading pedestrians
+	//	return GeometryFactory.createVector(0, 0);
+	//}
 
 	private Vector2D computeRepulsiveForceConflictingVehicle(IOperationalPedestrian pedestrian)
 	{
@@ -230,12 +251,14 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		for(IRichCar car : carsInVisualRange) {
 			Rectangle2D carRectangle = car.getRectangle();
 
-			Vector2D carToPedestrianVector = carRectangle.vectorBetween(pedestrian.getPosition());
-			if ( pedestrian.getVelocity().dot(carToPedestrianVector) > 0) {
-				Vector2D closestPoint = carRectangle.getPointClosestToVector(pedestrian.getPosition());
+			Vector2D closestPoint = carRectangle.getPointClosestToVector(pedestrian.getPosition());
+			Vector2D carToPedestrianVector = pedestrian.getPosition().subtract(closestPoint);
+			Vector2D pedestrianToCarVector = carToPedestrianVector.multiply(-1);
 
-				double multiplier = modelVariables.getInteractionStrengthRepulsiveForceFromConflictingVehicle() *
-						Math.exp(-modelVariables.getInteractionRangeForRepulsiveForceFromConflictingVehicle() *
+			if ( pedestrian.getVelocity().dot(pedestrianToCarVector) > 0) {
+
+				double multiplier = zengModelParameters.getInteractionStrengthRepulsiveForceFromConflictingVehicle() *
+						Math.exp(-zengModelParameters.getCarRepulsiveInteractionRange() *
 								pedestrian.getPosition().subtract(closestPoint).getMagnitude());
 
 				Vector2D forceFromCurrentVehicle = carToPedestrianVector.getNormalized().multiply(multiplier);
@@ -252,8 +275,8 @@ public class SharedSpaceForceOperational extends WalkingModel {
 		// repulsive force or attractive force from the crosswalk boundary
         List<TaggedArea> crosswalkAreas = this.scenarioManager.getTaggedAreas(TaggedArea.Type.Crosswalk);
 
-        TaggedArea nextCrosswalk = SharedSpacesComputations.findCorrespondingCrosswalk(pedestrian, crosswalkAreas);
-		Vector2D nearestCrosswalkBoundaryPoint = SharedSpacesComputations.findNearestCorsswalkBoundaryPoint(pedestrian, nextCrosswalk, modelVariables.getComputationalPrecision());
+        TaggedArea nextCrosswalk = ZengAdditionalComputations.findCorrespondingCrosswalk(pedestrian, crosswalkAreas);
+		Vector2D nearestCrosswalkBoundaryPoint = ZengAdditionalComputations.findNearestCorsswalkBoundaryPoint(pedestrian, nextCrosswalk, zengModelParameters.getComputationalPrecision());
 
 		if (verboseMode) {
 			if (nearestCrosswalkBoundaryPoint == null) {
@@ -273,19 +296,40 @@ public class SharedSpaceForceOperational extends WalkingModel {
 
 		if(nextCrosswalk.getGeometry().contains(pedestrian.getPosition())) {
 			// pedestrian inside the crosswalk
-			multiplier = modelVariables.getInteractionStrengthForRepulsiveForceFromCrosswalkBoundary() *
-					Math.exp(-modelVariables.getInteractionRangeForRepulsiveForceFromCrosswalkBoundary() * distancePedestrianToCrosswalkPoint);
+			multiplier = zengModelParameters.getCrosswalkRepulsiveInteractionStrength() *
+					Math.exp(-zengModelParameters.getCrosswalkRepulsiveInteractionRange() * distancePedestrianToCrosswalkPoint);
 			forceNormal = pedestrian.getPosition().subtract(nearestCrosswalkBoundaryPoint);
 
 		} else {
 			// pedestrian outside the crosswalk
-			multiplier = modelVariables.getInteractionStrengthForAttractiveForceFromCrosswalkBoundary() *
-					Math.exp(-modelVariables.getInteractionRangeForAttractiveForceFromCrosswalkBoundary() * distancePedestrianToCrosswalkPoint);
+			multiplier = zengModelParameters.getCrosswalkAttractiveInteractionStrength() *
+					Math.exp(-zengModelParameters.getCrosswalkAttractiveInteractionRange() * distancePedestrianToCrosswalkPoint);
 
 			forceNormal = nearestCrosswalkBoundaryPoint.subtract(pedestrian.getPosition());
 		}
 
 		return forceNormal.multiply(multiplier);
+	}
+
+	private Vector2D computeObstacleInteractionForce(IOperationalPedestrian pedestrian) {
+		List<Obstacle> obstacles = this.scenarioManager.getObstacles()
+				.stream()
+				.filter(obstacle -> obstacle.getGeometry().distanceBetween(pedestrian.getPosition()) < 5.0)
+				.collect(Collectors.toList());
+
+		Vector2D sumOfObstacleInteractionForces = GeometryFactory.createVector(0, 0);
+		Vector2D obstacleInteractionForce = null;
+
+		for(Obstacle obstacle : obstacles) {
+
+			for(Segment2D part : obstacle.getObstacleParts()) {
+
+				obstacleInteractionForce = this.socialForce.computeObstacleInteractionForce(pedestrian, part);
+				sumOfObstacleInteractionForces = sumOfObstacleInteractionForces.sum(obstacleInteractionForce);
+			}
+		}
+
+		return sumOfObstacleInteractionForces;
 	}
 	
 }

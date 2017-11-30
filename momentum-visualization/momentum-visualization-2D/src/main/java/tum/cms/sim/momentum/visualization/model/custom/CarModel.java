@@ -202,22 +202,17 @@ public class CarModel extends ShapeModel {
 
 		switch(selectionState) {
 			case NotSelected:
-
-
 				this.body.materialProperty().bind(this.customizationModel.carBodyMaterialProperty());
-
 				break;
+
 			case Selected:
-
 				this.body.materialProperty().bind(this.customizationModel.selectedCarBodyMaterialProperty());
-
 				break;
 		}
 	}
 
 	@Override
 	public String getIdentification() {
-	
 		return id;
 	}
 

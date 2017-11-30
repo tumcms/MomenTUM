@@ -186,7 +186,7 @@ public class BonneaudOperational extends WalkingModel {
 		//get a List of all Obstacles and divide them into smaller obstacle parts with maximum size MAX_OBSTACLE_SIZE:		
 		List<Segment2D> allSegments = obstacles.stream().
 				flatMap(obst -> obst.getObstacleParts().stream()).
-				flatMap(part ->part.getLineSegmentsSplittedEqually(BonneaudConstant.MAX_OBSTACLE_SIZE, null).stream()).
+				flatMap(part ->part.getLineSegmentsSplitEqually(BonneaudConstant.MAX_OBSTACLE_SIZE, null).stream()).
 				collect(Collectors.toList());
 		
 //		List<Segment2D> segmentsInFront = new ArrayList<Segment2D>();
@@ -402,7 +402,7 @@ public class BonneaudOperational extends WalkingModel {
 			
 			for(Segment2D obstaclePartBig : currentObstacle.getObstacleParts()) {
 
-				for(Segment2D obstaclePart : obstaclePartBig.getLineSegmentsSplittedEqually(BonneaudConstant.MAX_OBSTACLE_SIZE, null)) {
+				for(Segment2D obstaclePart : obstaclePartBig.getLineSegmentsSplitEqually(BonneaudConstant.MAX_OBSTACLE_SIZE, null)) {
 
 					Vector2D toObstacle = calculateVectorFromPedToObstacle(pedestrian, obstaclePart);
 					

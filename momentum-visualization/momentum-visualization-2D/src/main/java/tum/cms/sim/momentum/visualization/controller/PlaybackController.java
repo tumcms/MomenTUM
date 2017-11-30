@@ -59,6 +59,7 @@ import tum.cms.sim.momentum.visualization.model.GestureModel;
 import tum.cms.sim.momentum.visualization.model.SnapshotModel;
 import tum.cms.sim.momentum.visualization.model.VisibilitiyModel;
 import tum.cms.sim.momentum.visualization.model.PlaybackModel;
+import tum.cms.sim.momentum.visualization.model.custom.CarModel;
 import tum.cms.sim.momentum.visualization.model.geometry.*;
 import tum.cms.sim.momentum.visualization.view.userControl.ExtendedCanvas;
 
@@ -288,6 +289,7 @@ public class PlaybackController implements Initializable {
 
 						if (!changed.wasRemoved()) {
 
+							changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
 							playbackObjectsPane.getChildren().add(changed.getValueAdded().getShape());
 						}
 					}

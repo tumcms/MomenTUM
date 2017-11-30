@@ -32,7 +32,6 @@
 
 package tum.cms.sim.momentum.utility.geometry;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class Segment2DTest {
     private double PRECISION = 1E-10;
 
     @Test
-    public void getSegmentSplittedByPolygon() throws Exception {
+    public void getSegmentSplitByPolygon() throws Exception {
 
         Vector2D start = GeometryFactory.createVector(-5,0);
         Vector2D end = GeometryFactory.createVector(5,0);
@@ -58,7 +57,7 @@ public class Segment2DTest {
         nodeArray.add(GeometryFactory.createVector(-2, 2));
         Polygon2D polygon = GeometryFactory.createPolygon(nodeArray);
 
-        ArrayList<Segment2D> splittedSegment = segment.getSegmentSplittedByPolygon(polygon);
+        ArrayList<Segment2D> splittedSegment = segment.getSegmentSplitByPolygon(polygon);
 
         assertEquals(3, splittedSegment.size());
 

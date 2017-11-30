@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.perceptional.sightConeModel;
+package tum.cms.sim.momentum.model.perceptional.sightConePerceptionModel;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -43,7 +43,7 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SightConePerception extends PerceptionalModel {
+public class SightConePerceptionModel extends PerceptionalModel {
 
     public void setRadius(double radius) {
         this.radius = radius;
@@ -79,7 +79,7 @@ public class SightConePerception extends PerceptionalModel {
 
 		return this.pedestrianManager.getAllPedestriansImmutable()
 				.stream()
-				.filter(otherPedestrian -> otherPedestrian.getId() != currentPedestrian.getId())
+				.filter(otherPedestrian -> !otherPedestrian.getId().equals(currentPedestrian.getId()))
 				.filter(otherPedestrian -> isVisible(currentPedestrian, otherPedestrian.getPosition()))
 				.collect(Collectors.toList());
 	}

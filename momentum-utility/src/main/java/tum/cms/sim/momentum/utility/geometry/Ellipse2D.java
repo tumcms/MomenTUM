@@ -43,7 +43,6 @@ public class Ellipse2D {
 
 	public Ellipse2D(Vector2D center, Vector2D direction, double majorAxis, double minorAxis)
 	{
-
 		double phi = Math.atan2(direction.getYComponent(), direction.getXComponent());
 		this.ellipse = new EllipseRotated_F64(center.getXComponent(), center.getYComponent(), majorAxis, minorAxis, phi);
 	}
@@ -73,8 +72,20 @@ public class Ellipse2D {
 		return point.subtract(closestPoint);
 	}
 
+	/**
+	 * Returns the normal vector
+	 * @param point
+	 * @return
+	 */
 	public Vector2D normal(Vector2D point) {
-		return vectorBetween(point).getNormalized();
+		Vector2D pointOnEllipse = closestPoint(point);
+		// transform
+		pointOnEllipse = pointOnEllipse.subtract(this.getCenter()).rotate(-this.getOrientation());
+
+		Vector2D normal = new Vector2D(pointOnEllipse.getXComponent() * getMinorAxis()/getMajorAxis(),
+				pointOnEllipse.getYComponent() * getMajorAxis()/getMinorAxis());
+
+		return normal.rotate(this.getOrientation()).getNormalized();
 	}
 
 
@@ -95,7 +106,7 @@ public class Ellipse2D {
 	}
 
 	public double getMinorAxis() {
-		return getMinorAxis();
+		return this.ellipse.getB();
 	}
 
 	public void translate(double x, double y) {

@@ -35,6 +35,7 @@ package tum.cms.sim.momentum.model.tactical.routing.dijkstraModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Random;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
@@ -53,26 +54,38 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.ShortestPathAlgorithm;
 import tum.cms.sim.momentum.utility.graph.pathAlgorithm.weightOperation.DijkstraWeightCalculator;
 
-public class DijkstraRiskTactical extends RoutingModel {
+public class DijkstraPerceivedCostTactical extends RoutingModel {
 
 	private static String weightName = "dijkstraWeight";
 	private static String euclideanDistance = "euclideanDistance";
-	private static String shareNotForPedestrian = "shareNotForPedestrian";
+	private static String shareForPedestrian = "shareForPedestrian";
 
 	private Graph visibilityGraph = null;
 	private HashMap<Integer, ShortestPathAlgorithm> shortestPathAlgorithm = new HashMap<>();
+
+	private double perceivedCostMean = 0;
+	private double perceivedCostDeviation = 0;
+	private Random random = new Random();
 
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 
 		visibilityGraph = this.scenarioManager.getGraph();
 		initializeEdgeWeights(this.visibilityGraph);
+
+		this.perceivedCostMean = this.properties.getDoubleProperty("perceivedCostMean");
+		this.perceivedCostDeviation = this.properties.getDoubleProperty("perceivedCostDeviation");
+
 	}
 
 	@Override
 	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 
-		return null;
+		double pedestrianDedicatedAreaFactor = (this.random.nextGaussian() * this.perceivedCostDeviation) + perceivedCostMean;
+		if(pedestrianDedicatedAreaFactor < 0) {
+			pedestrianDedicatedAreaFactor = 0;
+		}
+		return new DijkstraPerceivedCostPedestrianExtension(pedestrianDedicatedAreaFactor);
 	}
 
 	@Override
@@ -88,10 +101,12 @@ public class DijkstraRiskTactical extends RoutingModel {
 	@Override
 	public void callPedestrianBehavior(ITacticalPedestrian pedestrian, SimulationState simulationState) {
 
+		DijkstraPerceivedCostPedestrianExtension extension = (DijkstraPerceivedCostPedestrianExtension)pedestrian.getExtensionState(this);
+
 		Vertex start = this.findNavigationStartPoint(pedestrian, this.perception, this.scenarioManager);
 		Vertex end = this.visibilityGraph.getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
 
-		this.updateEdgeWeights(this.visibilityGraph, simulationState.getCalledOnThread(), DijkstraRiskTactical.weightName);
+		this.updateEdgeWeights(this.visibilityGraph, simulationState.getCalledOnThread(), DijkstraPerceivedCostTactical.weightName, extension);
 
 		this.scenarioManager.getGraph().getVertices().forEach(vertex -> vertex.setWeight(weightName + String.valueOf(simulationState.getCalledOnThread()), Double.MAX_VALUE));
 
@@ -125,14 +140,15 @@ public class DijkstraRiskTactical extends RoutingModel {
 		return this.shortestPathAlgorithm.get(threadNumber);
 	}
 
-	private void updateEdgeWeights(Graph graph, int threadID, String edgeWeightName) {
+	private void updateEdgeWeights(Graph graph, int threadID, String edgeWeightName, DijkstraPerceivedCostPedestrianExtension extension) {
 
 		String weightName = edgeWeightName + String.valueOf(threadID);
 		double weight = 0;
 
 		for(Edge current : graph.getAllEdges()) {
 
-			weight = current.getWeight(shareNotForPedestrian) * current.getWeight(euclideanDistance);
+			weight = current.getWeight(euclideanDistance) * current.getWeight(shareForPedestrian) * extension.getPedestrianDedicatedAreaFactor() +
+					current.getWeight(euclideanDistance) * (1 - current.getWeight(shareForPedestrian)) ;
 			current.setWeight(weightName, weight);
 		}
 	}
@@ -144,7 +160,7 @@ public class DijkstraRiskTactical extends RoutingModel {
 		Vector2D successorPosition = null;
 		Segment2D currentLineSegment = null;
 
-		double percentageNotForPedestrian = 0;
+		double percentageForPedestrian = 0;
 		double euclideanDistance = 0;
 
 		for(Edge current : graph.getAllEdges()) {
@@ -154,15 +170,15 @@ public class DijkstraRiskTactical extends RoutingModel {
 				currentLineSegment = GeometryFactory.createSegment(currentPosition, successorPosition);
 
 				euclideanDistance = current.euklideanLenght();
-				percentageNotForPedestrian = calculatePercentageNotForPedestrian(currentLineSegment);
+				percentageForPedestrian = calculatePercentageForPedestrian(currentLineSegment);
 
-				current.setWeight(shareNotForPedestrian, percentageNotForPedestrian);
-				current.setWeight(DijkstraRiskTactical.euclideanDistance, euclideanDistance);
+				current.setWeight(shareForPedestrian, percentageForPedestrian);
+				current.setWeight(DijkstraPerceivedCostTactical.euclideanDistance, euclideanDistance);
 		}
 	}
 
 
-	private double calculatePercentageNotForPedestrian(Segment2D lineSegment) {
+	private double calculatePercentageForPedestrian(Segment2D lineSegment) {
 
 		ArrayList<Segment2D> lineSegmentsSplit = splitByAreas(lineSegment);
 
@@ -178,7 +194,7 @@ public class DijkstraRiskTactical extends RoutingModel {
 			}
 		}
 
-		return  distanceNotForPedestrian / (distanceForPedestrian + distanceNotForPedestrian);
+		return  distanceForPedestrian / (distanceForPedestrian + distanceNotForPedestrian);
 	}
 
 	private boolean pointContainedByAreaForPedestrians(Vector2D point) {
@@ -202,7 +218,7 @@ public class DijkstraRiskTactical extends RoutingModel {
 			splitSegmentsTemp.clear();
 
 			for(Segment2D curSegment : splitSegments) {
-				splitSegmentsTemp.addAll(curSegment.getSegmentSplittedByPolygon(curArea.getGeometry()));
+				splitSegmentsTemp.addAll(curSegment.getSegmentSplitByPolygon(curArea.getGeometry()));
 			}
 
 			splitSegments.clear();

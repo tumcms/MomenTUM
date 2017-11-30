@@ -87,8 +87,8 @@ public class PlaybackModel {
 
 	private HashSet<Double> redPedestrianGroupColor = new HashSet<Double>();
 	private HashSet<Double> bluePedestrianGroupColor = new HashSet<Double>();
-	private HashMap<CsvType, HashMap<String, Point2D>> previousShapePositionPoints = new HashMap<CsvType, HashMap<String, Point2D>> ();
-	private HashMap<CsvType, HashMap<String, Point2D>> nextShapePositionPoints = new HashMap<CsvType, HashMap<String, Point2D>>();
+	private HashMap<CsvType, HashMap<String, Point2D>> previousShapePositionPoints = new HashMap<> ();
+	private HashMap<CsvType, HashMap<String, Point2D>> nextShapePositionPoints = new HashMap<>();
 
 	private final MapProperty<CsvType, ObservableMap<String, ShapeModel>> customShapesMap = new SimpleMapProperty<CsvType, ObservableMap<String, ShapeModel>>(
 			this, "customShapes", FXCollections.observableHashMap());
@@ -284,6 +284,9 @@ public class PlaybackModel {
 	}
 
 	public HashMap<String, Point2D> getNextSpecificShapePositionPoints(CsvType type) {
+		if(nextShapePositionPoints.get(type) == null) {
+			this.nextShapePositionPoints.put(type, new HashMap<>());
+		}
 		return nextShapePositionPoints.get(type);
 	}
 
