@@ -48,17 +48,22 @@ import org.tensorflow.*;
  */
 public class NeuralNetwork {
 
-	private static String graphMissingException = "Cannot create session, graph object is not initialized.";
+	/**
+	 * Used for indicating incorrect naming of tensors in run. 
+	 */
+	private static String exceptionTensorRun = "The tensor name %s is not found in the tensorflow-graph";
 	
 	/**
-	 * The operation graph for processing the neural network.
+	 * Tag for the `serving` graph.
+	 * This refers to the `tags` parameter of `builder.add_meta_graph_and_variables`
+	 * in the saved_model Tensorflow api
 	 */
-	private Graph graph;
+	private static String tagServe = "serve";
 	
 	/**
-	 * The session environment of the neural network.
+	 * The model of the neural network that was restored.
 	 */
-	private Session session;
+	private SavedModelBundle modelBundle;
 	
 	/**
 	 * This list stores all names of the operation.
@@ -66,34 +71,14 @@ public class NeuralNetwork {
 	 */
 	ArrayList<String> operationNames;
 	
-	protected NeuralNetwork() {
-		
-	}
-	
 	/**
-	 * This method restores a saved Tensorflow session.
+	 * This method restores a saved Tensorflow model.
 	 *  
-	 * @param pathToSavedNetwork
+	 * @param pathToSavedNetworkFolder, a path that points to a folder where the model is.
 	 */
-	public void restore(String pathToSavedNetwork) {
+	protected NeuralNetwork(String pathToSavedNetworkFolder) {
 		
-		SavedModelBundle modelBundle = SavedModelBundle.load(pathToSavedNetwork);
-		this.graph = modelBundle.graph();
-	}
-	
-	/**
-	 * This method start a session based on a graph.
-	 *
-	 * @throws Exception, in case the Graph object is not initialized.
-	 */
-	public void startSession() throws Exception {
-		
-		if(this.graph == null) {
-			
-			throw new Exception(graphMissingException);
-		}
-		
-		this.session = new Session(this.graph);
+		this.modelBundle = SavedModelBundle.load(pathToSavedNetworkFolder, tagServe);
 	}
 	
 	/**
@@ -109,28 +94,56 @@ public class NeuralNetwork {
 			
 			this.operationNames = new ArrayList<String>();
 	
-			Iterator<Operation> iter = this.graph.operations();
+			Iterator<Operation> iter = this.modelBundle.graph().operations();
 			
 			while(iter.hasNext()) {
 				
 				Operation operation = iter.next();
 				this.operationNames.add(operation.name());
 			}
+			
+			//Collections.sort(this.operationNames);
 		}
-
+		
 		return this.operationNames;
 	}
 	
 	/**
-	 * Wraps numOutputs() of a graph operation from Tensorflow:
-	 * Returns the number of tensors produced by this operation.
+	 * Run the trained network.
+	 * The inTensor needs to be filled with data and comply to the tensorflow-graph.
+	 * The outTensor only needs a name and a dimension but should not contain data.
+	 * The outTensor will hold new data after successful execution of this method.
 	 * 
-	 * @param operationName
-	 * @return The number of tensors of the operation.
+	 * This method will compute a single output tensor only. In case more tensor
+	 * should be evaluated in the same run, add another method!
+	 * 
+	 * @param inTensor
+	 * @param outTensor
+	 * @throws Exception 
 	 */
-	public int getOperationOutputSize(String operationName) {
+	public void executeNetwork(NeuralTensor inTensor, NeuralTensor outTensor) throws Exception {
 		
-		return this.graph.operation(operationName).numOutputs();
+		if(!this.getOperationNames().contains(inTensor.getName())) {
+		
+			throw new Exception(String.format(exceptionTensorRun, inTensor.getName()));
+		}
+		
+		if(!this.getOperationNames().contains(outTensor.getName())) {
+			
+			throw new Exception(String.format(exceptionTensorRun, outTensor.getName()));
+		}
+		
+		List<Tensor<?>> output = this.modelBundle.session().runner()
+			.feed(inTensor.getName(), inTensor.getTensor())
+			.fetch(outTensor.getName())
+			.run();
+
+		if(output.size() != 1) {
+		
+			// should never happen!
+		}
+		
+		outTensor.insertData(output.get(0));
 	}
 	
 	/**
@@ -138,8 +151,10 @@ public class NeuralNetwork {
 	 */
 	public void close() {
 		
+		this.modelBundle.close();
+		this.modelBundle = null;
+		
+		this.operationNames.clear();
 		this.operationNames = null;
-		this.session.close();
-		this.graph.close();
 	}
 }

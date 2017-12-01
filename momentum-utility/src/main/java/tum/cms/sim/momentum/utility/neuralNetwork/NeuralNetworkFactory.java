@@ -32,11 +32,9 @@
 
 package tum.cms.sim.momentum.utility.neuralNetwork;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 /**
- * This factory is used to created neural networks based on Tensorflow.
- * The wrapper approach reduces dependencies by providing classes that use the Tensorflow Api. 
+ * This factory is used to created neural networks and tensors based on Tensorflow.
+ * The wrapper approach reduces dependencies by providing classes that use the Tensorflow api. 
  * 
  * If a developer needs another mechanism from tensorflow he/she have to implement the code in
  * the neuralNetwork package and provide that via the factory.
@@ -47,8 +45,6 @@ import org.apache.commons.lang3.NotImplementedException;
  *
  */
 public class NeuralNetworkFactory {
-
-	/* TODO create load saved model factory */
 	
 	/**
 	 * Private constructor to avoid new objects of {@link NeuralNetworkFactory}.
@@ -57,14 +53,34 @@ public class NeuralNetworkFactory {
 	
 	/**
 	 * This method creates a new NeuralNetwork object based on the a previously saved
-	 * Tensorflow session. Thus, we hide here the Tensorflow tf.train.Saver() restore operation.
+	 * Tensorflow session. The model have to be stored via the saved_model.builder
+	 * api of tensorflow using the tag SERVING.
 	 * 
-	 * @param pathToSavedNetwork, a path that points to a saved tensforflow file.
+	 * @param pathToSavedNetworkFolder, a path that points to a folder where the model is.
 	 * @return {@link NeuralNetwork}
 	 */
-	public static NeuralNetwork createNeuralNetwork(String pathToSavedNetwork) {
+	public static NeuralNetwork createNeuralNetwork(String pathToSavedNetworkFolder) {
 		
-		// TODO implement @PK
-		throw new NotImplementedException("TODO NeuralNetwork");
+		return new NeuralNetwork(pathToSavedNetworkFolder);
+	}
+	
+	/**
+	 * Create a tensor object.
+	 * 
+	 * In order to use the tensor in a NeuralNetwork object:
+	 * 
+	 * The name of the tensor have to be the name of the corresponding tensor object
+	 * in the graph that has been loaded.
+	 * 
+	 * The dimension has to match the dimension of the tensor in the graph that
+	 * was restored.
+	 * 
+	 * @param name
+	 * @param dimension
+	 * @return {@link NeuralTensor}
+	 */
+	public static NeuralTensor createNeuralTensor(String name, long[] dimension) {
+		
+		return new NeuralTensor(name, dimension);
 	}
 }

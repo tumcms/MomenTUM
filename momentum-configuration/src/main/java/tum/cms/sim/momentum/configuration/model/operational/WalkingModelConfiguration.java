@@ -56,7 +56,8 @@ public class WalkingModelConfiguration extends PropertyContainerNode {
 		ClassicLWR,
 		ParallelSocialForce,
 		SharedSpaceForce,
-		CsvPlayback
+		CsvPlayback,
+		NeuralNetwork
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -75,6 +76,7 @@ public class WalkingModelConfiguration extends PropertyContainerNode {
 		map.put(WalkingModelType.ClassicLWR.toString(), WalkingModelType.ClassicLWR);
 		map.put(WalkingModelType.SharedSpaceForce.toString(), WalkingModelType.SharedSpaceForce);
 		map.put(WalkingModelType.CsvPlayback.toString(), WalkingModelType.CsvPlayback);
+		map.put(WalkingModelType.NeuralNetwork.toString(), WalkingModelType.NeuralNetwork);
 		
 		return new EnumToStringConverter<>(WalkingModelType.class, map);
 	}

@@ -42,6 +42,7 @@ import tum.cms.sim.momentum.model.operational.walking.empiricallyGrounded_Bonnea
 import tum.cms.sim.momentum.model.operational.walking.groupBehaviour_Moussaid2010.MoussaidOperational;
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWR;
 import tum.cms.sim.momentum.model.operational.walking.moussaidHeuristic.MoussaidHeuristicOperational;
+import tum.cms.sim.momentum.model.operational.walking.neuralNetworkModel.NetworkMlpModel.NetworkMlpModelOperational;
 import tum.cms.sim.momentum.model.operational.walking.noInteractionModel.NoInteractionOperational;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.HelbingOperational.HelbingOperational;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.ParallelHelbingOperational.BarnesHutParallelHelbingOperational;
@@ -108,6 +109,10 @@ public class WalkingModelFactory extends ModelFactory<WalkingModelConfiguration,
 			SharedSpaceForceOperational shareSpaceForceOperational = new SharedSpaceForceOperational();
 			shareSpaceForceOperational.setCarManager(componentManager.getCarManager());
 			walkingModel = shareSpaceForceOperational;
+			break;
+			
+		case NeuralNetwork:
+			walkingModel = new NetworkMlpModelOperational();
 			break;
 			
 		default:
