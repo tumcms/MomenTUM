@@ -54,7 +54,6 @@ import tum.cms.sim.momentum.visualization.enums.SpeedUp;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.model.PlaybackModel;
-import tum.cms.sim.momentum.visualization.model.PlaybackModel;
 import tum.cms.sim.momentum.visualization.model.custom.CarModel;
 import tum.cms.sim.momentum.visualization.model.custom.DensityCellModel;
 import tum.cms.sim.momentum.visualization.model.custom.DensityEdgeModel;
