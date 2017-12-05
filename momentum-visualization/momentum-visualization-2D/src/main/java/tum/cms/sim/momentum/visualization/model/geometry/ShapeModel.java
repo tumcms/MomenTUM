@@ -62,6 +62,7 @@ public abstract class ShapeModel {
 	protected static final String leftVertex = "Left Vertex";
 	protected static final String rightVertex = "Right Vertex";
 	protected static final String adjacent = "Adjacent";
+	protected static final String message = "msg";
 	
 	protected SelectionHandler selectionHandler = null;
 	
@@ -71,19 +72,23 @@ public abstract class ShapeModel {
 			
 			this.selectionHandler = selectionHandler;
 			this.selectionHandler.registerClickableObject(this);
-	
-			this.getClickableShapes().forEach(shape -> shape.setOnMouseClicked(new EventHandler<MouseEvent>() {
-	
-				@Override
-				public void handle(MouseEvent mouseEvent) {
-					
-					if(mouseEvent.getButton() == MouseButton.PRIMARY) {
-					
-						DetailsModel details = new DetailsModel(ShapeModel.this.getDataProperties());
-						ShapeModel.this.selectionHandler.setSelection(ShapeModel.this, mouseEvent.isControlDown(), details);
-					}	
-				}
-			}));
+
+			if(this.getClickableShapes() != null) {
+				this.getClickableShapes().stream()
+						.filter(shape -> shape != null)
+						.forEach(shape -> shape.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+
+						if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+
+							DetailsModel details = new DetailsModel(ShapeModel.this.getDataProperties());
+							ShapeModel.this.selectionHandler.setSelection(ShapeModel.this, mouseEvent.isControlDown(), details);
+						}
+					}
+				}));
+			}
 		}
 	}
 	
@@ -102,6 +107,8 @@ public abstract class ShapeModel {
 	}
 	
 	public abstract void setVisibility(boolean isVisible);
+
+	//public abstract boolean isVisible();
 	
 	public abstract void changeSelectionMode(SelectionStates selectionState);
 	

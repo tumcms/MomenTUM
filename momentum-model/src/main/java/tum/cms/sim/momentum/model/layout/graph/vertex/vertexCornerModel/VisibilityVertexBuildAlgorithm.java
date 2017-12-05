@@ -97,7 +97,7 @@ public class VisibilityVertexBuildAlgorithm {
                 
                 for(Segment2D segment : ((Polygon2D)blockingGeometry).getSegments()) {
                 	
-                	for(Segment2D subSegment : segment.getLineSegmentsSplitted(subsegmentGenerateDistance)) {
+                	for(Segment2D subSegment : segment.getLineSegmentsSplit(subsegmentGenerateDistance)) {
                 		
                         List<Vector2D> segmentPoints = subSegment.getVertices();
 
@@ -131,7 +131,7 @@ public class VisibilityVertexBuildAlgorithm {
             }
             else if (blockingGeometry instanceof Segment2D) {
             	
-            	for(Segment2D subSegment : ((Segment2D)blockingGeometry).getLineSegmentsSplitted(subsegmentGenerateDistance)) {
+            	for(Segment2D subSegment : ((Segment2D)blockingGeometry).getLineSegmentsSplit(subsegmentGenerateDistance)) {
             		
 	                List<Vector2D> segmentPoints = subSegment.getVertices();
 	

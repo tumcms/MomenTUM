@@ -45,6 +45,7 @@ import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackWr
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWR;
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWROutputSource;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForceWriterSource;
+import tum.cms.sim.momentum.model.operational.walking.socialForceModel.ZengOperational.ZengSocialForceWriterSource;
 import tum.cms.sim.momentum.model.output.writerSources.WriterSource;
 import tum.cms.sim.momentum.model.output.writerSources.specificWriterSources.AnalysisWriterSource;
 import tum.cms.sim.momentum.model.output.writerSources.specificWriterSources.CarWriterSource;
@@ -99,6 +100,17 @@ public class WriterSourceFactory extends ModelFactory<WriterSourceConfiguration,
 			socialForceSource.setPedetrianBehavioralModel(barnesHut);
 			
 			writerSource = socialForceSource;
+			break;
+
+		case Zeng_SocialForce_Pedestrian:
+			ZengSocialForceWriterSource zengSocialForceSource = new ZengSocialForceWriterSource();
+			zengSocialForceSource.setPedestrianManager(componentManager.getPedestrianManager());
+			zengSocialForceSource.setTimeManager(componentManager.getTimeManager());
+
+			IPedestrianBehavioralModel zeng = componentManager.getWalkingModel(configuration.getAdditionalId());
+			zengSocialForceSource.setPedetrianBehavioralModel(zeng);
+
+			writerSource = zengSocialForceSource;
 			break;
 			
 		case Time:
@@ -190,18 +202,19 @@ public class WriterSourceFactory extends ModelFactory<WriterSourceConfiguration,
 			
 			writerSource = classicLWRSource;			
 			break;
+
 		case CsvPlayback:
-			
+
 			CsvPlaybackWriterSource csvPlaybackWriterSource = new CsvPlaybackWriterSource();
 			csvPlaybackWriterSource.setTimeManager(componentManager.getTimeManager());
 			csvPlaybackWriterSource.setPedestrianManager(componentManager.getPedestrianManager());
-			
+
 			CsvPlaybackOperational csvPlaybackOperational = (CsvPlaybackOperational) componentManager.getWalkingModel(configuration.getAdditionalId());
 			csvPlaybackWriterSource.setPedetrianBehavioralModel(csvPlaybackOperational);
-			
-			writerSource = csvPlaybackWriterSource;	
+
+			writerSource = csvPlaybackWriterSource;
 			break;
-			
+
 		default:
 			break;
 		}

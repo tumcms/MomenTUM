@@ -58,6 +58,8 @@ public enum PropertyType {
 	destinationColor,
 	originColor,
 	intermediateColor,
+	taggedAreaGradientStartColor,
+	taggedAreaGradientEndColor,
 	obstacleColor,
 	virtualObstacleColor,
 	trajectoryColor,
@@ -100,6 +102,10 @@ public enum PropertyType {
 			return Color.BLACK.toString();
 		case intermediateColor:
 			return Color.VIOLET.toString();
+		case taggedAreaGradientStartColor:
+			return Color.LIGHTSKYBLUE.toString();
+		case taggedAreaGradientEndColor:
+			return Color.DEEPSKYBLUE.toString();
 		case latticeVisibility:
 			return Boolean.toString(true);
 		case layoutPath:

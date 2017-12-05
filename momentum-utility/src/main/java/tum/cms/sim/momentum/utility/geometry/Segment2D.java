@@ -33,7 +33,10 @@
 package tum.cms.sim.momentum.utility.geometry;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.math3.util.FastMath;
 import org.dyn4j.geometry.AABB;
 import org.dyn4j.geometry.Mass;
@@ -231,6 +234,37 @@ public class Segment2D extends Geometry2D {
 		}
 		
 		return intersections;
+	}
+
+	public ArrayList<Segment2D> getSegmentSplitByPolygon(Polygon2D polygon) {
+		ArrayList<Segment2D> segmentList = new ArrayList<>();
+
+		ArrayList<Vector2D> segmentListPoints = new ArrayList<>();
+		segmentListPoints.add(this.getFirstPoint());
+		segmentListPoints.addAll(this.getIntersection(polygon));
+		segmentListPoints.add(this.getLastPoint());
+
+		Comparator<Vector2D> byDistance = (e1, e2) -> Double.compare(
+				e1.distance(this.getFirstPoint()), e2.distance(this.getFirstPoint()));
+
+		segmentListPoints = segmentListPoints.stream()
+				.sorted(byDistance)
+				.collect(Collectors.toCollection(ArrayList::new));
+
+		Vector2D tempPosPrevious = null;
+		for(Vector2D tempPosCurrent : segmentListPoints) {
+			if(tempPosPrevious == null) {
+				tempPosPrevious = tempPosCurrent;
+				continue;
+			}
+
+			if(!tempPosPrevious.equals(tempPosCurrent)) {
+				segmentList.add(GeometryFactory.createSegment(tempPosPrevious, tempPosCurrent));
+				tempPosPrevious = tempPosCurrent;
+			}
+		}
+
+		return segmentList;
 	}
 
 	@Override
@@ -615,7 +649,7 @@ public class Segment2D extends Geometry2D {
 	 * @param maxLength
 	 * @return List<Segment2D>
 	 */
-	public List<Segment2D> getLineSegmentsSplitted(double maxLength) {
+	public List<Segment2D> getLineSegmentsSplit(double maxLength) {
 		
 		ArrayList<Segment2D> result = new ArrayList<Segment2D>();
 			
@@ -670,11 +704,11 @@ public class Segment2D extends Geometry2D {
 	/**
 	 * Returns a List of (smaller) segments for the segment. All new Segments have equal length, 
 	 * which is equal to or smaller than @param maxLength
-	 * The give segment which on this method is called have to have only 1 segement element
+	 * The give segment which on this method is called have to have only 1 segment element
 	 * @param maxLength
 	 * @return List<Segment2D>
 	 */
-	public List<Segment2D> getLineSegmentsSplittedEqually(double maxLength, Double roundPrecision) {
+	public List<Segment2D> getLineSegmentsSplitEqually(double maxLength, Double roundPrecision) {
 		
 		ArrayList<Segment2D> result = new ArrayList<Segment2D>();
 	
@@ -721,7 +755,7 @@ public class Segment2D extends Geometry2D {
 	 * 
 	 * @param maxLength
 	 */
-	public ArrayList<Segment2D> calculateLineSegmentsToEquallySplitted (double maxLength, Double roundPrecision) {
+	public ArrayList<Segment2D> calculateLineSegmentsToEquallySplit(double maxLength, Double roundPrecision) {
 		
 		//ArrayList<Segment> segments = new ArrayList<Segment>();	
 		ArrayList<Segment2D> segments2D = new ArrayList<Segment2D>();	
@@ -733,7 +767,7 @@ public class Segment2D extends Geometry2D {
 					new Vector2D (curSeg.getPoint1()), 
 					new Vector2D (curSeg.getPoint2()));
 			
-			segments2D.addAll(curSegCopy.getLineSegmentsSplittedEqually(maxLength, roundPrecision));
+			segments2D.addAll(curSegCopy.getLineSegmentsSplitEqually(maxLength, roundPrecision));
 		}
 		
 		//than "copy" them to basic segments

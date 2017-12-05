@@ -259,6 +259,14 @@ public abstract class PerceptionalModel extends PedestrianSupportModel {
 		
 		return isCollision;
 	}
+
+	public boolean isVisible(IPedestrian pedestrian, List<Vector2D> positionList) {
+		for (Vector2D currentPosition : positionList) {
+			if(isVisible(pedestrian, currentPosition))
+				return true;
+		}
+		return false;
+	}
 	
 	public abstract List<IPedestrian> getPerceptedPedestrianPositions(IPedestrian pedestrian, SimulationState simulationState);
 	public abstract List<Vector2D> getPerceptedObstaclePositions(IPedestrian pedestrian, SimulationState simulationState);

@@ -1,0 +1,5 @@
+<!-- The dijkstra routing model applies the shortes path algorithm on the navigaiton graph. -->
+<!-- It is the most simplistic but often usefull model for testing models (e.g. queuing, walking. -->
+<routingModels>
+	<routing id="0" name="dijkstra" type="Dijkstra"/>
+</routingModels>

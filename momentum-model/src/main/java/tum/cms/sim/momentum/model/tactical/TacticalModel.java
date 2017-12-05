@@ -33,8 +33,10 @@
 package tum.cms.sim.momentum.model.tactical;
 
 import java.util.Collection;
+import java.util.Set;
 
 import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
+import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
@@ -49,6 +51,7 @@ import tum.cms.sim.momentum.model.tactical.queuing.QueuingModel;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
 import tum.cms.sim.momentum.model.tactical.searching.SearchingModel;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
+import tum.cms.sim.momentum.utility.graph.Vertex;
 
 public class TacticalModel extends PedestrianBehaviorModel {
 	
@@ -56,6 +59,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	protected final static String goalDistanceRadiusName = "goalDistanceRadius";
 	protected final static String navigationDistanceRadiusName = "navigationDistanceRadius";
 	protected final static String tacticalControlName = "tacticalControl";
+	protected final static String deepNodeSelectionName = "deepNodeSelection";
 	protected final static String routeMemoryName = "routeMemory";
 	
 	protected Behavior strategicFixedCommand = null;
@@ -63,6 +67,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	protected double navigationDistanceRadius = 0.15;
 	protected boolean tacticalControl = true;
 	protected boolean routeMemory = true;
+	protected int deepNodeSelection = 0;
 
 	private RoutingModel routingModel = null;
 	
@@ -125,8 +130,6 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
-		//navigationDistanceRadius = this.properties.getDoubleProperty(navigationDistanceRadiusName);
-		
 		if(this.properties.getStringProperty(strategicCommandName) != null) {
 			
 			strategicFixedCommand = Behavior.valueOf(this.properties.getStringProperty(strategicCommandName));
@@ -147,20 +150,20 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			tacticalControl = this.properties.getBooleanProperty(tacticalControlName);
 		}
 		
+		if(this.properties.getIntegerProperty(deepNodeSelectionName) != null) {
+			
+			deepNodeSelection = this.properties.getIntegerProperty(deepNodeSelectionName);
+		}
+		
 		if(this.properties.getBooleanProperty(routeMemoryName) != null) {
 			
 			routeMemory = this.properties.getBooleanProperty(routeMemoryName);
 		}
 		
-//		if(this.properties.getBooleanProperty(dynamicNodeReachedName) != null) {
-//			
-//			dynamicNodeReached = this.properties.getBooleanProperty(dynamicNodeReachedName);
-//		}
-		
-//		LoggingManager.logDebug(MessageStrings.propertySetTo,
-//				navigationDistanceRadiusName,
-//				String.valueOf(navigationDistanceRadius),
-//				this.getClass().getSimpleName());
+		LoggingManager.logDebug(MessageStrings.propertySetTo,
+				navigationDistanceRadiusName,
+				String.valueOf(navigationDistanceRadius),
+				this.getClass().getSimpleName());
 		
 		LoggingManager.logDebug(MessageStrings.propertySetTo,
 				goalDistanceRadiusName,
@@ -170,6 +173,21 @@ public class TacticalModel extends PedestrianBehaviorModel {
 		LoggingManager.logDebug(MessageStrings.propertySetTo,
 				tacticalControlName,
 				String.valueOf(tacticalControl),
+				this.getClass().getSimpleName());
+		
+		LoggingManager.logDebug(MessageStrings.propertySetTo,
+				deepNodeSelectionName,
+				String.valueOf(deepNodeSelection),
+				this.getClass().getSimpleName());
+		
+		LoggingManager.logDebug(MessageStrings.propertySetTo,
+				routeMemoryName,
+				String.valueOf(routeMemory),
+				this.getClass().getSimpleName());
+		
+		LoggingManager.logDebug(MessageStrings.propertySetTo,
+				strategicFixedCommand,
+				String.valueOf(strategicFixedCommand),
 				this.getClass().getSimpleName());
 	}
 
@@ -424,17 +442,66 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			// re-routing is a process that only needs to be activated if
 			// the next navigation is visible 
 			// the current navigation node is not visible!
-			try {
-				if(normalRouting && this.routingModel.reRoutingNecessary(pedestrian, this.tacticalControl)) {
-					
-					this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
-				}			
-			}
-			catch(Exception ex ) {
+			if(normalRouting && this.routingModel.reRoutingNecessary(pedestrian, this.tacticalControl, this.deepNodeSelection > 0)) {
 				
-				ex = null;
-			}
-
+				this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+				
+				// TODO create an abstract method in RoutingModel put this into
+				if(this.deepNodeSelection > 0) {
+					
+					int currentDepth = this.deepNodeSelection;
+					
+					Vertex nextTolast = pedestrian.getRoutingState().getLastVisit();
+					Vertex last = pedestrian.getRoutingState().getLastVisit();
+					Vertex start = last;
+					Vertex next = pedestrian.getRoutingState().getNextVisit();
+					Vertex nextToNext = pedestrian.getRoutingState().getNextToCurrentVisit();
+					
+					Vertex end = this.scenarioManager.getGraph()
+							.getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
+					
+					Set<Vertex> visited = pedestrian.getRoutingState().getVisited();
+					
+					if(start != null && end != null) {
+						while(currentDepth > 0) {
+							
+							this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+						
+							RoutingState newRoutingState = pedestrian.getRoutingState();
+							
+							// TODO check if circles are solved next / last
+							if(!perception.isVisible(pedestrian, newRoutingState.getNextVisit()) ||
+							   newRoutingState.getNextVisit().equals(end) ||
+							   start.equals(end)) {
+								
+								nextToNext = newRoutingState.getNextVisit();
+								break;
+							}
+	
+							currentDepth--;
+							
+							if(currentDepth == 0) { 
+								
+								nextToNext = newRoutingState.getNextVisit();
+								break;
+							}
+							else {
+								
+								nextTolast = last;
+							}
+							
+							visited.add(next);
+							
+							last = newRoutingState.getLastVisit();
+							next = newRoutingState.getNextVisit();
+						}
+					}
+					
+					RoutingState finalRoutingState = new RoutingState(visited, nextTolast, last, next);
+					finalRoutingState.setNextToCurrentVisit(nextToNext);
+					pedestrian.setRoutingState(finalRoutingState);
+				}
+			}			
 		}
 		else {
 			
