@@ -45,7 +45,7 @@ import tum.cms.sim.momentum.model.operational.walking.moussaidHeuristic.Moussaid
 import tum.cms.sim.momentum.model.operational.walking.noInteractionModel.NoInteractionOperational;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.HelbingOperational.HelbingOperational;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.ParallelHelbingOperational.BarnesHutParallelHelbingOperational;
-import tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2014.SharedSpaceForceOperational;
+import tum.cms.sim.momentum.model.operational.walking.socialForceModel.ZengOperational.ZengOperational;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -104,10 +104,10 @@ public class WalkingModelFactory extends ModelFactory<WalkingModelConfiguration,
 			walkingModel = new ClassicLWR();
 			break;
 			
-		case SharedSpaceForce:
-			SharedSpaceForceOperational shareSpaceForceOperational = new SharedSpaceForceOperational();
-			shareSpaceForceOperational.setCarManager(componentManager.getCarManager());
-			walkingModel = shareSpaceForceOperational;
+		case SocialForceZeng:
+			ZengOperational socialForceZengOperational = new ZengOperational();
+			socialForceZengOperational.setCarManager(componentManager.getCarManager());
+			walkingModel = socialForceZengOperational;
 			break;
 			
 		default:

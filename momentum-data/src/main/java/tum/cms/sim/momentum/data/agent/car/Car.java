@@ -99,7 +99,7 @@ public class Car extends Unique implements IRichCar {
 
 		return state.staticState.getSizeWidth();
 	}
-	
+
 	public Rectangle2D getRectangle() {
 		return GeometryFactory.createRectangle(state.movementState.getMovementPosition(),
 				state.movementState.getMovementHeading(),

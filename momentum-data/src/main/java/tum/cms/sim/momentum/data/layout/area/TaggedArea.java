@@ -41,9 +41,10 @@ public class TaggedArea extends Area {
 	// better use enum from configuration?
 	public enum Type {
 		Crosswalk,
-		Sidewalk
+		Sidewalk,
+		Footway
 	}
-	
+
 	private Type type = null;
 	
 	public TaggedArea(int id, String name, Polygon2D polygon, List<String> categories, Type type) {

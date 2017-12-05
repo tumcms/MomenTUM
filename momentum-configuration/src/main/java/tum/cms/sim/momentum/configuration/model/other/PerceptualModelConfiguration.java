@@ -46,7 +46,8 @@ public class PerceptualModelConfiguration extends PropertyContainerNode {
 	public enum PerceptualModelType {
 		
 		Shadow,
-		Bresenham
+		Bresenham,
+		SightCone
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -56,7 +57,8 @@ public class PerceptualModelConfiguration extends PropertyContainerNode {
 		map.put(PerceptualModelType.Shadow.toString(), PerceptualModelType.Shadow);
 		map.put("BlockingGeometries", PerceptualModelType.Bresenham); // backwards compatibility
 		map.put(PerceptualModelType.Bresenham.toString(), PerceptualModelType.Bresenham);
-		
+		map.put(PerceptualModelType.SightCone.toString(), PerceptualModelType.SightCone);
+
 		return new EnumToStringConverter<>(PerceptualModelType.class, map);
 	}
 	
