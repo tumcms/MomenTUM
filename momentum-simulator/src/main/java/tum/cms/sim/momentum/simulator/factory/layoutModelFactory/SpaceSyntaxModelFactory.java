@@ -40,7 +40,7 @@ import tum.cms.sim.momentum.configuration.model.spaceSyntax.SpaceSyntaxOperation
 import tum.cms.sim.momentum.configuration.scenario.ScenarioConfiguration;
 import tum.cms.sim.momentum.model.layout.spaceSyntax.SpaceSyntaxModel;
 import tum.cms.sim.momentum.model.layout.spaceSyntax.SpaceSyntaxOperation;
-import tum.cms.sim.momentum.model.layout.spaceSyntax.depthMap.DepthMapOperation;
+import tum.cms.sim.momentum.model.layout.spaceSyntax.visibilityGraph.VisibilityGraphOperation;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -85,8 +85,8 @@ public class SpaceSyntaxModelFactory extends ModelFactory<SpaceSyntaxModelConfig
 		SpaceSyntaxOperation spaceSyntaxOperation = null;
 		
 		switch (spaceSyntaxOperationConfiguration.getType()) {
-		case DepthMap:
-			spaceSyntaxOperation = new DepthMapOperation();
+		case VisibilityGraph:
+			spaceSyntaxOperation = new VisibilityGraphOperation();
 		}
 		
 		return spaceSyntaxOperation;

@@ -30,7 +30,7 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.layout.spaceSyntax.depthMap;
+package tum.cms.sim.momentum.model.layout.spaceSyntax.visibilityGraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +44,9 @@ import tum.cms.sim.momentum.model.layout.spaceSyntax.SpaceSyntaxOperation;
 import tum.cms.sim.momentum.utility.geometry.Geometry2D;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
-import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
+import tum.cms.sim.momentum.utility.spaceSyntax.VisibilityGraph;
 
-public class DepthMapOperation extends SpaceSyntaxOperation {
+public class VisibilityGraphOperation extends SpaceSyntaxOperation {
 	
 	private static final String scenarioLatticeIdName = "scenarioLatticeId";
 
@@ -69,17 +69,17 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 				.collect(Collectors.toList());
 
 		Set<CellIndex> connectedIndices = this.floodLatticeFromOrigins(originCenterCells, lattice);
-		this.computeDepthMap(connectedIndices, lattice);
+		this.computeVisibilityGraph(connectedIndices, lattice);
 
-		DepthMap depthMap = new DepthMap(
+		VisibilityGraph visibilityGraph = new VisibilityGraph(
 				lattice, 
 				connectedIndices,
 				scenarioManager.getScenarios().getName()
 		);
-		depthMap.setId(this.getId());
-		depthMap.setName(this.getName());
+		visibilityGraph.setId(this.getId());
+		visibilityGraph.setName(this.getName());
 		
-		this.scenarioManager.getSpaceSyntaxes().add(depthMap);
+		this.scenarioManager.getSpaceSyntaxes().add(visibilityGraph);
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 	}
 
 	/**
-	 * Computes the actual DepthMap Metric for each connected Area respectively.
+	 * Computes the actual VisibilityGraph Metric for each connected Area respectively.
 	 * 
 	 * @param connectedIndices
 	 *            a list of connected sets containing indices, which are
@@ -145,7 +145,7 @@ public class DepthMapOperation extends SpaceSyntaxOperation {
 	 * @param lattice
 	 *            the lattice where the result is written to
 	 */
-	private void computeDepthMap(Set<CellIndex> connectedIndices, ILattice lattice) {
+	private void computeVisibilityGraph(Set<CellIndex> connectedIndices, ILattice lattice) {
 
 		connectedIndices.stream()
 			.parallel()
