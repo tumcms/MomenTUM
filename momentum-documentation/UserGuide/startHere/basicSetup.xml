@@ -264,14 +264,14 @@
 	<!-- Currently, the Space Syntax operation is only intended to be used by the Revit SpaceSyntax Plugin.  -->
 	<spaceSyntaxes>
 		<spaceSyntaxModel id="0" name="SimpleSpaceSyntax">
-			<!-- Currently only the DepthMap operation is supported. -->
-			<!-- The DepthMap Operation creates a Visibility Graph according to isovist theory. -->
+			<!-- Currently only the VisibilityGraph operation is supported. -->
+			<!-- The VisibilityGraph Operation creates a Visibility Graph according to isovist theory. -->
 			<!-- The Visibility Graph is calulated by combining all point isovist graphs. -->
-			<spaceSyntaxOperation id="0" name="DepthMapOperation" type="DepthMap">
+			<spaceSyntaxOperation id="0" name="VisibilityGraphOperation" type="VisibilityGraph">
 			
 				<!-- It is essential, that the lattice which is associated with a Space Syntax operation
-				defines at least one area of type 'Origin'. The origin used to flood the area for which 
-				the operation is be applied. If multiple Origins are defined and are not reachable from 
+				defines at least one area of type 'Origin'. The origin is used to flood the area on which 
+				the operation is applied. If multiple Origins are defined and are not reachable from 
 				eachother (e.g. by means of a walking pedestrian) the area for which the operation is applied
 				is non-deterministic. -->
 				<property name="scenarioLatticeId" type="Integer" value="1"/> 
@@ -824,7 +824,7 @@
 			</writerTarget>
 			<writerFormat formatType="Single"/>
 			<!-- The additionalId has to match a spaceSyntaxOperation id.  -->
-			<writerSource name="spaceSyntaxOperation_DepthMap" sourceType="SpaceSyntax" additionalId="0"/>
+			<writerSource name="spaceSyntaxOperation_VisibilityGraph" sourceType="SpaceSyntax" additionalId="0"/>
 		</outputWriter>
 		
 		<!-- Multiple more writers can be added here if needed by the user. -->
