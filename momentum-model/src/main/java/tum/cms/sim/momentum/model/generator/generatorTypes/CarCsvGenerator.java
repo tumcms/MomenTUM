@@ -126,11 +126,11 @@ public class CarCsvGenerator extends Generator {
 		SimulationOutputCluster dataStepCeil = null;
 		try {
 			while (dataStepFloor == null) {
-				dataStepFloor = this.outputReader.asyncReadDataSet(timeStepFloor);
+				dataStepFloor = this.outputReader.readDataSet(timeStepFloor);
 			}
 
 			while (dataStepCeil == null) {
-				dataStepCeil = this.outputReader.asyncReadDataSet(timeStepCeil);
+				dataStepCeil = this.outputReader.readDataSet(timeStepCeil);
 			}
 		}
 		catch (Exception exception) {

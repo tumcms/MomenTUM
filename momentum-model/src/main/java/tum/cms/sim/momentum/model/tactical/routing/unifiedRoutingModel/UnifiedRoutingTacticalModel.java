@@ -183,8 +183,6 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 	@Override
 	public void callPedestrianBehavior(ITacticalPedestrian pedestrian, SimulationState simulationState) {
 	
-		int depth = 3;
-		
 		UnifiedRoutingAlgorithm routingAlgorithm = this.getRoutingAlgorithm(simulationState);
 		
 		routingAlgorithm.setExtension((UnifiedRoutingPedestrianExtension)pedestrian.getExtensionState(this));

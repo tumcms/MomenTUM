@@ -35,8 +35,6 @@ package tum.cms.sim.momentum.model.tactical;
 import java.util.Collection;
 import java.util.Set;
 
-import com.microsoft.azure.keyvault.models.Secret;
-
 import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState;

@@ -59,7 +59,7 @@ public class SimulationOutputReader {
 	private int currentBufferSize = -1;
 	private boolean clearBuffer = false;
 
-	private double currentAsyncIndex = 0L;
+	private double currentAsyncIndex = -1L;
 	private Double bufferedSetIndexLeft = null;
 	private Double bufferedSetIndexRight = null;
 	private ThreadPoolExecutor workerPool = null;
@@ -116,7 +116,7 @@ public class SimulationOutputReader {
 		
 		boolean isDataExistent = true;
 		
-		if (dataSetBuffer.get(index) == null || dataSetBuffer.get(index).isEmpty()) {
+		if (dataSetBuffer.get(index).isEmpty()) { // dataSetBuffer.get(index) == null || 
 		
 			isDataExistent = false;
 		}
@@ -144,7 +144,7 @@ public class SimulationOutputReader {
 			currentBufferSize = 1;
 			break;
 		case FileBuffer:
-			currentBufferSize = 200;
+			currentBufferSize = (int)(6 * getTimeStepDifference());
 			clearBuffer = true;
 			break;
 		default:
@@ -309,8 +309,8 @@ public class SimulationOutputReader {
 
 
 	public SimulationOutputCluster asyncReadDataSet(double index) throws Exception {
-
-		SimulationOutputCluster data = this.readDataSet(index);
+		
+		SimulationOutputCluster data = dataSetBuffer.get(index);
 		currentAsyncIndex = (long) index;
 		return data;
 	}
@@ -318,7 +318,6 @@ public class SimulationOutputReader {
 	public void startReadDataSetAsync() {
 
 		workerPool = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1));
-
 		worker = new AsyncDataSetReader();
 		workerPool.execute(worker);
 	}
@@ -338,6 +337,16 @@ public class SimulationOutputReader {
 		bufferedSetIndexRight = null;
 	}
 
+	public boolean dataReady(double index) {
+		
+		if (index < this.endTime && index > 0 && (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady())) {
+		
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public SimulationOutputCluster readDataSet(double index) throws Exception {
 
 		if (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady()) {
@@ -487,17 +496,37 @@ public class SimulationOutputReader {
 		@Override
 		public void run() {
 
+			boolean bufferActive = false;
+			boolean insideBuffer = true;
+			boolean indexChanged = true;
+			boolean negativeOutsideBuffer = true;
+			boolean positiveOutsideBuffer = true;
+			double negativeExtension = getTimeStepDifference();
+			double positiveExtenions = getTimeStepDifference();
+			
 			while (!this.shutDownDemanded) {
 
-				if (this.lastReadIndex != currentAsyncIndex) {
+				bufferActive = bufferedSetIndexLeft != null && bufferedSetIndexRight != null;
+				indexChanged = this.lastReadIndex != currentAsyncIndex;
+				insideBuffer = bufferActive && (bufferedSetIndexLeft > currentAsyncIndex || currentAsyncIndex < bufferedSetIndexRight);
+				negativeOutsideBuffer = bufferActive && 
+						bufferedSetIndexLeft > currentAsyncIndex - negativeExtension &&
+						currentAsyncIndex - negativeExtension >= 0 ;
+				positiveOutsideBuffer = bufferActive &&
+						currentAsyncIndex + positiveExtenions > bufferedSetIndexRight &&
+						currentAsyncIndex + positiveExtenions <= getEndCluster();
+				
+				if (indexChanged || !insideBuffer || negativeOutsideBuffer || positiveOutsideBuffer) {
 
 					boolean rebuffer = true;
 					
 					// Is data buffered?
-					if(bufferedSetIndexLeft != null && bufferedSetIndexRight != null) {
+					if(!bufferActive) {
 						
 						// Is the buffered data what we look for?
-						if(bufferedSetIndexLeft > currentAsyncIndex || currentAsyncIndex > bufferedSetIndexRight) {
+						// Extend the buffers by 2 negative and 4 positive for 
+						// interpolation purposes in the views.
+						if(!insideBuffer) {
 							
 							clearBuffer(); // no we need to rebuffer
 						}
@@ -510,7 +539,7 @@ public class SimulationOutputReader {
 					if(rebuffer) {
 						
 						// find new buffer boundaries
-						double targetLeftReadIndex = currentAsyncIndex - (currentBufferSize / 2);				
+						double targetLeftReadIndex = currentAsyncIndex - currentBufferSize;				
 						
 						if(targetLeftReadIndex < 0) {
 							
@@ -543,7 +572,7 @@ public class SimulationOutputReader {
 				
 				try {
 
-					Thread.sleep(50L);
+					Thread.sleep(20L);
 				}
 				catch (InterruptedException e) {
 

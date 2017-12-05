@@ -81,7 +81,7 @@ public abstract class AnimationCalculations {
 	 */
 	public static ParallelTransition calculateVisualizationOfTimeStep(Double timeStep, CoreController coreController) throws Exception {
 
-		coreController.waitUntilReadersReady(timeStep);
+		coreController.waitUntilReadersReady(timeStep, 1, 1);
 		ParallelTransition concurrentMovements = createConcurrentAnimation();
 		
 		for(SimulationOutputReader simReader : coreController.getOutputReaders()) {
@@ -99,11 +99,11 @@ public abstract class AnimationCalculations {
 					SimulationOutputCluster pedestrianDataForStep = createPedestrianAtTimeStep(timeStep, coreController, simReader);
 
 					if(pedestrianDataForStep != null) {
-
+						
 						ParallelTransition pedestrianAnimation = AnimationCalculations.updatePedestrianShapes(simReader,
 								pedestrianDataForStep,
 								coreController);
-
+					
                         concurrentMovements.getChildren().add(pedestrianAnimation);
 					}
 				}
@@ -133,7 +133,7 @@ public abstract class AnimationCalculations {
 		ParallelTransition concurrentMovementAnimation = createConcurrentAnimation();
 
 		int arraySize = dataStep.isEmpty() ? 1 : dataStep.getIdentifications().size();
-		ArrayList<Transition> customShapesAnimations = customShapesAnimations = new ArrayList<Transition>(arraySize * 2);
+		ArrayList<Transition> customShapesAnimations = new ArrayList<Transition>(arraySize * 2);
 
 		if (!dataStep.isEmpty()) {
 
@@ -562,33 +562,9 @@ public abstract class AnimationCalculations {
 				.getTimeStepMultiplicator() <= simulationOutputReader.getEndCluster()) { 
 			bufferNextPedestrian(timeStep, coreController, simulationOutputReader);
 		}
-		
-//		SimulationOutputCluster dataStepCurrent = null;
-
-//		while (dataStepCurrent == null) {
-//			// read current data step, load if not buffered
-//			dataStepCurrent =
 
 		return simulationOutputReader.asyncReadDataSet(timeStep);
 	}
-	
-//	private static void createDynamicAtTimeStep(SimulationOutputReader simulationOutputReader, Double timeStep, CoreController coreController) throws Exception {
-//
-//		SimulationOutputCluster dataStepCurrent = null;
-//
-//		while (dataStepCurrent == null) {
-//
-//			// read current data step, load if not buffered
-//			dataStepCurrent = simulationOutputReader.asyncReadDataSet(timeStep);
-//
-//			if (dataStepCurrent == null) {
-//
-//				Thread.sleep(200);
-//			}
-//		}
-//
-//
-//	}
 	
 	private static void bufferPreviousPedestrian(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {
 
@@ -609,7 +585,8 @@ public abstract class AnimationCalculations {
 		if (dataStepAdjacent != null) { // may be possible if not end and
 										// current is last data
 
-			visualizationModel.setNextSpecificShapePositionPoints(simulationOutputReader.getCsvType(), AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
+			visualizationModel.setNextSpecificShapePositionPoints(simulationOutputReader.getCsvType(),
+					AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
 		}
 	}
 	
