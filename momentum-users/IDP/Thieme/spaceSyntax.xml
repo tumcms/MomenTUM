@@ -9,7 +9,7 @@
 	</spaceSyntaxes>
 	
 	<lattices>
-		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.5" neigborhoodType="Touching"/>
+		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.5" neighborhoodType="Touching"/>
 	</lattices>
 	<outputWriters>
 		<outputWriter id="4" name="spaceSyntaxWriter">

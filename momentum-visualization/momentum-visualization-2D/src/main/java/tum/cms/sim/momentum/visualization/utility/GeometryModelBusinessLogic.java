@@ -43,6 +43,7 @@ import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.controller.PlaybackController;
 import tum.cms.sim.momentum.visualization.model.geometry.AreaModel;
+import tum.cms.sim.momentum.visualization.model.geometry.TaggedAreaModel;
 import tum.cms.sim.momentum.visualization.model.geometry.EdgeModel;
 import tum.cms.sim.momentum.visualization.model.geometry.LatticeModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
@@ -86,7 +87,21 @@ public abstract class GeometryModelBusinessLogic {
 		playbackController.getPlaybackModel().getAreaShapes().clear();
 		playbackController.getPlaybackModel().putAreaShapes(tempAreaMap);
 
-		// 3. graph
+        // 2.5 tagged areas
+        HashMap<String, TaggedAreaModel> tempTaggedAreaMap = new HashMap<String, TaggedAreaModel>();
+
+        if (scenarioConfiguration.getTaggedAreas() != null) {
+
+            scenarioConfiguration.getTaggedAreas().forEach(taggedAreaConfiguration -> {
+                TaggedAreaModel currentTaggedAreaModel = new TaggedAreaModel(taggedAreaConfiguration, coreController, customizationController);
+                tempTaggedAreaMap.put(currentTaggedAreaModel.getIdentification(), currentTaggedAreaModel);
+            });
+        }
+
+        playbackController.getPlaybackModel().getTaggedAreaShapes().clear();
+        playbackController.getPlaybackModel().putTaggedAreaShapes(tempTaggedAreaMap);
+
+        // 3. graph
 		if (scenarioConfiguration.getGraphs() != null) {
 
 			HashMap<String, EdgeModel> tempEdgeMap = new HashMap<String, EdgeModel>();

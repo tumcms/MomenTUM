@@ -29,7 +29,7 @@
 	<!-- We need 2 lattices. -->
 	<lattices>
 		<!-- Used by the generated=0 -->
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46" neigborhoodType="Touching" fillingType="ScenarioLayout" behaviorType="Synchronized"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46" neighborhoodType="Touching" fillingType="ScenarioLayout" behaviorType="Synchronized"/>
 	</lattices>
 	
 	<!-- A simple routing graph is generated for the routing model=4 -->

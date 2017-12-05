@@ -37,12 +37,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration;
 import tum.cms.sim.momentum.data.agent.car.CarManager;
 import tum.cms.sim.momentum.data.agent.car.state.other.StaticState;
+import tum.cms.sim.momentum.data.agent.car.types.IRichCar;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.infrastructure.logging.LoggingManager;
 import tum.cms.sim.momentum.model.generator.Generator;
+import tum.cms.sim.momentum.utility.csvData.CsvType;
+import tum.cms.sim.momentum.utility.csvData.reader.CsvReader;
+import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
+import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
+
+import static org.apache.camel.component.xslt.XsltOutput.file;
 
 public class CarCsvGenerator extends Generator {
 		
@@ -56,271 +65,144 @@ public class CarCsvGenerator extends Generator {
 		this.carManager = carManager;
 	}
 	
-	protected static final String CarPositionsTag = "carPositions";
-	protected static final String VariableNamesTag = "variableNames";
+	private final static String csvFileName = "csvFile";
+	private final static String delimiterName = "delimiter";
+	private final static String timeStepDurationName = "timeStepDuration";
 
-	DataManager dataManager = null;
+	protected static final String VariableTime = "time";
+	protected static final String VariableId = "id";
+	protected static final String VariablePositionX = "x";
+	protected static final String VariablePositionY = "y";
+	protected static final String VariableHeadingX = "xHeading";
+	protected static final String VariableHeadingY = "yHeading";
+	protected static final String VariableWidth = "width";
+	protected static final String VariableLength = "length";
+	protected static final String VariableHeight = "height";
+
+	double timeStepDuration = 0;
+
+	SimulationOutputReader outputReader;
 
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
-		
-		this.dataManager = new DataManager(this.properties.getListProperty(VariableNamesTag),
-				this.properties.getMatrixProperty(CarPositionsTag), simulationState);
 
+		String csvFile = this.properties.getStringProperty(csvFileName);
+		String delimiter = this.properties.getStringProperty(delimiterName);
+
+		try {
+			CsvReader csvReader = new CsvReader(csvFile, WriterSourceConfiguration.OutputType.timeStep.name(), delimiter);
+			this.outputReader = new SimulationOutputReader(csvReader,
+					WriterSourceConfiguration.OutputType.timeStep.name(),
+					simulationState.getSimulationEndTime(),
+					simulationState.getTimeStepDuration(),
+					CsvType.Car);
+
+			this.outputReader.setInnerClusterSeparator(VariableId);
+			this.outputReader.readIndex(WriterSourceConfiguration.indexString);
+		}
+		catch (Exception exception) {
+			LoggingManager.logUser(this, exception);
+		}
+
+		timeStepDuration = this.properties.getDoubleProperty(timeStepDurationName);
 	}
 
 	@Override
-	public void execute(Collection<? extends Void> splittTask, SimulationState additonalData) {
-		
-		ArrayList<DataManager.Car> currentCars = this.dataManager.getCars(additonalData.getCurrentTimeStep());
-		for (DataManager.Car car: currentCars) {
-			  //if(!this.dataManager.isCarExistent(additonalData.getCurrentTimeStep()-1, car.Id) || ) {
-				  // create a new car or update
-				  
-				StaticState staticState = new StaticState( car.sizeLength, car.sizeWidth );
-			    staticState.setId(car.Id);
-				carManager.createCar(staticState, car.position, car.velocity, car.heading, car.validTime);
-			  //}
+	public void execute(Collection<? extends Void> splitTask, SimulationState simulationState) {
+
+		double currentSimulationTime = simulationState.getCurrentTime();
+		double targetReaderTimeStep = currentSimulationTime / this.timeStepDuration;
+
+		int timeStepFloor = (int) Math.floor(targetReaderTimeStep);
+		double timeFloor = timeStepFloor * this.timeStepDuration;
+		int timeStepCeil = (int) Math.ceil(targetReaderTimeStep);
+		double timeCeil = timeStepCeil * this.timeStepDuration;
+
+		double weightCeil = (currentSimulationTime - timeFloor) / this.timeStepDuration;
+		double weightFloor = 1 - weightCeil;
+
+
+		SimulationOutputCluster dataStepFloor = null;
+		SimulationOutputCluster dataStepCeil = null;
+		try {
+			while (dataStepFloor == null) {
+				dataStepFloor = this.outputReader.readDataSet(timeStepFloor);
+			}
+
+			while (dataStepCeil == null) {
+				dataStepCeil = this.outputReader.readDataSet(timeStepCeil);
+			}
+		}
+		catch (Exception exception) {
+
+			LoggingManager.logUser(this, exception);
 		}
 
-		List<Integer> removedCars = this.dataManager.getDeletedCars(additonalData.getCurrentTimeStep());
-		this.carManager.removeCars(removedCars);
-		
+
+		// remove cars
+		ArrayList<Integer> allExistingCarIds = this.carManager.getAllCarIds();
+		for(Integer currentCarId : allExistingCarIds) {
+
+			if(dataStepFloor.isEmpty() || !dataStepFloor.containsIdentification(String.valueOf(currentCarId))) {
+				this.carManager.removeCar(currentCarId);
+			}
+		}
+
+
+		if (dataStepFloor != null && !dataStepFloor.isEmpty()) {
+
+			for (String id : dataStepFloor.getIdentifications()) {
+
+				int idInteger = Integer.parseInt(id);
+
+
+				if(!carManager.containsCar(idInteger)) {
+					// new car
+					double height = 0;
+					if(dataStepFloor.getDoubleData(id, VariableHeight) != null) {
+						height = dataStepFloor.getDoubleData(id, VariableHeight);
+					}
+
+					StaticState staticState = new StaticState(
+							dataStepFloor.getDoubleData(id, VariableLength),
+							dataStepFloor.getDoubleData(id, VariableWidth),
+							height);
+					staticState.setId(idInteger);
+
+					this.carManager.createCar(staticState);
+				}
+
+				if(!dataStepCeil.isEmpty() && dataStepCeil.containsIdentification(id)) {
+					// update car
+
+					double positionX = dataStepFloor.getDoubleData(id, VariablePositionX) * weightFloor +
+							dataStepCeil.getDoubleData(id, VariablePositionX) * weightCeil;
+					double positionY = dataStepFloor.getDoubleData(id, VariablePositionY) * weightFloor +
+							dataStepCeil.getDoubleData(id, VariablePositionY) * weightCeil;
+					Vector2D position = GeometryFactory.createVector(positionX, positionY);
+
+					double headingX = dataStepFloor.getDoubleData(id, VariableHeadingX) * weightFloor +
+							dataStepCeil.getDoubleData(id, VariableHeadingX) * weightCeil;
+					double headingY = dataStepFloor.getDoubleData(id, VariableHeadingY) * weightFloor +
+							dataStepCeil.getDoubleData(id, VariableHeadingY) * weightCeil;
+					Vector2D heading = GeometryFactory.createVector(headingX, headingY);
+
+					double velocityX = (dataStepCeil.getDoubleData(id, VariablePositionX) -
+							dataStepFloor.getDoubleData(id, VariablePositionX)) / this.timeStepDuration;
+					double velocityY = (dataStepCeil.getDoubleData(id, VariablePositionY) -
+							dataStepFloor.getDoubleData(id, VariablePositionY)) / this.timeStepDuration;
+					Vector2D velocity = GeometryFactory.createVector(velocityX, velocityY);
+
+					carManager.updateState(idInteger, position, velocity, heading, currentSimulationTime);
+				}
+
+			}
+		}
 	}
 
 	@Override
 	public void callPostProcessing(SimulationState simulationState) {
-		
+
 	}
-	
-	static class DataManager {
-		
-		protected static final String VariableTime = "time";
-		protected static final String VariableId = "id";
-		protected static final String VariablePositionX = "x";
-		protected static final String VariablePositionY = "y";
-		protected static final String VariableWidth = "width";
-		protected static final String VariableLength = "length";
-		protected static final String VariableOrientation = "orientation";
-		
-		private int timeIndex = 0;
-		private int indexId = 0;
 
-		
-		protected static final double Precision = 0.00001;
-		
-		private HashMap<Integer, ArrayList<Double>> carData = null;
-		private ArrayList<String> variableNames = null;
-		
-		private HashMap<Long, ArrayList<Car>> preparedCarData = new HashMap<Long, ArrayList<Car>>();
-		
-		public static class Car {
-			public int Id = 0;
-			public Double validTime = null;
-			
-			Vector2D position = null;
-			Vector2D velocity = null;
-			Vector2D heading = null;
-			
-			public double sizeLength = 0;
-			public double sizeWidth = 0;
-		}
-		
-		public DataManager(ArrayList<String> variableNames, HashMap<Integer, ArrayList<Double>> carData, SimulationState simulationState) {
-			this.variableNames = variableNames;
-			this.carData = carData;
-			
-			this.timeIndex = this.variableNames.indexOf(DataManager.VariableTime);
-			this.indexId = this.variableNames.indexOf(DataManager.VariableId);
-			
-			int totalTimeSteps = (int) Math.ceil((double) simulationState.getSimulationEndTime() / simulationState.getTimeStepDuration());
-			
-			double currentTime = 0; // of internal simulation
-			
-			int separatorRow = 1;
-			int previousDataRow = 0;
-			int nextDataRow = 0;
-			
-			for(Long currentTimeStep = 0L; currentTimeStep <= totalTimeSteps; currentTimeStep++) {
-				currentTime = currentTimeStep * simulationState.getTimeStepDuration();
-				
-				if( !this.carData.containsKey(nextDataRow+1) )
-					break;
-				
-				separatorRow = this.getNextSeparator(separatorRow, currentTime);
-				previousDataRow = this.getPreviousRow(separatorRow);
-				nextDataRow = this.getNextRow(separatorRow);
-				// System.out.println("currentTime: " + currentTime + " separator: " + separatorRow + " prevRow: " + previousDataRow + " nextRow: " + nextDataRow);
-				/*System.out.println("currentTime: " + currentTime + 
-				" separator: " + separatorRow +  
-				" prev: " + previousDataRow +  
-				" next: " + nextDataRow);
-				 */
-				/*for(int curI = previousDataRow; curI <= nextDataRow; curI++) {
-					System.out.println(curI + ": " + this.carData.get(curI));
-				}*/
-				
-				ArrayList<Car> carsOfTimeStep = new ArrayList<Car>();
-				Car currentCar, pairedCar;
-				
-				for(int currentDataRow = previousDataRow; currentDataRow <= separatorRow; currentDataRow++) {
-					
-					currentCar = this.getCarFromRow(currentDataRow);
-					int pairedDataRow = this.findRowWithId(currentCar.Id, previousDataRow, nextDataRow);
-					
-					if(currentDataRow != pairedDataRow) {
-						pairedCar = this.getCarFromRow( pairedDataRow );
-						Car interpolatedCar = this.interpolateCar(currentCar, pairedCar, currentTime);
-						
-						carsOfTimeStep.add( interpolatedCar );
-						
-						/*
-						System.out.println("currentTime: " + currentTime + 
-								" first car: " + currentCar.Id + "(" + currentCar.validTime + ") p(" + currentCar.position.getXComponent() + "," + currentCar.position.getYComponent() + ")" + 
-								"; second car: " + pairedCar.Id + "(" + pairedCar.validTime + ") p(" + pairedCar.position.getXComponent() + "," + pairedCar.position.getYComponent() + ")" + 
-								"; interpolated v(" + interpolatedCar.velocity.getXComponent() + "," + interpolatedCar.velocity.getYComponent() + ")"); */
-					}
-					
-				}
-				this.preparedCarData.put(currentTimeStep, carsOfTimeStep);
-				
-
-				//System.out.println("");
-				
-				//if (currentTimeStep > 10)
-				//	break;
-				
-			}
-			
-		}
-		
-		public ArrayList<Car> getCars(Long timeStep) {
-			ArrayList<Car> carList = this.preparedCarData.get(timeStep);
-			if(carList == null)
-				return new ArrayList<Car>();
-			else
-				return carList;
-		}
-		
-		public boolean isCarExistent(Long timeStep, int id) {
-			if(!this.preparedCarData.containsKey(timeStep))
-				return false;
-			
-			for (Car curInstance: this.preparedCarData.get(timeStep)) {
-				  if(curInstance.Id == id)
-				  	return true;
-			}
-			return false;
-		}
-		
-		public List<Integer> getDeletedCars(Long timeStep) {
-			List<Integer> deletedCarIds = new ArrayList<Integer>();
-			ArrayList<Car> lastCars = this.getCars(timeStep - 1);
-			
-			for(Car car : lastCars) {
-				if(!this.isCarExistent(timeStep, car.Id))
-					deletedCarIds.add(car.Id);
-			}
-			
-			return deletedCarIds;
-		}
-		
-		private int getNextSeparator(int oldSeparatorRow, double currentTime) {
-			int separatorRow = oldSeparatorRow;
-			while( this.carData.containsKey(separatorRow) &&
-					this.carData.get(separatorRow).get(timeIndex) < currentTime) {
-				separatorRow++;
-			}
-			return --separatorRow;
-		}
-		
-		private int getPreviousRow(int separatorRow) {
-			int previousDataRow = separatorRow;
-			while( previousDataRow >= 0 && 
-					Math.abs(this.carData.get(previousDataRow).get(this.timeIndex) -
-							this.carData.get(separatorRow).get(this.timeIndex)) < DataManager.Precision )
-				previousDataRow--;
-			
-			return ++previousDataRow;
-		}
-		
-		private int getNextRow(int separatorRow) {
-			int nextDataRow = separatorRow + 1;
-			while( this.carData.containsKey(nextDataRow) &&
-					Math.abs(this.carData.get(nextDataRow).get(timeIndex) - this.carData.get(separatorRow+1).get(timeIndex)) < DataManager.Precision )
-				nextDataRow++;
-			return --nextDataRow;
-		}
-		
-		private int findRowWithId(int id, int previousDataRow, int nextDataRow) {
-			for(int currentRow = nextDataRow; currentRow >= previousDataRow; currentRow--) {
-				if( Math.abs(this.carData.get(currentRow).get(this.indexId) -
-						id) < DataManager.Precision) {
-					return currentRow;
-				}
-			}
-			return -1;
-		}
-		
-		private DataManager.Car getCarFromRow(int dataRow) {
-			Car currentCar = new Car();
-			
-			if (!this.carData.containsKey(dataRow)) {
-				currentCar.Id = -1;
-				return currentCar;
-			}
-
-			ArrayList<Double> currentContentRow = this.carData.get(dataRow);
-			
-			currentCar.Id = currentContentRow.get(indexId).intValue();
-			currentCar.validTime = currentContentRow.get(timeIndex);
-			
-			currentCar.position = GeometryFactory.createVector(
-					currentContentRow.get(this.variableNames.indexOf(DataManager.VariablePositionX)),
-					currentContentRow.get(this.variableNames.indexOf(DataManager.VariablePositionY)));
-			
-			currentCar.heading = GeometryFactory.createVector(
-					Math.cos(currentContentRow.get(this.variableNames.indexOf(DataManager.VariableOrientation))),
-					Math.sin(currentContentRow.get(this.variableNames.indexOf(DataManager.VariableOrientation))));
-			
-			
-			currentCar.sizeLength = currentContentRow.get(this.variableNames.indexOf(DataManager.VariableLength));
-			currentCar.sizeWidth = currentContentRow.get(this.variableNames.indexOf(DataManager.VariableWidth));
-			
-			return currentCar;
-		}
-		
-		private DataManager.Car interpolateCar(DataManager.Car carA, DataManager.Car carB, double targetTime) {
-			Car interpolatedCar = new Car();
-			
-			double timeDiffFirstCar = targetTime - carA.validTime;
-			double timeDifference = carB.validTime - carA.validTime;
-			
-			if (timeDifference < DataManager.Precision )
-				return carA;
-			
-			interpolatedCar.Id = carA.Id;
-			interpolatedCar.validTime = targetTime;
-			
-			interpolatedCar.position = GeometryFactory.createVector(
-					(carA.position.getXComponent() + carB.position.getXComponent())*(timeDiffFirstCar/timeDifference),
-					(carA.position.getYComponent() + carB.position.getYComponent())*(timeDiffFirstCar/timeDifference));
-			
-			interpolatedCar.heading = GeometryFactory.createVector(
-					(carA.heading.getXComponent() + carB.heading.getXComponent())*(timeDiffFirstCar/timeDifference),
-					(carA.heading.getYComponent() + carB.heading.getYComponent())*(timeDiffFirstCar/timeDifference));
-			
-			interpolatedCar.velocity = GeometryFactory.createVector(
-					(carB.position.getXComponent() - carA.position.getXComponent()) / timeDifference,
-					(carB.position.getYComponent() - carA.position.getYComponent()) / timeDifference);
-			
-			interpolatedCar.sizeWidth = (carA.sizeWidth + carB.sizeWidth)/2;
-			interpolatedCar.sizeLength = (carA.sizeLength + carB.sizeLength)/2;
-			
-			return interpolatedCar;
-		}
-		
-		
-		
-	}
 }

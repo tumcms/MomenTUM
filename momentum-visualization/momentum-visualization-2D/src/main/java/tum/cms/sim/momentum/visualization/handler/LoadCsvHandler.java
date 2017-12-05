@@ -113,7 +113,7 @@ public class LoadCsvHandler extends LoadHandler {
 					coreController.getInteractionViewController().getTimeLineModel()
 						.setTimeStepMultiplicator(simulationOutputReader.getTimeStepDifference());
 				}
-				
+
 				AnimationCalculations.calculateVisualizationOfTimeStep(currentTimeStep, coreController);
 				
 				UserPreferenceHandler.putProperty(PropertyType.outputCsvPath, csvFile.getParent());

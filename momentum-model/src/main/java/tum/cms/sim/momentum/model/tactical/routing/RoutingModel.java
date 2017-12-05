@@ -106,7 +106,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 	 * @param tacticalControlActive, activates next vertex visible check
 	 * @return if true, reroute
 	 */
-	public boolean reRoutingNecessary(IRichPedestrian pedestrian, boolean tacticalControlActive) {
+	public boolean reRoutingNecessary(IRichPedestrian pedestrian, boolean tacticalControlActive, boolean isDeepSelect) {
 		
 		if(pedestrian.getRoutingState() == null) {
 			
@@ -130,7 +130,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 		}
 		
 		// The tactical control enables a more smooth routing because it addresses the vertex following the current one
-		if(tacticalControlActive && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
+		if(tacticalControlActive && isDeepSelect && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
 			
 			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextToCurrentVisit());
 			double distanceToNextToCurrentVisit = pedestrian.getRoutingState().getNextToCurrentVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());

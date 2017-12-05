@@ -99,15 +99,14 @@ public class LatticeModelConfiguration extends PropertyContainerNode {
 	}
 
 	@XStreamAsAttribute
-	private NeighborhoodType neigborhoodType;
-
+	private NeighborhoodType neighborhoodType;
 
 	public NeighborhoodType getNeigborhoodType() {
-		return neigborhoodType;
+		return neighborhoodType;
 	}
 
 	public void setNeigboorhoodType(NeighborhoodType neigborhoodType) {
-		this.neigborhoodType = neigborhoodType;
+		this.neighborhoodType = neigborhoodType;
 	}
 	
 	@XStreamAsAttribute

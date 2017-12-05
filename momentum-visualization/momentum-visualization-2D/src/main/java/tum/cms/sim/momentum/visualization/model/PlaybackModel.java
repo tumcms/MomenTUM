@@ -51,6 +51,7 @@ import javafx.collections.ObservableMap;
 import javafx.geometry.Point2D;
 import tum.cms.sim.momentum.utility.csvData.CsvType;
 import tum.cms.sim.momentum.visualization.model.geometry.AreaModel;
+import tum.cms.sim.momentum.visualization.model.geometry.TaggedAreaModel;
 import tum.cms.sim.momentum.visualization.model.geometry.EdgeModel;
 import tum.cms.sim.momentum.visualization.model.geometry.LatticeModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
@@ -66,30 +67,32 @@ public class PlaybackModel {
 	private final DoubleProperty maxSizeX = new SimpleDoubleProperty(this, "maxSizeX", 1.0);
 	private final BooleanProperty is3DView = new SimpleBooleanProperty(this, "is3DView", false);
 	private final DoubleProperty maxSizeY = new SimpleDoubleProperty(this, "maxSizeY", 1.0);
-	
+
 	private final MapProperty<String, AreaModel> areaShapes = new SimpleMapProperty<String, AreaModel>(this,
 			"areaShapes", FXCollections.observableHashMap());
+	private final MapProperty<String, TaggedAreaModel> taggedAreaShapes = new SimpleMapProperty<String, TaggedAreaModel>(this,
+			"taggedAreaShapes", FXCollections.observableHashMap());
 	private final MapProperty<Integer, VertexModel> vertexShapes = new SimpleMapProperty<Integer, VertexModel>(this,
 			"vertexShapes", FXCollections.observableHashMap());
 	private final MapProperty<String, EdgeModel> edgeShapes = new SimpleMapProperty<String, EdgeModel>(this,
 			"edgeShapes", FXCollections.observableHashMap());
 	private final ListProperty<ObstacleModel> obstacleShapes = new SimpleListProperty<ObstacleModel>(this,
 			"obstacleShapes", FXCollections.observableArrayList());
-	
+
 	private final MapProperty<String, TrajectoryModel> trajectoryShapes = new SimpleMapProperty<String, TrajectoryModel>(
 			this, "trajectoryShapes", FXCollections.observableHashMap());
-	
+
 	private final ListProperty<LatticeModel> latticeShapes = new SimpleListProperty<LatticeModel>(this, "latticeShapes",
 			FXCollections.observableArrayList());
-	
+
 	private HashSet<Double> redPedestrianGroupColor = new HashSet<Double>();
 	private HashSet<Double> bluePedestrianGroupColor = new HashSet<Double>();
-	private HashMap<String, Point2D> previousPedestrianPoints = new HashMap<String, Point2D>();
-	private HashMap<String, Point2D> overNextPedestrianPoints = new HashMap<String, Point2D>();
-	
+	private HashMap<CsvType, HashMap<String, Point2D>> previousShapePositionPoints = new HashMap<> ();
+	private HashMap<CsvType, HashMap<String, Point2D>> nextShapePositionPoints = new HashMap<>();
+
 	private final MapProperty<CsvType, ObservableMap<String, ShapeModel>> customShapesMap = new SimpleMapProperty<CsvType, ObservableMap<String, ShapeModel>>(
 			this, "customShapes", FXCollections.observableHashMap());
-	
+
 	private final MapProperty<String, PedestrianModel> pedestrianShapes = new SimpleMapProperty<String, PedestrianModel>(
 			this, "pedestrianShapes", FXCollections.observableHashMap());
 
@@ -144,6 +147,18 @@ public class PlaybackModel {
 
 	public void putAreaShapes(Map<String, AreaModel> areaShapes) {
 		this.areaShapes.putAll(FXCollections.observableMap(areaShapes));
+	}
+
+	public MapProperty<String, TaggedAreaModel> taggedAreaShapesProperty() {
+		return taggedAreaShapes;
+	}
+
+	public Map<String, TaggedAreaModel> getTaggedAreaShapes() {
+		return taggedAreaShapes.get();
+	}
+
+	public void putTaggedAreaShapes(Map<String, TaggedAreaModel> taggedAreaShapes) {
+		this.taggedAreaShapes.putAll(FXCollections.observableMap(taggedAreaShapes));
 	}
 
 	public MapProperty<Integer, VertexModel> vertexShapesProperty() {
@@ -240,10 +255,10 @@ public class PlaybackModel {
 	public boolean addCustomShapes(CsvType type) {
 
 		if(this.customShapesMap.putIfAbsent(type, FXCollections.observableHashMap()) == null) {
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -252,20 +267,31 @@ public class PlaybackModel {
 		customShapesMap.clear();
 	}
 
-	public HashMap<String, Point2D> getPreviousPedestrianPoints() {
-		return previousPedestrianPoints;
+	public HashMap<CsvType, HashMap<String, Point2D>> getPreviousShapePositionPoints() {
+		return previousShapePositionPoints;
 	}
 
-	public void setPreviousPedestrianPoints(HashMap<String, Point2D> previousPedestrianPoints) {
-		this.previousPedestrianPoints = previousPedestrianPoints;
+	public HashMap<String, Point2D> getPreviousSpecificShapePositionPoints(CsvType type) {
+		return previousShapePositionPoints.get(type);
 	}
 
-	public HashMap<String, Point2D> getOverNextPedestrianPoints() {
-		return overNextPedestrianPoints;
+	public void setPreviousSpecificShapePositionPoints(CsvType type, HashMap<String, Point2D> previousPedestrianPoints) {
+		this.previousShapePositionPoints.put(type, previousPedestrianPoints);
 	}
 
-	public void setOverNextPedestrianPoints(HashMap<String, Point2D> overNextPedestrianPoints) {
-		this.overNextPedestrianPoints = overNextPedestrianPoints;
+	public HashMap<CsvType, HashMap<String, Point2D>> getNextShapePositionPoints() {
+		return nextShapePositionPoints;
+	}
+
+	public HashMap<String, Point2D> getNextSpecificShapePositionPoints(CsvType type) {
+		if(nextShapePositionPoints.get(type) == null) {
+			this.nextShapePositionPoints.put(type, new HashMap<>());
+		}
+		return nextShapePositionPoints.get(type);
+	}
+
+	public void setNextSpecificShapePositionPoints(CsvType type, HashMap<String, Point2D> overNextPedestrianPoints) {
+		this.nextShapePositionPoints.put(type, overNextPedestrianPoints);
 	}
 
 	public double getMiniForAnimation() {

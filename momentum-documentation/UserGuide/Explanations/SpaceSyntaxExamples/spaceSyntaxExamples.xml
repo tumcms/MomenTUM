@@ -26,7 +26,7 @@
 	<lattices>
 		<!-- A Space Syntax operation needs a lattice which has at least the following configuration. -->
 		<!-- Also works with behaviorType="Unsynchronized"-->
-		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neigborhoodType="Touching"/>
+		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neighborhoodType="Touching"/>
 	</lattices>
 	
 		<!-- The space syntax writer is currently only intended to pass calculation results

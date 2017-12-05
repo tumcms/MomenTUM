@@ -217,7 +217,7 @@
 		<lattice name="generatorsLattice" id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.46"/>
 		
 		<!-- A Space Syntax operation needs a lattice which has at least the following configuration. -->
-		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neigborhoodType="Touching"/>
+		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neighborhoodType="Touching"/>
 		
 		<!-- Multiple more lattices can be added. -->
 		<!-- For each scenario (floor) a lattice is used. -->
@@ -394,7 +394,7 @@
 	<tacticalModels>
 	
 		<!-- A tactical model based on a routing, searching, queuing and participating model. -->
-		<!-- The id is unique with this configuration for all models! -->
+		<!-- The id is unique of this model is unique regarding all behavior  models! -->
 		<!-- The name is a user friendly way to name this model. -->
 		<!-- The percetualModel provides a reference to the id of a perception model. -->
 		<tactical id="4" name="tactical"  perceptualModel="0">
@@ -417,7 +417,7 @@
 			
 			<!-- The navigationDistanceRadius models the distance and the parameter for reaching navigations nodes. -->
 			<!-- The nodes are typically graph nodes of a routing graph. If there is no previous node the distance is the radius for the reaching the node. -->
-			<!-- If there is a previous node form where the pedestrian started towards the next node the distance creates a polygon (trapezoid). -->
+			<!-- This method is ignored in case tactical control is set to true. -->
 			<property name="navigationDistanceRadius" type="Double" value="0.66"/>
 			
 			<!-- The tacticalControl is mostly set to True and activates "smart" behavior. -->
@@ -425,10 +425,21 @@
 			<!-- Hence, the tacticalControl helps to reduce nonsense behavior like being "stuck". -->
 			<!-- However, do set this to false in case pedestrian should strictly follow a routing path, -->
 			<!-- smart behavior leads to taking short-cuts and perception based re-routing. -->
+			<!-- Having the tactical control set to true is mandatory for using deep node selection. -->
 			<property name="tacticalControl" type="Boolean" value="True"/>
 			
+			<!-- The deep node selection property helps realice predictive routing behavior. -->
+			<!-- It is used in case that tactical control is set to true. -->
+			<!-- The concept here is that the routing model will be called X times (depth value). -->
+			<!-- The next navigation node is therefoe selected based on the current X routing result. -->
+			<!-- Finaly, the system creates a new routing command based on all routing computations. -->
+			<!-- This helps agents to find a next navigation need far away "deep" and the routing is more smooth. -->
+			<!-- The behavior may not be desired in any situations, e.g. street crossings. -->
+			<!-- This method will fail if you do not have a good perceptual model. -->
+			<property name="deepNodeSelection" type="Integer" value="3"/>
+			
 			<!-- In some simulations one does not like to include a strategical model. -->
-			<!-- For those simulations the agent will get a Do Nothing Command from the non exist strategical model. -->
+			<!-- For those simulations the agent will get a Do Nothing Command from the non strategical model. -->
 			<!-- In order to guide simulations without strategical model set here the command a pedestrian will receive. -->
 			<!-- Make sure you have added to corresponding tactical model (e.g. queuing or routing) in the configuration. -->
 			<!-- Do not use this if you have a strategical model. -->
@@ -443,6 +454,8 @@
 			<!-- Typically, in linear scenarios that address wayfinding, this is true. -->
 			<!-- In system in which the pedestrians visit some location more than once, this is mostly false. -->
 			<property name="routeMemory" type="Boolean" value="false"/>
+			
+		
 		</tactical>
 		
 		<!-- Multiple more tactical models, include a set of sub-models references can be added if needed. -->

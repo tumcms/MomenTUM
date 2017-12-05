@@ -720,7 +720,7 @@
         <point x="44.5" y="78.5" />
         <point x="47.5" y="78.5" />
       </obstacle>
-  		<lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout"  cellEdgeSize="0.4"/>
+  		<lattice id="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout"  cellEdgeSize="0.4"/>
 	        <graph id="0" type="Visibility">
         		<property name="cornerDistance" type="Double" value="2"/>
         	</graph>

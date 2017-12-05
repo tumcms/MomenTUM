@@ -87,6 +87,11 @@ resourcefile "resources.properties" {
 				selected : true,
 				onAction : "#onCheckShowDestination"
 			},
+			CheckBox id showTaggedAreasCheckBox { 
+				text : rstring "layerConfiguration.checkbox.showTaggedArea",
+				selected : true,
+				onAction : "#onCheckShowTaggedArea"
+			},
 			CheckBox id showGroupColoring { 
 				text : rstring "layerConfiguration.checkbox.showGroupColoring",
 				selected : false,

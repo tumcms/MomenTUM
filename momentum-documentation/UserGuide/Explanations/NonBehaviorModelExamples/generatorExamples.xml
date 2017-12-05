@@ -35,20 +35,20 @@
 		<property name="basicHeading" type="Double" value="0"/> 
 		
 		<!-- The maximal pedestrians give maximal number of pedestrians this generate can create. -->
-		<!-- The generator type "Instant" do not have maximalPedestrians. -->
+		<!-- The generator type "Instant" and "Csv" do not have maximalPedestrians. -->
 		<property name="maximalPedestrians" type="Integer" value="3"/>
 		
 		<!-- The safetyDistance provides the minimal distance between the body of an existing and an new pedestrian. -->
 		<!-- The value is given in meters. -->
-		<!-- The generator type "Instant" do not have safetyDistance. -->
+		<!-- The generator type "Instant" and "Csv" do not have safetyDistance. -->
 		<property name="safetyDistance" type="Double" value="0.25"/> 
 	
 		<!-- Each generator has a geometryType that describes how to place pedestrians in the origin. -->
-		<!-- At the moment, there are 3 geometryType
+		<!-- At the moment, there are 2 geometryType
 			Point, all pedestrians are generated in the center of the origin
 			Lattice, all pedestrian are placed randomly within a lattice.
 			
-			However, the generator type "Instant" do not have the origin id.  -->
+			However, the generator type "Instant"and "Csv" do not have the origin id.  -->
 		<geometry geometryType="Lattice"/> 
 		
 		<!-- In case the geometryType is a Lattice, the scenarioLatticeId is mandatory -->
@@ -72,6 +72,7 @@
 		Instant, describes that pedestrians are generated at predefined positions.
 				 Thus, Instant generators do not need a origin id
 		Multiple, is an aggregation tool that applies the identical generator configuration on many origins. 
+		Csv, is an generator that uses a csv file to generate pedestrian over time.
 	-->
 	
 	<!-- This is an example of an plan generator -->

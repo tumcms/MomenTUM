@@ -72,3 +72,7 @@ bld/
 # The packages folder can be ignored because of Package Restore
 **/packages/*
 ####
+
+# autocad
+*.dwl
+*.dwl2

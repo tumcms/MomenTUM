@@ -39,7 +39,8 @@ public enum CsvType {
 	TransitZones,
 	MacroscopicNetwork,
 	xtDensity,
-	Pedestrian;
+	Pedestrian,
+	Car;
 	
 	public String getIdHeader() {
 		
@@ -53,6 +54,8 @@ public enum CsvType {
 			return "id";
 		case Pedestrian:
 			return "id";
+        case Car:
+            return "id";
 		default:
 			return "id";
 		}
@@ -70,6 +73,8 @@ public enum CsvType {
 			return BufferingStrategy.FileBuffer;
 		case Pedestrian:
 			return BufferingStrategy.FileBuffer;
+        case Car:
+            return BufferingStrategy.FileBuffer;
 		default:
 			return BufferingStrategy.NoBuffer;
 		}

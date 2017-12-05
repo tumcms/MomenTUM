@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.data.agent.car.types;
 
 import tum.cms.sim.momentum.utility.generic.IUnique;
+import tum.cms.sim.momentum.utility.geometry.Rectangle2D;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public interface ICar extends IUnique {
@@ -47,4 +48,6 @@ public interface ICar extends IUnique {
 	public double getLength();
 	
 	public double getWidth();
+
+	public Rectangle2D getRectangle();
 }

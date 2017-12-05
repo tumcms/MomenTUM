@@ -2,10 +2,13 @@ Help: Which libraries do you need?
 
 Because of licenses topics you have to get the following AutoCAD libraries yourself and put them into the folder:
 momentum-tools\momentum-layout-tools\momentum-layout-tools-autocad\inc
-Check out the AutoCAD page 
-http://usa.autodesk.com/adsk/servlet/index?id=18162650&siteID=123112
+
+Check out the AutoCAD API page 
+http://usa.autodesk.com/adsk/servlet/index?id=1911627&siteID=123112
+
 and get the ObjectARX libraries
-http://usa.autodesk.com/adsk/servlet/index?siteID=123112&id=773204
+www.autodesk.com/objectarx
+
 You need the following libraries (in the inc folder)
 AcCoreMgd.dll
 AcCui.dll

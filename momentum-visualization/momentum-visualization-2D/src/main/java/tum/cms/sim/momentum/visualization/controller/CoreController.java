@@ -189,15 +189,16 @@ public class CoreController implements Initializable {
 	 * 
 	 * This method considers if the timeStep does exists in the {@link SimulationOutputReader}s.
 	 * 
-	 * @param timeStep
-	 *            the time step
+	 * @param timeStep, the time step
+	 * @param previous, the number of previous time steps for each reader to make ready to use
+	 * @param next, the number of next time steps for each reader to make ready to use
 	 * @return if all active {@link SimulationOutputReader}s are loaded
 	 * @throws Exception 
 	 */
-	public boolean waitUntilReadersReady(Double timeStep) throws Exception {
+	public boolean waitUntilReadersReady(Double timeStep, Integer previous, Integer next) throws Exception {
 
 		ArrayList<SimulationOutputReader> loadStatusReaders = new ArrayList<>();
-		
+	
 		for (SimulationOutputReader simReader : getOutputReaders()) {
 			loadStatusReaders.add(simReader);
 		}
@@ -206,7 +207,11 @@ public class CoreController implements Initializable {
 
 			for(int iter = 0; iter < loadStatusReaders.size(); iter++) {
 				
-				if (loadStatusReaders.get(iter).makeReadyForIndex(timeStep)) {
+				double timeStepDifference = loadStatusReaders.get(iter).getTimeStepDifference();
+				
+				if (loadStatusReaders.get(iter).makeReadyForIndex(timeStep) &&
+					loadStatusReaders.get(iter).dataReady(timeStep - timeStepDifference * previous) &&
+					loadStatusReaders.get(iter).dataReady(timeStep + timeStepDifference * next)) {
 
 					loadStatusReaders.remove(iter);
 					iter--;

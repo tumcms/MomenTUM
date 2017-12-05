@@ -30,30 +30,23 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2014;
+package tum.cms.sim.momentum.utility.graph.types;
 
-import java.util.Collection;
+import java.util.List;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
+import tum.cms.sim.momentum.utility.graph.Vertex;
 
-public class SharedSpaceTesting {
-    static class TestPrint {
-    	
-    	public static void printPedestrian(IOperationalPedestrian pedestrian, Collection<IPedestrian> otherPedestrians)
-    	{
-			System.out.println("");
-			System.out.print("pedestrian = [" + pedestrian.getPosition().getXComponent() + "," + pedestrian.getPosition().getYComponent() + "");
-			for(IPedestrian other : otherPedestrians) {
-				System.out.print(";" + other.getPosition().getXComponent() + "," + other.getPosition().getYComponent());
-			};
-			System.out.print("];");
-			
-			System.out.print("heading = [" + pedestrian.getHeading().getXComponent() + "," + pedestrian.getHeading().getYComponent() + "");
-			for(IPedestrian other : otherPedestrians) {
-				System.out.print(";" + other.getHeading().getXComponent() + "," + other.getHeading().getYComponent());
-			};
-			System.out.println("];");
-    	}
-    }
+public interface IImmutablePath {
+
+	public double distance();
+	
+	public List<Vertex> getVertexPath();
+
+	public Vertex getFirstVertex();
+	
+	public Vertex getPreviousVertex();
+	
+	public Vertex getCurrentVertex();
+	
+	public Vertex getFinalVertex();
 }

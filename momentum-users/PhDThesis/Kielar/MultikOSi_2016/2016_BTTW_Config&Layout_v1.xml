@@ -875,7 +875,7 @@
 	</graphs>
 
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
 	</lattices>
 
 	<layouts>
@@ -3963,7 +3963,7 @@
         <point x="371.75718333333333" y="-158.16666666666669"/>
         <direction x="367.54884999999996" y="-157.75"/>
       </obstacle>
-      <lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+      <lattice id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
     </scenario>
   </layouts>
 </simulator>

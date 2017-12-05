@@ -59,14 +59,7 @@ import tum.cms.sim.momentum.visualization.model.GestureModel;
 import tum.cms.sim.momentum.visualization.model.SnapshotModel;
 import tum.cms.sim.momentum.visualization.model.VisibilitiyModel;
 import tum.cms.sim.momentum.visualization.model.PlaybackModel;
-import tum.cms.sim.momentum.visualization.model.geometry.AreaModel;
-import tum.cms.sim.momentum.visualization.model.geometry.EdgeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.LatticeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
-import tum.cms.sim.momentum.visualization.model.geometry.PedestrianModel;
-import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
-import tum.cms.sim.momentum.visualization.model.geometry.VertexModel;
+import tum.cms.sim.momentum.visualization.model.geometry.*;
 import tum.cms.sim.momentum.visualization.view.userControl.ExtendedCanvas;
 
 public class PlaybackController implements Initializable {
@@ -102,7 +95,7 @@ public class PlaybackController implements Initializable {
 
 		return selectionHandler;
 	}
-	
+
 	// model
 	private SnapshotModel snapshotModel = new SnapshotModel();
 	private VisibilitiyModel visibilitiyModel = new VisibilitiyModel();
@@ -123,10 +116,10 @@ public class PlaybackController implements Initializable {
 	public GestureModel getGestureModel() {
 		return gestureModel;
 	}
-	
+
 	@FXML
 	private PlaybackModel playbackModel;
-	
+
 	public PlaybackModel getPlaybackModel() {
 		return playbackModel;
 	}
@@ -138,7 +131,7 @@ public class PlaybackController implements Initializable {
 			pedestrianShapeModel.putTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()));
 		}
 	}
-	
+
 
 	public void onMouseClicked(MouseEvent event) {
 
@@ -191,6 +184,7 @@ public class PlaybackController implements Initializable {
 	public void clearAll() {
 
 		playbackModel.getAreaShapes().clear();
+        playbackModel.getTaggedAreaShapes().clear();
 		playbackModel.getObstacleShapes().clear();
 		playbackModel.getVertexShapes().clear();
 		playbackModel.getEdgeShapes().clear();
@@ -200,15 +194,15 @@ public class PlaybackController implements Initializable {
 		playbackModel.getRedPedestrianGroupColor().clear();
 		playbackModel.getBluePedestrianGroupColor().clear();
 		playbackModel.getCustomShapesMap().clear();
-		
-		if (playbackModel.getPreviousPedestrianPoints() != null) {
 
-			playbackModel.getPreviousPedestrianPoints().clear();
+		if (playbackModel.getPreviousShapePositionPoints() != null) {
+
+			playbackModel.getPreviousShapePositionPoints().clear();
 		}
 
-		if (playbackModel.getOverNextPedestrianPoints() != null) {
+		if (playbackModel.getNextShapePositionPoints() != null) {
 
-			playbackModel.getOverNextPedestrianPoints().clear();
+			playbackModel.getNextShapePositionPoints().clear();
 		}
 
 		playbackModel.is3DViewProperty().set(false);
@@ -270,7 +264,8 @@ public class PlaybackController implements Initializable {
 		playBackPane.setOnKeyPressed(onKey3DViewKeyEventHandler);
 
 		playbackModel.areaShapesProperty().addListener(onAreaShapesListChangedListener);
-		playbackModel.obstacleShapesProperty().addListener(onObstracleShapesListChangedListener);
+        playbackModel.taggedAreaShapesProperty().addListener(onTaggedAreaShapesListChangedListener);
+        playbackModel.obstacleShapesProperty().addListener(onObstracleShapesListChangedListener);
 		playbackModel.pedestrianShapesProperty().addListener(onPedestrianShapesListChangedListener);
 
 		playbackModel.vertexShapesProperty().addListener(onVertexShapesListChangedListener);
@@ -283,24 +278,25 @@ public class PlaybackController implements Initializable {
 	public void bindCustomShapes(CsvType type) {
 
 		if(this.playbackModel.addCustomShapes(type)) {
-			
+
 			this.playbackModel.getSpecificCustomShapesMap(type).addListener(new MapChangeListener<String, ShapeModel>() {
 
 				@Override
 				public void onChanged(MapChangeListener.Change<? extends String, ? extends ShapeModel> changed) {
-					
+
 					if (changed.getMap().size() > 0) {
-						
+
 						if (!changed.wasRemoved()) {
-							
+
+							changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
 							playbackObjectsPane.getChildren().add(changed.getValueAdded().getShape());
 						}
 					}
 					else {
-						
+
 						playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
 					}
-					
+
 					playBackPane.toBack();
 				}
 			});
@@ -438,7 +434,31 @@ public class PlaybackController implements Initializable {
 			playBackPane.toBack();
 		}
 	};
-	
+
+    private MapChangeListener<String, TaggedAreaModel> onTaggedAreaShapesListChangedListener = new MapChangeListener<String, TaggedAreaModel>() {
+
+        @Override
+        public void onChanged(MapChangeListener.Change<? extends String, ? extends TaggedAreaModel> changed) {
+
+            if (changed.getMap().size() > 0) {
+
+                if (!changed.wasRemoved()) {
+
+                    changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
+                    playbackObjectsPane.getChildren().add(changed.getValueAdded().getTaggedAreaShape());
+                } else {
+                    playbackObjectsPane.getChildren().remove(changed.getValueRemoved().getTaggedAreaShape());
+                }
+
+            } else {
+
+                playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
+            }
+            playbackObjectsPane.toFront();
+            playBackPane.toBack();
+        }
+    };
+
 	private MapChangeListener<String, PedestrianModel> onPedestrianShapesListChangedListener = new MapChangeListener<String, PedestrianModel>() {
 
 		@Override

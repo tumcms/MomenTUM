@@ -92,17 +92,17 @@ public class InteractionController implements Initializable {
 	private ComboBox<SpeedUp> speedBox;
 	@FXML
 	private ProgressIndicator spinner;
-	
+
 	private ParallelTransition playBackAnimation = null;
-	
+
 	// Controller
 	private PlaybackHandler playbackHandler = null;
 	private CoreController coreController;
-	
+
 	// Model
 	@FXML
 	private TimeLineModel timeLineModel;
-	
+
 	// Listeners
 	private ChangeListener<Number> smoothnessSelectionIndexListener = new ChangeListener<Number>() {
 
@@ -112,7 +112,7 @@ public class InteractionController implements Initializable {
 
 		}
 	};
-	
+
 	private ChangeListener<Number> speedSelectionIndexListener = new ChangeListener<Number>() {
 
 		@Override
@@ -121,7 +121,7 @@ public class InteractionController implements Initializable {
 			timeLineModel.setSelectedSpeedUp(SpeedUp.values()[newValue.intValue()]);
 		}
 	};
-	
+
 	public TimeLineModel getTimeLineModel() {
 		return timeLineModel;
 	}
@@ -147,7 +147,7 @@ public class InteractionController implements Initializable {
 		reset.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		play.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		leftStep.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
-		
+
 		rightStep.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		slider.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		speedBox.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
@@ -198,7 +198,7 @@ public class InteractionController implements Initializable {
 
 				// TODO make this a correct binding
 				InteractionController.this.timeLineModel.setCurrentTime(roundedSlider);
-				
+
 				InteractionController.this.startPlaying(roundedSlider);
 			}
 		}
@@ -301,16 +301,16 @@ public class InteractionController implements Initializable {
 	}
 
 	private void startPlaying(double timeStep) {
-		
+
 		try {
-			
+
 			playBackAnimation = AnimationCalculations.calculateVisualizationOfTimeStep(timeStep, coreController);
 		}
 		catch (Exception e) {
 
 			e.printStackTrace();
 		}
-		
+
 		if (timeLineModel.getPlaying()) {
 
 			playBackAnimation.setOnFinished(playbackHandler);
