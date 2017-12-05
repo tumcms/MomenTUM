@@ -55,7 +55,7 @@
 	<!-- The standard BlockingGeometries perception model is used.. there is no other. -->
 	<perceptualModels>
 		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
-			<property name="perceptionDistance" type="Double" value="100.0"/>
+			<property name="perceptionDistance" type="Double" value="50.0"/>
 			<property name="latticeId" type="Integer" value="2"/>
 		</perceptual>
 	</perceptualModels>
@@ -103,17 +103,20 @@
 			<property name="goalDistanceRadius" type="Double" value="0.23" />
 			<property name="routeMemory" type="Boolean" value="False" />
 			<property name="tacticalControl" type="Boolean" value="True" />
+			<property name="deepNodeSelection" type="Integer" value="3" />
 		</tactical>
 	</tacticalModels>
 
-	<!-- A single routing model. -->
+	<!-- A single routing model. Select one of the following for testing. -->
 	<routingModels>
-		<routing id="5" name="unifiedRouting" type="UPRM">
+		<!--<routing id="5" name="unifiedRouting" type="UPRM">
 			<property name="randomMode" type="Boolean" value="True"/>
 			<complexProperty name="resultMode" type="CsvMatrix" valueType="Double">
 				<entry file="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\startHere\BasicExample\basicExampleUPRM.csv" separator=";"/>
 			</complexProperty>
-		</routing>
+		</routing> -->
+		<routing id="5" name="dijkstra" type="Dijkstra"/> 
+		
 	</routingModels>
 	
 	<!-- A single staying model. -->
@@ -205,10 +208,10 @@
 			<geometry geometryType="Point"/> 
 			<complexProperty name="interval" type="List" valueType="Double">
 				<entry index="0" value="0"/> 
-				<entry index="1" value="200.0"/> 
+				<entry index="1" value="1.0"/> 
 			</complexProperty>
 			<complexProperty name="percentage" type="List" valueType="Double"> 
-				<entry index="0" value="1.0"/> 
+				<entry index="0" value="200.0"/> 
 				<entry index="1" value="0.0"/>
 			</complexProperty>
 		</generator>

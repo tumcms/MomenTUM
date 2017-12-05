@@ -259,7 +259,7 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 	@Override
 	public double getPerceptionDistance() {
 	
-		return this.perceptionCells;
+		return this.perceptionCells * accuracy;
 	}
 
 	@Override

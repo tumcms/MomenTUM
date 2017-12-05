@@ -39,6 +39,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
+import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.SubTacticalModel;
 import tum.cms.sim.momentum.utility.graph.GraphTheoryFactory;
@@ -106,7 +107,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 	 * @param tacticalControlActive, activates next vertex visible check
 	 * @return if true, reroute
 	 */
-	public boolean reRoutingNecessary(IRichPedestrian pedestrian, boolean tacticalControlActive) {
+	public boolean reRoutingNecessary(IRichPedestrian pedestrian, boolean tacticalControlActive, boolean isDeepSelect) {
 		
 		if(pedestrian.getRoutingState() == null) {
 			
@@ -130,7 +131,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 		}
 		
 		// The tactical control enables a more smooth routing because it addresses the vertex following the current one
-		if(tacticalControlActive && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
+		if(tacticalControlActive && isDeepSelect && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
 			
 			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextToCurrentVisit());
 			double distanceToNextToCurrentVisit = pedestrian.getRoutingState().getNextToCurrentVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
