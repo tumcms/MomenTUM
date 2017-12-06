@@ -13,7 +13,7 @@
 	</loop>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.1"/>
 	</lattices>
 	
 	<graphs>
@@ -59,9 +59,10 @@
 		<tactical id="3" name="tactical"  perceptualModel="0">
 			<routingReference modelId="4"/>
 			<property name="goalDistanceRadius" type="Double" value="0.23" />
-			<property name="routeMemory" type="Boolean" value="False" />
+			<property name="routeMemory" type="Boolean" value="True" />
 			<property name="tacticalControl" type="Boolean" value="True" />
 			<property name="strategicCommand" type="String" value="Routing"/>
+			<property name="deepNodeSelection" type="Integer" value="3"/>
 		</tactical>
 	</tacticalModels>
 	

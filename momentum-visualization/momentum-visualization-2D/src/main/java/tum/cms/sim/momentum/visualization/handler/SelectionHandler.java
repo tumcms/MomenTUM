@@ -119,8 +119,6 @@ public class SelectionHandler {
 			if(shapesDetailsModel != null) {
 				this.detailsView.setItems(shapesDetailsModel.createViewContent());
 			}
-			
-			
 		}
 	}
 	

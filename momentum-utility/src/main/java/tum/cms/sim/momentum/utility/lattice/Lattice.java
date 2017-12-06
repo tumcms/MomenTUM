@@ -1505,6 +1505,11 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
         
         if(dy == 0 && dx == 0) {
         	
+        	if(this.getCellNumberValue(from.getColumn(), from.getRow()) != 0.0) {
+        		
+        		return this.convertOccupationToDouble(Occupation.Fixed);
+        	}
+        	
         	return 0.0; // start is end
         }
         

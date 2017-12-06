@@ -158,8 +158,7 @@ public class FromConfigurationOperation extends GraphOperation {
 			Vertex left = graph.getVertex(edgeConfiguration.getIdLeft());
 			Vertex right = graph.getVertex(edgeConfiguration.getIdRight());
 			
-			Edge edge = GraphTheoryFactory.createEdge(left, right);
-			graph.conncetVertices(left, right, edge);
+			graph.doublyConnectVertices(left, right);
 		}
 	}
 

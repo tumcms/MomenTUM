@@ -123,7 +123,8 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	}
 
 	/**
-	 * This method use a bresenham line as alternative to avoid heavy computations 
+	 * This method use a bresenham line as alternative to avoid heavy computations
+	 * However, include check object is in view angle
 	 */
 	@Override
 	public boolean isVisible(Vector2D viewPort, Vector2D position) {
@@ -152,13 +153,13 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	@Override
 	public boolean isVisible(IPedestrian pedestrian, Vector2D position) {
 		
-		return this.isVisible(pedestrian.getPosition(), position);
+		return this.checkInSightBresenham(pedestrian, position);
 	}
 
 	@Override
 	public boolean isVisible(IPedestrian pedestrian, Area area) {
 		
-		return isVisible(pedestrian.getPosition(), area.getPointOfInterest());// pedestrainToArea.get(pedestrian.getId()).containsKey(area.getId());
+		return this.checkInSightBresenham(pedestrian, area.getPointOfInterest());// pedestrainToArea.get(pedestrian.getId()).containsKey(area.getId());
 	}
 	
 	@Override
@@ -170,7 +171,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	@Override
 	public boolean isVisible(IPedestrian pedestrian, Vertex vertex) {
 
-		return isVisible(pedestrian.getPosition(), vertex.getGeometry().getCenter());// pedestrainToVertex.get(pedestrian.getId()).contains(vertex.getId());
+		return this.checkInSightBresenham(pedestrian, vertex.getGeometry().getCenter());// pedestrainToVertex.get(pedestrian.getId()).contains(vertex.getId());
 	}
 
 	@Override
@@ -293,6 +294,23 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		pedestrianCells.parallelStream().forEach(cell -> this.pedestrianMap.setCellNumberValue(cell, 0.0));
 	}
 	
+	private boolean checkInSightBresenham(IPedestrian pedestrian, Vector2D otherObject) {
+		
+		// Check if object is in sight angle
+		Vector2D heading = pedestrian.getHeading();
+		Vector2D viewPort = pedestrian.getPosition();
+		
+		if(!viewPort.equals(otherObject)) {
+			
+			double angleInRadiant = GeometryAdditionals.angleBetween0And360CCW(heading, viewPort, otherObject);
+			
+			if(this.perceptionRadiant < angleInRadiant) {
+				
+				return false; // out of sight
+			}
+		}
+		return this.isVisible(viewPort, otherObject);
+	}
 	/**
 	 * This method finds all pedestrians in sight and also updates the obstacle in sight.
 	 * @param pedestrianId

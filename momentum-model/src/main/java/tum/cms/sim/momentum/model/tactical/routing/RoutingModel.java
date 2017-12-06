@@ -113,33 +113,36 @@ public abstract class RoutingModel extends SubTacticalModel {
 			return true;
 		}	
 
-		boolean currentWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextVisit());
 		double distanceToNextVisit = pedestrian.getRoutingState().getNextVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
 		
 		// is the current walking target not visible?! reroute
 		// however, if it is not in perception range, keep routing. Thus, reroute if close and not visible
-		if(!currentWalkingTargetVisible &&
-			distanceToNextVisit < perception.getPerceptionDistance()) {
+		if(distanceToNextVisit < perception.getPerceptionDistance() &&
+		   !perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextVisit())) {
 			
-			pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
-						pedestrian.getRoutingState().getNextToLastVisit(),
-						pedestrian.getRoutingState().getLastVisit(),
-						null));
-			
-			return true;
+			// however, in case the agent cannot see its own position,
+			// the layout is not good and we have to ignore this.
+			if(perception.isVisible(pedestrian, pedestrian.getPosition())) {
+				pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
+							pedestrian.getRoutingState().getNextToLastVisit(),
+							pedestrian.getRoutingState().getLastVisit(),
+							null));
+				return true;
+			}
 		}
 		
 		// The tactical control enables a more smooth routing because it addresses the vertex following the current one
 		if(tacticalControlActive && isDeepSelect && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
 			
-			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextToCurrentVisit());
 			double distanceToNextToCurrentVisit = pedestrian.getRoutingState().getNextToCurrentVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
 			
-			// is the next walking target not visible?! reroute
-			// however, if it is not in perception range, keep routing. Thus, reroute if close and not visible
-			if(nextWalkingTargetVisible &&
-			   this.checkIsVertexVisited() &&
-			   distanceToNextToCurrentVisit < perception.getPerceptionDistance()) {
+			// Is the next walking target visible?
+			// If yes reroute to have a continuously not visible next to current vertex
+			// Thus, the agent will have a more steady navigation flow.
+			// However, if it is not in perception range, keep routing.
+			if(this.checkIsVertexVisited() &&
+			   distanceToNextToCurrentVisit < perception.getPerceptionDistance() &&
+			   perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextToCurrentVisit())) {
 				
 				return true;
 			}
