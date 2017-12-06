@@ -78,17 +78,12 @@
 			<version>2.0.2</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.nd4j</groupId>
-		    <artifactId>nd4j-api</artifactId>
-		    <version>0.9.1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.tensorflow</groupId>
 			<artifactId>tensorflow</artifactId>
 			<version>1.4.0</version>
 		</dependency>
 	</dependencies>
+	
 	<description>This project comprises multiple packages that address different specific mathematical and theoretical concept useful in the simulation framework.</description>
 	<name>momentum-utility</name>
 </project>
