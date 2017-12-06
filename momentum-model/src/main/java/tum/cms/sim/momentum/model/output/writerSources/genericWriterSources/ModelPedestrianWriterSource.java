@@ -38,11 +38,11 @@ import tum.cms.sim.momentum.configuration.generic.FormatString;
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.data.agent.pedestrian.IExtendsPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.PedestrianManager;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.model.IPedestrianBehavioralModel;
 
-public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, K extends IPedestrianExtansion> 
+public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, K extends IPedestrianExtension>
 	extends SingleSetWriterSource {
 	
 	private Iterator<IRichPedestrian> currentPedestrians = null;
@@ -89,7 +89,9 @@ public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, 
 			String format = formatter.getFormat();
 
 			switch(outputType) {
-
+			case timeStepDuration:
+				result = this.getTimeStepDuration(format);
+				break;
 			case timeStep:
 				result = this.getTimeStep(format);
 				break;
@@ -148,7 +150,23 @@ public abstract class ModelPedestrianWriterSource<T extends IExtendsPedestrian, 
 	    return String.format(format, currentPedestrian.getId());
 	}
 	
+	private String getTimeStepDuration(String format) {
+		
+		return String.format(format, this.timeManager.getTimeStepDuration());
+	}
+	/**
+	 * Here return true if it is ok to extract the data of the pedestrian extensions.
+	 * @param currentPedestrianExtension
+	 * @return
+	 */
 	protected abstract boolean canWrite(K currentPedestrianExtension);
 	
+	/**
+	 * Here implement the data extraction from the pedestrian extensions
+	 * @param currentPedestrianExtension
+	 * @param format
+	 * @param dataElement
+	 * @return The data as string for dataElement in format from currentPedestrianExtension
+	 */
 	protected abstract String getPedestrianData(K currentPedestrianExtension, String format, String dataElement);
 }

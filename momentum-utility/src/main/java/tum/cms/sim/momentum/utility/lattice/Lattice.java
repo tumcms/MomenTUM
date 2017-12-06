@@ -34,6 +34,7 @@ package tum.cms.sim.momentum.utility.lattice;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -42,10 +43,11 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.utility.generic.IHasProperties;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
 import tum.cms.sim.momentum.utility.generic.Unique;
@@ -64,18 +66,40 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	protected Vector2D startCellPosition;
 	
 	protected LatticeType latticeType = null;
-	protected NeighbourhoodType neighborhoodType = null;
+	protected NeighborhoodType neighborhoodType = null;
 	private Double cellArea = null;
 
 	public enum Occupation {
 		Fixed,
 		Dynamic,
-		Empty
+		Empty;
+		
+		public static Double convertOccupationToDouble(Occupation occupation) {
+			
+			if (occupation == Occupation.Fixed) {
+				return doubleForFixedObject;						
+			}
+			if (occupation == Occupation.Dynamic) {
+				return doubleForDynamicObject;						
+			}
+			return doubleForNoObject;
+		}
+		
+	public static Occupation convertDoubleToOccupation(Double occupation) {
+			
+			if (occupation.equals(doubleForFixedObject)) {
+				return Occupation.Fixed;						
+			}
+			if (occupation.equals(doubleForDynamicObject)) {
+				return Occupation.Dynamic;						
+			}
+			return Occupation.Empty;
+		}
 	};
 	
-	private Double doubleForFixedObject = Double.NaN; 
-	private Double doubleForDynamicObject = Double.MAX_VALUE;
-	private Double doubleForNoObject = 0.0;	
+	private static Double doubleForFixedObject = Double.NaN; 
+	private static Double doubleForDynamicObject = Double.MAX_VALUE;
+	private static Double doubleForNoObject = 0.0;	
 	
 	protected PropertyBackPack properties = null;
 	protected Vector2D minPositionBoundingBox = null;
@@ -130,7 +154,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getNeighborhoodType()
 	 */
 	@Override
-	public NeighbourhoodType getNeighborhoodType() {
+	public NeighborhoodType getNeighborhoodType() {
 		return neighborhoodType;
 	}
 	
@@ -138,7 +162,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#setNeighborhoodType(tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType)
 	 */
 	@Override
-	public void setNeighborhoodType(NeighbourhoodType type) {
+	public void setNeighborhoodType(NeighborhoodType type) {
 		this.neighborhoodType = type;
 	}
 
@@ -247,7 +271,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	 * @param minY
 	 */
 	protected Lattice(LatticeType latticeType, 
-			NeighbourhoodType neigborhoodType,
+			NeighborhoodType neigborhoodType,
 			double cellEdgeSize, 
 			double maxX,
 			double minX,
@@ -257,8 +281,6 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		this.latticeType = latticeType;
 		this.neighborhoodType = neigborhoodType;
 
-
-		
 		switch(this.latticeType) {
 		
 		case Hexagon:
@@ -547,6 +569,15 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	}
 	
 	/* (non-Javadoc)
+	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#setCellNumberValue(Vector2D, double)
+	 */
+	@Override
+	public void setCellNumberValue(Vector2D position, double numberValue) {
+		
+		this.grid.setCell(this.getCellIndexFromPosition(position), numberValue);
+	}
+	
+	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getCellNumberValue(tum.cms.sim.momentum.utility.lattice.CellIndex)
 	 */
 	@Override
@@ -768,7 +799,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#occupyInsideCells(java.util.Collection, tum.cms.sim.momentum.utility.lattice.Lattice.Occupation)
 	 */
 	@Override
-	public synchronized void occupyInsideCells(Collection<CellIndex> cells, Occupation occupation) {
+	public synchronized void occupyCells(Collection<CellIndex> cells, Occupation occupation) {
 	
 		if(cells != null) {
 			
@@ -866,15 +897,93 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		return borderCellPositions;		
 	}
 	
-	/* (non-Javadoc)
-	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getAllCircleCells(tum.cms.sim.momentum.utility.geometry.Cycle2D)
+	/**
+	 * https://de.wikipedia.org/wiki/Bresenham-Algorithmus#Kreisvariante_des_Algorithmus
+	 * Returns the border cells of a circle in order.
+	 * They are based on 8 octants and therefore symmetric regarding (size/ 8) - 4
+	 * Octant 1, 2, 4, and 6 have a single value more to for the axis.
+	 * The cell index are centered around the center but may be outside of the lattice.
+	 * This is useful for buffering the indices. Later add the new centers row,column
+	 * if the start is zero,zero.
 	 */
 	@Override
-	public List<CellIndex> getAllCircleCells(Cycle2D circle) {
+	public List<CellIndex> getAllOnCircleBorder(double radius, Vector2D center) {
 		
+		int gridRadius = (int)(radius/cellEdgeSize);
+		
+		ArrayList<CellIndex> cellsOct1 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct2 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct3 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct4 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct5 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct6 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct7 = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> cellsOct8 = new ArrayList<CellIndex>();
+		
+	    CellIndex startCellLeft = this.getCellIndexFromPosition(center);
+	    
+	    // center top (oct 1 and 8)
+	    cellsOct1.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow(), startCellLeft.getColumn() + gridRadius));
+	    // center bottom (oct 4 and 5)
+	    cellsOct5.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow(), startCellLeft.getColumn() - gridRadius));
+	    // right center (oct 2 and 3)
+	    cellsOct3.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + gridRadius, startCellLeft.getColumn()));
+	    // left center (oct 6 and 7)
+	    cellsOct7.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - gridRadius, startCellLeft.getColumn()));
+
+	    int f = 1 - gridRadius;
+	    int ddF_x = 0;
+	    int ddF_y = -2 * gridRadius;
+	    int x = 0;
+	    int y = gridRadius;
+	
+	    while(x < y) {
+	    	
+	    	if(f >= 0) {
+	    	  
+	    		y--;
+	    		ddF_y += 2;
+	        	f += ddF_y;
+	    	}
+	      
+	    	x++;
+		    ddF_x += 2;
+		    f += ddF_x + 1;
+
+		    cellsOct1.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + x, startCellLeft.getColumn() + y)); //oct1
+		    cellsOct8.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - x, startCellLeft.getColumn() + y)); //oct8
+		    
+		    cellsOct4.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + x, startCellLeft.getColumn() - y)); //oct4
+		    cellsOct5.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - x, startCellLeft.getColumn() - y)); //oct5
+		    
+		    cellsOct2.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + y, startCellLeft.getColumn() + x)); //oct2
+		    cellsOct7.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - y, startCellLeft.getColumn() + x)); //oct7
+		    
+		    cellsOct3.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() + y, startCellLeft.getColumn() - x)); //oct3
+		    cellsOct6.add(LatticeTheoryFactory.createCellIndex(startCellLeft.getRow() - y, startCellLeft.getColumn() - x)); //oct6
+	    }
+	    
+	    ArrayList<CellIndex> cellsInOrder = new ArrayList<>();
+	    cellsInOrder.addAll(cellsOct1);
+	    Collections.reverse(cellsOct2);
+	    cellsInOrder.addAll(cellsOct2);
+	    cellsInOrder.addAll(cellsOct3);
+	    Collections.reverse(cellsOct4);
+	    cellsInOrder.addAll(cellsOct4);
+	    cellsInOrder.addAll(cellsOct5);
+	    Collections.reverse(cellsOct6);
+	    cellsInOrder.addAll(cellsOct6);
+	    cellsInOrder.addAll(cellsOct7);
+	    Collections.reverse(cellsOct8);
+	    cellsInOrder.addAll(cellsOct8);
+	    
+	    return cellsInOrder;
+	}
+	
+	@Override
+	public List<CellIndex> getAllCircleCells(double radius, Vector2D center) {
+
 		ArrayList<CellIndex> cells = new ArrayList<CellIndex>();
-		Double radius = circle.getRadius();
-		Vector2D center = circle.getCenter();
 		
 		Vector2D circlePointNorth = center.sum(GeometryFactory.createVector(0.0, -radius));
 		Vector2D circlePointEast = center.sum(GeometryFactory.createVector(radius, 0.0));
@@ -902,6 +1011,18 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 			}			
 		}
 		return cells;
+	}
+	
+	/* (non-Javadoc)
+	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getAllCircleCells(tum.cms.sim.momentum.utility.geometry.Cycle2D)
+	 */
+	@Override
+	public List<CellIndex> getAllCircleCells(Cycle2D circle) {
+		
+		Double radius = circle.getRadius();
+		Vector2D center = circle.getCenter();
+		
+		return this.getAllCircleCells(radius, center);
 	}
 
 	/* (non-Javadoc)
@@ -931,6 +1052,33 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		}
 		
 		return cells;
+	}
+	
+	/* (non-Javadoc)
+	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#getMinMaxValuesForIndices(tum.cms.sim.momentum.utility.lattice.CellIndex)
+	 */
+	@Override
+	public Double[] getMinMaxValuesForIndices(Set<CellIndex> connectedIndices) {
+
+			Double[] minMax = new Double[] {
+					Double.MAX_VALUE, // first value is minimum
+					Double.MIN_VALUE}; // second value is maximum
+
+			connectedIndices.stream()
+				.forEach(cellIndex -> {
+
+					Double currentValue = (Double) this.getCellNumberValue(cellIndex);
+	
+					if (currentValue < minMax[0]) {
+						minMax[0] = currentValue;
+					}
+	
+					if (currentValue > minMax[1]) {
+						minMax[1] = currentValue;
+					}
+			});
+
+		return minMax;
 	}
 	
 	@Override
@@ -1038,6 +1186,40 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		
 		return cellsToOccupy;
 	}
+	
+	@Override
+	public List<CellIndex> occupyAllCellsInRadius(Vector2D position, double radius, Occupation occupation) {
+		
+		List<CellIndex> objectsCells = this.getAllCircleCells(radius, position);
+		objectsCells.stream().forEach(cellIndex -> this.occupyCell(cellIndex, occupation));
+		
+		return objectsCells;
+	}
+	
+//	public ArrayList<CellIndex> getCellIndexFromRadius(Vector2D position, double radius) {
+//		
+//		ArrayList<CellIndex> cells = new ArrayList<>();
+//		CellIndex centerCell = this.getCellIndexFromPosition(position);
+//		
+//		Queue<CellIndex> toDoCells = new LinkedList<>();
+//		toDoCells.add(centerCell);
+//		
+//		while(!toDoCells.isEmpty() ) {
+//		
+//			CellIndex currentCell = toDoCells.poll();
+//			cells.add(currentCell);
+//			
+//			for(CellIndex neigbhor : this.getAllNeighborIndices(currentCell)) {
+//
+//				if(this.getCenterPosition(neigbhor).distance(position) <= radius) {
+//					
+//					toDoCells.add(neigbhor);
+//				}
+//			}
+//		}
+//		
+//		return cells;
+//	}
 
 	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#setAllCells(tum.cms.sim.momentum.utility.lattice.Lattice.Occupation)
@@ -1089,6 +1271,12 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void setCells(List<CellIndex> cellsToOccupy, double value) {
+		
+		cellsToOccupy.forEach(cell -> this.setCellNumberValue(cell, value));
 	}
 	
 	/* (non-Javadoc)
@@ -1249,12 +1437,12 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
 		
 		System.out.print("\n");
 	}
-    
+	
 	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#breshamLineCast(tum.cms.sim.momentum.utility.lattice.CellIndex, tum.cms.sim.momentum.utility.lattice.CellIndex)
 	 */
     @Override
-	public boolean breshamLineCast(CellIndex from, CellIndex towards, int distance) {
+	public boolean breshamLineCast(CellIndex from, CellIndex towards) {
 
     	boolean hitTarget = false;
     	
@@ -1280,7 +1468,7 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
         dx *= 2;
         dy *= 2;
 
-        for (; n > 0 && distance > 0; --n) {
+        for (; n > 0; --n) {
         	
         	if(!this.isCellFree(y, x)) {
         		
@@ -1290,6 +1478,76 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
         	if(x == targetX && y == targetY) {
         		
         		hitTarget = true;
+        		break;
+        	}
+
+            if (error > 0) {
+                x += x_inc;
+                error -= dy;
+            }
+            else {
+                y += y_inc;
+                error += dx;
+            }
+        }
+        
+    	return hitTarget;
+    }
+    
+	/* (non-Javadoc)
+	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#breshamLineCast(tum.cms.sim.momentum.utility.lattice.CellIndex, tum.cms.sim.momentum.utility.lattice.CellIndex)
+	 */
+    @Override
+	public double breshamLineCast(CellIndex from, CellIndex towards, int cellDistance) {
+
+        int dx = FastMath.abs(from.getColumn() - towards.getColumn());
+        int dy = FastMath.abs(from.getRow() - towards.getRow());
+        
+        if(dy == 0 && dx == 0) {
+        	
+        	return 0.0; // start is end
+        }
+        
+        int x = from.getColumn();
+        int y = from.getRow();
+        int targetX = towards.getColumn();
+        int targetY = towards.getRow();
+        
+        int n = 1 + dx + dy;
+        
+        int x_inc = towards.getColumn() > from.getColumn() ? 1 : -1;
+        int y_inc = towards.getRow() > from.getRow() ? 1 : -1;
+        
+        int error = dx - dy;
+        
+        if (error > 0) {
+        	
+            x += x_inc;
+            error -= dy;
+        }
+        else {
+        	
+            y += y_inc;
+            error += dx;
+        }
+        
+        dx *= 2;
+        dy *= 2;
+        double value = -1.0;
+        
+        for (; n > 0 && cellDistance > 0; --n) {
+        	
+        	// Has cell a value not 0.0?! Its not free
+        	value = this.getCellNumberValue(y, x);
+        	
+        	if(value != 0.0) { //!this.isCellFree(y, x) && 
+        		
+        		break;
+        	}
+        	
+        	if(x == targetX && y == targetY) {
+        		
+        		value = 0.0; // nothing in the way
         		break;
         	}
 
@@ -1304,11 +1562,94 @@ public class Lattice extends Unique implements IHasProperties, ILattice {
                 error += dx;
             }
             
-            distance--;
+            cellDistance--;
         }
         
-    	return hitTarget;
+        if(cellDistance == 0 && value == 0.0) { // end of the perception range, nothing found
+        	
+        	value = this.convertOccupationToDouble(Occupation.Fixed);
+        }
+        
+    	return value;
     }
+    
+    public List<Pair<Double,CellIndex>> breshamLineCastTrace(CellIndex from,
+    		CellIndex towards,
+    		Double stopValue,
+    		Double ignoreValue,
+    		boolean storeTrace) {
+    	
+    	int dx = FastMath.abs(from.getColumn() - towards.getColumn());
+    	int dy = FastMath.abs(from.getRow() - towards.getRow());
+    	ArrayList<Pair<Double,CellIndex>> trace = new ArrayList<>();
+          
+        if(dy == 0 && dx == 0) {
+          	
+        	trace.add(Pair.of(0.0, from));
+        	return trace; // start is end
+        }
+          
+        int x = from.getColumn();
+        int y = from.getRow();
+        int targetX = towards.getColumn();
+        int targetY = towards.getRow();
+          
+        int n = 1 + dx + dy;
+          
+        int x_inc = towards.getColumn() > from.getColumn() ? 1 : -1;
+        int y_inc = towards.getRow() > from.getRow() ? 1 : -1;
+      
+        int error = dx - dy;
+        dx *= 2;
+        dy *= 2;
+        double value = this.convertOccupationToDouble(Occupation.Fixed);
+        CellIndex currentCell = null;
+        
+        for (; n > 0; --n) {
+				
+        	currentCell = LatticeTheoryFactory.createCellIndex(y, x);
+        	
+        	// reach end of the system, stop it
+        	if(!this.isInLatticeBounds(currentCell)) {
+        		value = this.convertOccupationToDouble(Occupation.Fixed);
+        		break;
+        	}
+        	
+         	// Has cell a value not 0.0?! Its not free
+			value = this.getCellNumberValue(y, x);
+			
+			if((ignoreValue != null && value != ignoreValue.doubleValue()) && // not a ignore value
+			   ((stopValue == null && value != 0.0) || // if no stop exists, stop at all values
+			   (stopValue != null && value == stopValue))) { // if stop value exists, stop at stop value
+				
+				break;
+			}
+
+			if(x == targetX && y == targetY) {
+				
+				break; // nothing in the way
+			}
+
+			if (error > 0) {
+			  	
+				x += x_inc;
+				error -= dy;
+			}
+			else {
+			  	
+				y += y_inc;
+				error += dx;
+			}			          
+	          
+	      	if(storeTrace) {
+	      		trace.add(Pair.of(value, currentCell));
+	      	}
+        }
+        
+        trace.add(Pair.of(value, currentCell));
+        return trace;
+    }
+    
     
 	/* (non-Javadoc)
 	 * @see tum.cms.sim.momentum.utility.lattice.ILattice#flood(java.util.List)

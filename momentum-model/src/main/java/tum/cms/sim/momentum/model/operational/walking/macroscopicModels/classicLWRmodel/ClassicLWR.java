@@ -41,7 +41,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
@@ -163,7 +163,7 @@ public class ClassicLWR extends WalkingModel {
 	}
 
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		return null;
 
 	}

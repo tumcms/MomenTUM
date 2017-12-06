@@ -135,9 +135,12 @@ public class SimulatorManager {
 		if(configurationManager == null) {
 			
 			configurationManager = new ConfigurationManager();
+			configurationManager.setLoadExternalFiles(false);
 			configurationManager.deserializeCompleteConfiguration(argumentContainer.getConfigFileName());
 		}
 
+		configurationManager.setLoadExternalFiles(true);
+		
 		if(configurationManager.getSimulatorConfiguration().getLoop() != null) {
 		
 			if(loopManager == null) {
@@ -150,6 +153,10 @@ public class SimulatorManager {
 					loopManager.getLoopVariableUpdates());
 			
 			loopManager.updateLoopVariables();
+		}
+		else {
+			
+			configurationManager.deserializeCompleteConfiguration(argumentContainer.getConfigFileName());
 		}
 	}
 	
@@ -261,6 +268,9 @@ public class SimulatorManager {
 			// Add simulation objects
 			callController.callGenericCallable(componentManager.getGenerators());
 			
+			// Execute perception processing
+			callController.callGenericCallable(componentManager.getPerceptionalModels());
+			
 			// Execute blocks and underlying meta models and models in corresponding order if allowed
 			callController.callBlockExecution(timeManager);
 
@@ -296,6 +306,9 @@ public class SimulatorManager {
 		
 			// Add simulation objects
 			callController.callGenericCallable(componentManager.getGenerators());
+			
+			// Execute perception processing
+			callController.callGenericCallable(componentManager.getPerceptionalModels());
 			
 			// Act 
 			callController.callExecutionCallable(componentManager.getStrategicalModels(), pedestrianManager);

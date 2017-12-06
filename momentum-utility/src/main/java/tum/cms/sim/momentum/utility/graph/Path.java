@@ -35,9 +35,9 @@ package tum.cms.sim.momentum.utility.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import tum.cms.sim.momentum.utility.graph.types.IimmutablePath;
+import tum.cms.sim.momentum.utility.graph.types.IImmutablePath;
 
-public class Path implements IimmutablePath {
+public class Path implements IImmutablePath {
 	
 	private Vertex firstVertex = null;
 	
@@ -141,7 +141,7 @@ public class Path implements IimmutablePath {
     	} 	
     }
 	
-    public Path(IimmutablePath path, Vertex currentVertex) {
+    public Path(IImmutablePath path, Vertex currentVertex) {
 
     	this.firstVertex = path.getFirstVertex();
     	this.finalVertex = path.getFinalVertex();

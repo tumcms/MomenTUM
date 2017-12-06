@@ -58,7 +58,7 @@ import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
 import tum.cms.sim.momentum.utility.lattice.operation.GraphOnLatticeOperation;
 import tum.cms.sim.momentum.utility.lattice.operation.MorphologicalLatticeOperation;
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.LatticeType;
-import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighbourhoodType;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 
 public class RouteMapGraphBuildAlgorithm {
 	
@@ -109,7 +109,7 @@ public class RouteMapGraphBuildAlgorithm {
 		if(paint) {
 			ILattice latticeNodes = LatticeTheoryFactory.createLattice("latNodes", 
 					LatticeType.Quadratic, 
-					NeighbourhoodType.Touching, //wichtig
+					NeighborhoodType.Touching, //wichtig
 					cellEdgeSize, //cell edge size
 					boundingBox.getMaxX(), boundingBox.getMinX(), 
 					boundingBox.getMaxY(), boundingBox.getMinY()); 

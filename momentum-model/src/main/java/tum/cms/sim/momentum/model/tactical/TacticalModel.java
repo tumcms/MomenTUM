@@ -33,13 +33,14 @@
 package tum.cms.sim.momentum.model.tactical;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Set;
 
 import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
+import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Motoric;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.infrastructure.logging.LoggingManager;
@@ -54,19 +55,19 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 
 public class TacticalModel extends PedestrianBehaviorModel {
 	
+	protected final static String strategicCommandName = "strategicCommand";
 	protected final static String goalDistanceRadiusName = "goalDistanceRadius";
 	protected final static String navigationDistanceRadiusName = "navigationDistanceRadius";
 	protected final static String tacticalControlName = "tacticalControl";
+	protected final static String deepNodeSelectionName = "deepNodeSelection";
 	protected final static String routeMemoryName = "routeMemory";
-	protected final static String dynamicNodeReachedName = "dynamicNodeReached";
 	
-	//protected double dynamicNodeDistance = 3.0;
+	protected Behavior strategicFixedCommand = null;
 	protected double goalDistanceRadius = 0.15;
-	//protected double navigationDistanceRadius = 0.15;
+	protected double navigationDistanceRadius = 0.15;
 	protected boolean tacticalControl = true;
 	protected boolean routeMemory = true;
-	//protected boolean dynamicNodeReached = false;
-	//protected HashMap<Vertex, Integer> pedestrianNearNavigationNode = new HashMap<>();
+	protected int deepNodeSelection = 0;
 
 	private RoutingModel routingModel = null;
 	
@@ -115,7 +116,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	}
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return null; 
 	}
@@ -129,15 +130,19 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
-		//navigationDistanceRadius = this.properties.getDoubleProperty(navigationDistanceRadiusName);
-		
+		if(this.properties.getStringProperty(strategicCommandName) != null) {
+			
+			strategicFixedCommand = Behavior.valueOf(this.properties.getStringProperty(strategicCommandName));
+		}
+
 		if(this.properties.getDoubleProperty(goalDistanceRadiusName) != null) {
 			
 			goalDistanceRadius = this.properties.getDoubleProperty(goalDistanceRadiusName);
 		}
-		else {
+		
+		if(this.properties.getDoubleProperty(navigationDistanceRadiusName) != null) {
 			
-			goalDistanceRadius = this.properties.getDoubleProperty(navigationDistanceRadiusName);
+			navigationDistanceRadius = this.properties.getDoubleProperty(navigationDistanceRadiusName);
 		}
 		
 		if(this.properties.getBooleanProperty(tacticalControlName) != null) {
@@ -145,20 +150,20 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			tacticalControl = this.properties.getBooleanProperty(tacticalControlName);
 		}
 		
+		if(this.properties.getIntegerProperty(deepNodeSelectionName) != null) {
+			
+			deepNodeSelection = this.properties.getIntegerProperty(deepNodeSelectionName);
+		}
+		
 		if(this.properties.getBooleanProperty(routeMemoryName) != null) {
 			
 			routeMemory = this.properties.getBooleanProperty(routeMemoryName);
 		}
 		
-//		if(this.properties.getBooleanProperty(dynamicNodeReachedName) != null) {
-//			
-//			dynamicNodeReached = this.properties.getBooleanProperty(dynamicNodeReachedName);
-//		}
-		
-//		LoggingManager.logDebug(MessageStrings.propertySetTo,
-//				navigationDistanceRadiusName,
-//				String.valueOf(navigationDistanceRadius),
-//				this.getClass().getSimpleName());
+		LoggingManager.logDebug(MessageStrings.propertySetTo,
+				navigationDistanceRadiusName,
+				String.valueOf(navigationDistanceRadius),
+				this.getClass().getSimpleName());
 		
 		LoggingManager.logDebug(MessageStrings.propertySetTo,
 				goalDistanceRadiusName,
@@ -168,6 +173,21 @@ public class TacticalModel extends PedestrianBehaviorModel {
 		LoggingManager.logDebug(MessageStrings.propertySetTo,
 				tacticalControlName,
 				String.valueOf(tacticalControl),
+				this.getClass().getSimpleName());
+		
+		LoggingManager.logDebug(MessageStrings.propertySetTo,
+				deepNodeSelectionName,
+				String.valueOf(deepNodeSelection),
+				this.getClass().getSimpleName());
+		
+		LoggingManager.logDebug(MessageStrings.propertySetTo,
+				routeMemoryName,
+				String.valueOf(routeMemory),
+				this.getClass().getSimpleName());
+		
+		LoggingManager.logDebug(MessageStrings.propertySetTo,
+				strategicFixedCommand,
+				String.valueOf(strategicFixedCommand),
 				this.getClass().getSimpleName());
 	}
 
@@ -194,48 +214,63 @@ public class TacticalModel extends PedestrianBehaviorModel {
 				pedestrian.getTacticalState().setOverrideBehaviorTask(Behavior.Routing);
 			}
 
-			if(tacticalControlRouting || !pedestrian.getBehaviorTask().equals(Behavior.Staying)) {
+			if(tacticalControlRouting || !this.getBehavior(pedestrian).equals(Behavior.Staying)) {
 				
 				pedestrian.setStayingState(null);
 			}
 
-			if(tacticalControlRouting || !pedestrian.getBehaviorTask().equals(Behavior.Queuing)) {
+			if(tacticalControlRouting || !this.getBehavior(pedestrian).equals(Behavior.Queuing)) {
 				
 				pedestrian.setQueuingState(null);
 			}
 			
-			if(tacticalControlRouting || !pedestrian.getBehaviorTask().equals(Behavior.Searching)) {
+			if(tacticalControlRouting || !this.getBehavior(pedestrian).equals(Behavior.Searching)) {
 							
 				pedestrian.setSearchingState(null);
 			}
 			
-			if(!tacticalControlRouting && !pedestrian.getBehaviorTask().equals(Behavior.Routing)) {
+			if(!tacticalControlRouting && !this.getBehavior(pedestrian).equals(Behavior.Routing)) {
 						
 				pedestrian.setRoutingState(null);
 			}
 		});
 		
-		this.stayingModel.callBeforeBehavior(simulationState, pedestrians);
-		this.queuingModel.callBeforeBehavior(simulationState, pedestrians);
-		this.routingModel.callBeforeBehavior(simulationState, pedestrians);
-		this.searchingModel.callBeforeBehavior(simulationState, pedestrians);
+		if(this.stayingModel != null) {
+		
+			this.stayingModel.callBeforeBehavior(simulationState, pedestrians);
+		}
+		
+		if(this.queuingModel != null) {
+			
+			this.queuingModel.callBeforeBehavior(simulationState, pedestrians);
+		}
+		
+		if(this.routingModel != null) {
+			
+			this.routingModel.callBeforeBehavior(simulationState, pedestrians);
+		}
+		
+		if(this.searchingModel != null) {
+			
+			this.searchingModel.callBeforeBehavior(simulationState, pedestrians);
+		}
 	}
 	
 	private boolean checkCommandExecutable(IRichPedestrian pedestrian) { 
 
-		if(pedestrian.getBehaviorTask() == null) {
+		if(this.getBehavior(pedestrian) == null) {
 			
 			return false;
 		}
 		
-		boolean noCommandGiven = pedestrian.getBehaviorTask().equals(Behavior.None);
+		boolean noCommandGiven = this.getBehavior(pedestrian).equals(Behavior.None);
 		
 		if(noCommandGiven) {
 			
 			return false;
 		}
 		
-		boolean routingCommandGiven = pedestrian.getBehaviorTask().equals(Behavior.Routing);
+		boolean routingCommandGiven = this.getBehavior(pedestrian).equals(Behavior.Routing);
 		
 		if(routingCommandGiven) {
 			
@@ -255,10 +290,26 @@ public class TacticalModel extends PedestrianBehaviorModel {
 		return !goalIsVisible; // if not visible the check failed!
 	}
 
+	private Behavior getBehavior(IRichPedestrian pedestrian) {
+		
+		Behavior behavior = Behavior.None;
+		
+		if(this.strategicFixedCommand != null) {
+			
+			behavior = this.strategicFixedCommand;
+		}
+		else {
+			
+			behavior = pedestrian.getBehaviorTask();
+		}
+		
+		return behavior;
+	}
+	
 	@Override
 	public void callPedestrianBehavior(IRichPedestrian pedestrian, SimulationState simulationState) {
 
-		Behavior command = pedestrian.getBehaviorTask();
+		Behavior command = this.getBehavior(pedestrian);
 		
 		// In case the strategic command cannot be executed, it is overridden with Routing
 		// If this is the case, and tacticalControl is activated, execute routing behavior.
@@ -291,7 +342,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			this.callTacticRouteBehavior(pedestrian, simulationState);
 			break;
 			
-		case None:	
+		case None:
 		default:
 			
 			break;
@@ -301,10 +352,25 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	@Override
 	public void callAfterBehavior(SimulationState simulationState, Collection<IRichPedestrian> pedestrians) {
 	
-		this.stayingModel.callAfterBehavior(simulationState, pedestrians);
-		this.queuingModel.callAfterBehavior(simulationState, pedestrians);
-		this.routingModel.callAfterBehavior(simulationState, pedestrians);
-		this.searchingModel.callAfterBehavior(simulationState, pedestrians);
+		if(this.stayingModel != null) {
+			
+			this.stayingModel.callAfterBehavior(simulationState, pedestrians);
+		}
+		
+		if(this.queuingModel != null) {
+			
+			this.queuingModel.callAfterBehavior(simulationState, pedestrians);
+		}
+		
+		if(this.routingModel != null) {
+			
+			this.routingModel.callAfterBehavior(simulationState, pedestrians);
+		}
+		
+		if(this.searchingModel != null) {
+			
+			this.searchingModel.callAfterBehavior(simulationState, pedestrians);
+		}
 		
 		//this.pedestrianNearNavigationNode = new HashMap<>();
 		
@@ -351,7 +417,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	 */
 	private boolean isGoalTargetVisible(IRichPedestrian pedestrian) {
 		
-		return perception.isVisible(pedestrian.getPosition(), pedestrian.getNextNavigationTarget().getPointOfInterest());
+		return perception.isVisible(pedestrian, pedestrian.getNextNavigationTarget().getPointOfInterest());
 	}
 	
 	/**
@@ -372,18 +438,83 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			
 			// correct goal / point of interest is visible, just go there!
 			normalRouting = !this.routingModel.shortCutRoute(this.perception, pedestrian);
-		}
 		
-		// re-routing is a process that only needs to be activated if
-		// the next navigation is visible 
-		// the current navigation node is not visible!
-		if(normalRouting && this.routingModel.reRoutingNecessary(pedestrian, this.tacticalControl)) {
+			// re-routing is a process that only needs to be activated if
+			// the next navigation is visible 
+			// the current navigation node is not visible!
+			if(normalRouting && this.routingModel.reRoutingNecessary(pedestrian, this.tacticalControl, this.deepNodeSelection > 0)) {
 				
-			this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+				this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+				
+				// TODO create an abstract method in RoutingModel put this into
+				if(this.deepNodeSelection > 0) {
+					
+					int currentDepth = this.deepNodeSelection;
+					
+					Vertex nextTolast = pedestrian.getRoutingState().getLastVisit();
+					Vertex last = pedestrian.getRoutingState().getLastVisit();
+					Vertex start = last;
+					Vertex next = pedestrian.getRoutingState().getNextVisit();
+					Vertex nextToNext = pedestrian.getRoutingState().getNextToCurrentVisit();
+					
+					Vertex end = this.scenarioManager.getGraph()
+							.getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
+					
+					Set<Vertex> visited = pedestrian.getRoutingState().getVisited();
+					
+					if(start != null && end != null) {
+						while(currentDepth > 0) {
+							
+							this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+						
+							RoutingState newRoutingState = pedestrian.getRoutingState();
+							
+							// TODO check if circles are solved next / last
+							if(!perception.isVisible(pedestrian, newRoutingState.getNextVisit()) ||
+							   newRoutingState.getNextVisit().equals(end) ||
+							   start.equals(end)) {
+								
+								nextToNext = newRoutingState.getNextVisit();
+								break;
+							}
+	
+							currentDepth--;
+							
+							if(currentDepth == 0) { 
+								
+								nextToNext = newRoutingState.getNextVisit();
+								break;
+							}
+							else {
+								
+								nextTolast = last;
+							}
+							
+							visited.add(next);
+							
+							last = newRoutingState.getLastVisit();
+							next = newRoutingState.getNextVisit();
+						}
+					}
+					
+					RoutingState finalRoutingState = new RoutingState(visited, nextTolast, last, next);
+					finalRoutingState.setNextToCurrentVisit(nextToNext);
+					pedestrian.setRoutingState(finalRoutingState);
+				}
+			}			
+		}
+		else {
+			
+			if(pedestrian.getRoutingState() == null || 
+			   pedestrian.getRoutingState().getNextVisit() == null ||
+			   pedestrian.getPosition().distance(pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter()) < navigationDistanceRadius) {
+			
+				this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+			}
 		}
 		
 		// Is the route memory activated, if not delete it
-		if(!routeMemory) {
+		if(!routeMemory && pedestrian.getRoutingState() != null) {
 			
 			pedestrian.getRoutingState().getVisited().clear();
 		}

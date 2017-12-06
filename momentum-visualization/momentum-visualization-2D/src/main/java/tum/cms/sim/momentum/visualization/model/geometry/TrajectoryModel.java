@@ -49,7 +49,7 @@ import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Shape;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
-import tum.cms.sim.momentum.visualization.model.VisualizationModel;
+import tum.cms.sim.momentum.visualization.model.PlaybackModel;
 
 public class TrajectoryModel extends ShapeModel{
 
@@ -57,7 +57,7 @@ public class TrajectoryModel extends ShapeModel{
 	
 	private Path trajectory = null;
 	
-	VisualizationModel visualizationModel = null;
+	PlaybackModel playbackModel = null;
 	
 	LinkedHashMap<String, String> details = new LinkedHashMap<>();
 	
@@ -132,7 +132,7 @@ public class TrajectoryModel extends ShapeModel{
 		case NotSelected:
 			if(this.trajectory != null) {
 				
-				visualizationModel.getTrajectoryShapes()
+				playbackModel.getTrajectoryShapes()
 					.forEach((id,shape)-> shape.setVisibility(true));
 			}
 			break;
@@ -141,7 +141,7 @@ public class TrajectoryModel extends ShapeModel{
 			
 			if(this.trajectory != null) {
 				
-				visualizationModel.getTrajectoryShapes()
+				playbackModel.getTrajectoryShapes()
 					.forEach((id,shape)-> shape.setVisibility(false));
 				trajectory.setVisible(true);
 			}
@@ -173,9 +173,9 @@ public class TrajectoryModel extends ShapeModel{
 		this.details=details;
 	}
 	
-	public void setModel(VisualizationModel visualizationModel) {
+	public void setModel(PlaybackModel playbackModel) {
 		
-		this.visualizationModel = visualizationModel;
+		this.playbackModel = playbackModel;
 	}
 	
 }

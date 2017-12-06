@@ -179,7 +179,7 @@
 	</pedestrianSeeds>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.5"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.5"/>
 	</lattices>
 	
 	<graphs>
@@ -372,7 +372,7 @@
         <point x="48" y="48" />
         <point x="48" y="2" />
       </obstacle>
-      <lattice id="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.5"/>
+      <lattice id="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.5"/>
     </scenario>
   </layouts>
 </simulator>

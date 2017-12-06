@@ -50,6 +50,7 @@ public class GeneratorConfiguration extends PropertyContainerNode {
 		Stock,
 		Multiple,
 		Instant,
+		Csv,
 		External,
 		CarNetwork,
 		CarCsv
@@ -63,6 +64,7 @@ public class GeneratorConfiguration extends PropertyContainerNode {
 		map.put(GeneratorType.Distribution.toString(), GeneratorType.Distribution);
 		map.put(GeneratorType.Stock.toString(), GeneratorType.Stock);
 		map.put(GeneratorType.Instant.toString(), GeneratorType.Instant);
+		map.put(GeneratorType.Csv.toString(), GeneratorType.Csv);
 		map.put(GeneratorType.External.toString(), GeneratorType.External);
 		map.put(GeneratorType.CarNetwork.toString(), GeneratorType.CarNetwork);
 		map.put(GeneratorType.CarCsv.toString(), GeneratorType.CarCsv);

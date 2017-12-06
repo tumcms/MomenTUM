@@ -33,15 +33,19 @@
 package tum.cms.sim.momentum.simulator.factory.outputModelFactory;
 
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration;
+import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.model.IPedestrianBehavioralModel;
 import tum.cms.sim.momentum.model.absorber.Absorber;
 import tum.cms.sim.momentum.model.absorber.AbsorberWriterSource;
 import tum.cms.sim.momentum.model.analysis.AnalysisModel;
 import tum.cms.sim.momentum.model.meta.transitum.TransiTumModel;
 import tum.cms.sim.momentum.model.meta.transitum.multiscaleOutputSource.TransitZonesOutputSource;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackOperational;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackWriterSource;
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWR;
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWROutputSource;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForceWriterSource;
+import tum.cms.sim.momentum.model.operational.walking.socialForceModel.ZengOperational.ZengSocialForceWriterSource;
 import tum.cms.sim.momentum.model.output.writerSources.WriterSource;
 import tum.cms.sim.momentum.model.output.writerSources.specificWriterSources.AnalysisWriterSource;
 import tum.cms.sim.momentum.model.output.writerSources.specificWriterSources.CarWriterSource;
@@ -97,7 +101,17 @@ public class WriterSourceFactory extends ModelFactory<WriterSourceConfiguration,
 			
 			writerSource = socialForceSource;
 			break;
-			
+
+		case Zeng_SocialForce_Pedestrian:
+			ZengSocialForceWriterSource zengSocialForceSource = new ZengSocialForceWriterSource();
+			zengSocialForceSource.setPedestrianManager(componentManager.getPedestrianManager());
+			zengSocialForceSource.setTimeManager(componentManager.getTimeManager());
+
+			IPedestrianBehavioralModel zeng = componentManager.getWalkingModel(configuration.getAdditionalId());
+			zengSocialForceSource.setPedetrianBehavioralModel(zeng);
+
+			writerSource = zengSocialForceSource;
+			break;
 			
 		case Time:
 			
@@ -118,7 +132,13 @@ public class WriterSourceFactory extends ModelFactory<WriterSourceConfiguration,
 		case SpaceSyntax:
 			
 			SpaceSyntaxWriterSource spaceSyntaxWriterSource = new SpaceSyntaxWriterSource();
-			spaceSyntaxWriterSource.setScenarioManager(componentManager.getScenarioManager());
+			
+			ScenarioManager scenarioManager = componentManager.getScenarioManager();
+			spaceSyntaxWriterSource.setScenarioManager(scenarioManager);
+
+			Integer additionalId = configuration.getAdditionalId();
+			spaceSyntaxWriterSource.setAdditionalId(additionalId);
+			
 			writerSource = spaceSyntaxWriterSource;
 			break;
 			
@@ -181,6 +201,21 @@ public class WriterSourceFactory extends ModelFactory<WriterSourceConfiguration,
 			classicLWRSource.setCallable(classicLWRModel);
 			
 			writerSource = classicLWRSource;			
+			break;
+
+		case CsvPlayback:
+
+			CsvPlaybackWriterSource csvPlaybackWriterSource = new CsvPlaybackWriterSource();
+			csvPlaybackWriterSource.setTimeManager(componentManager.getTimeManager());
+			csvPlaybackWriterSource.setPedestrianManager(componentManager.getPedestrianManager());
+
+			CsvPlaybackOperational csvPlaybackOperational = (CsvPlaybackOperational) componentManager.getWalkingModel(configuration.getAdditionalId());
+			csvPlaybackWriterSource.setPedetrianBehavioralModel(csvPlaybackOperational);
+
+			writerSource = csvPlaybackWriterSource;
+			break;
+
+		default:
 			break;
 		}
 		

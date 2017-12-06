@@ -36,6 +36,7 @@ import tum.cms.sim.momentum.configuration.absorber.AbsorberConfiguration;
 import tum.cms.sim.momentum.model.absorber.Absorber;
 import tum.cms.sim.momentum.model.absorber.destination.DestinationInstantlyAbsorber;
 import tum.cms.sim.momentum.model.absorber.destination.DestinationSelectedAbsorber;
+import tum.cms.sim.momentum.model.absorber.guided.CsvAbsorber;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -50,6 +51,11 @@ public class AbsorberFactory extends ModelFactory<AbsorberConfiguration, Absorbe
 		
 		switch(configuration.getType()) {
 		
+		case Csv:
+			
+			absorber = new CsvAbsorber();
+			break;
+			
 		case DestinationInstantly: 
 			
 			absorber = new DestinationInstantlyAbsorber(configuration.getDestination());

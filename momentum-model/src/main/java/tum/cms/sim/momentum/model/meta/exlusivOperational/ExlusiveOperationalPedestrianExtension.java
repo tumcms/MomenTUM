@@ -35,10 +35,10 @@ package tum.cms.sim.momentum.model.meta.exlusivOperational;
 import java.util.HashSet;
 import java.util.List;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.model.PedestrianBehaviorModel;
 
-public class ExlusiveOperationalPedestrianExtension implements IPedestrianExtansion {
+public class ExlusiveOperationalPedestrianExtension implements IPedestrianExtension {
 
 	private HashSet<Integer> notAllowedOperationalModels = new HashSet<>();
 

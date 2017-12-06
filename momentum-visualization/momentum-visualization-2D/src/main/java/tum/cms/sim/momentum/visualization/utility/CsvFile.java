@@ -80,6 +80,9 @@ public class CsvFile extends File {
 		if (path.toLowerCase().contains("network")) {
 			type = CsvType.MacroscopicNetwork;
 		}
+		if (path.toLowerCase().contains("car")) {
+			type = CsvType.Car;
+		}
 		return type;
 	}
 	

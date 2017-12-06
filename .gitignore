@@ -34,9 +34,6 @@ momentum-visualization-2D.properties
 log/
 target/
 
-# Java
-*.jar
-
 # JavaFX
 *.fxbuild
 
@@ -69,4 +66,13 @@ bld/
 [Ll]og/
 
 .vs/
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/packages/*
 ####
+
+# autocad
+*.dwl
+*.dwl2

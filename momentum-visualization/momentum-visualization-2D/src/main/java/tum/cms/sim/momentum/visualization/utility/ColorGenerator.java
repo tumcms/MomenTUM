@@ -35,12 +35,12 @@ package tum.cms.sim.momentum.visualization.utility;
 import java.util.Random;
 
 import javafx.scene.paint.Color;
-import tum.cms.sim.momentum.visualization.model.VisualizationModel;
+import tum.cms.sim.momentum.visualization.model.PlaybackModel;
 import tum.cms.sim.momentum.visualization.model.geometry.PedestrianModel;
 
 public abstract class ColorGenerator {
-	
-	public static boolean generateGroupColors(VisualizationModel visualizationModel) {
+
+	public static boolean generateGroupColors(PlaybackModel visualizationModel) {
 
 		Random random = new Random();
 		boolean noGroupData = false;
@@ -73,7 +73,8 @@ public abstract class ColorGenerator {
 		return noGroupData;
 	}
 	
-	public static boolean generateSeedColors(VisualizationModel visualizationModel) {
+
+	public static boolean generateSeedColors(PlaybackModel visualizationModel) {
 
 		int colorSpace = 0;
 		boolean noSeedData = false;

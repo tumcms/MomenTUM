@@ -45,14 +45,14 @@ public class SpaceSyntaxOperationConfiguration extends PropertyContainerNode {
 
 	public enum SpaceSyntaxType {
 
-		DepthMap
+		VisibilityGraph
 	}
 	
 	@SuppressWarnings("rawtypes")
 	public static EnumToStringConverter getTypeConverter() {
 		
 		HashMap<String, SpaceSyntaxType> map = new HashMap<>();
-		map.put(SpaceSyntaxType.DepthMap.toString(), SpaceSyntaxType.DepthMap);
+		map.put(SpaceSyntaxType.VisibilityGraph.toString(), SpaceSyntaxType.VisibilityGraph);
 		
 		return new EnumToStringConverter<>(SpaceSyntaxType.class, map);
 	}

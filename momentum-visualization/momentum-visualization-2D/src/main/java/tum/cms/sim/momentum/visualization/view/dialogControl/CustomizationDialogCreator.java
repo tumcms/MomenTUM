@@ -54,7 +54,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
-import tum.cms.sim.momentum.visualization.controller.VisualizationController;
+import tum.cms.sim.momentum.visualization.controller.PlaybackController;
 import tum.cms.sim.momentum.visualization.handler.SnapshotHandler;
 import tum.cms.sim.momentum.visualization.model.CustomizationModel;
 import tum.cms.sim.momentum.visualization.model.SnapshotModel;
@@ -88,10 +88,10 @@ public class CustomizationDialogCreator {
 	private static String snapshotDialogScale = "Scaling factor:";
 	private static String timeIntervalStartTime = "Trajectory Visibility Interval:";
 	
-	public static void createColorDialog(VisualizationController visualizationController) {
+	public static void createColorDialog(PlaybackController playbackController) {
 		
-		CustomizationModel customizationModel = visualizationController.getCustomizationController().getCustomizationModel();
-		CoreController coreController = visualizationController.getCoreController();
+		CustomizationModel customizationModel = playbackController.getCustomizationController().getCustomizationModel();
+		CoreController coreController = playbackController.getCoreController();
 		
 		Dialog<Void> dialog = new Dialog<Void>();
 		dialog.initModality(Modality.WINDOW_MODAL);
@@ -113,9 +113,7 @@ public class CustomizationDialogCreator {
 			public void handle(ActionEvent arg0) {
 				
 				grid.requestFocus();
-				
 			}
-    		
     	};
 
     	Label textItem = new Label();
@@ -343,7 +341,7 @@ public class CustomizationDialogCreator {
 
 				if (randomTrajectoryColorCheckBox.selectedProperty().get()) {
 					
-					visualizationController.getVisualizationModel().getTrajectoryShapes().forEach((id,trajectoryShape) -> {
+					playbackController.getPlaybackModel().getTrajectoryShapes().forEach((id,trajectoryShape) -> {
 						trajectoryShape.getStrokeProperty().unbind();
 						trajectoryShape.setColor(new Color(
 								FastMath.random() % 0.5 + 0.25,
@@ -354,7 +352,7 @@ public class CustomizationDialogCreator {
 				}
 				
 				else {
-					visualizationController.getVisualizationModel().getTrajectoryShapes().forEach((id, trajectoryShape) -> {
+					playbackController.getPlaybackModel().getTrajectoryShapes().forEach((id, trajectoryShape) -> {
 						trajectoryShape.getStrokeProperty().bind(customizationModel.trajectoryColorProperty());
 					});
 				}
@@ -532,7 +530,7 @@ public class CustomizationDialogCreator {
 			@Override
 			public void handle(ActionEvent arg0) {
 				
-				visualizationController.getCustomizationController().resetCustomizedValues();
+				playbackController.getCustomizationController().resetCustomizedValues();
 				
 		    	colorPickerSelected.setValue((Color) customizationModel.getSelectedColor());
 				colorPickerAxis.setValue(customizationModel.getAxisColor());
@@ -715,7 +713,7 @@ public class CustomizationDialogCreator {
 			@Override
 			public void handle(ActionEvent arg0) {
 
-				SnapshotHandler snapshotHandler = new SnapshotHandler(coreController.getVisualizationController().getPlayBackCanvas(),
+				SnapshotHandler snapshotHandler = new SnapshotHandler(coreController.getPlaybackController().getPlayBackCanvas(),
 		    			snapshotModel.getPixelScale(),
 		    			snapshotModel.getAbsoluteSnapshotPath().getAbsolutePath());
 		    	

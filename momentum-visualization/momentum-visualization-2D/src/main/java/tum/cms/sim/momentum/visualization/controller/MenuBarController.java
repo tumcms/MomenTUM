@@ -56,27 +56,30 @@ import tum.cms.sim.momentum.visualization.view.dialogControl.InformationDialogCr
 
 public class MenuBarController implements Initializable {
 
+	// view
+	@FXML
+	private MenuBar menuBar;
+	@FXML
+	private MenuItem record;
+	@FXML
+	private MenuItem color;
+	@FXML
+	private MenuItem find;
+	@FXML
+	private MenuItem snapshotCustomizationMenu;
+	@FXML
+	private MenuItem snapshot;
+	@FXML
+	private MenuItem setCamera;
+	@FXML
+	private MenuItem switchView;
+	@FXML
+	private MenuItem loadBackgroundImage;
+
+	// Controller
 	private CoreController coreController;
 
-	@FXML
-	MenuBar menuBar;
-	@FXML
-	MenuItem record;
-	@FXML
-	MenuItem color;
-	@FXML
-	MenuItem find;
-	@FXML
-	MenuItem snapshotCustomizationMenu;
-	@FXML
-	MenuItem snapshot;
-	@FXML
-	MenuItem setCamera;
-	@FXML
-	MenuItem switchView;
-	@FXML
-	MenuItem loadBackgroundImage;
-
+	
 	public void bindCoreModel(CoreController coreController) {
 
 		this.coreController = coreController;
@@ -90,16 +93,22 @@ public class MenuBarController implements Initializable {
 				.bind(coreController.getCoreModel().csvLoadedProperty().not().and(coreController.getCoreModel().layoutLoadedProperty().not()));
 		find.disableProperty()
 				.bind(coreController.getCoreModel().csvLoadedProperty().not().and(coreController.getCoreModel().layoutLoadedProperty().not()));
+		
+		menuBar.disableProperty().bind(coreController.getInteractionViewController().getTimeLineModel().isAnimatingProperty());
 	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
 	}
 
 	private void loadLayout(ActionEvent event) throws Exception {
+		
 		try {
-			new LoadLayoutHandler().load(coreController, menuBar.getScene().getWindow());
-		} catch (Exception e) {
+			
+			new LoadLayoutHandler().load(coreController, menuBar.getScene().getWindow(), 0.0);
+		}
+		catch (Exception e) {
 			coreController.resetCoreModel();
 			throw e;
 		}
@@ -121,8 +130,13 @@ public class MenuBarController implements Initializable {
 		if(coreController.getCoreModel().getLayoutLoaded()){
 
 			try {
-				new LoadCsvHandler().load(coreController, menuBar.getScene().getWindow());
-			} catch (Exception e) {
+				
+				new LoadCsvHandler().load(coreController,
+						menuBar.getScene().getWindow(),
+						coreController.getInteractionViewController().getTimeLineBindingValue());
+			}
+			catch (Exception e) {
+				
 				coreController.resetCoreModel();
 				throw e;
 			}
@@ -132,7 +146,7 @@ public class MenuBarController implements Initializable {
 	@FXML
 	public void onQuickLoad(ActionEvent event) throws Exception {
 
-		QuickloadHandler.quickload(coreController);
+		QuickloadHandler.quickload(coreController, 0.0);
 	}
 
 	@FXML
@@ -144,10 +158,10 @@ public class MenuBarController implements Initializable {
 	@FXML
 	public void onSnapshot(ActionEvent event) throws IOException {
 
-		File snapshotFile = coreController.getVisualizationController().getSnapshotModel().getSnapshotPath();
-		double pixelScale = coreController.getVisualizationController().getSnapshotModel().getPixelScale();
+		File snapshotFile = coreController.getPlaybackController().getSnapshotModel().getSnapshotPath();
+		double pixelScale = coreController.getPlaybackController().getSnapshotModel().getPixelScale();
 
-		SnapshotHandler snapshotHandler = new SnapshotHandler(coreController.getVisualizationController().getPlayBackCanvas(), pixelScale,
+		SnapshotHandler snapshotHandler = new SnapshotHandler(coreController.getPlaybackController().getPlayBackCanvas(), pixelScale,
 				snapshotFile.getAbsolutePath());
 
 		snapshotHandler.snapshot();
@@ -168,22 +182,22 @@ public class MenuBarController implements Initializable {
 	@FXML
 	public void onFind(ActionEvent event) {
 
-		FindDialogCreator.createFindDialog(coreController, VisualizationController.getSelectionHandler());
+		FindDialogCreator.createFindDialog(coreController, PlaybackController.getSelectionHandler());
 	}
 
 	@FXML
 	public void onColor(ActionEvent event) {
 
-		CustomizationDialogCreator.createColorDialog(coreController.getVisualizationController());
+		CustomizationDialogCreator.createColorDialog(coreController.getPlaybackController());
 	}
 
 	@FXML
 	public void onSnapshotMenu(ActionEvent event) {
 
-		coreController.getVisualizationController().getSnapshotModel().fillFromPreferences();
-		CustomizationDialogCreator.createSnapshotDialog(coreController.getVisualizationController().getSnapshotModel(),
+		coreController.getPlaybackController().getSnapshotModel().fillFromPreferences();
+		CustomizationDialogCreator.createSnapshotDialog(coreController.getPlaybackController().getSnapshotModel(),
 				coreController);
-		coreController.getVisualizationController().getSnapshotModel().createForPreferences();
+		coreController.getPlaybackController().getSnapshotModel().createForPreferences();
 	}
 
 	@FXML
@@ -194,7 +208,8 @@ public class MenuBarController implements Initializable {
 
 	@FXML
 	public void onSwitchView(ActionEvent event) {
-		switchView(this.menuBar, coreController.getDetailController().getDetailBox());
+		
+		//switchView(this.menuBar, coreController.getDetailController().getDetailBox());
 	}
 	
 	public void switchView(MenuBar menuBar, VBox detailsBar) {

@@ -46,23 +46,25 @@ import com.thoughtworks.xstream.converters.enums.EnumToStringConverter;
 import tum.cms.sim.momentum.configuration.generic.NameIdNodeConfiguration;
 import tum.cms.sim.momentum.configuration.generic.NameNodeConfiguration;
 
+import javax.swing.text.html.HTML;
+
 @XStreamAlias("taggedArea")
 public class TaggedAreaConfiguration extends NameIdNodeConfiguration {
 
 	public enum TaggedAreaType {
-
 		Crosswalk,
-		Sidewalk
-		
+		Sidewalk,
+		Footway
 	}
 
 	@SuppressWarnings("rawtypes")
 	public static EnumToStringConverter getTypeConverter() {
 
 		HashMap<String, TaggedAreaType> map = new HashMap<>();
-		map.put(TaggedAreaType.Crosswalk.toString(), TaggedAreaType.Crosswalk);
-		map.put(TaggedAreaType.Sidewalk.toString(), TaggedAreaType.Sidewalk);
-		
+
+		for (TaggedAreaType type : TaggedAreaType.values())
+			map.put(type.toString(), type);
+
 		return new EnumToStringConverter<>(TaggedAreaType.class, map);
 	}
 

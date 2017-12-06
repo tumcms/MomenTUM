@@ -47,8 +47,10 @@ public class RoutingModelConfiguration extends PropertyContainerNode {
 		
 		NoRouting,
 		Dijkstra,
+        DijkstraPerceivedCost,
 		Kneidl,
-		UPRM
+		UPRM,
+		LinearGraphPursue
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -56,9 +58,11 @@ public class RoutingModelConfiguration extends PropertyContainerNode {
 		
 		HashMap<String, RoutingModelType> map = new HashMap<>();
 		map.put(RoutingModelType.Dijkstra.toString(), RoutingModelType.Dijkstra);
+		map.put(RoutingModelType.DijkstraPerceivedCost.toString(), RoutingModelType.DijkstraPerceivedCost);
 		map.put(RoutingModelType.NoRouting.toString(), RoutingModelType.NoRouting);
 		map.put(RoutingModelType.Kneidl.toString(), RoutingModelType.Kneidl);
 		map.put(RoutingModelType.UPRM.toString(), RoutingModelType.UPRM);
+		map.put(RoutingModelType.LinearGraphPursue.toString(), RoutingModelType.LinearGraphPursue);
 		
 		return new EnumToStringConverter<>(RoutingModelType.class, map);
 	}

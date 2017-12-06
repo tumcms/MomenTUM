@@ -58,9 +58,8 @@ public class SimulationOutputReader {
 	private CsvReader dataSetReader = null;
 	private int currentBufferSize = -1;
 	private boolean clearBuffer = false;
-	private boolean activeAnimating = false;
 
-	private double currentAsyncIndex = 0L;
+	private double currentAsyncIndex = -1L;
 	private Double bufferedSetIndexLeft = null;
 	private Double bufferedSetIndexRight = null;
 	private ThreadPoolExecutor workerPool = null;
@@ -109,9 +108,24 @@ public class SimulationOutputReader {
 		dataSetBuffer.forEach((cluster, data) -> dataSetBuffer.put(cluster, null));
 	}
 
-	public boolean isLoadedForIndex(double index) {
+	public CsvType getCsvType() {
+		return csvType;
+	}
+	
+	public boolean isDataWithContent(Double index) {
+		
+		boolean isDataExistent = true;
+		
+		if (dataSetBuffer.get(index).isEmpty()) { // dataSetBuffer.get(index) == null || 
+		
+			isDataExistent = false;
+		}
 
-		return this.dataSetBuffer.containsKey(index);
+		return isDataExistent;
+	}
+
+	public String getFilePathHash() {
+		return filePathHash;
 	}
 
 	private void setIndexContent(Long timeIndex, Long lineStart, Long pointer) {
@@ -130,7 +144,7 @@ public class SimulationOutputReader {
 			currentBufferSize = 1;
 			break;
 		case FileBuffer:
-			currentBufferSize = 200;
+			currentBufferSize = (int)(6 * getTimeStepDifference());
 			clearBuffer = true;
 			break;
 		default:
@@ -166,47 +180,93 @@ public class SimulationOutputReader {
 		return "."+hash.substring(hash.length()-6, hash.length());
 	}
 
-	public void clearBuffer(double index) {
+	public boolean makeReadyForIndex(double index) throws Exception {
 
-		if (this.clearBuffer && index > -1L && bufferedSetIndexLeft != null && bufferedSetIndexRight != null) {
-
-			double fromIndex = 0;
-			double toIndex = this.getEndCluster();
-
-			if (bufferedSetIndexLeft < index - (int) (currentBufferSize / 2) * getTimeStepDifference()) {
-
-				fromIndex = bufferedSetIndexLeft;
-				toIndex = index - ((int) (currentBufferSize / 2) - 1) * getTimeStepDifference();
-				double iter = fromIndex;
-
-				while (iter <= toIndex) {
-
-					if (this.dataSetBuffer.get(iter) != null) {
-
-						this.dataSetBuffer.get(iter).clearBuffer();
-					}
-					iter += getTimeStepDifference();
-				}
+		boolean indexExists = false;
+		
+		this.asyncReadDataSet(index); // initialize loading the data
+		
+		// if the modulo index is not zero, the reader is not
+		// compatible with the current timeStep
+		if(index % this.dataSetReader.getTimeStepDifference() != 0.0) {
+			
+			// However, this means the reader is ready, because it has nothing to do
+			// still we dislike this and interpolate to the closest (last index)
+			// double interpolatedTimeStep = index - (index % this.dataSetReader.getTimeStepDifference());
+			// still.. this is not a good solutions, actually:
+			// Create more dataSetBuffer indices for the non existing time steps and link
+			// the content of the neighboring data sets to the empty indices.
+			indexExists = true;
+		}
+		else  { // here the reader is compatible with the index
+			
+			// check if the data is ready
+			if(dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady() ) {
+				
+				// if not ready, data is being red, if null data does not exists
+				indexExists = false;
 			}
-
-			if (bufferedSetIndexRight > index + currentBufferSize * getTimeStepDifference()) {
-
-				fromIndex = index + (currentBufferSize + 1) * getTimeStepDifference();
-				toIndex = bufferedSetIndexRight;
-				double iter = fromIndex;
-
-				while (iter <= toIndex) {
-
-					SimulationOutputCluster current = this.dataSetBuffer.get(iter);
-
-					if (current != null) {
-
-						current.clearBuffer();
-					}
-
-					iter += getTimeStepDifference();
-				}
+			else {
+				
+				indexExists = true;
 			}
+		}
+		
+		return indexExists;
+	}
+
+	public void clearBuffer() {
+
+		if (this.clearBuffer && bufferedSetIndexLeft != null && bufferedSetIndexRight != null) {
+
+			double fromIndex = bufferedSetIndexLeft;
+			double toIndex = bufferedSetIndexRight;
+
+			double iter = fromIndex;
+
+			while (iter <= toIndex) {
+
+				if (this.dataSetBuffer.get(iter) != null) {
+
+					this.dataSetBuffer.get(iter).clearBuffer();
+				}
+				iter += getTimeStepDifference();
+			}
+//			
+//			if (bufferedSetIndexLeft < index - (int) (currentBufferSize / 2) * getTimeStepDifference()) {
+//
+//				fromIndex = bufferedSetIndexLeft;
+//				toIndex = index - ((int) (currentBufferSize / 2) - 1) * getTimeStepDifference();
+//				double iter = fromIndex;
+//
+//				while (iter <= toIndex) {
+//
+//					if (this.dataSetBuffer.get(iter) != null) {
+//
+//						this.dataSetBuffer.get(iter).clearBuffer();
+//					}
+//					iter += getTimeStepDifference();
+//				}
+//			}
+//
+//			if (bufferedSetIndexRight > index + currentBufferSize * getTimeStepDifference()) {
+//
+//				fromIndex = index + (currentBufferSize + 1) * getTimeStepDifference();
+//				toIndex = bufferedSetIndexRight;
+//				double iter = fromIndex;
+//
+//				while (iter <= toIndex) {
+//
+//					SimulationOutputCluster current = this.dataSetBuffer.get(iter);
+//
+//					if (current != null) {
+//
+//						current.clearBuffer();
+//					}
+//
+//					iter += getTimeStepDifference();
+//				}
+//			}
 		}
 	}
 
@@ -247,7 +307,77 @@ public class SimulationOutputReader {
 		}
 	}
 
-	public void readStandardIndex() throws FileNotFoundException, IOException {
+
+	public SimulationOutputCluster asyncReadDataSet(double index) throws Exception {
+		
+		SimulationOutputCluster data = dataSetBuffer.get(index);
+		currentAsyncIndex = (long) index;
+		return data;
+	}
+
+	public void startReadDataSetAsync() {
+
+		workerPool = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1));
+		worker = new AsyncDataSetReader();
+		workerPool.execute(worker);
+	}
+
+	public void endReadDataSetAsync() throws Exception {
+
+		if (workerPool != null) {
+
+			worker.shutdown();
+			workerPool.shutdown();
+			workerPool = null;
+			dataSetReader.close();
+		}
+
+		worker = null;
+		bufferedSetIndexLeft = null;
+		bufferedSetIndexRight = null;
+	}
+
+	public boolean dataReady(double index) {
+		
+		if (index < this.endTime && index > 0 && (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady())) {
+		
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public SimulationOutputCluster readDataSet(double index) throws Exception {
+
+		if (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady()) {
+
+			Long lineIndex = this.dataSetReader.seekLineForCluster(clusterSeparator, index, this.dataSetBuffer);
+
+			if (lineIndex >= 0) {
+
+				this.loadRecords(index, lineIndex, 1);
+			}
+			else {
+
+				dataSetBuffer.put(index, new SimulationOutputCluster(index));
+			}
+		}
+
+		return dataSetBuffer.get(index);
+	}
+
+	private void asyncWorkerReadDataSet(double fromIndex, double toIndex) throws Exception {
+
+		double iter = fromIndex;
+
+		while (iter <= toIndex) {
+
+			this.readDataSet(iter);
+			iter += this.getTimeStepDifference();
+		}
+	}
+
+	private void readStandardIndex() throws FileNotFoundException, IOException {
 
 		Integer lineCounter = 0;
 		Long timeStepOfLastLine = null;
@@ -286,69 +416,7 @@ public class SimulationOutputReader {
 			}
 		}
 	}
-
-	public SimulationOutputCluster asyncReadDataSet(double index) throws Exception {
-
-		SimulationOutputCluster data = this.readDataSet(index);
-		currentAsyncIndex = (long) index;
-		return data;
-	}
-
-	public void startReadDataSetAsync() {
-
-		this.bufferedSetIndexRight = 0d;
-		this.bufferedSetIndexLeft = 0d;
-
-		workerPool = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1));
-
-		worker = new AsyncDataSetReader();
-		workerPool.execute(worker);
-	}
-
-	public void endReadDataSetAsync() throws Exception {
-
-		if (workerPool != null) {
-
-			worker.shutdown();
-			workerPool.shutdown();
-			workerPool = null;
-			dataSetReader.close();
-		}
-
-		worker = null;
-		bufferedSetIndexLeft = null;
-		bufferedSetIndexRight = null;
-	}
-
-	public SimulationOutputCluster readDataSet(double index) throws Exception {
-
-		if (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady()) {
-
-			Long lineIndex = this.dataSetReader.seekLineForCluster(clusterSeparator, index, this.dataSetBuffer);
-
-			if (lineIndex >= 0) {
-
-				this.loadRecords(index, lineIndex, 1);
-			} else {
-
-				dataSetBuffer.put(index, new SimulationOutputCluster(index));
-			}
-		}
-
-		return dataSetBuffer.get(index);
-	}
-
-	private void asyncWorkerReadDataSet(double fromIndex, double toIndex) throws Exception {
-
-		double iter = fromIndex;
-
-		while (iter <= toIndex) {
-
-			this.readDataSet(iter);
-			iter += this.getTimeStepDifference();
-		}
-	}
-
+	
 	private void loadRecords(double index, Long lineIndex, double buffer) throws Exception {
 
 		SimulationOutputCluster dataSet = null;
@@ -428,105 +496,90 @@ public class SimulationOutputReader {
 		@Override
 		public void run() {
 
+			boolean bufferActive = false;
+			boolean insideBuffer = true;
+			boolean indexChanged = true;
+			boolean negativeOutsideBuffer = true;
+			boolean positiveOutsideBuffer = true;
+			double negativeExtension = getTimeStepDifference();
+			double positiveExtenions = getTimeStepDifference();
+			
 			while (!this.shutDownDemanded) {
 
-				double fromIndex = 0;
-				double toIndex = SimulationOutputReader.this.getEndCluster();
+				bufferActive = bufferedSetIndexLeft != null && bufferedSetIndexRight != null;
+				indexChanged = this.lastReadIndex != currentAsyncIndex;
+				insideBuffer = bufferActive && (bufferedSetIndexLeft > currentAsyncIndex || currentAsyncIndex < bufferedSetIndexRight);
+				negativeOutsideBuffer = bufferActive && 
+						bufferedSetIndexLeft > currentAsyncIndex - negativeExtension &&
+						currentAsyncIndex - negativeExtension >= 0 ;
+				positiveOutsideBuffer = bufferActive &&
+						currentAsyncIndex + positiveExtenions > bufferedSetIndexRight &&
+						currentAsyncIndex + positiveExtenions <= getEndCluster();
+				
+				if (indexChanged || !insideBuffer || negativeOutsideBuffer || positiveOutsideBuffer) {
 
-				if (this.lastReadIndex != SimulationOutputReader.this.currentAsyncIndex) {
-
-					SimulationOutputReader.this.clearBuffer(this.lastReadIndex);
-
-					this.lastReadIndex = SimulationOutputReader.this.currentAsyncIndex;
-
-					if (this.lastReadIndex
-							- (int) (currentBufferSize / 2) < SimulationOutputReader.this.bufferedSetIndexLeft) {
-
-						// load from buffer fill/2 to last filled index
-						if (this.lastReadIndex - (int) (currentBufferSize / 2) > 0) {
-
-							fromIndex = this.lastReadIndex - (int) (currentBufferSize / 2)
-									* SimulationOutputReader.this.getTimeStepDifference();
+					boolean rebuffer = true;
+					
+					// Is data buffered?
+					if(!bufferActive) {
+						
+						// Is the buffered data what we look for?
+						// Extend the buffers by 2 negative and 4 positive for 
+						// interpolation purposes in the views.
+						if(!insideBuffer) {
+							
+							clearBuffer(); // no we need to rebuffer
 						}
-
-						toIndex = SimulationOutputReader.this.bufferedSetIndexLeft
-								- SimulationOutputReader.this.getTimeStepDifference();
-
-						try {
-
-							if (toIndex > 0 && fromIndex > 0) {
-
-								SimulationOutputReader.this.asyncWorkerReadDataSet(fromIndex, toIndex);
-								bufferedSetIndexLeft = fromIndex;
-							}
-						} catch (Exception e) {
-
-							e.printStackTrace();
+						else {
+							
+							rebuffer = false;
 						}
 					}
-
-					if (this.lastReadIndex + currentBufferSize > SimulationOutputReader.this.bufferedSetIndexRight) {
-
-						fromIndex = SimulationOutputReader.this.bufferedSetIndexRight
-								+ SimulationOutputReader.this.getTimeStepDifference();
-						toIndex = this.lastReadIndex
-								+ currentBufferSize * SimulationOutputReader.this.getTimeStepDifference();
-
-						if (toIndex > SimulationOutputReader.this.getEndCluster()) {
-
-							toIndex = SimulationOutputReader.this.getEndCluster();
+					
+					if(rebuffer) {
+						
+						// find new buffer boundaries
+						double targetLeftReadIndex = currentAsyncIndex - currentBufferSize;				
+						
+						if(targetLeftReadIndex < 0) {
+							
+							targetLeftReadIndex = 0;
 						}
+						
+						bufferedSetIndexLeft = targetLeftReadIndex;
+				
+						double targetRightReadIndex = currentAsyncIndex + currentBufferSize;
+						
+						if(targetRightReadIndex > getEndCluster()) {
+							
+							targetRightReadIndex = getEndCluster();
+						}				
+						
+						bufferedSetIndexRight = targetRightReadIndex;
+						
+						try { // read buffer
 
-						try {
-
-							SimulationOutputReader.this.asyncWorkerReadDataSet(fromIndex, toIndex);
-							bufferedSetIndexRight = toIndex;
-						} catch (Exception e) {
+							asyncWorkerReadDataSet(bufferedSetIndexLeft, bufferedSetIndexRight);
+						}
+						catch (Exception e) {
 
 							e.printStackTrace();
-						}
-					}
+						}						
+					}	
 				}
-
+				
+				this.lastReadIndex = currentAsyncIndex;
+				
 				try {
 
-					Thread.sleep(50L);
-				} catch (InterruptedException e) {
+					Thread.sleep(20L);
+				}
+				catch (InterruptedException e) {
 
 					e.printStackTrace();
 				}
 			}
 		}
-	}
-
-	public boolean isActiveAnimating() {
-		return activeAnimating;
-	}
-
-	public void setActiveAnimating(boolean activeAnimating) {
-		this.activeAnimating = activeAnimating;
-	}
-
-	public CsvType getCsvType() {
-		return csvType;
-	}
-	
-	/**
-	 * 
-	 * @param timeStep
-	 * @return if timestep is in this {@link SimulationOutputReader}
-	 */
-	public boolean containsTimeStep(Double timeStep) {
-		double tmpTimeStepDuration = getTimeStepDuration();
-		while(((int) tmpTimeStepDuration) != tmpTimeStepDuration) {
-			timeStep *= 10;
-			tmpTimeStepDuration *= 10;
-		}
-		return (timeStep % tmpTimeStepDuration) == 0.0;
-	}
-
-	public String getFilePathHash() {
-		return filePathHash;
 	}
 
 }

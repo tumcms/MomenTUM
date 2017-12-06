@@ -106,13 +106,13 @@ public class ComplexPropertyConfiguration {
 		this.value = value;
 	}
 	
-	public HashMap<Integer, ArrayList<Object>> getValueAsMatrix() {
+	public LinkedHashMap<Integer, ArrayList<Object>> getValueAsMatrix() {
 		
-		HashMap<Integer, ArrayList<Object>> result = null;
+		LinkedHashMap<Integer, ArrayList<Object>> result = null;
 		
 		if(this.type == ComplexPropertyType.Matrix) {
 			
-			result = new HashMap<Integer, ArrayList<Object>>();
+			result = new LinkedHashMap<Integer, ArrayList<Object>>();
 			
 			MatrixConfiguration matrix = (MatrixConfiguration) this.value;
 			

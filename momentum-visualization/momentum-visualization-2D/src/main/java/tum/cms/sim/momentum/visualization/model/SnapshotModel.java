@@ -99,7 +99,7 @@ public class SnapshotModel {
 	}
 	
 	public File getAbsoluteSnapshotPath() {
-		File absolutePath = new File(this.getSnapshotPath().getAbsolutePath() + "\\" + this.getSnapshotName());
+		File absolutePath = new File(this.getSnapshotPath().getAbsolutePath() + File.separator + this.getSnapshotName());
 		
 		return absolutePath;
 	}

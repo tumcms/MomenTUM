@@ -56,7 +56,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.visualization.enums.Smoothness;
 import tum.cms.sim.momentum.visualization.enums.SpeedUp;
 import tum.cms.sim.momentum.visualization.handler.PlaybackHandler;
@@ -67,6 +66,7 @@ import tum.cms.sim.momentum.visualization.view.dialogControl.InformationDialogCr
 
 public class InteractionController implements Initializable {
 
+	// view
 	@FXML
 	private HBox box;
 	@FXML
@@ -94,15 +94,18 @@ public class InteractionController implements Initializable {
 	@FXML
 	private ProgressIndicator spinner;
 
-	@FXML
-	private TimeLineModel timeLineModel;
-	
-	private CoreController coreController;
-	
 	private DoubleBinding timeLineBinding = null;
 	
 	private ParallelTransition walkingAnimation = null;
+	private ParallelTransition playBackAnimation = null;
+
+	// Controller
 	private PlaybackHandler playbackHandler = null;
+	private CoreController coreController;
+
+	// Model
+	@FXML
+	private TimeLineModel timeLineModel;
 
 	// Listeners
 	private ChangeListener<Number> smoothnessSelectionIndexListener = new ChangeListener<Number>() {
@@ -113,6 +116,7 @@ public class InteractionController implements Initializable {
 
 		}
 	};
+
 	private ChangeListener<Number> speedSelectionIndexListener = new ChangeListener<Number>() {
 
 		@Override
@@ -135,7 +139,7 @@ public class InteractionController implements Initializable {
 				.or(coreController.getCoreModel().layoutLoadedProperty().not()));
 
 		textFieldZoomFactor.textProperty()
-				.bind(Bindings.format("%.4f", coreController.getVisualizationController().getGestureModel().getScaleProperty()));
+				.bind(Bindings.format("%.4f", coreController.getPlaybackController().getGestureModel().getScaleProperty()));
 
 	}
 
@@ -147,7 +151,6 @@ public class InteractionController implements Initializable {
 		reset.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		play.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		leftStep.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
-		
 		rightStep.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		slider.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		speedBox.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
@@ -213,9 +216,11 @@ public class InteractionController implements Initializable {
 						
 						e.printStackTrace();
 					}
-					
+
+//				InteractionController.this.timeLineModel.setCurrentTime(roundedSlider);
+
 				InteractionController.this.startPlaying(roundedSlider);
-				}
+			}
 		}
 	};
 
@@ -224,7 +229,6 @@ public class InteractionController implements Initializable {
 		@Override
 		public void handle(ActionEvent arg0) {
 			box.requestFocus();
-
 		}
 	};
 
@@ -280,7 +284,7 @@ public class InteractionController implements Initializable {
 			}
 
 			if (focusLost) {
-				GestureModel gestureModel = coreController.getVisualizationController().getGestureModel();
+				GestureModel gestureModel = coreController.getPlaybackController().getGestureModel();
 				NumberFormat currentNumberFormat = NumberFormat.getInstance();
 
 				double oldZoomFactor = gestureModel.getScale();
@@ -303,9 +307,7 @@ public class InteractionController implements Initializable {
 				gestureModel.setScale(zoomFactor);
 				textFieldZoomFactor.textProperty().bind(Bindings.format("%.4f", gestureModel.getScaleProperty()));
 			}
-
 		}
-
 	};
 
 	@FXML
@@ -319,36 +321,30 @@ public class InteractionController implements Initializable {
 	}
 
 	private void startPlaying(double timeStep) {
-		
-		for (SimulationOutputReader simReader : coreController.getActiveSimulationOutputReaderList()) {
 
 		try {
 
-			walkingAnimation = AnimationCalculations.calculateVisualizationOfTimeStep(timeStep, coreController, simReader);
-
-		} catch (Exception e) {
+			playBackAnimation = AnimationCalculations.calculateVisualizationOfTimeStep(timeStep, coreController);
+		}
+		catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
 		if (timeLineModel.getPlaying()) {
 
-			walkingAnimation.setOnFinished(playbackHandler);
-
+			playBackAnimation.setOnFinished(playbackHandler);
 			timeLineModel.setIsAnimating(true);
 		}
 
 		spinner.setVisible(false);
-
-		walkingAnimation.play();
-		}
+		playBackAnimation.play();
 	}
 
 	public void startRecording() {
 
 		this.timeLineModel.setRecording(true);
 		this.onPlay(null);
-
 	}
 
 	@FXML
@@ -400,14 +396,7 @@ public class InteractionController implements Initializable {
 	
 	public void resetTimeLineModel() throws Exception {
 		
-		try {
-			for(SimulationOutputReader simReader : coreController.getSimulationOutputReaderList()) {
-				simReader.endReadDataSetAsync();
-			}
-		} catch (Exception e) {
-			//e.printStackTrace();
-		}
-		coreController.getSimulationOutputReaderList().clear();
+		coreController.clearSimulationOutputReaders();
 		timeLineModel.isAnimatingProperty().set(false);
 		timeLineModel.playingProperty().set(false);
 		timeLineModel.recordingProperty().set(false);
@@ -415,7 +404,6 @@ public class InteractionController implements Initializable {
 		timeLineModel.endTimeProperty().set(0.0);
 		timeLineModel.timeStepMultiplicatorProperty().set(1.0);
 		timeLineModel.timeStepDurationProperty().set(0.1);
-		
 	}
 
 	public double getTimeLineBindingValue() {

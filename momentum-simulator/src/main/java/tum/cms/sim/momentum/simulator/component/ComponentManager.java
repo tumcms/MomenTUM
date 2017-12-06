@@ -75,10 +75,9 @@ import tum.cms.sim.momentum.model.output.OutputWriter;
 import tum.cms.sim.momentum.model.output.writerFormats.WriterFormat;
 import tum.cms.sim.momentum.model.output.writerSources.WriterSource;
 import tum.cms.sim.momentum.model.output.writerTargets.WriterTarget;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.strategical.DestinationChoiceModel;
 import tum.cms.sim.momentum.model.strategical.StrategicalModel;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
 import tum.cms.sim.momentum.model.tactical.TacticalModel;
 import tum.cms.sim.momentum.model.tactical.participating.StayingModel;
 import tum.cms.sim.momentum.model.tactical.queuing.QueuingModel;
@@ -163,7 +162,6 @@ public class ComponentManager {
 	private HashMap<Integer, DestinationChoiceModel> destinationChoiceModels = null;
 	
 	private HashMap<Integer, PerceptionalModel> perceptionalModels = null;
-	private HashMap<Integer, BasicQueryModel> queryModels = null;
 
 	private HashMap<Integer, MetaModel> metaModels = null;
 	private HashMap<Integer, AnalysisModel> analysisModels = null;
@@ -335,14 +333,6 @@ public class ComponentManager {
 	public PerceptionalModel getPerceptionalModel(int id) {
 		return perceptionalModels.get(id);
 	}
-	
-	public Collection<BasicQueryModel> getQueryModels() {
-		return queryModels.values();
-	}
-	
-	public BasicQueryModel getQueryModel(int id) {
-		return queryModels.get(id);
-	}
 
 	public Collection<MetaModel> getMetaModels() {
 		return metaModels.values();
@@ -507,21 +497,6 @@ public class ComponentManager {
 				this.perceptionalModels.put(perceptualModel.getId(), perceptualModel);
 			}
 		}
-	}
-	
-	public void createQueryModel() {
-		
-		this.queryModels = new HashMap<Integer, BasicQueryModel>();
-	
-		BasicQueryModel queryModel = new BasicQueryModel();
-		
-		queryModel.setPedestrianManager(this.getPedestrianManager());
-		queryModel.setScenarioManager(this.getScenarioManager());
-		
-		queryModel.setId(0);
-		queryModel.setName(BasicQueryModel.class.getSimpleName());
-		
-		this.queryModels.put(queryModel.getId(), queryModel);
 	}
 
 	public void createMetaModels(ArrayList<MetaModelConfiguration> metaModels) {

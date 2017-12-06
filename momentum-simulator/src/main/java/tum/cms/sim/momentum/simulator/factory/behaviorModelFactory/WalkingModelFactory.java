@@ -37,6 +37,7 @@ import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.model.operational.walking.cellularAutomatons.cellularStockModel_Biedermann2015.ParallelStockOperational;
 import tum.cms.sim.momentum.model.operational.walking.cellularAutomatons.cellularStockModel_Biedermann2015.StockOperational;
 import tum.cms.sim.momentum.model.operational.walking.cellularAutomatons.dynamicFloorfield_Kneidl2012.DynamicFloorfieldOperational;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackOperational;
 import tum.cms.sim.momentum.model.operational.walking.empiricallyGrounded_Bonneaud2014.BonneaudOperational;
 import tum.cms.sim.momentum.model.operational.walking.groupBehaviour_Moussaid2010.MoussaidOperational;
 import tum.cms.sim.momentum.model.operational.walking.macroscopicModels.classicLWRmodel.ClassicLWR;
@@ -44,7 +45,7 @@ import tum.cms.sim.momentum.model.operational.walking.moussaidHeuristic.Moussaid
 import tum.cms.sim.momentum.model.operational.walking.noInteractionModel.NoInteractionOperational;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.HelbingOperational.HelbingOperational;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.ParallelHelbingOperational.BarnesHutParallelHelbingOperational;
-import tum.cms.sim.momentum.model.operational.walking.socialForceModel.sharedSpaces_Zeng2014.SharedSpaceForceOperational;
+import tum.cms.sim.momentum.model.operational.walking.socialForceModel.ZengOperational.ZengOperational;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -59,6 +60,10 @@ public class WalkingModelFactory extends ModelFactory<WalkingModelConfiguration,
 		
 		switch (configuration.getType()) {
 		
+		case CsvPlayback:
+			walkingModel = new CsvPlaybackOperational();
+			break;
+			
 		case NoInteraction:
 			walkingModel = new NoInteractionOperational();
 			break;
@@ -99,10 +104,10 @@ public class WalkingModelFactory extends ModelFactory<WalkingModelConfiguration,
 			walkingModel = new ClassicLWR();
 			break;
 			
-		case SharedSpaceForce:
-			SharedSpaceForceOperational shareSpaceForceOperational = new SharedSpaceForceOperational();
-			shareSpaceForceOperational.setCarManager(componentManager.getCarManager());
-			walkingModel = shareSpaceForceOperational;
+		case SocialForceZeng:
+			ZengOperational socialForceZengOperational = new ZengOperational();
+			socialForceZengOperational.setCarManager(componentManager.getCarManager());
+			walkingModel = socialForceZengOperational;
 			break;
 			
 		default:

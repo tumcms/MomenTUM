@@ -38,7 +38,7 @@ import java.util.List;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IStrategicPedestrian;
 import tum.cms.sim.momentum.data.layout.area.Area;
@@ -58,7 +58,7 @@ public class StrictOrderStrategical extends DestinationChoiceModel {
 	private ArrayList<Double> duration = null;
 	
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		
 		return new StrictOrderExtension();
 	}
@@ -92,9 +92,9 @@ public class StrictOrderStrategical extends DestinationChoiceModel {
 			next = this.order.get(extension.getCurrentTargetArea());
 		}
 		
-		boolean isTargetVisible = perception.isVisible(pedestrian.getPosition(),
+		boolean isTargetVisible = perception.isVisible(pedestrian,
 				pedestrian.getNextNavigationTarget().getPointOfInterest())
-				|| this.perception.isVisible(pedestrian.getPosition(), next.getPointOfInterest());
+				|| this.perception.isVisible(pedestrian, next.getPointOfInterest());
 		
 		if(initalize && !isTargetVisible) {
 			

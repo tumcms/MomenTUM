@@ -1,0 +1,7 @@
+<!-- In case no queuing is useful in the simulation use the 'no queuing model' -->
+<!-- The no queuing model will send the agent to the center of an area in case a -->
+<!-- command was given by the strategical model.  However, simple removing the queingModels -->
+<!-- tag may cause trouble if the strategic model commands queuing behavior.  -->
+	<queuingModels>
+		<queuing id="6" name="noQueuing" type="NoQueuing"/>
+	</queuingModels>

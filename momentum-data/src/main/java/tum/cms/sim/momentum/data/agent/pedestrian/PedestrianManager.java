@@ -36,15 +36,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.StandingState;
+import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.other.MetaState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.other.StaticState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.strategic.StrategicalState;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.TacticalState.Behavior;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.layout.area.OriginArea;
 import tum.cms.sim.momentum.infrastructure.execute.IUpdateState;
@@ -91,6 +93,16 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 	public Collection<IPedestrian> getAllPedestriansImmutable() {
 		
 		return pedestrianContainer.getAllPedestriansImmutable();
+	}
+	
+	public IPedestrian getPedestrian(Integer id) {
+		
+		return pedestrianContainer.getPedestrian(id);
+	}
+	
+	public Collection<IPedestrian> getPedestrians(List<Integer> ids) {
+		
+		return pedestrianContainer.getPedestriansForList(ids);
 	}
 	
 	public Collection<IRichPedestrian> getAllPedestrians() {
@@ -149,8 +161,8 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 			break;
 		}
 	}
-	
 	/**
+	 * 
 	 * Creates a new pedestrian from the scratch
 	 */
 	public synchronized void createPedestrian(StaticState staticState, 
@@ -159,15 +171,28 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 			Vector2D heading,
 			Double currentTime) {
 		
+		this.createPedestrian(staticState, originArea, position, heading, null, currentTime);
+	}
+		
+	/**
+	 * Creates a new pedestrian from the scratch
+	 */
+	public synchronized void createPedestrian(StaticState staticState, 
+			OriginArea originArea,
+			Vector2D position,
+			Vector2D heading,
+			Vector2D velocity,
+			Double currentTime) {
+		
 		if(!pedestrianContainer.containsKey(staticState.getId())) {
 			
 			StrategicalState strategicalState = new StrategicalState(originArea, Behavior.None);
-			StandingState standingState = new StandingState(position, heading);
+		
 				
 			Pedestrian pedestrian = new Pedestrian(staticState);
 			pedestrian.setId(staticState.getId());
 			pedestrian.setName(staticState.getId().toString());
-			pedestrian.setStandingState(standingState);
+			
 			pedestrian.setStrategicalState(strategicalState);
 			pedestrian.setMetaState(new MetaState(null, null, null));
 			pedestrian.getMetaState().setGenerationTime(currentTime);
@@ -175,22 +200,54 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 			Pedestrian afterImage = new Pedestrian(staticState);
 			afterImage.setId(staticState.getId());
 			afterImage.setName(staticState.getId().toString());
-			afterImage.setStandingState(standingState);
+	
 			afterImage.setStrategicalState(strategicalState);
 			afterImage.setMetaState(new MetaState(null, null, null));
 			afterImage.getMetaState().setGenerationTime(currentTime);
+			
+			if(velocity == null) {
+				
+				StandingState standingState = new StandingState(position, heading);
+				pedestrian.setStandingState(standingState);
+				afterImage.setStandingState(standingState);
+			}
+			else {
+				
+				WalkingState walkingState = new WalkingState(position, velocity, heading);
+				pedestrian.setWalkingState(walkingState);
+				afterImage.setWalkingState(walkingState);
+			}
 			
 			pedestrianContainer.put(pedestrian.getId(), pedestrian, afterImage);
 			
 			for(IExtendsPedestrian extender : extenders) {
 				
-				IPedestrianExtansion extension = extender.onPedestrianGeneration(pedestrian);
+				IPedestrianExtension extension = extender.onPedestrianGeneration(pedestrian);
 				pedestrian.setExtensionState(extension, extender);
 				afterImage.setExtensionState(extension, extender);
 			}
 		}
 	}
 
+	public synchronized void removeAllPedestrians() {
+		
+		List<Integer> pedestriansToRemove = pedestrianContainer.getAllPedestrians().stream()
+				.map(IRichPedestrian::getId)
+				.collect(Collectors.toList());
+		
+		for(Integer pedestrianId : pedestriansToRemove) {
+			
+			Pedestrian pedestrianToDelete = pedestrianContainer.getPedestrian(pedestrianId);
+			
+			for(IExtendsPedestrian extender : extenders) {
+				
+				extender.onPedestrianRemoval(pedestrianToDelete);				
+			}
+		
+			pedestrianContainer.remove(pedestrianToDelete);
+		}
+	}
+	
 	public synchronized void removePedestrian(int pedestrianId) {
 		
 		if(pedestrianContainer.containsKey(pedestrianId)) {
@@ -253,11 +310,18 @@ public class PedestrianManager implements IThreadingTaskSplitter<IRichPedestrian
 			return (Collection<IPedestrian>)((Collection<? extends IPedestrian>)afterImagePedestrians.values());
 		}
 
-		public Collection<? extends IRichPedestrian> getPedestrainsForThread(int startFilterFromIndex, int endFilterToIndex) {
+		public Collection<IRichPedestrian> getPedestrainsForThread(int startFilterFromIndex, int endFilterToIndex) {
 			
-			return new ArrayList<Pedestrian>(originalPedestrians.values()).subList(startFilterFromIndex, endFilterToIndex);
+			return new ArrayList<IRichPedestrian>(originalPedestrians.values()).subList(startFilterFromIndex, endFilterToIndex);
 		}
 
+		public Collection<IPedestrian> getPedestriansForList(List<Integer> ids) {
+			
+			ArrayList<IPedestrian> pedestrianList = new ArrayList<>();
+			ids.forEach(id -> pedestrianList.add(originalPedestrians.get(id)));
+			return pedestrianList;
+		}
+		
 //		public Collection<IPedestrian> getNearestPedestriansImmutable(IPedestrian pedestrian, double distance) {
 //			
 //			List<IPedestrian> result = null;

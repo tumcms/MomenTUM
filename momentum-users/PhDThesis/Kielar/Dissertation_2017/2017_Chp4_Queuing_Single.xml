@@ -188,7 +188,7 @@
 		</graphModel> 
 	</graphs>
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
 	</lattices>
 	 <layouts>
    <scenario id="0" name="AngularQueuingModel" maxX="30.5" maxY="20.5" minX="-0.5" minY="-0.5">

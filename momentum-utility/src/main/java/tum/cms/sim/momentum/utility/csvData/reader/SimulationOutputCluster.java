@@ -82,6 +82,7 @@ public class SimulationOutputCluster {
 		this.index = index;
 		this.clusterLines = -1L;
 		this.clusterStartLine = -1L;
+		this.dataStep = new LinkedHashMap<String, Map<String, String>>();
 	}
 	
 	public SimulationOutputCluster(double index, Long clusterStartLine, Long clusterLineSize, Long fileIndex) {
@@ -91,6 +92,7 @@ public class SimulationOutputCluster {
 		this.index = index;
 		this.clusterStartLine = clusterStartLine;
 		this.clusterLines  = clusterLineSize;
+		this.dataStep = null;
 	}
 	
 	public SimulationOutputCluster(String identificationHeaderName,
@@ -121,9 +123,9 @@ public class SimulationOutputCluster {
 		this.ready = false;
 		dataStep = null;
 	}
-	
+
 	public boolean isEmpty() {
-		return dataStep == null ? true : false;
+		return dataStep.isEmpty();
 	}
 	
 	public boolean containsIdentification(String id) {

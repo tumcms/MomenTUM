@@ -139,7 +139,7 @@
 	</outputWriters>
 
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" neigborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Touching" fillingType="ScenarioLayout" cellEdgeSize="0.46"/>
 	</lattices>
 		<graphs>
 		<graphModel name="routing" id="0">

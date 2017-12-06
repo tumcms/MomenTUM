@@ -45,8 +45,7 @@ import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.infrastructure.execute.callable.Callable;
 import tum.cms.sim.momentum.infrastructure.execute.callable.IExecutionCallable;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.utility.generic.IHasProperties;
 import tum.cms.sim.momentum.utility.generic.IUnique;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPack;
@@ -91,16 +90,6 @@ public abstract class PedestrianBehaviorModel extends Callable
 	public boolean isMultiThreading() {
 
 		return true;
-	}
-
-	protected BasicQueryModel query = null;
-	
-	public BasicQueryModel getQuery() {
-		return query;
-	}
-
-	public void setQuery(BasicQueryModel query) {
-		this.query = query;
 	}
 
 	protected PerceptionalModel perception = null;
@@ -173,4 +162,5 @@ public abstract class PedestrianBehaviorModel extends Callable
 	public abstract void callAfterBehavior(SimulationState simulationState, Collection<IRichPedestrian> pedestrians);
 	
 	public abstract void callPedestrianBehavior(IRichPedestrian pedestrian, SimulationState simulationState);
+	
 }

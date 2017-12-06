@@ -39,7 +39,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.SubTacticalModel;
 import tum.cms.sim.momentum.utility.graph.GraphTheoryFactory;
 import tum.cms.sim.momentum.utility.graph.Path;
@@ -106,17 +106,20 @@ public abstract class RoutingModel extends SubTacticalModel {
 	 * @param tacticalControlActive, activates next vertex visible check
 	 * @return if true, reroute
 	 */
-	public boolean reRoutingNecessary(IRichPedestrian pedestrian, boolean tacticalControlActive) {
+	public boolean reRoutingNecessary(IRichPedestrian pedestrian, boolean tacticalControlActive, boolean isDeepSelect) {
 		
 		if(pedestrian.getRoutingState() == null) {
 			
 			return true;
 		}	
 
-		boolean currentWalkingTargetVisible = perception.isVisible(pedestrian.getPosition(), pedestrian.getRoutingState().getNextVisit());
+		boolean currentWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextVisit());
+		double distanceToNextVisit = pedestrian.getRoutingState().getNextVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
 		
 		// is the current walking target not visible?! reroute
-		if(!currentWalkingTargetVisible) {
+		// however, if it is not in perception range, keep routing. Thus, reroute if close and not visible
+		if(!currentWalkingTargetVisible &&
+			distanceToNextVisit < perception.getPerceptionDistance()) {
 			
 			pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
 						pedestrian.getRoutingState().getNextToLastVisit(),
@@ -126,12 +129,17 @@ public abstract class RoutingModel extends SubTacticalModel {
 			return true;
 		}
 		
-		if(tacticalControlActive && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
+		// The tactical control enables a more smooth routing because it addresses the vertex following the current one
+		if(tacticalControlActive && isDeepSelect && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
 			
-			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian.getPosition(), pedestrian.getRoutingState().getNextToCurrentVisit());
+			boolean nextWalkingTargetVisible = perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextToCurrentVisit());
+			double distanceToNextToCurrentVisit = pedestrian.getRoutingState().getNextToCurrentVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
 			
 			// is the next walking target not visible?! reroute
-			if(nextWalkingTargetVisible && this.checkIsVertexVisited()) {
+			// however, if it is not in perception range, keep routing. Thus, reroute if close and not visible
+			if(nextWalkingTargetVisible &&
+			   this.checkIsVertexVisited() &&
+			   distanceToNextToCurrentVisit < perception.getPerceptionDistance()) {
 				
 				return true;
 			}
@@ -152,7 +160,9 @@ public abstract class RoutingModel extends SubTacticalModel {
 		
 		boolean shortCutSuccessful = false;
 		
-		if(pedestrian.getRoutingState() != null && pedestrian.getRoutingState().getNextVisit() != null) {
+		if(pedestrian.getRoutingState() != null &&
+		   pedestrian.getRoutingState().getNextVisit() != null &&
+		   pedestrian.getNextNavigationTarget() != null) {
 			
 			boolean goalAreaEqualsPointOfInterest = pedestrian.getNextNavigationTarget().getGeometry().getCenter().equals(
 					pedestrian.getNextNavigationTarget().getPointOfInterest());
@@ -161,7 +171,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 
 			if(goalAreaEqualsPointOfInterest) { 
 				
-				if(perception.isVisible(pedestrian.getPosition(), pedestrian.getNextNavigationTarget().getPointOfInterest())) {
+				if(perception.isVisible(pedestrian, pedestrian.getNextNavigationTarget().getPointOfInterest())) {
 					
 					// the point of interest is the goal area and the goal area is visible
 					// reset to correct goal location target
@@ -184,7 +194,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 			}
 			else {
 				
-				if(perception.isVisible(pedestrian.getPosition(), pedestrian.getNextNavigationTarget().getPointOfInterest()) ) { 
+				if(perception.isVisible(pedestrian, pedestrian.getNextNavigationTarget().getPointOfInterest()) ) { 
 					
 					// the point of interest is visible and it is not the goal area center and not some normal 
 					// navigation point, select the point of interest as dynamic walking target
@@ -229,7 +239,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 
 				if(startVertexTemp != null) {
 					
-					if(perception.isVisible(pedestrian.getPosition(), startVertexTemp) &&
+					if(perception.isVisible(pedestrian, startVertexTemp) &&
 					   this.scenarioManager.getGraph().getSuccessorEdges(startVertexTemp).size() > 0) {
 						
 						startVertex = startVertexTemp;

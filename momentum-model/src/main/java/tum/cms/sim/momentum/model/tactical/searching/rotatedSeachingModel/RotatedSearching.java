@@ -34,7 +34,7 @@ package tum.cms.sim.momentum.model.tactical.searching.rotatedSeachingModel;
 
 import java.util.Collection;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
@@ -43,7 +43,7 @@ import tum.cms.sim.momentum.model.tactical.searching.SearchingModel;
 public class RotatedSearching extends SearchingModel {
 
 	@Override
-	public IPedestrianExtansion onPedestrianGeneration(IRichPedestrian pedestrian) {
+	public IPedestrianExtension onPedestrianGeneration(IRichPedestrian pedestrian) {
 		// TODO Auto-generated method stub
 		return null;
 	}

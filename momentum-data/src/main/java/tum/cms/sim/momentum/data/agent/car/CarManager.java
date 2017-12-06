@@ -32,17 +32,14 @@
 
 package tum.cms.sim.momentum.data.agent.car;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import tum.cms.sim.momentum.data.agent.car.Car;
 import tum.cms.sim.momentum.data.agent.car.state.operational.MovementState;
 import tum.cms.sim.momentum.data.agent.car.state.other.StaticState;
 import tum.cms.sim.momentum.data.agent.car.types.IRichCar;
-import tum.cms.sim.momentum.data.agent.pedestrian.IExtendsPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.Pedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 public class CarManager {
@@ -57,26 +54,31 @@ public class CarManager {
 			Vector2D velocity,
 			Vector2D heading,
 			Double currentTime) {
-		
-		MovementState movementState = new MovementState(position, velocity, heading);
+
+		createCar(staticState);
+		updateState(staticState.getId(), position, velocity, heading, currentTime);
+	}
+
+	public synchronized void createCar(StaticState staticState) {
+
 		Car newCar = new Car(staticState);
 		newCar.setId(staticState.getId());
 		newCar.setName(staticState.getId().toString());
-		newCar.setMovementState(movementState);
-		
+
 		if(!carContainer.containsKey(newCar.getId())) {
 			// add a new car
 			carContainer.put(newCar.getId(), newCar);
-			
-		} else {
-			// update an already existing car
-			Car updateCar = carContainer.getCar(staticState.getId());
-			updateCar.updateMovementState(newCar);
-			carContainer.put(updateCar.getId(), updateCar);
-			
-			//System.out.println("Car id=" + newCar.getId() + " , posX=" + carContainer.getCar(newCar.getId()).getMovementState().getMovementPosition().getXComponent() + " PosY="
-			//		+ carContainer.getCar(newCar.getId()).getMovementState().getMovementPosition().getYComponent());
 		}
+	}
+
+	public synchronized void updateState(int id,
+									   Vector2D position,
+									   Vector2D velocity,
+									   Vector2D heading,
+									   Double currentTime) {
+
+		MovementState movementState = new MovementState(position, velocity, heading);
+		this.carContainer.getCar(id).setMovementState(movementState);
 	}
 	
 	public synchronized void removeCar(int carId) {
@@ -95,11 +97,17 @@ public class CarManager {
 			}
 		}
 	}
+
 	
 	public Collection<IRichCar> getAllCars() {
 		return carContainer.getAllCars();
 	}
-	
+
+	public boolean containsCar(int id) {return carContainer.containsKey(id); }
+
+	public ArrayList<Integer> getAllCarIds()  {return carContainer.getAllCarIds(); }
+
+
 	private class CarContainer {
 		
 		public Car getCar(Integer id) {
@@ -109,11 +117,7 @@ public class CarManager {
 		public boolean containsKey(Integer id) {
 			return originalCars.containsKey(id);
 		}
-		
-//		public int size() {
-//			return originalCars.size();
-//		}
-		
+
 		public void put(Integer id, Car car) {
 			originalCars.put(id, car);
 		}
@@ -130,6 +134,15 @@ public class CarManager {
 		public Collection<IRichCar> getAllCars() {
 			return (Collection<IRichCar>)((Collection<? extends IRichCar>)originalCars.values());
 		}
+
+		public ArrayList<Integer> getAllCarIds() {
+			ArrayList<Integer> idList = new ArrayList<Integer>();
+
+			for (Car curCar : this.originalCars.values()) {
+				idList.add(curCar.getId());
+			}
+			return idList;
+		};
 
 		
 		private HashMap<Integer, Car> originalCars = new HashMap<Integer, Car>();

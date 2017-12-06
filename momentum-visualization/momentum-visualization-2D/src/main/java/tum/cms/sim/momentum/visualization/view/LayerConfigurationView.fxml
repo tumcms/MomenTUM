@@ -19,6 +19,7 @@
 		<CheckBox fx:id="showOriginsCheckBox" text="%layerConfiguration.checkbox.showOrigin" selected="true" onAction="#onCheckShowOrigin"/> 
 		<CheckBox fx:id="showIntermediatesCheckBox" text="%layerConfiguration.checkbox.showIntermediate" selected="true" onAction="#onCheckShowIntermediate"/> 
 		<CheckBox fx:id="showDestinationsCheckBox" text="%layerConfiguration.checkbox.showDestination" selected="true" onAction="#onCheckShowDestination"/> 
+		<CheckBox fx:id="showTaggedAreasCheckBox" text="%layerConfiguration.checkbox.showTaggedArea" selected="true" onAction="#onCheckShowTaggedArea"/> 
 		<CheckBox fx:id="showGroupColoring" text="%layerConfiguration.checkbox.showGroupColoring" selected="false" onAction="#onCheckShowGroups"/> 
 		<CheckBox fx:id="showSeedColoring" text="%layerConfiguration.checkbox.showSeedColoring" selected="false" onAction="#onCheckShowSeedColoring"/> 
 	</children>

@@ -40,13 +40,12 @@ import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.layout.area.IntermediateArea;
+import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.CognitiveConstant;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.CognitiveConstant.OccupancyType;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.GoalChunk;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.OperationChunk;
 import tum.cms.sim.momentum.model.strategical.cognitiveSpatialChoiceModel.memory.PhysicalChunk;
-import tum.cms.sim.momentum.model.support.perceptional.PerceptionalModel;
-import tum.cms.sim.momentum.model.support.query.BasicQueryModel;
 import tum.cms.sim.momentum.utility.geometry.Polygon2D;
 
 public class SpaceOccupancyPerception implements IOccupancyPerception {
@@ -73,8 +72,7 @@ public class SpaceOccupancyPerception implements IOccupancyPerception {
 	}
 
 	@Override
-	public void perceptOccupancy(BasicQueryModel query, 
-			PerceptionalModel perceptionModel, 
+	public void perceptOccupancy(PerceptionalModel perceptionModel, 
 			GoalChunk goal, 
 			PhysicalChunk physical,
 			OperationChunk operation) {
@@ -88,9 +86,8 @@ public class SpaceOccupancyPerception implements IOccupancyPerception {
 		Double familiarity = CognitiveConstant.fromFamilirty(goal.getFamiliarity());
 		Polygon2D areaPolygon = goal.getGoalArea().getGeometry();
 		
-		List<IPedestrian> pedestrianInteractingAtGoal = query.findPedestrianSameTarget(
+		List<IPedestrian> pedestrianInteractingAtGoal = perceptionModel.findPedestrianSameTarget(
 				physical.getThisPedestrian(),
-				perceptionModel, 
 				goal.getGoalArea(), 
 				true,
 				null);

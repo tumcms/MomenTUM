@@ -52,15 +52,20 @@ public class CustomizationModel {
 	private final ObjectProperty<PhongMaterial> pedestrianBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "pedestrianBodyMaterial",  new PhongMaterial(Color.GREEN));
 	private final ObjectProperty<PhongMaterial> selectedPedestrianBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "selectedPedestrianBodyMaterial", new PhongMaterial(Color.RED));
 	private final ObjectProperty<Color> pedestrianDirectionColor = new SimpleObjectProperty<Color>(this, "pedestrianDirectionColor", Color.RED);
+	private final ObjectProperty<PhongMaterial> carBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "carBodyMaterial",  new PhongMaterial(Color.DARKBLUE));
+	private final ObjectProperty<PhongMaterial> selectedCarBodyMaterial = new SimpleObjectProperty<PhongMaterial>(this, "selectedCarBodyMaterial",  new PhongMaterial(Color.RED));
 	private final ObjectProperty<Color> graphColor = new SimpleObjectProperty<Color>(this, "graphColor", Color.ORANGE);
 	private final ObjectProperty<Color> destinationColor = new SimpleObjectProperty<Color>(this, "destinationColor", Color.LIGHTSALMON);
 	private final ObjectProperty<Color> originColor = new SimpleObjectProperty<Color>(this, "originColor", Color.LIGHTCYAN);
 	private final ObjectProperty<Color> intermediateColor = new SimpleObjectProperty<Color>(this, "intermediateColor", Color.VIOLET);
 	private final ObjectProperty<Color> informationColor = new SimpleObjectProperty<Color>(this, "informationColor", Color.BROWN);
+	private final ObjectProperty<Color> taggedAreaGradientStartColor = new SimpleObjectProperty<Color>(this, "taggedAreaGradientStartColor", Color.LIGHTSKYBLUE);
+	private final ObjectProperty<Color> taggedAreaGradientEndColor = new SimpleObjectProperty<Color>(this, "taggedAreaGradientEndColor", Color.DEEPSKYBLUE);
 	private final ObjectProperty<Color> obstacleColor = new SimpleObjectProperty<Color>(this, "obstacleColor", Color.DARKGRAY);
 	private final ObjectProperty<Color> virutalObstacleColor = new SimpleObjectProperty<Color>(this, "virutalObstacleColor", Color.BLUEVIOLET);
 	private final ObjectProperty<Paint> trajectoryPaint = new SimpleObjectProperty<Paint>(this, "trajectoryColor", Color.GRAY);
 	private final ObjectProperty<Boolean> trajectoryIsRandomColor = new SimpleObjectProperty<Boolean>(this, "trajectoryIsRandomColor", false);
+
 	private final ObjectProperty<Double> trajectoryThickness = new SimpleObjectProperty<Double>(this, "trajectoryThickness", 0.5);
 	private final ObjectProperty<Double> trajectoryTimeInterval = new SimpleObjectProperty<Double>(this, "trajectoryTimeInterval", 10.0);
 	private final ObjectProperty<Double> edgeThickness = new SimpleObjectProperty<Double>(this, "edgeThickness", 1.);
@@ -142,6 +147,32 @@ public class CustomizationModel {
 	public void setPedestrianDirectionColor(Color color) {
 		pedestrianDirectionColor.set(color);
 		UserPreferenceHandler.putProperty(PropertyType.pedestrianDirectionColor, color.toString());
+	}
+
+	public ObjectProperty<PhongMaterial> carBodyMaterialProperty() {
+		return carBodyMaterial;
+	}
+
+	public PhongMaterial getCarBodyMaterial() {
+		return carBodyMaterial.get();
+	}
+
+	public void setCarBodyMaterial(PhongMaterial material) {
+		carBodyMaterial.set(material);
+		UserPreferenceHandler.putProperty(PropertyType.phongMaterialColor, material.getDiffuseColor().toString());
+	}
+
+	public ObjectProperty<PhongMaterial> selectedCarBodyMaterialProperty() {
+		return selectedCarBodyMaterial;
+	}
+
+	public PhongMaterial getSelectedCarBodyMaterial() {
+		return selectedCarBodyMaterial.get();
+	}
+
+	public void setSelectedCarBodyMaterial(PhongMaterial material) {
+		selectedCarBodyMaterial.set(material);
+		UserPreferenceHandler.putProperty(PropertyType.phongMaterialColor, material.getDiffuseColor().toString());
 	}
 	
 	public ObjectProperty<Paint> trajectoryColorProperty() {
@@ -246,6 +277,32 @@ public class CustomizationModel {
 	public void setInformationColor(Color color) {
 		informationColor.set(color);
 		UserPreferenceHandler.putProperty(PropertyType.informationColor, color.toString());
+	}
+
+	public ObjectProperty<Color> taggedAreaGradientStartColor() {
+		return taggedAreaGradientStartColor;
+	}
+
+	public Color getTaggedAreaGradientStartColor() {
+		return taggedAreaGradientStartColor.get();
+	}
+
+	public void setTaggedAreaGradientStartColor(Color color) {
+		taggedAreaGradientStartColor.set(color);
+		UserPreferenceHandler.putProperty(PropertyType.taggedAreaGradientStartColor, color.toString());
+	}
+
+	public ObjectProperty<Color> taggedAreaGradientEndColor() {
+		return taggedAreaGradientEndColor;
+	}
+
+	public Color getTaggedAreaGradientEndColor() {
+		return taggedAreaGradientEndColor.get();
+	}
+
+	public void setTaggedAreaGradientEndColor(Color color) {
+		taggedAreaGradientEndColor.set(color);
+		UserPreferenceHandler.putProperty(PropertyType.taggedAreaGradientEndColor, color.toString());
 	}
 	
 	public ObjectProperty<Color> obstacleColorProperty() {

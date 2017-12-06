@@ -93,11 +93,11 @@ public class LatticeModel extends Callable implements IHasProperties {
 				latticeConfiguration.getBehaviorType(),
 				latticeConfiguration.getLatticeType(), 
 				latticeConfiguration.getNeigborhoodType(), 
-				latticeConfiguration.getCellEdgeSize(), 
-				scenarioManager.getScenarios().getMaxX() + latticeConfiguration.getCellEdgeSize(), 
-				scenarioManager.getScenarios().getMinX() - latticeConfiguration.getCellEdgeSize(), 
-				scenarioManager.getScenarios().getMaxY() + latticeConfiguration.getCellEdgeSize(), 
-				scenarioManager.getScenarios().getMinY() - latticeConfiguration.getCellEdgeSize());
+				latticeConfiguration.getCellEdgeSize(),
+				scenarioManager.getScenarios().getMaxX(), 
+				scenarioManager.getScenarios().getMinX(), 
+				scenarioManager.getScenarios().getMaxY(), 
+				scenarioManager.getScenarios().getMinY());
 		
 		lattice.setPropertyBackPack(this.properties);
 		Unique.generateUnique(lattice, latticeConfiguration);		
@@ -116,7 +116,7 @@ public class LatticeModel extends Callable implements IHasProperties {
 				}
 				
 				scenarioConfiguration.getLattices().add(latticeConfiguration);
-				this.scenarioManager.getScenarios().getLattices().add(this.lattice);
+				this.scenarioManager.getScenarios().getLattices().put(this.lattice.getId(), this.lattice);
 				
 				break;
 			}
@@ -139,30 +139,8 @@ public class LatticeModel extends Callable implements IHasProperties {
 		
 		nonSolidObstacles.parallelStream().forEach(obs -> {
 			
-			try {
 			lattice.occupyAllSegmentCells(obs.getObstacleParts(), Occupation.Fixed);
-			}
-			catch(Exception ex) {
-				ex = null;
-			}
 		});
-	}
-	
-	public static List<CellIndex> fillLatticeForObstacles2(ILattice lattice, Scenario scenario) {
-
-		List<CellIndex> freeCells = Collections.synchronizedList(new ArrayList<>(lattice.getNumberOfColumns() * lattice.getNumberOfRows()));
-		freeCells.addAll(lattice.getCellsInOrder());
-		
-		ArrayList<SolidObstacle> solidObstacles = scenario.getSolidObstacles();
-		ArrayList<WallObstacle> nonSolidObstacles = scenario.getWallObstacles();
-		List<List<CellIndex>> occupiedCells = Collections.synchronizedList(new ArrayList<>(solidObstacles.size() * nonSolidObstacles.size()));
-		
-		solidObstacles.parallelStream().forEach(obs -> occupiedCells.add(lattice.occupyAllPolygonCells((Polygon2D) obs.getGeometry(), Occupation.Fixed)));
-		nonSolidObstacles.parallelStream().forEach(obs -> occupiedCells.add(lattice.occupyAllSegmentCells(obs.getObstacleParts(), Occupation.Fixed)));
-		
-		occupiedCells.stream().forEach(obstacleList -> freeCells.removeAll(obstacleList));
-		
-		return freeCells;
 	}
 	
 	/**

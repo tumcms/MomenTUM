@@ -54,7 +54,7 @@ public class LoadCsvHandler extends LoadHandler {
 	private final static String csvDelimiter = ";";
 
 	@Override
-	public void load(CoreController coreController, Window parentWindow) throws Exception {
+	public void load(CoreController coreController, Window parentWindow, double currentTimeStep) throws Exception {
 
 		File selectedFile = getFile(titleOutputChooser, new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"), parentWindow);
 
@@ -65,7 +65,7 @@ public class LoadCsvHandler extends LoadHandler {
 			try {
 				
 				file.setType(CustomCSVDialogCreator.createCustomCSVDialog(CsvFile.getCsvTypeFromFile(file.getPath())));
-				this.load(coreController, file);
+				this.load(coreController, file, currentTimeStep);
 				
 			} 
 			catch (Exception e) {
@@ -76,7 +76,7 @@ public class LoadCsvHandler extends LoadHandler {
 	}
 
 	@Override
-	public void load(CoreController coreController, File file)
+	public void load(CoreController coreController, File file, double currentTimeStep)
 			throws Exception {
 		
 		if (file instanceof CsvFile) {
@@ -97,26 +97,24 @@ public class LoadCsvHandler extends LoadHandler {
 				
 				simulationOutputReader.setInnerClusterSeparator(csvFile.getType().getIdHeader());
 				simulationOutputReader.readIndex(WriterSourceConfiguration.indexString);
-				
-				// TODO set animating active always to true when loading useful?
-				simulationOutputReader.setActiveAnimating(true);
-				
-				coreController.getSimulationOutputReaderList().add(simulationOutputReader);
 
-				if (!CsvType.isCustomType(csvFile.getType())) {
+				coreController.getCoreModel().putSimulationOutputReader(file.getAbsolutePath(), simulationOutputReader);
+				simulationOutputReader.readDataSet(currentTimeStep);
+				simulationOutputReader.startReadDataSetAsync();
+				
+				if (CsvType.isCustomType(csvFile.getType())) {
 					
-					AnimationCalculations.calculateVisualizationOfTimeStep(0d,
-							coreController, simulationOutputReader);
-					
-					coreController.getInteractionViewController().getTimeLineModel()
-							.setTimeStepMultiplicator(simulationOutputReader.getTimeStepDifference());
+					coreController.getPlaybackController().bindCustomShapes(csvFile.getType());
 				}
 				else {
 					
-					simulationOutputReader.startReadDataSetAsync();
-					coreController.getVisualizationModel().addCustomShapes(csvFile.getType());
-					coreController.getVisualizationController().bindCustomShapes(csvFile.getType());
+					// Pedestrian shapes are not generic and already bound
+					// the pedestrian time step is the guideline for the simulation
+					coreController.getInteractionViewController().getTimeLineModel()
+						.setTimeStepMultiplicator(simulationOutputReader.getTimeStepDifference());
 				}
+
+				AnimationCalculations.calculateVisualizationOfTimeStep(currentTimeStep, coreController);
 				
 				UserPreferenceHandler.putProperty(PropertyType.outputCsvPath, csvFile.getParent());
 				QuickloadHandler.addFile(csvFile);
@@ -125,8 +123,8 @@ public class LoadCsvHandler extends LoadHandler {
 			catch (Exception e) {
 
 				coreController.getCoreModel().setCsvLoaded(false);
-				coreController.getVisualizationModel().clearPedestrians();
-				coreController.getVisualizationModel().clearCustom();
+				coreController.getPlaybackController().getPlaybackModel().clearPedestrians();
+				coreController.getPlaybackController().getPlaybackModel().clearCustom();
 				InformationDialogCreator.createErrorDialog(null, "Error loading csv data", e);
 				//throw e;
 			}

@@ -42,6 +42,7 @@ public class LoggerStrings {
 	protected static final String LogPattern = "%d{yyyy-MM-dd HH:mm:ss} %-5 %c{1} - %m%n";
 
 	protected static final String LogEntry = "Entering Logger";
+	protected static final String LogExists = "Logger exist";
 	protected static final String LogCreate = "Creating Logger %s";
 	protected static final String LogOff = "Console Logg Deactivated";
 	

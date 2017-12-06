@@ -53,7 +53,8 @@ import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.visualization.enums.SpeedUp;
 import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
-import tum.cms.sim.momentum.visualization.model.VisualizationModel;
+import tum.cms.sim.momentum.visualization.model.PlaybackModel;
+import tum.cms.sim.momentum.visualization.model.custom.CarModel;
 import tum.cms.sim.momentum.visualization.model.custom.DensityCellModel;
 import tum.cms.sim.momentum.visualization.model.custom.DensityEdgeModel;
 import tum.cms.sim.momentum.visualization.model.custom.TransitAreaModel;
@@ -80,37 +81,61 @@ public abstract class AnimationCalculations {
 	 * and performs visualization of custom data types. 
 	 * @return 
 	 */
-	public static ParallelTransition calculateVisualizationOfTimeStep(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {
-		coreController.waitUntilActiveSimulationOutputReadersAreLoaded(timeStep);
-		ParallelTransition concurrentMovementsOfPedestrians = createConcurrentAnimation();
+	public static ParallelTransition calculateVisualizationOfTimeStep(Double timeStep, CoreController coreController) throws Exception {
+
+		coreController.waitUntilReadersReady(timeStep, 1, 1);
+		ParallelTransition concurrentMovements = createConcurrentAnimation();
 		
-		for(SimulationOutputReader simReader : coreController.getActiveSimulationOutputReaderList()) {
+		for(SimulationOutputReader simReader : coreController.getOutputReaders()) {
 			
-			if(simReader.containsTimeStep(timeStep)) {
+			if(simReader.isDataWithContent(timeStep)) {
 				
 				if(CsvType.isCustomType(simReader.getCsvType())) {
 					
-					createDynamicAtTimeStep(simReader, timeStep, coreController);
+					SimulationOutputCluster customDataForStep = simReader.asyncReadDataSet(timeStep);
+					concurrentMovements.getChildren().add(updateCustomData(simReader.getCsvType(), customDataForStep, coreController, simReader));
 				}
 				
 				if(simReader.getCsvType().equals(CsvType.Pedestrian)) {
 					
-					concurrentMovementsOfPedestrians.getChildren().add(createPedestrianAtTimeStep(timeStep, coreController, simReader));
+					SimulationOutputCluster pedestrianDataForStep = createPedestrianAtTimeStep(timeStep, coreController, simReader);
+
+					if(pedestrianDataForStep != null) {
+						
+						ParallelTransition pedestrianAnimation = AnimationCalculations.updatePedestrianShapes(simReader,
+								pedestrianDataForStep,
+								coreController);
+					
+                        concurrentMovements.getChildren().add(pedestrianAnimation);
+					}
 				}
 			}
 		}
-		
-		return concurrentMovementsOfPedestrians;
+
+		if (concurrentMovements.getTotalDuration().equals(Duration.ZERO)
+				&& coreController.getInteractionViewController().getTimeLineModel().getPlaying()) {
+			double animationDurationInSecond = calculateAnimationDuration(coreController);
+			PauseTransition waitTransition = new PauseTransition(Duration.seconds(animationDurationInSecond));
+			concurrentMovements.getChildren().add(waitTransition);
+		}
+
+		return concurrentMovements;
 	}
 
-	private static void updateCustomData(CsvType type, SimulationOutputCluster dataStep, CoreController coreController, SimulationOutputReader simulationOutputReader) {
+	private static ParallelTransition updateCustomData(CsvType type, SimulationOutputCluster dataStep, CoreController coreController, SimulationOutputReader simulationOutputReader) {
 		
 		ShapeModel customVisualization = null;
-		VisualizationModel visualizationModel = coreController.getVisualizationController().getVisualizationModel();
-		CustomizationController customizationController = coreController.getVisualizationController().getCustomizationController();
+		PlaybackModel visualizationModel = coreController.getPlaybackController().getPlaybackModel();
+		CustomizationController customizationController = coreController.getPlaybackController().getCustomizationController();
 		
-		Map<String, ShapeModel> customMap = visualizationModel.getSpecificCustomShapesMap(type);
+		Map<String, ShapeModel> customMap = visualizationModel.getSpecificCustomShapesMap(simulationOutputReader.getCsvType());
 		Map<String, ShapeModel> newCustomMap = new HashMap<String, ShapeModel>();
+
+		double animationDurationInSecond = calculateAnimationDuration(coreController);
+		ParallelTransition concurrentMovementAnimation = createConcurrentAnimation();
+
+		int arraySize = dataStep.isEmpty() ? 1 : dataStep.getIdentifications().size();
+		ArrayList<Transition> customShapesAnimations = new ArrayList<Transition>(arraySize * 2);
 
 		if (!dataStep.isEmpty()) {
 
@@ -118,14 +143,14 @@ public abstract class AnimationCalculations {
 
 				String hashId = idCalculator.createUniqueId(id, simulationOutputReader.getFilePathHash());
 				
-				switch (type) {
+				switch (simulationOutputReader.getCsvType()) {
 
 				case TransitZones:
 
 					if (!customMap.containsKey(hashId)) {
 
-						customVisualization = getCustomShapeModel(type, id, customizationController);
-						customMap.put(hashId, customVisualization);
+						customVisualization = getCustomShapeModel(simulationOutputReader.getCsvType(), id, customizationController);
+						newCustomMap.put(hashId, customVisualization);
 
 						TransitAreaModel transit = (TransitAreaModel) customVisualization;
 
@@ -133,10 +158,11 @@ public abstract class AnimationCalculations {
 								dataStep.getDoubleData(id, "transity"), dataStep.getDoubleData(id, "radiusIn"),
 								dataStep.getDoubleData(id, "radiusOut"), coreController.getCoreModel().getResolution());
 
-						newCustomMap.put(id, transit);
-					} else { // set position
+						//newCustomMap.put(id, transit);
+					}
+					else { // set position
 
-						customMap = visualizationModel.getSpecificCustomShapesMap(type);
+						customMap = visualizationModel.getSpecificCustomShapesMap(simulationOutputReader.getCsvType());
 						TransitAreaModel transit = (TransitAreaModel) customMap.get(hashId);
 
 						transit.placeShape(dataStep.getDoubleData(id, "transitx"),
@@ -149,8 +175,8 @@ public abstract class AnimationCalculations {
 
 					if (!customMap.containsKey(hashId)) {
 
-						customVisualization = getCustomShapeModel(type, id, customizationController);
-						customMap.put(hashId, customVisualization);
+						customVisualization = getCustomShapeModel(simulationOutputReader.getCsvType(), id, customizationController);
+						newCustomMap.put(hashId, customVisualization);
 
 						DensityEdgeModel densitiyEdgeModel = (DensityEdgeModel) customVisualization;
 
@@ -160,10 +186,11 @@ public abstract class AnimationCalculations {
 								dataStep.getDoubleData(id, "currentDensity"), dataStep.getDoubleData(id, "width"),
 								dataStep.getDoubleData(id, "maximalDensity"));
 
-						newCustomMap.put(id, densitiyEdgeModel);
-					} else { // set position
+						//newCustomMap.put(id, densitiyEdgeModel);
+					}
+					else { // set position
 
-						customMap = visualizationModel.getSpecificCustomShapesMap(type);
+						customMap = visualizationModel.getSpecificCustomShapesMap(simulationOutputReader.getCsvType());
 						DensityEdgeModel densitiyEdgeModel = (DensityEdgeModel) customMap.get(hashId);
 
 						densitiyEdgeModel.placeShape(coreController.getCoreModel(),
@@ -178,8 +205,8 @@ public abstract class AnimationCalculations {
 
 					if (!customMap.containsKey(hashId)) {
 
-						customVisualization = getCustomShapeModel(type, id, customizationController);
-						customMap.put(hashId, customVisualization);
+						customVisualization = getCustomShapeModel(simulationOutputReader.getCsvType(), id, customizationController);
+						newCustomMap.put(hashId, customVisualization);
 
 						DensityCellModel densitiyEdgeModel = (DensityCellModel) customVisualization;
 
@@ -188,37 +215,127 @@ public abstract class AnimationCalculations {
 								dataStep.getDoubleData(id, "cellCenterY"), dataStep.getDoubleData(id, "density"),
 								dataStep.getDoubleData(id, "maximalDensity"));
 
-						newCustomMap.put(id, densitiyEdgeModel);
-					} else { // set position
+						//newCustomMap.put(id, densitiyEdgeModel);
+					}
+					else { // set position
 
-						customMap = visualizationModel.getSpecificCustomShapesMap(type);
+						customMap = visualizationModel.getSpecificCustomShapesMap(simulationOutputReader.getCsvType());
 						DensityCellModel densitiyEdgeModel = (DensityCellModel) customMap.get(hashId);
 
 						densitiyEdgeModel.placeShape(dataStep.getDoubleData(id, "density"),
 								dataStep.getDoubleData(id, "maximalDensity"));
 					}
 					break;
+
+                    case Pedestrian:
+                        break;
+
+                    case Car:
+
+                        if (!customMap.containsKey(id)) {
+                            // create shape
+							customVisualization = getCustomShapeModel(type, id, customizationController);
+
+							CarModel carModel = (CarModel) customVisualization;
+
+
+							// use default values, if no other are available
+							double length = 5;
+							if(dataStep.getDoubleData(id, OutputType.length.name()) != null)
+								length = dataStep.getDoubleData(id, OutputType.length.name());
+							double width = 2;
+							if(dataStep.getDoubleData(id, OutputType.width.name()) != null)
+								width = dataStep.getDoubleData(id, OutputType.width.name());
+							double height = 1.4;
+							if(dataStep.getDoubleData(id, OutputType.height.name()) != null)
+								height = dataStep.getDoubleData(id, OutputType.height.name());
+
+
+                            carModel.createShape(coreController.getCoreModel(),
+                                    dataStep.getDoubleData(id, OutputType.x.name()),
+                                    dataStep.getDoubleData(id, OutputType.y.name()),
+                                    length,
+                                    width,
+                                    height,
+                                    dataStep.getDoubleData(id, OutputType.xHeading.name()),
+                                    dataStep.getDoubleData(id, OutputType.yHeading.name()),
+                                    customizationController.getCustomizationModel());
+
+                            carModel.setVisibility(true);
+							customMap.put(id, customVisualization);
+
+							newCustomMap.put(id, carModel);
+						} else { // set position
+
+							customMap = visualizationModel.getSpecificCustomShapesMap(type);
+							CarModel carModel = (CarModel) customMap.get(id);
+							carModel.setVisibility(true);
+
+							if(animationDurationInSecond > 0 && carModel.isVisible() &&
+                                    animationNeeded(carModel.getIdentification(), carModel.getPositionX(), carModel.getPositionY(),
+                                            dataStep, visualizationModel)) {
+                                carModel.animateShape(customShapesAnimations,
+                                        dataStep.getDoubleData(id, OutputType.x.name()),
+                                        dataStep.getDoubleData(id, OutputType.y.name()),
+                                        dataStep.getDoubleData(id, OutputType.xHeading.name()),
+                                        dataStep.getDoubleData(id, OutputType.yHeading.name()),
+                                        animationDurationInSecond,
+                                        coreController.getInteractionViewController()
+                                                .getTimeLineModel().getSelectedSmoothness(),
+                                        coreController.getCoreModel().getResolution());
+
+							} else {
+								carModel.placeShape(coreController.getCoreModel(),
+										dataStep.getDoubleData(id, OutputType.x.name()),
+										dataStep.getDoubleData(id, OutputType.y.name()),
+										dataStep.getDoubleData(id, OutputType.xHeading.name()),
+										dataStep.getDoubleData(id, OutputType.yHeading.name()));
+							}
+
+						}
+
+
+						break;
+
 				default:
 					break;
 				}
 			}
 		}
+		else { // if empty, no data step exists and we keep the last one
+
+			// pass
+		}
+        concurrentMovementAnimation.getChildren().addAll(customShapesAnimations);
 
 		if (newCustomMap.size() > 0) {
 
-			customMap.putAll(newCustomMap);
+			customMap.putAll(newCustomMap); // Update all together to improve shape update
 		}
 
 		for (ShapeModel customShape : customMap.values()) {
-			customShape.setVisibility(true);
+            switch (type) {
+                case Car:
+                    if(dataStep.isEmpty() || !dataStep.isEmpty() && !dataStep.containsIdentification(customShape.getIdentification())) {
+                        customShape.setVisibility(false);
+                    }
+                    break;
+
+                default:
+                    customShape.setVisibility(true);
+                    break;
+            }
+
 		}
+
+		return concurrentMovementAnimation;
 
 	}
 	
 	private static ParallelTransition updatePedestrianShapes(SimulationOutputReader simulationOutputReader, SimulationOutputCluster dataStep, CoreController coreController) {
 		
-		VisualizationModel visualizationModel = coreController.getVisualizationController().getVisualizationModel();
-		CustomizationController customizationController = coreController.getVisualizationController().getCustomizationController();
+		PlaybackModel visualizationModel = coreController.getPlaybackController().getPlaybackModel();
+		CustomizationController customizationController = coreController.getPlaybackController().getCustomizationController();
 
 		PedestrianModel pedestrianVisualization = null;
 		HashMap<String, PedestrianModel> newPedestrians = new HashMap<String, PedestrianModel>();
@@ -228,7 +345,7 @@ public abstract class AnimationCalculations {
 		ParallelTransition concurrentMovementAnimation = createConcurrentAnimation();
 
 		// change or add pedestrian model
-		if (!dataStep.isEmpty()) { // TODO is sometimes null, thus, check
+		if (!dataStep.isEmpty()) {
 
 			ArrayList<Transition> pedestrianAnimations = new ArrayList<Transition>(
 					dataStep.getIdentifications().size() * 2);
@@ -255,19 +372,23 @@ public abstract class AnimationCalculations {
 					pedestrianVisualization = visualizationModel.getPedestrianShapes().get(hashId);
 
 					if (animationDurationInSecond > 0.0 && pedestrianVisualization.isVisible()
-							&& animationNeeded(pedestrianVisualization, dataStep, visualizationModel)) {
+							&& animationNeeded(pedestrianVisualization.getDisplayId(),
+							pedestrianVisualization.getPositionX(), pedestrianVisualization.getPositionY(),
+							dataStep, visualizationModel)) {
 
 						Point2D prevPoint = null;
 						Point2D nextPoint = null;
 
-						if (visualizationModel.getPreviousPedestrianPoints() != null) {
+						if (visualizationModel.getPreviousShapePositionPoints() != null) {
 
-							prevPoint = visualizationModel.getPreviousPedestrianPoints().get(id);
+							prevPoint = visualizationModel.getPreviousSpecificShapePositionPoints(
+									simulationOutputReader.getCsvType()).get(id);
 						}
 
-						if (visualizationModel.getOverNextPedestrianPoints() != null) {
+						if (visualizationModel.getNextShapePositionPoints() != null) {
 
-							nextPoint = visualizationModel.getOverNextPedestrianPoints().get(id);
+							nextPoint = visualizationModel.getNextSpecificShapePositionPoints(
+									simulationOutputReader.getCsvType()).get(id);
 						}
 
 						pedestrianVisualization.setAdjacentPlacements(prevPoint, nextPoint);
@@ -338,21 +459,19 @@ public abstract class AnimationCalculations {
 		return concurrentMovementAnimation;
 	}
 
-
-
-	private static boolean animationNeeded(PedestrianModel pedestrianVisualization, SimulationOutputCluster dataStep, VisualizationModel visualizationModel) {
+	private static boolean animationNeeded(String displayId, double positionX, double positionY, SimulationOutputCluster dataStep, PlaybackModel visualizationModel) {
 
 		boolean animation = false;
 
-		double xPosition = dataStep.getDoubleData(pedestrianVisualization.getDisplayId(), OutputType.x.name());
-		double yPosition = dataStep.getDoubleData(pedestrianVisualization.getDisplayId(), OutputType.y.name());
+		double xPosition = dataStep.getDoubleData(displayId, OutputType.x.name());
+		double yPosition = dataStep.getDoubleData(displayId, OutputType.y.name());
 
-		if ((FastMath.abs(pedestrianVisualization.getPositionX() - xPosition) > visualizationModel.getMiniForAnimation()
-				|| FastMath.abs(pedestrianVisualization.getPositionY() - yPosition) > visualizationModel
+		if ((FastMath.abs(positionX - xPosition) > visualizationModel.getMiniForAnimation()
+				|| FastMath.abs(positionY - yPosition) > visualizationModel
 						.getMiniForAnimation())
-				&& (FastMath.abs(pedestrianVisualization.getPositionX() - xPosition) < visualizationModel
+				&& (FastMath.abs(positionX - xPosition) < visualizationModel
 						.getMaxForAnimation()
-						|| FastMath.abs(pedestrianVisualization.getPositionY() - yPosition) < visualizationModel
+						|| FastMath.abs(positionY - yPosition) < visualizationModel
 								.getMaxForAnimation())) {
 			animation = true;
 		}
@@ -362,7 +481,7 @@ public abstract class AnimationCalculations {
 	
 	private static double calculateAnimationDuration(CoreController coreController) {
 
-		// important: the animation duration describes if a continous playback
+		// important: the animation duration describes if a continuous playback
 		// is running.
 		// if it is > 0 the concurrent movement animation will call the next
 		// playback step by
@@ -409,6 +528,11 @@ public abstract class AnimationCalculations {
 
 		case xtDensity:
 			ShapeModelToReturn = new DensityCellModel(id);
+			break;
+
+		case Car:
+			ShapeModelToReturn = new CarModel(id);
+			break;
 
 		default:
 			break;
@@ -416,7 +540,7 @@ public abstract class AnimationCalculations {
 		return ShapeModelToReturn;
 	}
 
-	private static HashMap<String, Point2D> updatePedestrianPoints(SimulationOutputCluster dataStep, VisualizationModel visualizationModel) {
+	private static HashMap<String, Point2D> updatePedestrianPoints(SimulationOutputCluster dataStep, PlaybackModel visualizationModel) {
 
 		Point2D updatePoint = null;
 		HashMap<String, Point2D> updateList = null;
@@ -440,7 +564,7 @@ public abstract class AnimationCalculations {
 		return updateList;
 	}
 
-	private static ParallelTransition createPedestrianAtTimeStep(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception, InterruptedException {
+	private static SimulationOutputCluster createPedestrianAtTimeStep(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception, InterruptedException {
 
 		// current shapes are loaded, now buffer previous, if previous data step point exists
 		if (timeStep - coreController.getInteractionViewController().getTimeLineModel().getTimeStepMultiplicator() >= 0) {
@@ -453,62 +577,35 @@ public abstract class AnimationCalculations {
 				.getTimeStepMultiplicator() <= simulationOutputReader.getEndCluster()) { 
 			bufferNextPedestrian(timeStep, coreController, simulationOutputReader);
 		}
-		
-		SimulationOutputCluster dataStepCurrent = null;
 
-		while (dataStepCurrent == null) {
-			// read current data step, load if not buffered
-			dataStepCurrent = simulationOutputReader.asyncReadDataSet(timeStep);
-		}
-
-		// update or create new pedestrian shapes
-		return AnimationCalculations.updatePedestrianShapes(simulationOutputReader, dataStepCurrent, coreController);
-	}
-	
-	private static void createDynamicAtTimeStep(SimulationOutputReader simulationOutputReader, Double timeStep, CoreController coreController) throws Exception {
-
-		SimulationOutputCluster dataStepCurrent = null;
-
-		while (dataStepCurrent == null) {
-
-			// read current data step, load if not buffered
-			dataStepCurrent = simulationOutputReader.asyncReadDataSet(timeStep);
-
-			if (dataStepCurrent == null) {
-
-				Thread.sleep(200);
-			}
-		}
-
-		updateCustomData(simulationOutputReader.getCsvType(), dataStepCurrent, coreController, simulationOutputReader);
+		return simulationOutputReader.asyncReadDataSet(timeStep);
 	}
 	
 	private static void bufferPreviousPedestrian(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {
 
-		VisualizationModel visualizationModel = coreController.getVisualizationController().getVisualizationModel();
+		PlaybackModel visualizationModel = coreController.getPlaybackController().getPlaybackModel();
 		SimulationOutputCluster dataStepAdjacent = null;
 		double previousTimeStep = timeStep - simulationOutputReader.getTimeStepDifference();
 		dataStepAdjacent = simulationOutputReader.asyncReadDataSet(previousTimeStep);
-		visualizationModel.setPreviousPedestrianPoints(AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
+		visualizationModel.setPreviousSpecificShapePositionPoints(simulationOutputReader.getCsvType(), AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
 	}
-
-
 
 	private static void bufferNextPedestrian(Double timeStep, CoreController coreController, SimulationOutputReader simulationOutputReader) throws Exception {
 
 		SimulationOutputCluster dataStepAdjacent = null;
-		VisualizationModel visualizationModel = coreController.getVisualizationController().getVisualizationModel();
+		PlaybackModel visualizationModel = coreController.getPlaybackController().getPlaybackModel();
 		double nextTimeStep = timeStep + 2 * simulationOutputReader.getTimeStepDifference();
 		dataStepAdjacent = simulationOutputReader.asyncReadDataSet(nextTimeStep);
 
 		if (dataStepAdjacent != null) { // may be possible if not end and
 										// current is last data
 
-			visualizationModel.setOverNextPedestrianPoints(AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
+			visualizationModel.setNextSpecificShapePositionPoints(simulationOutputReader.getCsvType(),
+					AnimationCalculations.updatePedestrianPoints(dataStepAdjacent, visualizationModel));
 		}
 	}
 	
-	public static Rectangle2D computeObstacleCenterOfGravity2D(ScenarioConfiguration scenarioConfiguration, VisualizationModel visualizationModel) {
+	public static Rectangle2D computeObstacleCenterOfGravity2D(ScenarioConfiguration scenarioConfiguration, PlaybackModel visualizationModel) {
 
 		double minX = scenarioConfiguration.getMinX();
 		double maxX = scenarioConfiguration.getMaxX();

@@ -32,10 +32,10 @@
 
 package tum.cms.sim.momentum.model.operational.standing.JohannsonStandingModel;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtansion;
+import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
-public class JohannsonPedestrianExtension implements IPedestrianExtansion {
+public class JohannsonPedestrianExtension implements IPedestrianExtension {
 
 	private Vector2D velocityWaitingPoint;
 	private Vector2D positionWaitingPoint;

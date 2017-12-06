@@ -40,7 +40,6 @@ import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.infrastructure.logging.LoggingManager;
 import tum.cms.sim.momentum.model.output.writerSources.genericWriterSources.SingleSetWriterSource;
 import tum.cms.sim.momentum.utility.csvData.CsvType;
-import tum.cms.sim.momentum.utility.csvData.reader.BufferingStrategy;
 import tum.cms.sim.momentum.utility.csvData.reader.CsvReader;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;

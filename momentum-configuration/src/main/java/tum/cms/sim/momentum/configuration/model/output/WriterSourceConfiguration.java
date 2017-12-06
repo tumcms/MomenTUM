@@ -52,6 +52,7 @@ public class WriterSourceConfiguration extends PropertyContainerNode {
 		y,
 		time,
 		timeStep,
+		timeStepDuration,
 		endTime,
 		
 		runTime,
@@ -78,7 +79,10 @@ public class WriterSourceConfiguration extends PropertyContainerNode {
 		startLocationID,
 		
 		width,
-		length
+		length,
+		height,
+
+		message
 	}
 	
 	public enum SourceType {
@@ -94,10 +98,12 @@ public class WriterSourceConfiguration extends PropertyContainerNode {
 		UPRM_Pedestrian,
 		CSC_Pedestrian,
 		BarnesHut_SocialForce_Pedestrian,
+		Zeng_SocialForce_Pedestrian,
 		// Model output
 		CSC,
 		TransitZones,
 		ClassicLWR,
+		CsvPlayback,
 		// Absorber output
 		Absorber
 	}
@@ -115,10 +121,12 @@ public class WriterSourceConfiguration extends PropertyContainerNode {
 		map.put(SourceType.UPRM_Pedestrian.toString(), SourceType.UPRM_Pedestrian);
 		map.put(SourceType.CSC_Pedestrian.toString(), SourceType.CSC_Pedestrian);
 		map.put(SourceType.BarnesHut_SocialForce_Pedestrian.toString(), SourceType.BarnesHut_SocialForce_Pedestrian);
+		map.put(SourceType.Zeng_SocialForce_Pedestrian.toString(), SourceType.Zeng_SocialForce_Pedestrian);
 		map.put(SourceType.CSC.toString(), SourceType.CSC);
 		map.put(SourceType.TransitZones.toString(), SourceType.TransitZones);
 		map.put(SourceType.ClassicLWR.toString(), SourceType.ClassicLWR);
 		map.put(SourceType.Absorber.toString(), SourceType.Absorber);
+		map.put(SourceType.CsvPlayback.toString(), SourceType.CsvPlayback);
 		
 		return new EnumToStringConverter<>(SourceType.class, map);
 	}
