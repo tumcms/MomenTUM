@@ -49,7 +49,8 @@ public class CustomCSVDialogCreator {
 	public static CsvType createCustomCSVDialog(CsvType preferredType) {
 		
 		Dialog<Void> dialog = new Dialog<Void>();
-		dialog.initModality(Modality.WINDOW_MODAL);
+		//change by Julia 11.10 Window_modal
+		dialog.initModality(Modality.APPLICATION_MODAL);
     	dialog.setTitle(customCSVTitle);
     	dialog.setHeaderText(customCSVHeader);
     	

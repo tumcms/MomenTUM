@@ -81,16 +81,17 @@ public class CustomizationDialogCreator {
 	private static String colorDialogObstacleColor = "Obstacle";
 	private static String colorDialogVirtualObstacleColor = "Virtual Obstacle";
 	private static String colorDialogResetColor = "Reset Colors";
-	
 	private static String snapshotDialogTitle = "Snapshot Preferences";
 	private static String snapshotDialogHeader = "Snapshot Preferences";
 	private static String snapshotDialogPath = "Snapshot path:";
 	private static String snapshotDialogName = "Snapshot name:";
 	private static String snapshotDialogScale = "Scaling factor:";
+	private static String timeIntervalStartTime = "Trajectory Visibility Interval:";
 	
 	public static void createColorDialog(VisualizationController visualizationController) {
 		
 		CustomizationModel customizationModel = visualizationController.getCustomizationController().getCustomizationModel();
+		CoreController coreController = visualizationController.getCoreController();
 		
 		Dialog<Void> dialog = new Dialog<Void>();
 		dialog.initModality(Modality.WINDOW_MODAL);
@@ -396,10 +397,48 @@ public class CustomizationDialogCreator {
 				
 			}
 		});
-    	
-    	
     	grid.add(textItem, 0, rowIndex);
     	grid.add(trajectoryThicknessTextField, 1, rowIndex);
+ 
+    	
+    	textItem = new Label();
+    	textItem.setText(timeIntervalStartTime);
+    	TextField trajectoryTimeIntervalTextField = new TextField();
+    	trajectoryTimeIntervalTextField.setPrefWidth(130);
+    	trajectoryTimeIntervalTextField.setText(String.valueOf(customizationModel.gettrajectoryTimeInterval()));
+    	trajectoryTimeIntervalTextField.setOnAction(enterPressed);
+    	trajectoryTimeIntervalTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean focusLost, Boolean focusGained) {
+
+				if (focusLost) {
+					if(trajectoryTimeIntervalTextField.getText().isEmpty()) {
+						InformationDialogCreator.createErrorDialog("Customization", "The trajectory visibility range hast to be a valid number between 0.0 and 500.0");
+						trajectoryTimeIntervalTextField.textProperty().set(String.valueOf(customizationModel.gettrajectoryTimeInterval()));
+						return;
+					}
+					try {
+						if(Double.parseDouble(trajectoryTimeIntervalTextField.getText())>500){
+							throw new Exception();
+							}
+						
+						customizationModel.settrajectoryTimeInterval(Double.parseDouble(trajectoryTimeIntervalTextField.getText()));
+						
+						coreController.getLayerConfigurationController().updateTrajectories();
+						}
+					catch (Exception e) {
+						InformationDialogCreator.createErrorDialog("Customization", "The trajectory time interval has to be a valid number between 0.0 and 500.0");
+						trajectoryTimeIntervalTextField.textProperty().set(String.valueOf(customizationModel.gettrajectoryTimeInterval()));
+						
+					}
+				}
+				
+			}
+		});
+    	
+    	grid.add(textItem, 2, rowIndex);
+    	grid.add(trajectoryTimeIntervalTextField, 3, rowIndex);
     	rowIndex++;
     	
        	textItem = new Label();

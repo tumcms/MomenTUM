@@ -32,21 +32,34 @@
 
 package tum.cms.sim.momentum.visualization.model.geometry;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import org.apache.commons.math3.util.FastMath;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Shape;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
+import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
+import tum.cms.sim.momentum.visualization.model.VisualizationModel;
 
-public class TrajectoryModel {
+public class TrajectoryModel extends ShapeModel{
 
 	private String id;
 	
 	private Path trajectory = null;
+	
+	VisualizationModel visualizationModel = null;
+	
+	LinkedHashMap<String, String> details = new LinkedHashMap<>();
 	
 	public void setVisibility(boolean visible) {
 
@@ -104,9 +117,65 @@ public class TrajectoryModel {
 					y * resolution);
 	
 			trajectory.getElements().add(element);
-			
 		//}
 	}
 
+	public void clear() {
+		trajectory.getElements().clear();
+	}
 
+	@Override
+	public void changeSelectionMode(SelectionStates selectionState) {
+		 
+		switch(selectionState) {
+		
+		case NotSelected:
+			if(this.trajectory != null) {
+				
+				visualizationModel.getTrajectoryShapes()
+					.forEach((id,shape)-> shape.setVisibility(true));
+			}
+			break;
+			
+		case Selected:
+			
+			if(this.trajectory != null) {
+				
+				visualizationModel.getTrajectoryShapes()
+					.forEach((id,shape)-> shape.setVisibility(false));
+				trajectory.setVisible(true);
+			}
+			break;
+		}
+	}
+
+	@Override
+	public ArrayList<Node> getClickableShapes() {
+		
+		ArrayList<Node> clickableShapes = new ArrayList<Node>();
+		
+		clickableShapes.add(this.trajectory);
+
+		return clickableShapes;
+	}
+
+	@Override
+	public LinkedHashMap<String, String> getDataProperties() {
+	
+		this.details.put(ShapeModel.nameDetails, id);
+		
+		return this.details;
+		
+	}
+	
+	public void setDataProperties(LinkedHashMap<String, String> details) {
+		
+		this.details=details;
+	}
+	
+	public void setModel(VisualizationModel visualizationModel) {
+		
+		this.visualizationModel = visualizationModel;
+	}
+	
 }

@@ -60,6 +60,7 @@ public class TimeLineModel {
 	private List<String> speedUp = SpeedUp.SPEEDUP_VALUES;
 	private List<String> smoothness = Smoothness.SMOOTHNESS_VALUES;
 
+	
 	public BooleanProperty playingProperty() {
 		return playing;
 	}
@@ -179,5 +180,4 @@ public class TimeLineModel {
 	public List<String> getSmoothness() {
 		return smoothness;
 	}
-
 }

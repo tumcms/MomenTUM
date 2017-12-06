@@ -108,15 +108,27 @@ public class VisualizationController implements Initializable {
 	}
 
 	public void putTrajectoriesIntoPedestrians(HashMap<String, TrajectoryModel> trajectories) {
-		
+		//05.12
+//		coreController.getVisualizationModel().getTrajectoryShapes()
+//		.forEach((id,trajectoryShape) -> trajectoryShape.setModel(coreController.getVisualizationModel()));
+//		
 		for (PedestrianModel pedestrianShapeModel : visualizationModel.getPedestrianShapes().values()) {
 			
-			pedestrianShapeModel.putTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()));
+			if(trajectories.get(pedestrianShapeModel.getIdentification()) != null) {
+				
+				pedestrianShapeModel.setTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()), getVisualizationModel());
+				
+//				coreController.getVisualizationModel().getTrajectoryShapes()
+//				.forEach((id,trajectoryShape) -> trajectoryShape.setDataProperties(pedestrianShapeModel.getDataProperties()));
+				
+			}
 		}
 	}
-
+	
 	public void clearAll() {
-
+		
+		VisualizationController.selectionHandler.clearDetailsView();
+		
 		visualizationModel.getAreaShapes().clear();
 		visualizationModel.getObstacleShapes().clear();
 		visualizationModel.getVertexShapes().clear();
@@ -220,7 +232,7 @@ public class VisualizationController implements Initializable {
 		playBackPane.setOnKeyPressed(onKey3DViewKeyEventHandler);
 
 		visualizationModel.areaShapesProperty().addListener(onAreaShapesListChangedListener);
-		visualizationModel.obstacleShapesProperty().addListener(onObstracleShapesListChangedListener);
+		visualizationModel.obstacleShapesProperty().addListener(onObstacleShapesListChangedListener);
 		visualizationModel.pedestrianShapesProperty().addListener(onPedestrianShapesListChangedListener);
 
 		visualizationModel.vertexShapesProperty().addListener(onVertexShapesListChangedListener);
@@ -347,7 +359,7 @@ public class VisualizationController implements Initializable {
 		}
 	};
 
-	private ListChangeListener<ObstacleModel> onObstracleShapesListChangedListener = new ListChangeListener<ObstacleModel>() {
+	private ListChangeListener<ObstacleModel> onObstacleShapesListChangedListener = new ListChangeListener<ObstacleModel>() {
 
 		@Override
 		public void onChanged(ListChangeListener.Change<? extends ObstacleModel> changed) {
@@ -411,7 +423,7 @@ public class VisualizationController implements Initializable {
 	};
 
 	private MapChangeListener<String, PedestrianModel> onPedestrianShapesListChangedListener = new MapChangeListener<String, PedestrianModel>() {
-
+		
 		@Override
 		public void onChanged(MapChangeListener.Change<? extends String, ? extends PedestrianModel> changed) {
 
@@ -481,12 +493,12 @@ public class VisualizationController implements Initializable {
 			if (changed.getMap().size() > 0) {
 
 				if (!changed.wasRemoved()) {
-
+					changed.getValueAdded().registerSelectable(VisualizationController.selectionHandler);
 					playbackObjectsPane.getChildren().add(changed.getValueAdded().getTrajectory());
 				}
 			} else {
 
-				playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
+				playbackObjectsPane.getChildren().remove(changed.getValueRemoved().getTrajectory());
 			}
 
 			playBackPane.toBack();
@@ -497,6 +509,9 @@ public class VisualizationController implements Initializable {
 		return customizationController;
 	}
 
+	public CoreController getCoreController() {
+		return coreController;
+	}
 	public SnapshotModel getSnapshotModel() {
 		return snapshotModel;
 	}

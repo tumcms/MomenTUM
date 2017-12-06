@@ -62,6 +62,7 @@ public class CustomizationModel {
 	private final ObjectProperty<Paint> trajectoryPaint = new SimpleObjectProperty<Paint>(this, "trajectoryColor", Color.GRAY);
 	private final ObjectProperty<Boolean> trajectoryIsRandomColor = new SimpleObjectProperty<Boolean>(this, "trajectoryIsRandomColor", false);
 	private final ObjectProperty<Double> trajectoryThickness = new SimpleObjectProperty<Double>(this, "trajectoryThickness", 0.5);
+	private final ObjectProperty<Double> trajectoryTimeInterval = new SimpleObjectProperty<Double>(this, "trajectoryTimeInterval", 10.0);
 	private final ObjectProperty<Double> edgeThickness = new SimpleObjectProperty<Double>(this, "edgeThickness", 1.);
 	private final ObjectProperty<Double> vertexSize = new SimpleObjectProperty<Double>(this, "vertexSize", 3.);
 
@@ -297,5 +298,18 @@ public class CustomizationModel {
 	public void setVertexSize(Double size) {
 		vertexSize.set(size);
 		UserPreferenceHandler.putProperty(PropertyType.vertexSize, String.valueOf(size));
+	}
+	
+	public ObjectProperty<Double> trajectoryTimeIntervalProperty() {
+		return trajectoryTimeInterval;
+	}
+	
+	public double gettrajectoryTimeInterval() {
+		return trajectoryTimeInterval.get();
+	}
+	
+	public void settrajectoryTimeInterval(Double size) {
+		trajectoryTimeInterval.set(size);
+		UserPreferenceHandler.putProperty(PropertyType.trajectoryTimeInterval, String.valueOf(size));
 	}
 }

@@ -48,7 +48,7 @@ public class SelectionHandler {
 		NotSelected
 	}
 	
-	private HashSet<ShapeModel> selectedShapes = new HashSet<ShapeModel>();;
+	private HashSet<ShapeModel> selectedShapes = new HashSet<ShapeModel>();
 	private TableView<DetailsModelEntry> detailsView = null;
 	private HashMap<String, ShapeModel> clickableObjects = new HashMap<String, ShapeModel>();
 	
@@ -130,7 +130,12 @@ public class SelectionHandler {
 			selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
 			this.selectedShapes.clear();
 		}
+	}
+ 
+	public void clearDetailsView() {
 		
-		
+		selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
+		selectedShapes.clear();
+		this.detailsView.setItems(FXCollections.observableArrayList());
 	}
 }

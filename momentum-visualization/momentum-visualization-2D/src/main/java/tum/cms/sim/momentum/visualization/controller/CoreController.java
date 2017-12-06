@@ -39,7 +39,9 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -48,6 +50,7 @@ import tum.cms.sim.momentum.utility.csvData.CsvType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
 import tum.cms.sim.momentum.visualization.model.VisualizationModel;
+import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
 
 public class CoreController implements Initializable {
 
@@ -79,7 +82,7 @@ public class CoreController implements Initializable {
 	private DetailController detailViewController;
 	@FXML
 	private LoadedFilesController loadedFilesController;
-
+	
 	// models
 	@FXML
 	private static CoreModel coreModel = new CoreModel();
@@ -107,6 +110,10 @@ public class CoreController implements Initializable {
 	public DetailController getDetailController() {
 		return detailController;
 	}
+	
+	public LayerConfigurationController getLayerConfigurationController() {
+		return layerConfigurationViewController;
+	}
 
 	public void setDetailController(DetailController detailController) {
 		this.detailController = detailController;
@@ -130,13 +137,13 @@ public class CoreController implements Initializable {
 	}
 	
 	public void resetCoreModel() throws Exception {
-
+		
 		coreModel.setResolution(1);
 		coreModel.setLayoutLoaded(false);
 		coreModel.setCsvLoaded(false);
-
 		interactionViewController.resetTimeLineModel();
 		playbackViewController.clearAll();
+		layerConfigurationViewController.resetCheckBox();
 	}
 
 	public void setVisualizationModel(VisualizationModel visualizationModel) {
@@ -187,7 +194,6 @@ public class CoreController implements Initializable {
 	public ArrayList<SimulationOutputReader> getSimulationOutputReaderList() {
 		return simulationOutputReaderList;
 	}
-
 	public ArrayList<SimulationOutputReader> getActiveSimulationOutputReaderList() {
 		ArrayList<SimulationOutputReader> activeSimulationOutputReaders = new ArrayList<>();
 		for (SimulationOutputReader simReader : simulationOutputReaderList) {

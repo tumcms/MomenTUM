@@ -60,6 +60,7 @@ import tum.cms.sim.momentum.visualization.model.custom.TransitAreaModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
 import tum.cms.sim.momentum.visualization.model.geometry.PedestrianModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
+import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
 
 /**
  * This class contains the essentials for animations. It is the interface between
@@ -70,6 +71,7 @@ import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
  *
  */
 public abstract class AnimationCalculations {
+	
 	
 	private static IdExtension idCalculator = new IdExtension();
 	/**
@@ -234,12 +236,11 @@ public abstract class AnimationCalculations {
 			for (String id : dataStep.getIdentifications()) {
 				
 				String hashId = idCalculator.createUniqueId(id, simulationOutputReader.getFilePathHash());
-
+				
 				if (!visualizationModel.getPedestrianShapes().containsKey(hashId)) {
 
 					pedestrianVisualization = new PedestrianModel(id, hashId);
 					newPedestrians.put(hashId, pedestrianVisualization);
-
 					pedestrianVisualization.updateProperties(dataStep);
 
 					pedestrianVisualization.createShape(dataStep.getDoubleData(id, OutputType.x.name()),
@@ -248,7 +249,7 @@ public abstract class AnimationCalculations {
 							dataStep.getDoubleData(id, OutputType.yHeading.name()),
 							dataStep.getDoubleData(id, OutputType.bodyRadius.name()),
 							coreController.getCoreModel().getResolution(), customizationController);
-				}
+					}
 				else {
 
 					pedestrianVisualization = visualizationModel.getPedestrianShapes().get(hashId);
@@ -281,6 +282,7 @@ public abstract class AnimationCalculations {
 								animationDurationInSecond, coreController.getInteractionViewController()
 										.getTimeLineModel().getSelectedSmoothness(),
 								coreController.getCoreModel().getResolution());
+					
 					} 
 					else {
 
@@ -291,7 +293,18 @@ public abstract class AnimationCalculations {
 								dataStep.getDoubleData(id, OutputType.xHeading.name()),
 								dataStep.getDoubleData(id, OutputType.yHeading.name()),
 								coreController.getCoreModel().getResolution());
+						}
 					}
+				
+				if(coreController.getLayerConfigurationController().getCheckSeedColoured()) {
+					
+					ColorGenerator.generateSeedColors(visualizationModel);
+					pedestrianVisualization.setIsSeedColored(true);
+				}
+				else if(coreController.getLayerConfigurationController().getCheckGroupColoured()) {
+					
+					ColorGenerator.generateGroupColors(visualizationModel);
+					pedestrianVisualization.setIsGroupColored(true);
 				}
 			}
 
@@ -308,7 +321,8 @@ public abstract class AnimationCalculations {
 			if (dataStep.isEmpty() || !dataStep.containsIdentification(pedestrianModel.getClusterIdentification())) {
 
 				pedestrianModel.setVisibility(false);
-			} else {
+			} 
+			else {
 
 				pedestrianModel.setVisibility(true);
 			}
@@ -323,6 +337,8 @@ public abstract class AnimationCalculations {
 
 		return concurrentMovementAnimation;
 	}
+
+
 
 	private static boolean animationNeeded(PedestrianModel pedestrianVisualization, SimulationOutputCluster dataStep, VisualizationModel visualizationModel) {
 
@@ -371,6 +387,7 @@ public abstract class AnimationCalculations {
 
 		ParallelTransition concurrentMovementAnimation = new ParallelTransition();
 		concurrentMovementAnimation.setAutoReverse(true);
+		
 		return concurrentMovementAnimation;
 	}
 	

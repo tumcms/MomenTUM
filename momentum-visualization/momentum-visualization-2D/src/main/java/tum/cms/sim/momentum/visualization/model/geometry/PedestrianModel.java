@@ -39,10 +39,13 @@ import java.util.LinkedHashMap;
 
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
+import tum.cms.sim.momentum.visualization.controller.CoreController;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
+import tum.cms.sim.momentum.visualization.controller.VisualizationController;
 import tum.cms.sim.momentum.visualization.enums.Smoothness;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CustomizationModel;
+import tum.cms.sim.momentum.visualization.model.VisualizationModel;
 import tum.cms.sim.momentum.visualization.utility.TrajectoryCubicCurve;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
@@ -73,7 +76,6 @@ public class PedestrianModel extends ShapeModel {
 	private static TrajectoryCubicCurve trajectoryCubicCurve= new TrajectoryCubicCurve();
 	private String displayId;
 	private String identificationId;
-
 
 	private double positionX;
 	private double positionY;
@@ -227,6 +229,8 @@ public class PedestrianModel extends ShapeModel {
 		this.identificationId = hashId;
 	}
 
+	public VisualizationModel visualizationModel = null;
+	
 	@Override
 	/**
 	 * returns the global unique id of this PedestrianModel
@@ -255,7 +259,9 @@ public class PedestrianModel extends ShapeModel {
 			
 			if(this.trajectory != null) {
 				
-				this.trajectory.setVisible(false);
+				this.visualizationModel.getTrajectoryShapes()
+					.forEach((id,shape)-> shape.setVisibility(true));
+//				this.trajectory.setVisible(false);
 			}
 			break;
 		case Selected:
@@ -264,6 +270,8 @@ public class PedestrianModel extends ShapeModel {
 			
 			if(this.trajectory != null) {
 				
+				this.visualizationModel.getTrajectoryShapes()
+					.forEach((id,shape)-> shape.setVisibility(false));
 				this.trajectory.setVisible(true);
 			}
 			break;
@@ -386,8 +394,10 @@ public class PedestrianModel extends ShapeModel {
 		this.pedestrianShape.setRotate(this.angle);
 	}
 
-	public void putTrajectory(TrajectoryModel trajectoryModel) {
+	public void setTrajectory(TrajectoryModel trajectoryModel, VisualizationModel visualizationModel) {
+		
 		this.trajectory = trajectoryModel.getTrajectory();	
+		this.visualizationModel = visualizationModel;
 	}
 	
 	public void placeShape(double positionX, 
