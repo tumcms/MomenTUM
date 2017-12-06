@@ -41,7 +41,7 @@ import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
 
 @XStreamAlias("SpaceSyntax")
-public class DepthMap extends SpaceSyntax {
+public class VisibilityGraph extends SpaceSyntax {
 	
 	@XStreamAsAttribute
 	private final int domainRows;
@@ -65,7 +65,7 @@ public class DepthMap extends SpaceSyntax {
 	@XStreamAsAttribute
 	private final String scenarioName;
 	
-	public DepthMap(ILattice lattice, Set<CellIndex> connectedIndices, String scenarioName) {
+	public VisibilityGraph(ILattice lattice, Set<CellIndex> connectedIndices, String scenarioName) {
 		
 		super(lattice, connectedIndices);
 		
