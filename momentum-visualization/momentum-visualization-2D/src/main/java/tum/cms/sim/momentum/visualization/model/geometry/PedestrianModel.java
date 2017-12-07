@@ -36,8 +36,7 @@ import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Arrays;
+import org.apache.commons.math3.util.FastMath;
 
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
@@ -73,9 +72,9 @@ public class PedestrianModel extends ShapeModel {
 	private static Double pedestrianHeight = 3.0;
 	private static Point2D groundVector = new Point2D(1.0,0.0);
 	private static TrajectoryCubicCurve trajectoryCubicCurve= new TrajectoryCubicCurve();
+	private static double jumpDistance = 2.0; //meter in case pedestrian positions are far away
 	private String displayId;
 	private String identificationId;
-
 
 	private double positionX;
 	private double positionY;
@@ -565,6 +564,18 @@ public class PedestrianModel extends ShapeModel {
 			durationInSeconds = 0.005; // minmal timestep
 		}
 		
+		if(previousPlacement == null || overNextPlacement == null) {
+			
+			smoothness = Smoothness.Linear;
+		}
+		
+		boolean jump = FastMath.sqrt(FastMath.pow(oldX - newX, 2.0) + FastMath.pow(oldY - newY, 2.0)) > jumpDistance;
+		
+		if(jump) { // TODO still the pedestrian flash at the old position after in case of jumps on play
+			
+			smoothness = Smoothness.None;
+		}
+		
 		switch(smoothness) {
 		
 		case Cubic:
@@ -586,8 +597,18 @@ public class PedestrianModel extends ShapeModel {
 		case None:
 			
 			durationInterpolator = Interpolator.DISCRETE;
-			animation.getElements().add(new MoveTo(oldX * resolution, oldY * resolution));
-			animation.getElements().add(new LineTo(newX * resolution, newY * resolution));
+			
+			if(jump) {
+				
+				animation.getElements().add(new MoveTo(newX * resolution, newY * resolution));
+				animation.getElements().add(new LineTo(newX * resolution, newY * resolution));
+			}
+			else {
+
+				animation.getElements().add(new MoveTo(oldX * resolution, oldY * resolution));
+				animation.getElements().add(new LineTo(newX * resolution, newY * resolution));
+			}
+			
 			break;
 			
 		default:
