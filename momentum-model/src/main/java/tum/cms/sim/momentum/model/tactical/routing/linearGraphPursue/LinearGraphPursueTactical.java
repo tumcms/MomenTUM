@@ -2,8 +2,12 @@ package tum.cms.sim.momentum.model.tactical.routing.linearGraphPursue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -14,7 +18,6 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
-import tum.cms.sim.momentum.utility.geometry.operation.GeometryAdditionals;
 import tum.cms.sim.momentum.utility.graph.Vertex;
 
 /**
@@ -52,47 +55,80 @@ public class LinearGraphPursueTactical extends RoutingModel {
 	@Override
 	public void callPedestrianBehavior(ITacticalPedestrian pedestrian, SimulationState simulationState) {
 		
-		Vector2D heading = pedestrian.getHeading();
+		//Vector2D heading = pedestrian.getHeading();
 		Vector2D position = pedestrian.getPosition();
 		
-		Collection<Vertex> potentialNextGoals = null;
+		ArrayList<Vertex> potentialNextGoals = new ArrayList<>(this.scenarioManager.getGraph().getVertices());
 		Vertex lastVertex = null;
+		Vertex nextToLastVertex = null;
+		Set<Vertex> visited = new HashSet<Vertex>();
 		
 		if(pedestrian.getRoutingState() != null && pedestrian.getRoutingState().getNextVisit() != null) {
 			
-			potentialNextGoals = this.scenarioManager.getGraph().getSuccessorVertices(
-					pedestrian.getRoutingState().getNextVisit());
-			
 			lastVertex = pedestrian.getRoutingState().getNextVisit();
-		}
-		else {
-			
-			potentialNextGoals = this.scenarioManager.getGraph().getVertices();
+			nextToLastVertex = pedestrian.getRoutingState().getLastVisit();
+			visited.addAll(pedestrian.getRoutingState().getVisited());
+			potentialNextGoals.removeAll(pedestrian.getRoutingState().getVisited());
+			potentialNextGoals.remove(pedestrian.getRoutingState().getNextVisit());
 		}
 		
-		ArrayList<Pair<Vertex,Double>> visibleVertices = new ArrayList<>();
+		ArrayList<Pair<Vertex,Double>> toCheckVertices = new ArrayList<>();
 		
 		for(Vertex vertex : potentialNextGoals) {
 			
 			if(this.perception.isVisible(pedestrian, vertex)) {
 			
-				visibleVertices.add(Pair.of(vertex,
-						GeometryAdditionals.angleBetween0And180(vertex.getGeometry().getCenter(), position, heading)
-					));
+				toCheckVertices.add(Pair.of(vertex, vertex.getGeometry().getCenter().distance(position)));
 			}
 		}
+
+		RoutingState newRoutingState = null;
 		
-		if(visibleVertices.size() > 0) {
+		if(pedestrian.getRoutingState() != null && toCheckVertices.size() == 0) {
 			
-			Vertex next = visibleVertices.stream().sorted(Comparator.comparing(Pair::getRight)).findFirst().get().getLeft();
-		
-			RoutingState routingState = new RoutingState(new HashSet<Vertex>(), null, lastVertex, next);
-			pedestrian.setRoutingState(routingState);
+			// in case nothing is visible we seek for the next vertex from the current
+			Vertex nextVisit = pedestrian.getRoutingState().getNextVisit();
+			
+			try {
+			for(Vertex neighbor : scenarioManager.getGraph().getSuccessorVertices(nextVisit)) {
+				
+				toCheckVertices.add(Pair.of(neighbor, neighbor.getGeometry().getCenter().distance(position)));
+			}
+			}
+			catch(Exception ex) {
+				ex = null;
+			}
+			if(toCheckVertices.size() > 0 && pedestrian.getRoutingState() != null){ 
+				
+				List<Pair<Vertex, Double>> nextSorted = toCheckVertices.stream()
+						.sorted(Comparator.comparing(Pair::getRight))
+						.collect(Collectors.toList());
+				
+				Collections.reverse(nextSorted);
+				Vertex next = nextSorted.get(0).getLeft();
+				newRoutingState = new RoutingState(new HashSet<Vertex>(), nextToLastVertex , lastVertex, next);
+			}
 		}
 		else {
+
+			if(toCheckVertices.size() == 0) {
+				
+  				for(Vertex vertex : potentialNextGoals) {
+					
+					toCheckVertices.add(Pair.of(vertex, vertex.getGeometry().getCenter().distance(position)));
+				}
+			}
 			
-			pedestrian.setRoutingState(null);
+			Vertex next = toCheckVertices.stream()
+					.sorted(Comparator.comparing(Pair::getRight))
+					.findFirst()
+					.get()
+					.getLeft();
+		
+			newRoutingState = new RoutingState(new HashSet<Vertex>(), nextToLastVertex , lastVertex, next);
 		}
+
+		pedestrian.setRoutingState(newRoutingState);
 	}
 
 	@Override

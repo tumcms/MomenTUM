@@ -201,6 +201,10 @@ public class InteractionController implements Initializable {
 
 				InteractionController.this.startPlaying(roundedSlider);
 			}
+			else {
+				
+				onPause(null);
+			}
 		}
 	};
 

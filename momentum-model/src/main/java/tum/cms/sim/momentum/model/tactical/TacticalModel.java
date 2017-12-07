@@ -432,12 +432,10 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	
 	private void callTacticRouteBehavior(IRichPedestrian pedestrian, SimulationState simulationState) {
 			
-		boolean normalRouting = true;
-
 		if(tacticalControl) {
 			
 			// correct goal / point of interest is visible, just go there!
-			normalRouting = !this.routingModel.shortCutRoute(this.perception, pedestrian);
+			boolean normalRouting  = !this.routingModel.shortCutRoute(this.perception, pedestrian);
 		
 			// re-routing is a process that only needs to be activated if
 			// the next navigation is visible 
@@ -457,44 +455,44 @@ public class TacticalModel extends PedestrianBehaviorModel {
 					Vertex next = pedestrian.getRoutingState().getNextVisit();
 					Vertex nextToNext = pedestrian.getRoutingState().getNextToCurrentVisit();
 					
-					Vertex end = this.scenarioManager.getGraph()
-							.getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
-					
 					Set<Vertex> visited = pedestrian.getRoutingState().getVisited();
+					Vertex end = null;
 					
-					if(start != null && end != null) {
-						while(currentDepth > 0) {
-							
-							this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+					if(pedestrian.getNextNavigationTarget() != null) {
+						end = scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
+					}
+					
+					while(currentDepth > 0) {
 						
-							RoutingState newRoutingState = pedestrian.getRoutingState();
+						this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+					
+						RoutingState newRoutingState = pedestrian.getRoutingState();
+						
+						// TODO check if circles are solved next / last
+						if(!perception.isVisible(pedestrian, newRoutingState.getNextVisit()) ||
+						   (end != null && newRoutingState.getNextVisit().equals(end)) ||
+						   (start != null && end != null && start.equals(end))) {
 							
-							// TODO check if circles are solved next / last
-							if(!perception.isVisible(pedestrian, newRoutingState.getNextVisit()) ||
-							   newRoutingState.getNextVisit().equals(end) ||
-							   start.equals(end)) {
-								
-								nextToNext = newRoutingState.getNextVisit();
-								break;
-							}
-	
-							currentDepth--;
-							
-							if(currentDepth == 0) { 
-								
-								nextToNext = newRoutingState.getNextVisit();
-								break;
-							}
-							else {
-								
-								nextTolast = last;
-							}
-							
-							visited.add(next);
-							
-							last = newRoutingState.getLastVisit();
-							next = newRoutingState.getNextVisit();
+							nextToNext = newRoutingState.getNextVisit();
+							break;
 						}
+
+						currentDepth--;
+						
+						if(currentDepth == 0) { 
+							
+							nextToNext = newRoutingState.getNextVisit();
+							break;
+						}
+						else {
+							
+							nextTolast = last;
+						}
+						
+						visited.add(next);
+						
+						last = newRoutingState.getLastVisit();
+						next = newRoutingState.getNextVisit();
 					}
 					
 					RoutingState finalRoutingState = new RoutingState(visited, nextTolast, last, next);
@@ -503,14 +501,11 @@ public class TacticalModel extends PedestrianBehaviorModel {
 				}
 			}			
 		}
-		else {
-			
-			if(pedestrian.getRoutingState() == null || 
+		else if(pedestrian.getRoutingState() == null || 
 			   pedestrian.getRoutingState().getNextVisit() == null ||
 			   pedestrian.getPosition().distance(pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter()) < navigationDistanceRadius) {
 			
-				this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
-			}
+			this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
 		}
 		
 		// Is the route memory activated, if not delete it

@@ -13,7 +13,7 @@
 	</loop>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.1"/>
 	</lattices>
 	
 	<graphs>
@@ -29,7 +29,7 @@
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
 			<property name="perceptionDistance" type="Double" value="5.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
-			<property name="perceptionAngleDegree" type="Double" value="60.0"/>
+			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
 		</perceptual>
 	</perceptualModels>
 	
@@ -59,9 +59,10 @@
 		<tactical id="3" name="tactical"  perceptualModel="0">
 			<routingReference modelId="4"/>
 			<property name="goalDistanceRadius" type="Double" value="0.23" />
-			<property name="routeMemory" type="Boolean" value="False" />
+			<property name="routeMemory" type="Boolean" value="True" />
 			<property name="tacticalControl" type="Boolean" value="True" />
 			<property name="strategicCommand" type="String" value="Routing"/>
+			<property name="deepNodeSelection" type="Integer" value="3"/>
 		</tactical>
 	</tacticalModels>
 	
@@ -114,7 +115,7 @@
 	
 	<outputWriters>
 		<outputWriter id="0" name="pedestrianOutputToFile"> 
-			<property name="call" type="Integer" value="10"/> <!-- Print 10 * 0.05 = 0.5 seconds -->
+			<property name="call" type="Integer" value="5"/> <!-- Print 10 * 0.05 = 0.5 seconds -->
 			<property name="buffer" type="Integer" value="50"/>
 			<writerTarget targetType="File">
 				<property name="file" type="File" value="C:\Users\ga37sib\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playkback_ug_100_$LOOP$_pedestrian.csv"/>
@@ -243,6 +244,14 @@
 			<vertex name="21" id="21">
 				<center x="3" y="0.5" />
 			</vertex>
+			<vertex name="22" id="22">
+				<center x="0" y="0.5" />
+			</vertex>
+			<vertex name="23" id="23">
+				<center x="0" y="-4.5" />
+			</vertex>
+			<edge idLeft="22" idRight="21" />
+			<edge idLeft="0" idRight="22" />
 			<edge idLeft="0" idRight="1" />
 			<edge idLeft="1" idRight="2" />
 			<edge idLeft="2" idRight="3" />
@@ -253,7 +262,8 @@
 			<edge idLeft="7" idRight="8" />
 			<edge idLeft="8" idRight="9" />
 			<edge idLeft="9" idRight="10" />
-			<edge idLeft="10" idRight="11" />
+			<edge idLeft="10" idRight="23" />
+			<edge idLeft="23" idRight="11" />
 			<edge idLeft="11" idRight="12" />
 			<edge idLeft="12" idRight="13" />
 			<edge idLeft="13" idRight="14" />
@@ -264,7 +274,7 @@
 			<edge idLeft="18" idRight="19" />
 			<edge idLeft="19" idRight="20" />
 			<edge idLeft="20" idRight="21" />
-			<edge idLeft="21" idRight="0" />
+			
 			</graph>
 			<obstacle id="0" name="Wall0" type="Wall">
 			<point x="3" y="1" />
