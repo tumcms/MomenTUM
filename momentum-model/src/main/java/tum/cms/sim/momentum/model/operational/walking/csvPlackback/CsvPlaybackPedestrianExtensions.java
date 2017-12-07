@@ -109,16 +109,16 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	}
 	
 	/**
-	 * Returns heading vector integrated over the last 5 headings
+	 * Returns heading vector mean over the last numberForMean headings
 	 * @param currentEstimatedHeading
-	 * @return new heading (integrated over last 5)
+	 * @return new heading (integrated over last numberForMean)
 	 */
-	public Vector2D updateHeadings(Vector2D currentEstimatedHeading) {
+	public Vector2D updateHeadings(Vector2D currentEstimatedHeading, int numberForMean) {
 		
 		this.headingsList.add(currentEstimatedHeading);
 		Vector2D integratedHeading = GeometryFactory.createVector(0.0, 0.0);
 		
-		if(this.headingsList.size() > 5) {
+		if(this.headingsList.size() > numberForMean) {
 			
 			this.headingsList.remove(0);
 		}
