@@ -58,7 +58,7 @@ public class LinearGraphPursueTactical extends RoutingModel {
 		//Vector2D heading = pedestrian.getHeading();
 		Vector2D position = pedestrian.getPosition();
 		
-		Collection<Vertex> potentialNextGoals = this.scenarioManager.getGraph().getVertices();;
+		ArrayList<Vertex> potentialNextGoals = new ArrayList<>(this.scenarioManager.getGraph().getVertices());
 		Vertex lastVertex = null;
 		Vertex nextToLastVertex = null;
 		Set<Vertex> visited = new HashSet<Vertex>();
@@ -89,11 +89,15 @@ public class LinearGraphPursueTactical extends RoutingModel {
 			// in case nothing is visible we seek for the next vertex from the current
 			Vertex nextVisit = pedestrian.getRoutingState().getNextVisit();
 			
+			try {
 			for(Vertex neighbor : scenarioManager.getGraph().getSuccessorVertices(nextVisit)) {
 				
 				toCheckVertices.add(Pair.of(neighbor, neighbor.getGeometry().getCenter().distance(position)));
 			}
-			
+			}
+			catch(Exception ex) {
+				ex = null;
+			}
 			if(toCheckVertices.size() > 0 && pedestrian.getRoutingState() != null){ 
 				
 				List<Pair<Vertex, Double>> nextSorted = toCheckVertices.stream()
@@ -106,7 +110,7 @@ public class LinearGraphPursueTactical extends RoutingModel {
 			}
 		}
 		else {
-			
+
 			if(toCheckVertices.size() == 0) {
 				
   				for(Vertex vertex : potentialNextGoals) {

@@ -138,7 +138,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			
 			return false;
 		}
-		
+
 		Occupation result = Occupation.convertDoubleToOccupation(
 				this.pedestrianMap.breshamLineCast(from,
 						towards,
@@ -299,16 +299,22 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		// Check if object is in sight angle
 		Vector2D heading = pedestrian.getHeading();
 		Vector2D viewPort = pedestrian.getPosition();
-		
+
 		if(!viewPort.equals(otherObject)) {
 			
-			double angleInRadiant = GeometryAdditionals.angleBetween0And360CCW(heading, viewPort, otherObject);
+			if(viewPort.distance(otherObject) < pedestrian.getBodyRadius() * 2.0) {
+				
+				return true;
+			}
+			
+			double angleInRadiant = GeometryAdditionals.angleBetween0And180(viewPort.sum(heading), viewPort, otherObject);
 			
 			if(this.perceptionRadiant < angleInRadiant) {
 				
 				return false; // out of sight
 			}
 		}
+		
 		return this.isVisible(viewPort, otherObject);
 	}
 	/**

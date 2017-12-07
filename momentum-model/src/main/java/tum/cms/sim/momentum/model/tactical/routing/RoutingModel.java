@@ -123,6 +123,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 			// however, in case the agent cannot see its own position,
 			// the layout is not good and we have to ignore this.
 			if(perception.isVisible(pedestrian, pedestrian.getPosition())) {
+				
 				pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
 							pedestrian.getRoutingState().getNextToLastVisit(),
 							pedestrian.getRoutingState().getLastVisit(),
