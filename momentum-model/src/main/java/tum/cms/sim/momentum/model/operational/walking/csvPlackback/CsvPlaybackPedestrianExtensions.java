@@ -9,6 +9,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
+import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 
@@ -39,6 +40,8 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		this.distancePerception = distancePerception;
 	}
 	
+	private ArrayList<Vector2D> headingsList = new ArrayList<Vector2D>();
+
 	private List<Double> perceptionDistanceSpace = new ArrayList<Double>();
 	private List<Double> perceptionVelocityXSpace = new ArrayList<Double>();
 	private List<Double> perceptionVelocityYSpace = new ArrayList<Double>();
@@ -51,10 +54,12 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	private Double pedestrianVelocityXLast = 0.0;
 	private Double pedestrianVelocityYLast = 0.0;
 	private Double pedestrianVelocityXLastSec = 0.0;
-
-
 	private Double pedestrianVelocityYLastSec = 0.0;
 	
+	public ArrayList<Vector2D> getHeadingsList() {
+		return headingsList;
+	}
+
 	public List<Double> getPerceptionDistanceSpace() {
 		return perceptionDistanceSpace;
 	}
@@ -102,6 +107,32 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	public Double getPedestrianVelocityYLastSec() {
 		return pedestrianVelocityYLastSec;
 	}
+	
+	/**
+	 * Returns heading vector integrated over the last 5 headings
+	 * @param currentEstimatedHeading
+	 * @return new heading (integrated over last 5)
+	 */
+	public Vector2D updateHeadings(Vector2D currentEstimatedHeading) {
+		
+		this.headingsList.add(currentEstimatedHeading);
+		Vector2D integratedHeading = GeometryFactory.createVector(0.0, 0.0);
+		
+		if(this.headingsList.size() > 5) {
+			
+			this.headingsList.remove(0);
+		}
+			
+		for(int iter = 0; iter < this.headingsList.size(); iter++) {
+			
+			integratedHeading = integratedHeading.sum(headingsList.get(iter));
+		}
+		
+		integratedHeading = integratedHeading.multiply(1.0 / this.headingsList.size()).getNormalized();
+		
+		return integratedHeading;
+	}
+	
 	
 	public void updatePerceptionSpace(IOperationalPedestrian pedestrian,PerceptionalModel perception, SimulationState simulationState) {
 		
