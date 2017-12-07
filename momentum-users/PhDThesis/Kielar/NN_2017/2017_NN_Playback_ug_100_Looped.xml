@@ -29,7 +29,7 @@
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
 			<property name="perceptionDistance" type="Double" value="5.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
-			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
+			<property name="perceptionAngleDegree" type="Double" value="140.0"/>
 		</perceptual>
 	</perceptualModels>
 	
