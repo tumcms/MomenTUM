@@ -84,7 +84,9 @@ public class LinearGraphPursueTactical extends RoutingModel {
 
 		RoutingState newRoutingState = null;
 		
-		if(pedestrian.getRoutingState() != null && toCheckVertices.size() == 0) {
+		if(pedestrian.getRoutingState() != null &&
+		   toCheckVertices.size() == 0 &&
+		   pedestrian.getRoutingState().getNextVisit() != null) {
 			
 			// in case nothing is visible we seek for the next vertex from the current
 			Vertex nextVisit = pedestrian.getRoutingState().getNextVisit();
