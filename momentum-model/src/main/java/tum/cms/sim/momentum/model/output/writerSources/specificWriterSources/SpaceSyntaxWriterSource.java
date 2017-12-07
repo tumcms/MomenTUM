@@ -43,7 +43,7 @@ import tum.cms.sim.momentum.model.output.writerSources.genericWriterSources.Sing
 import tum.cms.sim.momentum.utility.generic.Unique;
 import tum.cms.sim.momentum.utility.lattice.CellIndex;
 import tum.cms.sim.momentum.utility.lattice.ILattice;
-import tum.cms.sim.momentum.utility.spaceSyntax.DepthMap;
+import tum.cms.sim.momentum.utility.spaceSyntax.VisibilityGraph;
 import tum.cms.sim.momentum.utility.spaceSyntax.SpaceSyntax;
 
 /**
@@ -103,7 +103,7 @@ public class SpaceSyntaxWriterSource extends SingleElementWriterSource {
 		XStream xStream = new XStream();
 
 		xStream.processAnnotations(SpaceSyntax.class);
-		xStream.processAnnotations(DepthMap.class);
+		xStream.processAnnotations(VisibilityGraph.class);
 		
 		xStream.alias("CellIndex", CellIndex.class);
 		xStream.omitField(CellIndex.class, "index");

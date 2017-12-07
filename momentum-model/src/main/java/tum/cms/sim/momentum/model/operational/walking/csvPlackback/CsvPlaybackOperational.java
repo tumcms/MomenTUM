@@ -13,6 +13,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
+import tum.cms.sim.momentum.utility.geometry.Vector2D;
 
 /**
  * This operational model will get a csv data set and will steer pedestrians
@@ -35,12 +36,14 @@ public class CsvPlaybackOperational extends WalkingModel {
 	private static String csvMappingName = "csvMapping";
 	private static String timeStepMappingName = "timeStepMapping";
 	private static String containsHeaderName = "containsHeader";
+	private static String numberForMeanName = "numberForMean";
 	
 	private double timeStepMapping = 0.0;
 	private int timeStepIndex = -1;
 	private int idIndex = -1;
 	private int xIndex = -1;
 	private int yIndex = -1;
+	private int numberForMean = 5;
 	
 	private HashMap<Long, ArrayList<ArrayList<Double>>> movementData = new HashMap<>();
 	private HashMap<Integer, ArrayList<Double>> nextMovementData = new HashMap<>();
@@ -94,10 +97,13 @@ public class CsvPlaybackOperational extends WalkingModel {
 		double headingXNext = (xNext - x);
 		double headingYNext = (yNext - y);
 		
+		Vector2D heading = extension.updateHeadings(GeometryFactory.createVector(headingXNext, headingYNext).getNormalized(),
+				this.numberForMean);
+		
 		WalkingState newWalkingState = new WalkingState(
 				GeometryFactory.createVector(xNext, yNext),
 				GeometryFactory.createVector(velocityXNext, velocityYNext),
-				GeometryFactory.createVector(headingXNext, headingYNext).getNormalized());
+				heading);
 	
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
 		extension.updatePedestrianSpace(pedestrian, newWalkingState, simulationState);
@@ -108,6 +114,7 @@ public class CsvPlaybackOperational extends WalkingModel {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
+		this.numberForMean = this.properties.getIntegerProperty(numberForMeanName);
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
 		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
 		

@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<simulator version="MomenTumV2.0.0" simulationName="2017_ug_140">
+  <layouts>
+    <scenario id="0" name="pedSim" maxX="7.4" maxY="2.4" minX="-7.4" minY="-7.4">
+      <graph id="0" name="1" type="Raw">
+        <vertex name="0" id="0">
+          <center x="-3" y="0.7" />
+        </vertex>
+        <vertex name="1" id="1">
+          <center x="-3.8343" y="0.5679" />
+        </vertex>
+        <vertex name="2" id="2">
+          <center x="-4.587" y="0.1843" />
+        </vertex>
+        <vertex name="3" id="3">
+          <center x="-5.1843" y="-0.413" />
+        </vertex>
+        <vertex name="4" id="4">
+          <center x="-5.5719" y="-1.1657" />
+        </vertex>
+        <vertex name="5" id="5">
+          <center x="-5.7" y="-2" />
+        </vertex>
+        <vertex name="6" id="6">
+          <center x="-5.5679" y="-2.8343" />
+        </vertex>
+        <vertex name="7" id="7">
+          <center x="-5.1843" y="-3.587" />
+        </vertex>
+        <vertex name="8" id="8">
+          <center x="-4.587" y="-4.1843" />
+        </vertex>
+        <vertex name="9" id="9">
+          <center x="-3.8343" y="-4.5679" />
+        </vertex>
+        <vertex name="10" id="10">
+          <center x="-3" y="-4.7" />
+        </vertex>
+        <vertex name="11" id="11">
+          <center x="3" y="-4.7" />
+        </vertex>
+        <vertex name="12" id="12">
+          <center x="3.8343" y="-4.5679" />
+        </vertex>
+        <vertex name="13" id="13">
+          <center x="4.587" y="-4.1843" />
+        </vertex>
+        <vertex name="14" id="14">
+          <center x="5.1843" y="-3.587" />
+        </vertex>
+        <vertex name="15" id="15">
+          <center x="5.5679" y="-2.8343" />
+        </vertex>
+        <vertex name="16" id="16">
+          <center x="5.7" y="-2" />
+        </vertex>
+        <vertex name="17" id="17">
+          <center x="5.5719" y="-1.1657" />
+        </vertex>
+        <vertex name="18" id="18">
+          <center x="5.1843" y="-0.413" />
+        </vertex>
+        <vertex name="19" id="19">
+          <center x="4.587" y="0.1843" />
+        </vertex>
+        <vertex name="20" id="20">
+          <center x="3.8343" y="0.5679" />
+        </vertex>
+        <vertex name="21" id="21">
+          <center x="3" y="0.7" />
+        </vertex>
+        <edge idLeft="0" idRight="1" />
+        <edge idLeft="1" idRight="2" />
+        <edge idLeft="2" idRight="3" />
+        <edge idLeft="3" idRight="4" />
+        <edge idLeft="4" idRight="5" />
+        <edge idLeft="5" idRight="6" />
+        <edge idLeft="6" idRight="7" />
+        <edge idLeft="7" idRight="8" />
+        <edge idLeft="8" idRight="9" />
+        <edge idLeft="9" idRight="10" />
+        <edge idLeft="10" idRight="11" />
+        <edge idLeft="11" idRight="12" />
+        <edge idLeft="12" idRight="13" />
+        <edge idLeft="13" idRight="14" />
+        <edge idLeft="14" idRight="15" />
+        <edge idLeft="15" idRight="16" />
+        <edge idLeft="16" idRight="17" />
+        <edge idLeft="17" idRight="18" />
+        <edge idLeft="18" idRight="19" />
+        <edge idLeft="19" idRight="20" />
+        <edge idLeft="20" idRight="21" />
+        <edge idLeft="21" idRight="0" />
+      </graph>
+      <obstacle id="0" name="Wall0" type="Wall">
+        <point x="3" y="1.4" />
+        <point x="4.0507" y="1.2336" />
+      </obstacle>
+      <obstacle id="1" name="Wall1" type="Wall">
+        <point x="4.0507" y="1.2336" />
+        <point x="4.9985" y="0.7507" />
+      </obstacle>
+      <obstacle id="2" name="Wall2" type="Wall">
+        <point x="4.9985" y="0.7507" />
+        <point x="5.7507" y="-0.0015" />
+      </obstacle>
+      <obstacle id="3" name="Wall3" type="Wall">
+        <point x="5.7507" y="-0.0015" />
+        <point x="6.2336" y="-0.9493" />
+      </obstacle>
+      <obstacle id="4" name="Wall4" type="Wall">
+        <point x="6.2336" y="-0.9493" />
+        <point x="6.4" y="-2" />
+      </obstacle>
+      <obstacle id="5" name="Wall5" type="Wall">
+        <point x="6.4" y="-2" />
+        <point x="6.2336" y="-3.0507" />
+      </obstacle>
+      <obstacle id="6" name="Wall6" type="Wall">
+        <point x="6.2336" y="-3.0507" />
+        <point x="5.7507" y="-3.9985" />
+      </obstacle>
+      <obstacle id="7" name="Wall7" type="Wall">
+        <point x="5.7507" y="-3.9985" />
+        <point x="4.9985" y="-4.7507" />
+      </obstacle>
+      <obstacle id="8" name="Wall8" type="Wall">
+        <point x="4.9985" y="-4.7507" />
+        <point x="4.0507" y="-5.2336" />
+      </obstacle>
+      <obstacle id="9" name="Wall9" type="Wall">
+        <point x="4.0507" y="-5.2336" />
+        <point x="3" y="-5.4" />
+      </obstacle>
+      <obstacle id="10" name="Wall10" type="Wall">
+        <point x="-3" y="1.4" />
+        <point x="-4.0507" y="1.2336" />
+      </obstacle>
+      <obstacle id="11" name="Wall11" type="Wall">
+        <point x="-4.0507" y="1.2336" />
+        <point x="-4.9985" y="0.7507" />
+      </obstacle>
+      <obstacle id="12" name="Wall12" type="Wall">
+        <point x="-4.9985" y="0.7507" />
+        <point x="-5.7507" y="-0.0015" />
+      </obstacle>
+      <obstacle id="13" name="Wall13" type="Wall">
+        <point x="-5.7507" y="-0.0015" />
+        <point x="-6.2336" y="-0.9493" />
+      </obstacle>
+      <obstacle id="14" name="Wall14" type="Wall">
+        <point x="-6.2336" y="-0.9493" />
+        <point x="-6.4" y="-2" />
+      </obstacle>
+      <obstacle id="15" name="Wall15" type="Wall">
+        <point x="-6.4" y="-2" />
+        <point x="-6.2336" y="-3.0507" />
+      </obstacle>
+      <obstacle id="16" name="Wall16" type="Wall">
+        <point x="-6.2336" y="-3.0507" />
+        <point x="-5.7507" y="-3.9985" />
+      </obstacle>
+      <obstacle id="17" name="Wall17" type="Wall">
+        <point x="-5.7507" y="-3.9985" />
+        <point x="-4.9985" y="-4.7507" />
+      </obstacle>
+      <obstacle id="18" name="Wall18" type="Wall">
+        <point x="-4.9985" y="-4.7507" />
+        <point x="-4.0507" y="-5.2336" />
+      </obstacle>
+      <obstacle id="19" name="Wall19" type="Wall">
+        <point x="-4.0507" y="-5.2336" />
+        <point x="-3" y="-5.4" />
+      </obstacle>
+      <obstacle id="20" name="Wall20" type="Wall">
+        <point x="3" y="0" />
+        <point x="3.618" y="-0.0979" />
+      </obstacle>
+      <obstacle id="21" name="Wall21" type="Wall">
+        <point x="3.618" y="-0.0979" />
+        <point x="4.1756" y="-0.382" />
+      </obstacle>
+      <obstacle id="22" name="Wall22" type="Wall">
+        <point x="4.1756" y="-0.382" />
+        <point x="4.618" y="-0.8244" />
+      </obstacle>
+      <obstacle id="23" name="Wall23" type="Wall">
+        <point x="4.618" y="-0.8244" />
+        <point x="4.9021" y="-1.382" />
+      </obstacle>
+      <obstacle id="24" name="Wall24" type="Wall">
+        <point x="4.9021" y="-1.382" />
+        <point x="5" y="-2" />
+      </obstacle>
+      <obstacle id="25" name="Wall25" type="Wall">
+        <point x="5" y="-2" />
+        <point x="4.9021" y="-2.618" />
+      </obstacle>
+      <obstacle id="26" name="Wall26" type="Wall">
+        <point x="4.9021" y="-2.618" />
+        <point x="4.618" y="-3.1756" />
+      </obstacle>
+      <obstacle id="27" name="Wall27" type="Wall">
+        <point x="4.618" y="-3.1756" />
+        <point x="4.1756" y="-3.618" />
+      </obstacle>
+      <obstacle id="28" name="Wall28" type="Wall">
+        <point x="4.1756" y="-3.618" />
+        <point x="3.618" y="-3.9021" />
+      </obstacle>
+      <obstacle id="29" name="Wall29" type="Wall">
+        <point x="3.618" y="-3.9021" />
+        <point x="3" y="-4" />
+      </obstacle>
+      <obstacle id="30" name="Wall30" type="Wall">
+        <point x="-3" y="0" />
+        <point x="-3.618" y="-0.0979" />
+      </obstacle>
+      <obstacle id="31" name="Wall31" type="Wall">
+        <point x="-3.618" y="-0.0979" />
+        <point x="-4.1756" y="-0.382" />
+      </obstacle>
+      <obstacle id="32" name="Wall32" type="Wall">
+        <point x="-4.1756" y="-0.382" />
+        <point x="-4.618" y="-0.8244" />
+      </obstacle>
+      <obstacle id="33" name="Wall33" type="Wall">
+        <point x="-4.618" y="-0.8244" />
+        <point x="-4.9021" y="-1.382" />
+      </obstacle>
+      <obstacle id="34" name="Wall34" type="Wall">
+        <point x="-4.9021" y="-1.382" />
+        <point x="-5" y="-2" />
+      </obstacle>
+      <obstacle id="35" name="Wall35" type="Wall">
+        <point x="-5" y="-2" />
+        <point x="-4.9021" y="-2.618" />
+      </obstacle>
+      <obstacle id="36" name="Wall36" type="Wall">
+        <point x="-4.9021" y="-2.618" />
+        <point x="-4.618" y="-3.1756" />
+      </obstacle>
+      <obstacle id="37" name="Wall37" type="Wall">
+        <point x="-4.618" y="-3.1756" />
+        <point x="-4.1756" y="-3.618" />
+      </obstacle>
+      <obstacle id="38" name="Wall38" type="Wall">
+        <point x="-4.1756" y="-3.618" />
+        <point x="-3.618" y="-3.9021" />
+      </obstacle>
+      <obstacle id="39" name="Wall39" type="Wall">
+        <point x="-3.618" y="-3.9021" />
+        <point x="-3" y="-4" />
+      </obstacle>
+      <obstacle id="40" name="Wall40" type="Wall">
+        <point x="-3" y="-4" />
+        <point x="3" y="-4" />
+      </obstacle>
+      <obstacle id="41" name="Wall41" type="Wall">
+        <point x="3" y="0" />
+        <point x="-3" y="0" />
+      </obstacle>
+      <obstacle id="42" name="Wall42" type="Wall">
+        <point x="-3" y="-5.4" />
+        <point x="3" y="-5.4" />
+      </obstacle>
+      <obstacle id="43" name="Wall43" type="Wall">
+        <point x="-3" y="1.4" />
+        <point x="3" y="1.4" />
+      </obstacle>
+    </scenario>
+  </layouts>
+</simulator>

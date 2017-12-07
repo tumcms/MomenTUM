@@ -32,19 +32,19 @@
 
 package tum.cms.sim.momentum.utility.geometry;
 
-import georegression.struct.shapes.EllipseRotated_F64;
-import georegression.fitting.ellipse.ClosestPointEllipseAngle_F64;
-import georegression.struct.point.Point2D_F64;
+//import georegression.struct.shapes.EllipseRotated_F64;
+//import georegression.fitting.ellipse.ClosestPointEllipseAngle_F64;
+//import georegression.struct.point.Point2D_F64;
 
 public class Ellipse2D {
 
-	private EllipseRotated_F64 ellipse = null;
-	private ClosestPointEllipseAngle_F64 closestPointCalculations = new ClosestPointEllipseAngle_F64(1E-8,100);
+	//private EllipseRotated_F64 ellipse = null;
+	//private ClosestPointEllipseAngle_F64 closestPointCalculations = new ClosestPointEllipseAngle_F64(1E-8,100);
 
 	public Ellipse2D(Vector2D center, Vector2D direction, double majorAxis, double minorAxis)
 	{
-		double phi = Math.atan2(direction.getYComponent(), direction.getXComponent());
-		this.ellipse = new EllipseRotated_F64(center.getXComponent(), center.getYComponent(), majorAxis, minorAxis, phi);
+		//double phi = Math.atan2(direction.getYComponent(), direction.getXComponent());
+		//this.ellipse = new EllipseRotated_F64(center.getXComponent(), center.getYComponent(), majorAxis, minorAxis, phi);
 	}
 
 	/**
@@ -54,11 +54,12 @@ public class Ellipse2D {
 	 */
 	public Vector2D closestPoint(Vector2D point) {
 
-		closestPointCalculations.setEllipse(ellipse);
-        Point2D_F64 pointConverted = new Point2D_F64(point.getXComponent(), point.getYComponent());
-		closestPointCalculations.process(pointConverted);
-		Point2D_F64 closestPoint = closestPointCalculations.getClosest();
-		return new Vector2D(closestPoint.x, closestPoint.y);
+		//closestPointCalculations.setEllipse(ellipse);
+		//Point2D_F64 pointConverted = new Point2D_F64(point.getXComponent(), point.getYComponent());
+		//closestPointCalculations.process(pointConverted);
+		//Point2D_F64 closestPoint = closestPointCalculations.getClosest();
+		//return new Vector2D(closestPoint.x, closestPoint.y);
+		return null;
 	}
 
 	/**
@@ -90,28 +91,32 @@ public class Ellipse2D {
 
 
 	public Vector2D getCenter() {
-		return new Vector2D(ellipse.getCenter().x, ellipse.getCenter().y);
+		//return new Vector2D(ellipse.getCenter().x, ellipse.getCenter().y);
+		return null;
 	}
 
 	public void setCenter(Vector2D center) {
-	    this.ellipse.setCenter(new Point2D_F64(center.getXComponent(), center.getYComponent()));
+		//this.ellipse.setCenter(new Point2D_F64(center.getXComponent(), center.getYComponent()));
     }
 
 	public double getOrientation() {
-		return ellipse.getPhi();
+		//return ellipse.getPhi();
+		return 0;
 	}
 
 	public double getMajorAxis() {
-		return ellipse.getA();
+		//return ellipse.getA();
+		return 0;
 	}
 
 	public double getMinorAxis() {
-		return this.ellipse.getB();
+		//return this.ellipse.getB();
+		return 0;
 	}
 
 	public void translate(double x, double y) {
-		Point2D_F64 translatedCenter = new Point2D_F64(ellipse.center.x + x, ellipse.center.y + y);
-		this.ellipse.setCenter(translatedCenter);
+		//Point2D_F64 translatedCenter = new Point2D_F64(ellipse.center.x + x, ellipse.center.y + y);
+		//this.ellipse.setCenter(translatedCenter);
 
 	}
 
