@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -264,6 +265,11 @@ public class PlaybackModel {
 
 	public void clearCustom() {
 
+		for(Entry<CsvType, ObservableMap<String, ShapeModel>> customShapes : customShapesMap.entrySet()) {
+			
+			customShapes.getValue().clear();
+		}
+		
 		customShapesMap.clear();
 	}
 

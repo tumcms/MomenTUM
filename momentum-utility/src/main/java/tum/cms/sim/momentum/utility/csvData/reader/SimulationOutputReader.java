@@ -116,7 +116,7 @@ public class SimulationOutputReader {
 		
 		boolean isDataExistent = true;
 		
-		if (dataSetBuffer.get(index).isEmpty()) { // dataSetBuffer.get(index) == null || 
+		if (index % getTimeStepDifference() != 0 || dataSetBuffer.get(index).isEmpty()) { // dataSetBuffer.get(index) == null || 
 		
 			isDataExistent = false;
 		}
@@ -339,9 +339,13 @@ public class SimulationOutputReader {
 
 	public boolean dataReady(double index) {
 		
-		if (index < this.endTime && index > 0 && (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady())) {
-		
-			return false;
+		// no data exists because of time step missmatches, we say data is ready
+		if(index % getTimeStepDifference() == 0) { 
+			
+			if (index < this.endTime && index > 0 && (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady())) {
+			
+				return false;
+			}
 		}
 		
 		return true;

@@ -13,7 +13,7 @@
 	</loop>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.1"/>
 	</lattices>
 	
 	<graphs>
@@ -29,7 +29,7 @@
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
 			<property name="perceptionDistance" type="Double" value="5.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
-			<property name="perceptionAngleDegree" type="Double" value="60.0"/>
+			<property name="perceptionAngleDegree" type="Double" value="140.0"/>
 		</perceptual>
 	</perceptualModels>
 	
@@ -52,6 +52,7 @@
 			</complexProperty>
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
+			<property name="numberForMean" type="Integer" value="20"/>
 		</walking>
 	</walkingModels>
 	
@@ -62,6 +63,7 @@
 			<property name="routeMemory" type="Boolean" value="False" />
 			<property name="tacticalControl" type="Boolean" value="True" />
 			<property name="strategicCommand" type="String" value="Routing"/>
+			<property name="deepNodeSelection" type="Integer" value="3"/><property name="numberForMean" type="Integer" value="20"/>
 		</tactical>
 	</tacticalModels>
 	
@@ -114,7 +116,7 @@
 	
 	<outputWriters>
 		<outputWriter id="0" name="pedestrianOutputToFile"> 
-			<property name="call" type="Integer" value="10"/> <!-- Print 10 * 0.05 = 0.5 seconds -->
+			<property name="call" type="Integer" value="1"/> <!-- Print 10 * 0.05 = 0.5 seconds -->
 			<property name="buffer" type="Integer" value="50"/>
 			<writerTarget targetType="File">
 				<property name="file" type="File" value="C:\Users\ga37sib\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playkback_ug_180_$LOOP$_pedestrian.csv"/>
