@@ -62,6 +62,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	private HashMap<Integer, HashSet<Integer>> pedestrainToVertex = new HashMap<>();
 	private HashMap<Integer, HashSet<CellIndex>> pedestrainToObstacle = new HashMap<>();
 	private HashMap<Integer, ArrayList<CellIndex>> pedestrainToObstaclePositions = new HashMap<>();
+	private HashMap<Integer, ArrayList<CellIndex>> pedestrianToFreeSpacePositions = new HashMap<>();
 	private HashMap<Integer, HashMap<Integer, HashSet<CellIndex>>> pedestrainToArea = new HashMap<>();
 
 	
@@ -89,6 +90,30 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			);
 		
 		return obstaclePositions;
+	}
+	
+	@Override
+	public List<Vector2D> getPerceptedFreePositions(IPedestrian pedestrian, SimulationState simulationState) {
+		
+		List<Vector2D> freePositions = new ArrayList<Vector2D>();
+		
+		pedestrianToFreeSpacePositions.get(pedestrian.getId()).stream().forEach(
+				
+				cellFree -> {
+					
+					if(cellFree == null) {
+						
+						freePositions.add(null);
+					}
+					else {
+						
+						freePositions.add(this.pedestrianMap.getCenterPosition(cellFree));
+					}
+				
+				}
+			);
+		
+		return freePositions;
 	}
 	
 	@Override
@@ -236,6 +261,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		pedestrainToVertex.clear();
 		pedestrainToObstacle.clear();
 		pedestrainToObstaclePositions.clear();
+		pedestrianToFreeSpacePositions.clear();
 		pedestrainToArea.clear();
 		
 		this.pedestrianManager.getAllPedestrians().stream().forEach(pedestrian -> {
@@ -245,6 +271,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			pedestrainToVertex.put(pedestrian.getId(), new HashSet<>());
 			pedestrainToObstacle.put(pedestrian.getId(), new HashSet<>());
 			pedestrainToObstaclePositions.put(pedestrian.getId(), new ArrayList<>());
+			pedestrianToFreeSpacePositions.put(pedestrian.getId(), new ArrayList<>());
 			pedestrainToArea.put(pedestrian.getId(), new HashMap<>());
 		});
 		
@@ -341,13 +368,13 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			Double hitValue = hitRay.get(hitRay.size() - 1).getLeft();
 			CellIndex cellValue = hitRay.get(hitRay.size() - 1).getRight();
 
-			
 			// if a obstacle was hit store the cell information
 			if(Occupation.convertOccupationToDouble(Occupation.Fixed).equals(hitValue)) {
 				
 				this.pedestrainToObstacle.get(pedestrianId).add(cellValue);
 				this.pedestrainToObstaclePositions.get(pedestrianId).add(cellValue);
 				this.pedestrainToPedestrianPositions.get(pedestrianId).add(null);
+				this.pedestrianToFreeSpacePositions.get(pedestrianId).add(null);
 			}
 			else if(hitValue > 0.0) { // else if a pedestrian (id > 0) was hit, also store this
 				
@@ -355,11 +382,13 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 				this.pedestrainToPedestrian.get(pedestrianId).add(hitValue.intValue() - encodeShift);
 				this.pedestrainToPedestrianPositions.get(pedestrianId).add(hitValue.intValue() - encodeShift);
 				this.pedestrainToObstaclePositions.get(pedestrianId).add(null);
+				this.pedestrianToFreeSpacePositions.get(pedestrianId).add(null);
 			}
 			else {
 				
 				this.pedestrainToPedestrianPositions.get(pedestrianId).add(null);
 				this.pedestrainToObstaclePositions.get(pedestrianId).add(null);
+				this.pedestrianToFreeSpacePositions.get(pedestrianId).add(cellValue);
 			}
 			// if a nothing was hit, ignore it
 		});

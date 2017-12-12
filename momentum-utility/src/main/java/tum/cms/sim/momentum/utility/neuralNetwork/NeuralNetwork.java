@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.tensorflow.*;
+import org.tensorflow.Session.Runner;
 
 /**
  * This class wraps the Tensorflow api for usage in a neural network.
@@ -72,6 +73,11 @@ public class NeuralNetwork {
 	ArrayList<String> operationNames;
 	
 	/**
+	 * The current session that will give a runner that executes a network and will receive a input and output tensor
+	 */
+	private Session session = null;
+	
+	/**
 	 * This method restores a saved Tensorflow model.
 	 *  
 	 * @param pathToSavedNetworkFolder, a path that points to a folder where the model is.
@@ -79,6 +85,7 @@ public class NeuralNetwork {
 	protected NeuralNetwork(String pathToSavedNetworkFolder) {
 		
 		this.modelBundle = SavedModelBundle.load(pathToSavedNetworkFolder, tagServe);
+		this.session = this.modelBundle.session();
 	}
 	
 	/**
@@ -101,8 +108,6 @@ public class NeuralNetwork {
 				Operation operation = iter.next();
 				this.operationNames.add(operation.name());
 			}
-			
-			//Collections.sort(this.operationNames);
 		}
 		
 		return this.operationNames;
@@ -114,8 +119,7 @@ public class NeuralNetwork {
 	 * The outTensor only needs a name and a dimension but should not contain data.
 	 * The outTensor will hold new data after successful execution of this method.
 	 * 
-	 * This method will compute a single output tensor only. In case more tensor
-	 * should be evaluated in the same run, add another method!
+	 * This method will compute a single output tensor only.
 	 * 
 	 * @param inTensor
 	 * @param outTensor
@@ -132,12 +136,12 @@ public class NeuralNetwork {
 			
 			throw new Exception(String.format(exceptionTensorRun, outTensor.getName()));
 		}
-		
-		List<Tensor<?>> output = this.modelBundle.session().runner()
-			.feed(inTensor.getName(), inTensor.getTensor())
-			.fetch(outTensor.getName())
-			.run();
 
+		List<Tensor<?>> output = this.session.runner()
+				.feed(inTensor.getName(), inTensor.getTensor())
+				.fetch(outTensor.getName())
+				.run();	
+		
 		if(output.size() != 1) {
 		
 			// should never happen!

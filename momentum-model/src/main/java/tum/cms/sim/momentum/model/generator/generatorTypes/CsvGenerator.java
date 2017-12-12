@@ -135,12 +135,10 @@ public class CsvGenerator extends Generator {
 						
 						double xNext = this.generationNextSet.get(id).getValue(xIndex);
 						double yNext = this.generationNextSet.get(id).getValue(yIndex);	
-						double timeDifference = (this.generationNextSet.get(id).getValue(timeStepIndex) - data.getValue().getValue(timeStepIndex))
-								* simulationState.getTimeStepDuration();
 						
 						// compute velocity
-						velocityX = (xNext - x) * timeDifference;
-						velocityY = (yNext - y) * timeDifference;
+						velocityX = (xNext - x);
+						velocityY = (yNext - y);
 						
 						// compute heading
 						headingX = (xNext - x);

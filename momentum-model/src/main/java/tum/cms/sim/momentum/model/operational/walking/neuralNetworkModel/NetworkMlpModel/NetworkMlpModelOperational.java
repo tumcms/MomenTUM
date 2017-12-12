@@ -6,13 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math3.util.FastMath;
+
 import tum.cms.sim.momentum.data.agent.pedestrian.state.operational.WalkingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
-import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackPedestrianExtensions.CsvPlaybackPerceptionWriterItem;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
@@ -29,7 +31,20 @@ public class NetworkMlpModelOperational extends WalkingModel {
 	/**
 	 * For each thread there is a network to enable parallel computations.
 	 */
-	private Map<Integer, NeuralNetwork> network = new HashMap<>();
+	private Map<Integer, NeuralNetwork> networksForThread = new HashMap<>();
+	
+	/**
+	 * For each thread there is an in tensor to enable parallel computations.
+	 */
+	private Map<Integer, NeuralTensor> inTensorsForThread = new HashMap<>();
+	
+	/**
+	 * For each thread there is an out tensor to enable parallel computations.
+	 */
+	private Map<Integer, NeuralTensor> outTensorsForThread = new HashMap<>();
+	
+
+	NeuralTensor outTensor;
 	
 	/**
 	 * The path to folder of the stored tensorflow network.
@@ -73,10 +88,18 @@ public class NetworkMlpModelOperational extends WalkingModel {
 	@Override
 	public void callPedestrianBehavior(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 	
-		List<Float> inTensorData = this.assembleInTensor(pedestrian, perception, simulationState);
+		float scale = 1.0f; // scale 
+		
+		NetworkMlpPedestrianExtension extension = (NetworkMlpPedestrianExtension) pedestrian.getExtensionState(this);
+		List<Float> inTensorData = this.assembleInTensor(pedestrian, perception, simulationState, extension, scale);
+		
+//		for(int iter = 0; iter < inTensorData.size(); iter++) {
+//			
+//			inTensorData.set(iter, 0.5f);
+//		}
 		
 		NeuralNetwork network = this.getNetworkForThread(simulationState.getCalledOnThread());
-		NeuralTensor inTensor = NeuralNetworkFactory.createNeuralTensor(this.inputTensor, new long[] {1,inTensorData.size()});
+		NeuralTensor inTensor = this.getInTensorForThread(simulationState.getCalledOnThread(), inTensorData.size());
 
 		float[] data = new float[inTensorData.size()];
 		
@@ -85,37 +108,55 @@ public class NetworkMlpModelOperational extends WalkingModel {
 			data[iter] = inTensorData.get(iter);
 		}
 		
-		inTensor.fill(data);
+ 		inTensor.fill(data);
+
+		// {1,1} is velocityMagnitude
+		// {1,2} is velocityAngleChange
+		NeuralTensor outTensor = this.getOutTensorForThread(simulationState.getCalledOnThread(), 2);
 		
-		NeuralTensor outTensor = NeuralNetworkFactory.createNeuralTensor(this.outputTensor, new long[] {1,2});
-		
-		Vector2D predictVelocity = GeometryFactory.createVector(0.0, 0.0);
-		
+		double velocityMagnitude = 0.0;
+		double velocityAngleChange = 0.0;
+		float[] outData = null;
+
 		try {
 			
 			network.executeNetwork(inTensor, outTensor);
-			float[] outData = outTensor.getFloatData();
-			double scaleTime = 1.0/simulationState.getTimeStepDuration();
-			predictVelocity.set(outData[0] / scaleTime, outData[1] / scaleTime);
+			outData = outTensor.getFloatData();
+			
+			velocityMagnitude = outData[0] / scale;
+			//velocityAngleChange =  (outData[1]/scale) * 2.0*FastMath.PI - FastMath.PI;
+			velocityAngleChange =  FastMath.PI - outData[1] * 2.0 * FastMath.PI;
 		} 
 		catch (Exception e) {
 			
 			e.printStackTrace();
 		}
 		
-		inTensor.close();
-		outTensor.close();
-
+		Vector2D predictVelocity = pedestrian.getVelocity()
+				.setMagnitude(velocityMagnitude)
+				//.scale(velocityMagnitude);
+				.rotate(velocityAngleChange);
+		
+		Vector2D predictVelocityX = pedestrian.getVelocity()
+				//.setMagnitude(velocityMagnitude)
+				.scale(velocityMagnitude)
+				.rotate(velocityAngleChange);
+		
 		double xNext = pedestrian.getPosition().getXComponent() + predictVelocity.getXComponent();
 		double yNext = pedestrian.getPosition().getYComponent() + predictVelocity.getYComponent();
 
 		double headingXNext = (xNext - pedestrian.getPosition().getXComponent());
 		double headingYNext = (yNext - pedestrian.getPosition().getYComponent());
 		
+		Vector2D heading = extension.updateHeadings(GeometryFactory.createVector(headingXNext, headingYNext).getNormalized(),
+				20);
+		
 		WalkingState newWalkingState = new WalkingState(
 				GeometryFactory.createVector(xNext, yNext),
 				predictVelocity,
-				GeometryFactory.createVector(headingXNext, headingYNext).getNormalized());
+				heading);
+		
+		extension.updatePedestrianTeach(pedestrian, newWalkingState);
 		
 		pedestrian.setWalkingState(newWalkingState);
 	}
@@ -130,7 +171,13 @@ public class NetworkMlpModelOperational extends WalkingModel {
 
 	@Override
 	public void callPostProcessing(SimulationState simulationState) {
-		// nothing to do
+		
+		this.inTensorsForThread.forEach((id, tensor) -> tensor.close());
+		this.inTensorsForThread.clear();
+		this.outTensorsForThread.forEach((id, tensor) -> tensor.close());
+		this.outTensorsForThread.clear();
+		this.networksForThread.forEach((id, network) -> network.close());
+		this.networksForThread.clear();
 	}
 
 	/**
@@ -141,113 +188,88 @@ public class NetworkMlpModelOperational extends WalkingModel {
 	 */
 	private NeuralNetwork getNetworkForThread(int threadId) {
 		
-		this.network.putIfAbsent(threadId, NeuralNetworkFactory.createNeuralNetwork(this.path));
+		if(!this.networksForThread.containsKey(threadId)) {
+			
+			this.networksForThread.put(threadId, NeuralNetworkFactory.createNeuralNetwork(this.path));
+		}
 		
-		return this.network.get(threadId);
+		return this.networksForThread.get(threadId);
 	}
 	
-	private static double freeCode = -0.25;
-	private static double groupCode = 0.0;
-	private static double pedestrianCode = 0.25;
-	private static double obstacleCode = 0.5;
+	/**
+	 * Add or get a in tensor based on the target network profile.
+	 * This will create a new tensor for each thread id
+	 * @param threadId, id of the current thread
+	 * @param size, the size of second dimension the tensor 
+	 * @return {@link NeuralTensor}
+	 */
+	private NeuralTensor getInTensorForThread(int threadId, int size) {
+		
+		if(!this.inTensorsForThread.containsKey(threadId)) {
+			
+			this.inTensorsForThread.put(threadId, NeuralNetworkFactory.createNeuralTensor(this.inputTensor, new long[] {1, size}));
+		}
+		
+		return this.inTensorsForThread.get(threadId);
+	}
 	
 	/**
-	 * Assembly order: (count 210)
-	 * perceptionDistance (list) 51
-	 * perceptionVelocityX (list) 102
-	 * perceptionVelocityY (list) 153
-	 * perceptionType (list) 204
-	 * pedestrianVelocityXLast (scalar) 205
-	 * pedestrianVelocityYLast (scalar) 206
-	 * pedestrianVelocityXLastSec (scalar) 207
-	 * pedestrianVelocityYLastSec (scalar) 208
-	 * pedestrianWalkingGoalX (scalar) 209
-	 * pedestrianWalkingGoalY (scalar) 210
-	 * 
-	 * @param pedestrian
-	 * @param perception
-	 * @param simulationState
+	 * Add or get a out tensor based on the target network profile.
+	 * This will create a new tensor for each thread id
+	 * @param threadId, id of the current thread
+	 * @param size, the size of second dimension the tensor 
+	 * @return {@link NeuralTensor}
 	 */
-	private List<Float> assembleInTensor(IOperationalPedestrian pedestrian, PerceptionalModel perception, SimulationState simulationState) {
+	private NeuralTensor getOutTensorForThread(int threadId, int size) {
 		
-		List<Float> perceptionDistanceSpace = new ArrayList<Float>();
-		List<Float> perceptionVelocityXSpace = new ArrayList<Float>();
-		List<Float> perceptionVelocityYSpace = new ArrayList<Float>();
-		List<Float> perceptionTypeSpace = new ArrayList<Float>();
-		
-		Vector2D pedestrianPosition = pedestrian.getPosition();
-		
-		// this collection is of constant size, null if no obstacle was found
-		List<Vector2D> obstaclePositions = perception.getPerceptedObstaclePositions(pedestrian, simulationState);
-	
-		// this collection is of constant size, null if no pedestrian was found
-		List<IPedestrian> pedestrianPositions = perception.getPerceptedPedestrianPositions(pedestrian, simulationState);
-		
-		// gives the walked distance between to time steps thus it is already in distance/timeStepDuration
-		// e.g. 5cm (/0.05sec), now we scale it to seconds = 5*20cm/1s = 1m/1s
-		// time scale
-		double scaleTime = 1.0/simulationState.getTimeStepDuration();
-		double scaleDistance = 1.0/perception.getPerceptionDistance();
-				
-		for(int iter = 0; iter < obstaclePositions.size(); iter++) {
+		if(!this.outTensorsForThread.containsKey(threadId)) {
 			
-			if(obstaclePositions.get(iter) != null) {
-				
-				perceptionDistanceSpace.add((float) ((pedestrianPosition.distance(obstaclePositions.get(iter)) 
-						- pedestrian.getBodyRadius()) * scaleDistance));
-				perceptionVelocityXSpace.add((float) (-pedestrian.getVelocity().getXComponent() * scaleTime));
-				perceptionVelocityYSpace.add((float) (-pedestrian.getVelocity().getXComponent() * scaleTime));
-				perceptionTypeSpace.add((float) obstacleCode); 
-			}
-			else if(pedestrianPositions.get(iter) != null) {
-				
-				IPedestrian other = pedestrianPositions.get(iter);
-				perceptionDistanceSpace.add((float) ((pedestrianPosition.distance(pedestrianPositions.get(iter).getPosition()) 
-						- pedestrian.getBodyRadius()) * scaleDistance));
-				perceptionVelocityXSpace.add((float) ((other.getVelocity().getXComponent() - pedestrian.getVelocity().getXComponent()) * scaleTime));  
-				perceptionVelocityYSpace.add((float) ((other.getVelocity().getYComponent() - pedestrian.getVelocity().getYComponent()) * scaleTime));
-				perceptionTypeSpace.add((float) (other.getGroupId() == pedestrian.getGroupId() ? groupCode : pedestrianCode));
-			}
-			else {
-			
-				perceptionDistanceSpace.add((float) (perception.getPerceptionDistance() * scaleDistance));
-				perceptionVelocityXSpace.add((float) 0.0);
-				perceptionVelocityYSpace.add((float) 0.0);
-				perceptionTypeSpace.add((float) freeCode); 
-			}
+			this.outTensorsForThread.put(threadId, NeuralNetworkFactory.createNeuralTensor(this.outputTensor, new long[] {1, size}));
 		}
 		
-		NetworkMlpPedestrianExtension extension = (NetworkMlpPedestrianExtension) pedestrian.getExtensionState(this);
-		extension.setSecondToLastVelocity(extension.getLastVelocity());
-		extension.setLastVelocity(pedestrian.getVelocity());
+		return this.outTensorsForThread.get(threadId);
+	}
+
+	private List<Float> assembleInTensor(IOperationalPedestrian pedestrian,
+			PerceptionalModel perception,
+			SimulationState simulationState,
+			NetworkMlpPedestrianExtension extension,
+			float scale) {
 		
-		float pedestrianVelocityXLastSec = (float) (extension.getSecondToLastVelocity().getXComponent() * scaleTime);
-		float pedestrianVelocityYLastSec = (float) (extension.getSecondToLastVelocity().getYComponent() * scaleTime);
-		float pedestrianVelocityXLast = (float) (extension.getLastVelocity().getXComponent() * scaleTime);
-		float pedestrianVelocityYLast = (float) (extension.getLastVelocity().getYComponent() * scaleTime);
-		
-		float towardsGoalX = 0.0f;
-		float towardsGoalY = 0.0f;
-		
-		if(pedestrian.getNextWalkingTarget() != null) {
-			
-			Vector2D towardsGoal = pedestrian.getNextWalkingTarget().subtract(pedestrian.getPosition()).getNormalized();
-			towardsGoalX = (float) towardsGoal.getXComponent();
-			towardsGoalY = (float) towardsGoal.getYComponent();
-		}
+		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
+		extension.updatePedestrianSpace(pedestrian);
 		
 		List<Float> inTensorData = new ArrayList<Float>();
-		inTensorData.addAll(perceptionDistanceSpace);
-		inTensorData.addAll(perceptionVelocityXSpace);
-		inTensorData.addAll(perceptionVelocityYSpace);
-		inTensorData.addAll(perceptionTypeSpace);
-		inTensorData.add(pedestrianVelocityXLast);
-		inTensorData.add(pedestrianVelocityYLast);
-		inTensorData.add(pedestrianVelocityXLastSec);
-		inTensorData.add(pedestrianVelocityYLastSec);
-		inTensorData.add(towardsGoalX);
-		inTensorData.add(towardsGoalY);
 		
+		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
+			
+			inTensorData.add((float) item.getDistanceToPercept() * scale);
+		}
+			
+		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
+				
+			inTensorData.add((float) item.getAngleToPercept() * scale);
+		}
+		
+		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
+			
+			inTensorData.add((float) item.getVelocityMagnitudeOfPercept() * scale);
+		}
+		
+		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
+			
+			inTensorData.add((float) item.getVelocityAngleDifferenceToPercept() * scale);
+		}
+		
+//		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
+//			
+//			inTensorData.add((float) item.getTypeOfPercept() * scale);
+//		}
+		
+		inTensorData.add(extension.getAngleToGoal().floatValue() * scale);
+		inTensorData.add(extension.getLastVelocityMagnitude().floatValue() * scale);
+		inTensorData.add(extension.getLastVelocityAngleChange().floatValue() * scale);
+
 		return inTensorData;
 	}
 }

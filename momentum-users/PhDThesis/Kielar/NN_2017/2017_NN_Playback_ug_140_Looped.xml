@@ -2,14 +2,14 @@
 <simulator version="2.0.2" simulationName="2017_NN_Playkback_ug_140">
 
 	<timeState simulationEndTime="83.0" timeStepDuration="0.05"/>
-	<threadingState threads="1"/>
+	<threadingState threads="3"/>
 	
 	<logging>
 		<loggingState type="Console" level="Debug"/>
 	</logging>
 	
 	<loop updateType="Stepwise" accuracyDigits="1">
-		<loopVariable name="LOOP" start="1.0" change="1.0" steps="3"/> 
+		<loopVariable name="LOOP" start="2.0" change="1.0" steps="2"/> 
 	</loop>
 	
 	<lattices>
@@ -29,7 +29,7 @@
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
 			<property name="perceptionDistance" type="Double" value="5.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
-			<property name="perceptionAngleDegree" type="Double" value="140.0"/>
+			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
 		</perceptual>
 	</perceptualModels>
 	
@@ -159,19 +159,16 @@
 				<property name="delimiter" type="String" value=";"/>
 			</writerFormat>
 			<writerSource sourceType="CsvPlayback" additionalId="2"> 
-				<!--<property name="timeStepDuration" type="Format" value="%.4f"/>-->
-				<property name="perceptionDistance" type="Format" value="%.3f"/>
-				<property name="perceptionVelocityX" type="Format" value="%.3f"/>
-				<property name="perceptionVelocityY" type="Format" value="%.3f"/>
-				<property name="perceptionType" type="Format" value="%.2f"/>
-				<property name="pedestrianVelocityXLast" type="Format" value="%.4f"/> <!-- scaled to 1 second -->
-				<property name="pedestrianVelocityYLast" type="Format" value="%.4f"/> <!-- scaled to 1 second -->
-				<property name="pedestrianVelocityXLastSec" type="Format" value="%.4f"/> <!-- scaled to 1 second -->
-				<property name="pedestrianVelocityYLastSec" type="Format" value="%.4f"/> <!-- scaled to 1 second -->
-				<property name="pedestrianWalkingGoalX" type="Format" value="%.2f"/>
-				<property name="pedestrianWalkingGoalY" type="Format" value="%.2f"/>
-				<property name="pedestrianVelocityX" type="Format" value="%.4f"/> <!-- scaled to 1 second -->
-				<property name="pedestrianVelocityY" type="Format" value="%.4f"/> <!-- scaled to 1 second -->
+				<property name="distancesToPercepts" type="Format" value="%.4f"/>
+				<property name="anglesToPercepts" type="Format" value="%.4f"/>
+				<property name="velocityMagnitudesOfPercepts" type="Format" value="%.4f"/>
+				<property name="velocityAngleDifferencesToPercepts" type="Format" value="%.4f"/>
+				<!--<property name="typesOfPercepts" type="Format" value="%.4f"/>-->
+				<property name="angleToGoal" type="Format" value="%.4f"/>
+				<property name="lastVelocityMagnitude" type="Format" value="%.4f"/>
+				<property name="lastVelocityAngleChange" type="Format" value="%.4f"/>
+				<property name="velocityMagnitude" type="Format" value="%.4f"/>
+				<property name="velocityAngleChange" type="Format" value="%.4f"/>
 			</writerSource>
 		</outputWriter>
 	</outputWriters>

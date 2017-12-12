@@ -32,7 +32,6 @@
 
 package tum.cms.sim.momentum.utility.neuralNetwork;
 
-import java.nio.Buffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -41,7 +40,7 @@ import org.tensorflow.Tensor;
 
 /**
  * This class wraps the Tensorflow api for tensors in neural network usage.
- * However, this class contains strong simplification and helps to define
+ * However, this class contains strong simplification. It helps to define
  * the input and output tensors for a network.
  * 
  * @author Peter M. Kielar
@@ -59,7 +58,7 @@ public class NeuralTensor {
 	 * it is extremely useful to give it a name. The can be found in the
 	 * Tensorflow graph of the neural network. 
 	 * The name of the tensor should be exactly the name of the corresponding
-	 * tensor in the restored graph.
+	 * tensor/operation in the restored graph.
 	 * 
 	 * @return the name of the tensor
 	 */
@@ -83,16 +82,10 @@ public class NeuralTensor {
 	}
 
 	/**
-	 * The data buffer will hold the data of the tensor. 
-	 * Because we do not handle the types the user have to provide a specific
-	 * Buffer (e.g. FloatBuffer).  The size of this buffer is the multiplication
-	 * of all elements of the {@link NeuralTensor#dimension}
-	 *  @see Buffer
-	 */
-	private Buffer data; 
-
-	/**
 	 * The tensor of the Tensorflow api.
+	 * It holds its data own data buffer and needs to be closed. 
+	 * The size of its data buffer is the multiplication
+	 * of all elements of the {@link NeuralTensor#dimension}
 	 * @see Tensor
 	 */
 	private Tensor<?> tensor;
@@ -100,7 +93,7 @@ public class NeuralTensor {
 	/**
 	 * The getter of the tensor is on package level in order
 	 * to let the NeuralNetwork use the tensor content for computations.
-	 * @return
+	 * @return @See Tensor<?>
 	 */
 	Tensor<?> getTensor() {
 		return tensor;
@@ -134,9 +127,15 @@ public class NeuralTensor {
 			
 			size *= dimension[iter];
 		}
+	
+		if(this.tensor != null) {
+			
+			this.close();
+		}
 		
 		IntBuffer intData =  IntBuffer.allocate((int)size);
-		this.data = intData;
+		intData.put(intData);
+		intData.rewind();
 		this.tensor = Tensor.create(this.dimension, intData);
 	}
 	
@@ -157,9 +156,15 @@ public class NeuralTensor {
 			
 			size *= dimension[iter];
 		}
+	
+		if(this.tensor != null) {
+			
+			this.close();
+		}
 		
 		DoubleBuffer doubleData = DoubleBuffer.allocate((int)size);
-		this.data = doubleData;
+		doubleData.put(data);
+		doubleData.rewind();
 		this.tensor = Tensor.create(this.dimension, doubleData);
 	}
 	
@@ -181,11 +186,17 @@ public class NeuralTensor {
 			size *= dimension[iter];
 		}
 		
+		if(this.tensor != null) {
+			
+			this.close();
+		}
+		
 		FloatBuffer floatData = FloatBuffer.allocate((int)size);
-		this.data = floatData;
+		floatData.put(data);
+		floatData.rewind();
 		this.tensor = Tensor.create(this.dimension, floatData);
 	}
-	
+
 	/**
 	 * This package method is used by e.g. NeuralNetwork to infuse
 	 * data into the tensor
@@ -202,14 +213,10 @@ public class NeuralTensor {
 	 */
 	public int[] getIntegerData() {
 		
-		if(this.data == null) {
-
-			IntBuffer intData = IntBuffer.allocate((int)this.tensor.numElements());
-			this.data = intData;
-			this.tensor.writeTo(intData);
-		}
-
-		return (int[]) this.data.array();
+		IntBuffer intData = IntBuffer.allocate((int)this.tensor.numElements());
+		this.tensor.writeTo(intData);
+	
+		return (int[]) intData.array();
 	}
 	
 	/**
@@ -219,14 +226,10 @@ public class NeuralTensor {
 	 */
 	public double[] getDoubleData() {
 		
-		if(this.data == null) {
+		DoubleBuffer doubleData = DoubleBuffer.allocate((int)this.tensor.numElements());
+		this.tensor.writeTo(doubleData);
 
-			DoubleBuffer doubleData = DoubleBuffer.allocate((int)this.tensor.numElements());
-			this.data = doubleData;
-			this.tensor.writeTo(doubleData);
-		}
-
-		return (double[]) this.data.array();
+		return (double[]) doubleData.array();
 	}
 	
 	/**
@@ -236,14 +239,10 @@ public class NeuralTensor {
 	 */
 	public float[] getFloatData() {
 		
-		if(this.data == null) {
+		FloatBuffer floatData = FloatBuffer.allocate((int)this.tensor.numElements());
+		this.tensor.writeTo(floatData);
 
-			FloatBuffer floatData = FloatBuffer.allocate((int)this.tensor.numElements());
-			this.data = floatData;
-			this.tensor.writeTo(floatData);
-		}
-
-		return (float[]) this.data.array();
+		return (float[]) floatData.array();
 	}
 	
 	/**
@@ -252,6 +251,5 @@ public class NeuralTensor {
 	public void close() {
 		
 		this.tensor.close();
-		this.data.clear();
 	}
 }

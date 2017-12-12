@@ -265,12 +265,16 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 
 	@Override
 	public List<Vector2D> getPerceptedObstaclePositions(IPedestrian pedestrian, SimulationState simulationState) {
-		
 		throw new NotImplementedException();
 	}
 
 	@Override
 	public List<IPedestrian> getPerceptedPedestrianPositions(IPedestrian pedestrian, SimulationState simulationState) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public List<Vector2D> getPerceptedFreePositions(IPedestrian pedestrian, SimulationState simulationState) {
 		throw new NotImplementedException();
 	}
 

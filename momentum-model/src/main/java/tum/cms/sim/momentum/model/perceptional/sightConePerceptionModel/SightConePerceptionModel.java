@@ -43,6 +43,8 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.NotImplementedException;
+
 public class SightConePerceptionModel extends PerceptionalModel {
 
     public void setRadius(double radius) {
@@ -72,16 +74,6 @@ public class SightConePerceptionModel extends PerceptionalModel {
 	@Override
 	public void callPostProcessing(SimulationState simulationState) {
 		// nothing to do
-	}
-
-	@Override
-	public List<IPedestrian> getPerceptedPedestrianPositions(IPedestrian pedestrian, SimulationState simulationState) {
-		return null;
-	}
-
-	@Override
-	public List<Vector2D> getPerceptedObstaclePositions(IPedestrian pedestrian, SimulationState simulationState) {
-		return null;
 	}
 
 	@Override
@@ -135,5 +127,20 @@ public class SightConePerceptionModel extends PerceptionalModel {
 	@Override
 	protected void supportModelUpdate(SimulationState simulationState) {
 
+	}
+
+	@Override
+	public List<Vector2D> getPerceptedObstaclePositions(IPedestrian pedestrian, SimulationState simulationState) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public List<IPedestrian> getPerceptedPedestrianPositions(IPedestrian pedestrian, SimulationState simulationState) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public List<Vector2D> getPerceptedFreePositions(IPedestrian pedestrian, SimulationState simulationState) {
+		throw new NotImplementedException();
 	}
 }
