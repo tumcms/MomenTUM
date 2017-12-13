@@ -221,6 +221,10 @@ public class InteractionController implements Initializable {
 
 				InteractionController.this.startPlaying(roundedSlider);
 			}
+			else {
+				
+				onPause(null);
+			}
 		}
 	};
 
@@ -396,12 +400,12 @@ public class InteractionController implements Initializable {
 	
 	public void resetTimeLineModel() throws Exception {
 		
-		coreController.clearSimulationOutputReaders();
 		timeLineModel.isAnimatingProperty().set(false);
 		timeLineModel.playingProperty().set(false);
 		timeLineModel.recordingProperty().set(false);
 		timeLineModel.sliderDraggedProperty().set(false);
 		timeLineModel.endTimeProperty().set(0.0);
+		timeLineModel.timeStepDurationProperty().set(0.1);
 		timeLineModel.timeStepMultiplicatorProperty().set(1.0);
 		timeLineModel.timeStepDurationProperty().set(0.1);
 	}

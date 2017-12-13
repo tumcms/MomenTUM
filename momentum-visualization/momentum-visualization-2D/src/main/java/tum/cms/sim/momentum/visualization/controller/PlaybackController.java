@@ -199,19 +199,22 @@ public class PlaybackController implements Initializable {
 
 	public void clearAll() {
 
-		selectionHandler.clearDetailsView();
-		playbackModel.getAreaShapes().clear();
-        playbackModel.getTaggedAreaShapes().clear();
-		playbackModel.getObstacleShapes().clear();
-		playbackModel.getVertexShapes().clear();
-		playbackModel.getEdgeShapes().clear();
-		playbackModel.getLatticeShapes().clear();
-		playbackModel.getPedestrianShapes().clear();
-		playbackModel.getTrajectoryShapes().clear();
+		PlaybackController.selectionHandler.clearSelection();
+		
+		playbackModel.areaShapesProperty().clear();
+        playbackModel.taggedAreaShapesProperty().clear();
+		playbackModel.obstacleShapesProperty().clear();
+		playbackModel.vertexShapesProperty().clear();
+		playbackModel.edgeShapesProperty().clear();
+		playbackModel.latticeShapesProperty().clear();
+		playbackModel.clearPedestrians();
+		playbackModel.trajectoryShapesProperty().clear();
 		playbackModel.getRedPedestrianGroupColor().clear();
 		playbackModel.getBluePedestrianGroupColor().clear();
-		playbackModel.getCustomShapesMap().clear();
-
+		playbackModel.clearCustom();
+		
+		playbackObjectsPane.getChildren().clear();
+		
 		if (playbackModel.getPreviousShapePositionPoints() != null) {
 
 			playbackModel.getPreviousShapePositionPoints().clear();

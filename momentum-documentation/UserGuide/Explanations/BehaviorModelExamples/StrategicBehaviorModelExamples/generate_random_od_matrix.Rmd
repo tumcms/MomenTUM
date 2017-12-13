@@ -1,0 +1,45 @@
+---
+title: "Random OD Matrix Generation"
+author: Jascha Grübel
+institute: ETH Zürich
+date: 2017-12-08
+output: html_notebook
+---
+
+#Generate Random OD Matrix
+
+This script generates a random OD matrix. The user can specify a ratio to define the sparseness of the resulting matrix. If the user specifies the odds between zeros and ones as 3:1 than around 25% of the possible connections between nodes will be present. The probability for each jump is completely random and cannot be influenced. 
+
+This script allows you to specify the number of intermediate locations `numInter`, the number of origins `numOrig`, the number of destinations `numDest`, the odds of a zero in the matrix `oddsZero`, and the odds of a one in the matrix `oddsOne`.
+
+## User defined variables
+```{r}
+numInter <- 4 #Number of Intermediate Locations
+numOrig <- 2 #Number of Origins
+numDest <- 2 #Number of Destinations
+oddsZero <- 2 #Odds that a zero appears in the matrix
+oddsOne <- 5 #Odds that a one3 appears in the matrix
+```
+
+## Computation
+```{r}
+r.dim.odm <- numInter+numDest
+c.dim.odm <- numInter+numOrig
+odm.r <- matrix(sample(c(rep(0,oddsZero),rep(1,oddsOne)),r.dim.odm*dim.odm, replace=TRUE),r.dim.odm,c.dim.odm)
+rownames(odm.r) <- 0:(r.dim.odm-1)
+colnames(odm.r) <- numOrig:(c.dim.odm+numDest-1)
+
+set.seed(1913)
+for(i in 1:r.dim.odm){
+  num_edges <- sum(odm.r[i,])
+  rand_nums <- runif(num_edges)
+  rand_dist <- rand_nums/sum(rand_nums)
+  odm.r[i,odm.r[i,]>0]<-rand_dist
+}
+```
+
+## Saving and Visualisation
+```{r}
+write.table(odm.r,"odMatrix.csv",quote = FALSE, dec = ".", sep=";",col.names = NA)
+as.data.frame(odm.r)
+```

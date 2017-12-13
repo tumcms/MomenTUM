@@ -128,7 +128,7 @@ public class CoreController implements Initializable {
 		playbackModel.maxSizeXProperty().addListener(onMaxSizeChangedListener);
 		playbackModel.maxSizeYProperty().removeListener(onMaxSizeChangedListener);
 		playbackModel.maxSizeYProperty().addListener(onMaxSizeChangedListener);
-		
+
 		interactionViewController.bindCoreModel(this);
 		menuBarViewController.bindCoreModel(this);
 		playbackViewController.bindCoreModel(this);
@@ -193,41 +193,46 @@ public class CoreController implements Initializable {
 	}
 
 	/**
-	 * Waits until all active {@link SimulationOutputReader}s are ready.
-	 * The data is nod loaded but the index system is loaded!
+	 * Waits until all active {@link SimulationOutputReader}s are ready. The data is
+	 * nod loaded but the index system is loaded!
 	 * 
-	 * This method considers if the timeStep does exists in the {@link SimulationOutputReader}s.
+	 * This method considers if the timeStep does exists in the
+	 * {@link SimulationOutputReader}s.
 	 * 
-	 * @param timeStep, the time step
-	 * @param previous, the number of previous time steps for each reader to make ready to use
-	 * @param next, the number of next time steps for each reader to make ready to use
+	 * @param timeStep,
+	 *            the time step
+	 * @param previous,
+	 *            the number of previous time steps for each reader to make ready to
+	 *            use
+	 * @param next,
+	 *            the number of next time steps for each reader to make ready to use
 	 * @return if all active {@link SimulationOutputReader}s are loaded
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public boolean waitUntilReadersReady(Double timeStep, Integer previous, Integer next) throws Exception {
 
 		ArrayList<SimulationOutputReader> loadStatusReaders = new ArrayList<>();
-	
+
 		for (SimulationOutputReader simReader : getOutputReaders()) {
 			loadStatusReaders.add(simReader);
 		}
 
 		while (!loadStatusReaders.isEmpty()) { // Wait until data is ready or not existent
 
-			for(int iter = 0; iter < loadStatusReaders.size(); iter++) {
-				
+			for (int iter = 0; iter < loadStatusReaders.size(); iter++) {
+
 				double timeStepDifference = loadStatusReaders.get(iter).getTimeStepDifference();
-				
-				if (loadStatusReaders.get(iter).makeReadyForIndex(timeStep) &&
-					loadStatusReaders.get(iter).dataReady(timeStep - timeStepDifference * previous) &&
-					loadStatusReaders.get(iter).dataReady(timeStep + timeStepDifference * next)) {
+
+				if (loadStatusReaders.get(iter).makeReadyForIndex(timeStep)
+						&& loadStatusReaders.get(iter).dataReady(timeStep - timeStepDifference * previous)
+						&& loadStatusReaders.get(iter).dataReady(timeStep + timeStepDifference * next)) {
 
 					loadStatusReaders.remove(iter);
 					iter--;
 				}
 			}
 
-			if(loadStatusReaders.isEmpty()) {
+			if (loadStatusReaders.isEmpty()) {
 				break;
 			}
 
@@ -241,7 +246,7 @@ public class CoreController implements Initializable {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 }

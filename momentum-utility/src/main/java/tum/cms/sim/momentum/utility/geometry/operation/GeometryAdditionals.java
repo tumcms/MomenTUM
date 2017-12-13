@@ -129,6 +129,14 @@ public class GeometryAdditionals {
 	 	return angleBetween0And360CCW(left, center, right);
 	}
     
+    /**
+     * Computes angle in radiant between left and right with center as intermediate
+     * point where the angle resides.
+     * @param left
+     * @param center
+     * @param right
+     * @return angle in radiant
+     */
     public static double angleBetween0And360CCW(Vector2D left, Vector2D center, Vector2D right) {
 
 		double angle = angleBetweenPlusMinus180(left, center, right);

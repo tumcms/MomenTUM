@@ -195,9 +195,10 @@ public class BresenhamPerceptionModel extends PerceptionalModel {
 		}
 
 		Occupation result = Occupation.convertDoubleToOccupation(
-				this.visibilityMap.breshamLineCast(from,
-						towards,
-						perceptionCells));
+		
+			this.visibilityMap.breshamLineCast(from,
+					towards,
+					perceptionCells));
 		
 		return Occupation.Empty.equals(result);
 	}

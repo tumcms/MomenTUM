@@ -87,16 +87,19 @@ public abstract class AnimationCalculations {
 		ParallelTransition concurrentMovements = createConcurrentAnimation();
 		
 		for(SimulationOutputReader simReader : coreController.getOutputReaders()) {
-			
-			if(simReader.isDataWithContent(timeStep)) {
+		
+			if(CsvType.isCustomType(simReader.getCsvType())) {
 				
-				if(CsvType.isCustomType(simReader.getCsvType())) {
+				if(simReader.isDataWithContent(timeStep)) {
 					
 					SimulationOutputCluster customDataForStep = simReader.asyncReadDataSet(timeStep);
 					concurrentMovements.getChildren().add(updateCustomData(simReader.getCsvType(), customDataForStep, coreController, simReader));
 				}
+			}
+			
+			if(simReader.getCsvType().equals(CsvType.Pedestrian)) {
 				
-				if(simReader.getCsvType().equals(CsvType.Pedestrian)) {
+				if(simReader.isDataWithContent(timeStep)) {
 					
 					SimulationOutputCluster pedestrianDataForStep = createPedestrianAtTimeStep(timeStep, coreController, simReader);
 
@@ -109,9 +112,13 @@ public abstract class AnimationCalculations {
                         concurrentMovements.getChildren().add(pedestrianAnimation);
 					}
 				}
+				else {
+					
+					updatePedestrianDataVisibility(coreController.getPlaybackController().getPlaybackModel(), null);
+				}
 			}
 		}
-
+		
 		if (concurrentMovements.getTotalDuration().equals(Duration.ZERO)
 				&& coreController.getInteractionViewController().getTimeLineModel().getPlaying()) {
 			double animationDurationInSecond = calculateAnimationDuration(coreController);
@@ -334,7 +341,7 @@ public abstract class AnimationCalculations {
 	
 	private static ParallelTransition updatePedestrianShapes(SimulationOutputReader simulationOutputReader, SimulationOutputCluster dataStep, CoreController coreController) {
 		
-		PlaybackModel visualizationModel = coreController.getPlaybackController().getPlaybackModel();
+		PlaybackModel playbackModel = coreController.getPlaybackController().getPlaybackModel();
 		CustomizationController customizationController = coreController.getPlaybackController().getCustomizationController();
 
 		PedestrianModel pedestrianVisualization = null;
@@ -343,7 +350,23 @@ public abstract class AnimationCalculations {
 		double animationDurationInSecond = calculateAnimationDuration(coreController);
 
 		ParallelTransition concurrentMovementAnimation = createConcurrentAnimation();
+		
+		HashMap<String, Point2D> previousPoints = null;
+		
+		if (playbackModel.getPreviousShapePositionPoints() != null) {
 
+			previousPoints = playbackModel.getPreviousSpecificShapePositionPoints(
+					simulationOutputReader.getCsvType());
+		}
+		
+		HashMap<String, Point2D> nextPoints = null;
+		
+		if (playbackModel.getNextShapePositionPoints() != null) {
+
+			nextPoints = playbackModel.getNextSpecificShapePositionPoints(
+					simulationOutputReader.getCsvType());
+		}
+		
 		// change or add pedestrian model
 		if (!dataStep.isEmpty()) {
 
@@ -353,8 +376,8 @@ public abstract class AnimationCalculations {
 			for (String id : dataStep.getIdentifications()) {
 				
 				String hashId = idCalculator.createUniqueId(id, simulationOutputReader.getFilePathHash());
-				
-				if (!visualizationModel.getPedestrianShapes().containsKey(hashId)) {
+
+				if (!playbackModel.getPedestrianShapes().containsKey(hashId)) {
 
 					pedestrianVisualization = new PedestrianModel(id, hashId);
 					newPedestrians.put(hashId, pedestrianVisualization);
@@ -369,30 +392,17 @@ public abstract class AnimationCalculations {
 					}
 				else {
 
-					pedestrianVisualization = visualizationModel.getPedestrianShapes().get(hashId);
+					pedestrianVisualization = playbackModel.getPedestrianShapes().get(hashId);
 
 					if (animationDurationInSecond > 0.0 && pedestrianVisualization.isVisible()
 							&& animationNeeded(pedestrianVisualization.getDisplayId(),
 							pedestrianVisualization.getPositionX(), pedestrianVisualization.getPositionY(),
-							dataStep, visualizationModel)) {
+							dataStep, playbackModel)) {
 
-						Point2D prevPoint = null;
-						Point2D nextPoint = null;
-
-						if (visualizationModel.getPreviousShapePositionPoints() != null) {
-
-							prevPoint = visualizationModel.getPreviousSpecificShapePositionPoints(
-									simulationOutputReader.getCsvType()).get(id);
-						}
-
-						if (visualizationModel.getNextShapePositionPoints() != null) {
-
-							nextPoint = visualizationModel.getNextSpecificShapePositionPoints(
-									simulationOutputReader.getCsvType()).get(id);
-						}
+						Point2D prevPoint = previousPoints != null ? previousPoints.get(id) : null;
+						Point2D nextPoint = nextPoints != null ? nextPoints.get(id) : null;
 
 						pedestrianVisualization.setAdjacentPlacements(prevPoint, nextPoint);
-
 						pedestrianVisualization.updateProperties(dataStep);
 
 						pedestrianVisualization.animateShape(pedestrianAnimations,
@@ -419,12 +429,12 @@ public abstract class AnimationCalculations {
 				
 				if(coreController.getLayerConfigurationController().getCheckSeedColoured()) {
 					
-					ColorGenerator.generateSeedColors(visualizationModel);
+					ColorGenerator.generateSeedColors(playbackModel);
 					pedestrianVisualization.setIsSeedColored(true);
 				}
 				else if(coreController.getLayerConfigurationController().getCheckGroupColoured()) {
 					
-					ColorGenerator.generateGroupColors(visualizationModel);
+					ColorGenerator.generateGroupColors(playbackModel);
 					pedestrianVisualization.setIsGroupColored(true);
 				}
 			}
@@ -433,21 +443,11 @@ public abstract class AnimationCalculations {
 
 			if (newPedestrians.size() > 0) {
 
-				visualizationModel.getPedestrianShapes().putAll(newPedestrians);
+				playbackModel.getPedestrianShapes().putAll(newPedestrians);
 			}
 		}
 
-		for (PedestrianModel pedestrianModel : visualizationModel.getPedestrianShapes().values()) {
-
-			if (dataStep.isEmpty() || !dataStep.containsIdentification(pedestrianModel.getClusterIdentification())) {
-
-				pedestrianModel.setVisibility(false);
-			} 
-			else {
-
-				pedestrianModel.setVisibility(true);
-			}
-		}
+		updatePedestrianDataVisibility(playbackModel, dataStep);
 
 		if (concurrentMovementAnimation.getChildren().size() == 0
 				&& coreController.getInteractionViewController().getTimeLineModel().getPlaying()) {
@@ -457,6 +457,23 @@ public abstract class AnimationCalculations {
 		}
 
 		return concurrentMovementAnimation;
+	}
+	
+	private static void updatePedestrianDataVisibility(PlaybackModel playbackModel, SimulationOutputCluster dataStep) {
+		
+		for (PedestrianModel pedestrianModel : playbackModel.getPedestrianShapes().values()) {
+
+			if (dataStep == null || 
+				dataStep.isEmpty() ||
+				!dataStep.containsIdentification(pedestrianModel.getClusterIdentification())) {
+
+				pedestrianModel.setVisibility(false);
+			}
+			else {
+
+				pedestrianModel.setVisibility(true);
+			}
+		}
 	}
 
 	private static boolean animationNeeded(String displayId, double positionX, double positionY, SimulationOutputCluster dataStep, PlaybackModel visualizationModel) {
