@@ -78,7 +78,6 @@ public class InformationDialogCreator {
 	public static void createOnLoadCsvErrorDialog() {
 		
 		Alert dialog = new Alert(AlertType.ERROR);
-		//change by Julia 11.10.2017 Window_Modal
 		dialog.initModality(Modality.APPLICATION_MODAL);
     	dialog.setTitle(infoboxTitle);
     	dialog.setHeaderText(onLoadCsvErrorHeader);

@@ -93,19 +93,33 @@ public class SelectionHandler {
 		else {
 			
 			if(shapeModel != null) {
-				
-				if(selectedShapes.contains(shapeModel)) { 
+					
+				if(selectedShapes.contains(shapeModel)) { //delete selected
 					
 					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					selectedShapes.clear();
+					clickableObjects.forEach((id,shape) -> shape.setVisibility(true));
+				}
+				else if(!selectedShapes.isEmpty()) { //select another
+					
+					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
+					selectedShapes.clear();
+					clickableObjects.forEach((id,shape) -> shape.setVisibility(true));
+					
+					
+					clickableObjects.forEach((id,shape) -> shape.changeSelectionMode(SelectionStates.NotSelected));
+					shapeModel.changeSelectionMode(SelectionStates.Selected);
+					selectedShapes.add(shapeModel);
+					
 				}
 				else { // newly selected 
 					
-					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
+					clickableObjects.forEach((id,shape) -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					selectedShapes.clear();
 					
 					shapeModel.changeSelectionMode(SelectionStates.Selected);
 					selectedShapes.add(shapeModel);
+
 				}
 			}
 		}
@@ -119,8 +133,6 @@ public class SelectionHandler {
 			if(shapesDetailsModel != null) {
 				this.detailsView.setItems(shapesDetailsModel.createViewContent());
 			}
-			
-			
 		}
 	}
 	

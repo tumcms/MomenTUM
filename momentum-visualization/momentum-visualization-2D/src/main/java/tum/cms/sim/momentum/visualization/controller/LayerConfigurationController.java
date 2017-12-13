@@ -48,7 +48,6 @@ import tum.cms.sim.momentum.utility.csvData.CsvType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
-import tum.cms.sim.momentum.visualization.utility.AnimationCalculations;
 import tum.cms.sim.momentum.visualization.utility.ColorGenerator;
 import tum.cms.sim.momentum.visualization.utility.IdExtension;
 import tum.cms.sim.momentum.visualization.view.dialogControl.InformationDialogCreator;
@@ -60,9 +59,8 @@ public class LayerConfigurationController implements Initializable {
 	public void bindCoreModel(CoreController coreController) {
 		
 		this.coreController = coreController;
-		
+	
 		this.layerConfigurationBox.disableProperty().bind(coreController.getCoreModel().layoutLoadedProperty().not());
-		
 		showAllTrajetoriesCheckBox.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
 		showGroupColoring.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
 		showSeedColoring.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
@@ -107,10 +105,11 @@ public class LayerConfigurationController implements Initializable {
 	}
 	
 	@FXML void onCheckAllTrajectories(ActionEvent actionEvent) throws Exception {
-	
+		
 		if(showAllTrajetoriesCheckBox.isSelected()) {
 			
 			HashMap<String, TrajectoryModel> trajectories = generateTrajectories();
+			
 			coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
 			coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);
 			
@@ -167,15 +166,15 @@ public class LayerConfigurationController implements Initializable {
 	@FXML void onCheckShowTaggedArea(ActionEvent actionEvent) {
 
 		coreController.getPlaybackController().getPlaybackModel()
-				.getTaggedAreaShapes().values()
-				.forEach(taggedAreaShape -> taggedAreaShape.setVisibility(showTaggedAreasCheckBox.isSelected()));
+			.getTaggedAreaShapes().values()
+			.forEach(taggedAreaShape -> taggedAreaShape.setVisibility(showTaggedAreasCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowDensityEdge(ActionEvent actionEvent) {
 		
 		coreController.getPlaybackController().getPlaybackModel()
-		.getEdgeShapes().values()
-		.forEach(edgeShape -> edgeShape.setVisibility(showPedestrianCheckBox.isSelected()));
+			.getEdgeShapes().values()
+			.forEach(edgeShape -> edgeShape.setVisibility(showPedestrianCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowGroups(ActionEvent actionEvent) {
@@ -248,6 +247,7 @@ public class LayerConfigurationController implements Initializable {
 		coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().clear();
 		
 		HashMap<String, TrajectoryModel> trajectories = generateTrajectories();
+		
 		coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
 		coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);
 		
@@ -259,8 +259,8 @@ public class LayerConfigurationController implements Initializable {
 		HashMap<String, TrajectoryModel> trajectories = new HashMap<String, TrajectoryModel>();
 		
 		double starttime = coreController.getInteractionViewController()
-								.roundTimelineValue(coreController.getPlaybackController().getCustomizationController()
-								.getCustomizationModel().trajectoryTimeIntervalProperty().getValue()*100);
+								.roundTimelineValue(coreController.getPlaybackController().getCustomizationController().getCustomizationModel().trajectoryTimeIntervalProperty().getValue()*100);
+
 
 		double actualtime =  coreController.getInteractionViewController()
 								.roundTimelineValue(coreController.getInteractionViewController().getTimeLineBindingValue());
@@ -283,6 +283,7 @@ public class LayerConfigurationController implements Initializable {
 				SimulationOutputCluster dataStepCurrent = simReader.readDataSet(interval);
 				
 				if (dataStepCurrent != null && !dataStepCurrent.isEmpty()) {
+					
 					for (String identification : dataStepCurrent.getIdentifications()) {
 						
 						String hashId = createID.createUniqueId(identification, simReader.getFilePathHash());
@@ -306,7 +307,6 @@ public class LayerConfigurationController implements Initializable {
 				}
 				interval += simReader.getTimeStepDifference();
 			}
-			simReader.clearBuffer();
 		}
 		return trajectories;
 	}

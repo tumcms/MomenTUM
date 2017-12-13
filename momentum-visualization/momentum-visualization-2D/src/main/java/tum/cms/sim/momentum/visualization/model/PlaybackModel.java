@@ -67,7 +67,7 @@ public class PlaybackModel {
 	private final DoubleProperty maxSizeX = new SimpleDoubleProperty(this, "maxSizeX", 1.0);
 	private final BooleanProperty is3DView = new SimpleBooleanProperty(this, "is3DView", false);
 	private final DoubleProperty maxSizeY = new SimpleDoubleProperty(this, "maxSizeY", 1.0);
-
+		
 	private final MapProperty<String, AreaModel> areaShapes = new SimpleMapProperty<String, AreaModel>(this,
 			"areaShapes", FXCollections.observableHashMap());
 	private final MapProperty<String, TaggedAreaModel> taggedAreaShapes = new SimpleMapProperty<String, TaggedAreaModel>(this,

@@ -42,7 +42,6 @@ import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.enums.Smoothness;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CustomizationModel;
-import tum.cms.sim.momentum.visualization.model.PlaybackModel;
 import tum.cms.sim.momentum.visualization.utility.TrajectoryCubicCurve;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
@@ -225,8 +224,6 @@ public class PedestrianModel extends ShapeModel {
 		this.displayId = displayId;
 		this.identificationId = hashId;
 	}
-
-	public PlaybackModel playbackModel = null;
 	
 	@Override
 	/**
@@ -242,8 +239,7 @@ public class PedestrianModel extends ShapeModel {
 	public String getClusterIdentification() {
 		return this.displayId.split("\\.")[0];
 	}
-	
-	
+		
 	@Override
 	public void changeSelectionMode(SelectionStates selectionState) {
 		
@@ -254,21 +250,17 @@ public class PedestrianModel extends ShapeModel {
 			
 			this.pedestrianBody.materialProperty().bind(customizationModel.pedestrianBodyMaterialProperty());
 			
-			if(this.trajectory != null) {
+			if(this.trajectory!=null) {
 				
-				this.playbackModel.getTrajectoryShapes()
-					.forEach((id,shape)-> shape.setVisibility(true));
-//				this.trajectory.setVisible(false);
+				this.trajectory.setVisible(false);
 			}
 			break;
 		case Selected:
 			
 			this.pedestrianBody.materialProperty().bind(customizationModel.selectedPedestrianBodyMaterial());
 			
-			if(this.trajectory != null) {
+			if(this.trajectory!=null) {
 				
-				this.playbackModel.getTrajectoryShapes()
-					.forEach((id,shape)-> shape.setVisibility(false));
 				this.trajectory.setVisible(true);
 			}
 			break;
@@ -391,10 +383,9 @@ public class PedestrianModel extends ShapeModel {
 		this.pedestrianShape.setRotate(this.angle);
 	}
 
-	public void setTrajectory(TrajectoryModel trajectoryModel, PlaybackModel playbackModel) {
+	public void setTrajectory(TrajectoryModel trajectoryModel) {
 		
 		this.trajectory = trajectoryModel.getTrajectory();	
-		this.playbackModel = playbackModel;
 	}
 	
 	public void placeShape(double positionX, 
