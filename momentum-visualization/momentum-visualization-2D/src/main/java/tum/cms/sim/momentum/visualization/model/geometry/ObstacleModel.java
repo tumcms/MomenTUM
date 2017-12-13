@@ -131,8 +131,8 @@ public class ObstacleModel {
 		
 		case VirtualWall: 
 			
-			obstacleTopShape.strokeProperty().bind(customizationController.getCustomizationModel().virutalObstacleColorProperty());
-			obstacleBottomShape.strokeProperty().bind(customizationController.getCustomizationModel().virutalObstacleColorProperty());
+			obstacleTopShape.strokeProperty().bind(customizationController.getCustomizationModel().virtualObstacleColorProperty());
+			obstacleBottomShape.strokeProperty().bind(customizationController.getCustomizationModel().virtualObstacleColorProperty());
 			break;
 		}
 

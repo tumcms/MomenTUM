@@ -96,7 +96,6 @@ public class InteractionController implements Initializable {
 
 	private DoubleBinding timeLineBinding = null;
 	
-	private ParallelTransition walkingAnimation = null;
 	private ParallelTransition playBackAnimation = null;
 
 	// Controller
@@ -216,8 +215,6 @@ public class InteractionController implements Initializable {
 						
 						e.printStackTrace();
 					}
-
-//				InteractionController.this.timeLineModel.setCurrentTime(roundedSlider);
 
 				InteractionController.this.startPlaying(roundedSlider);
 			}

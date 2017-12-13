@@ -118,6 +118,7 @@ public class FindDialogCreator {
 					idChooser.getItems().clear();
 					idChooser.getItems().setAll(coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().keySet());
 					Collections.sort(idChooser.getItems(), new NumericStringComparator());
+					
 					break;
 					
 				case Vertex:
@@ -143,9 +144,8 @@ public class FindDialogCreator {
 				
 				selectionHandler.clearSelection();
 
-				selectionHandler.setSelection(selectedShape, false, null);
+				//selectionHandler.setSelection(selectedShape, false, null);
 
-				
 				switch(entityTypeChooser.getValue()) {
 				case Area:
 					selectedShape = coreController.getPlaybackController().getPlaybackModel().getAreaShapes().get(idChooser.getValue());

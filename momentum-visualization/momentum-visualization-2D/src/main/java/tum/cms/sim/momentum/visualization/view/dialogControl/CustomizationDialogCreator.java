@@ -86,12 +86,11 @@ public class CustomizationDialogCreator {
 	private static String snapshotDialogPath = "Snapshot path:";
 	private static String snapshotDialogName = "Snapshot name:";
 	private static String snapshotDialogScale = "Scaling factor:";
-	private static String timeIntervalStartTime = "Trajectory Visibility Interval:";
+	private static String trajectoryTimeInterval = "Trajectory Visibility Interval:";
 	
 	public static void createColorDialog(PlaybackController playbackController) {
 		
 		CustomizationModel customizationModel = playbackController.getCustomizationController().getCustomizationModel();
-		CoreController coreController = playbackController.getCoreController();
 		
 		Dialog<Void> dialog = new Dialog<Void>();
 		dialog.initModality(Modality.WINDOW_MODAL);
@@ -400,10 +399,10 @@ public class CustomizationDialogCreator {
  
     	
     	textItem = new Label();
-    	textItem.setText(timeIntervalStartTime);
+    	textItem.setText(trajectoryTimeInterval);
     	TextField trajectoryTimeIntervalTextField = new TextField();
     	trajectoryTimeIntervalTextField.setPrefWidth(130);
-    	trajectoryTimeIntervalTextField.setText(String.valueOf(customizationModel.gettrajectoryTimeInterval()));
+    	trajectoryTimeIntervalTextField.setText(String.valueOf(customizationModel.getTrajectoryTimeInterval()));
     	trajectoryTimeIntervalTextField.setOnAction(enterPressed);
     	trajectoryTimeIntervalTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -412,22 +411,20 @@ public class CustomizationDialogCreator {
 
 				if (focusLost) {
 					if(trajectoryTimeIntervalTextField.getText().isEmpty()) {
-						InformationDialogCreator.createErrorDialog("Customization", "The trajectory visibility range hast to be a valid number between 0.0 and 500.0");
-						trajectoryTimeIntervalTextField.textProperty().set(String.valueOf(customizationModel.gettrajectoryTimeInterval()));
+						InformationDialogCreator.createErrorDialog("Customization", "The trajectory time interval has to be a valid number between 0.0 and 500.0");
+						trajectoryTimeIntervalTextField.textProperty().set(String.valueOf(customizationModel.getTrajectoryTimeInterval()));
 						return;
 					}
 					try {
-						if(Double.parseDouble(trajectoryTimeIntervalTextField.getText())>500){
+						if(Double.parseDouble(trajectoryTimeIntervalTextField.getText())>500) {
 							throw new Exception();
-							}
-						
-						customizationModel.settrajectoryTimeInterval(Double.parseDouble(trajectoryTimeIntervalTextField.getText()));
-						
-						coreController.getLayerConfigurationController().updateTrajectories();
 						}
+						customizationModel.setTrajectoryTimeInterval(Double.parseDouble(trajectoryTimeIntervalTextField.getText()));
+						playbackController.getCoreController().getLayerConfigurationController().updateTrajectories();
+					}
 					catch (Exception e) {
 						InformationDialogCreator.createErrorDialog("Customization", "The trajectory time interval has to be a valid number between 0.0 and 500.0");
-						trajectoryTimeIntervalTextField.textProperty().set(String.valueOf(customizationModel.gettrajectoryTimeInterval()));
+						trajectoryTimeIntervalTextField.textProperty().set(String.valueOf(customizationModel.getTrajectoryTimeInterval()));
 						
 					}
 				}
@@ -510,13 +507,13 @@ public class CustomizationDialogCreator {
      	textItem = new Label();
     	textItem.setText(colorDialogVirtualObstacleColor);
     	ColorPicker colorPickerVirtualObstacle = new ColorPicker();
-    	colorPickerVirtualObstacle.setValue(customizationModel.getVirutalObstacleColor());
+    	colorPickerVirtualObstacle.setValue(customizationModel.getVirtualObstacleColor());
     	colorPickerVirtualObstacle.setOnAction(new EventHandler<ActionEvent>() {
     		
     			@Override
     			public void handle(ActionEvent arg0) {
     			
-    				customizationModel.setVirutalObstacleColor(colorPickerVirtualObstacle.getValue());
+    				customizationModel.setVirtualObstacleColor(colorPickerVirtualObstacle.getValue());
     			}
         	});
     	
@@ -543,6 +540,7 @@ public class CustomizationDialogCreator {
 		    	colorPickerTrajectory.setValue((Color) customizationModel.getTrajectoryColor());
 		    	randomTrajectoryColorCheckBox.setSelected(customizationModel.isTrajectoryRandomColor());
 		    	trajectoryThicknessTextField.setText(String.valueOf(customizationModel.getTrajectoryThickness()));
+		    	trajectoryTimeIntervalTextField.setText(String.valueOf(customizationModel.getTrajectoryTimeInterval()));
 		    	
 		    	colorPickerDestination.setValue(customizationModel.getDestinationColor());
 		    	colorPickerOrigin.setValue(customizationModel.getOriginColor());

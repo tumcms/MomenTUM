@@ -53,14 +53,12 @@ public class TimeLineModel {
 	private final BooleanProperty sliderDragged = new SimpleBooleanProperty(this, "sliderDragged", false);
 	private final DoubleProperty endTime = new SimpleDoubleProperty(this, "endTime", 0.0);
 	private final DoubleProperty startTime = new SimpleDoubleProperty(this, "startTime", 0.0);
-	private final DoubleProperty currentTime = new SimpleDoubleProperty(this, "currenTime", 0.0);
 	private final ObjectProperty<SpeedUp> selectedSpeedUp = new SimpleObjectProperty<SpeedUp>(this, "selectedSpeedUp",
 			SpeedUp.X32);
 	private final ObjectProperty<Smoothness> selectedSmoothness = new SimpleObjectProperty<Smoothness>(this,
 			"selectedSmoothness", Smoothness.Cubic);
 	private List<String> speedUp = SpeedUp.SPEEDUP_VALUES;
 	private List<String> smoothness = Smoothness.SMOOTHNESS_VALUES;
-
 	
 	public BooleanProperty playingProperty() {
 		return playing;
@@ -150,18 +148,6 @@ public class TimeLineModel {
 		this.endTime.set(endTime);
 	}
 
-//	public DoubleProperty currentTimeProperty() {
-//		return currentTime;
-//	}
-//
-//	public Double getCurrentTime() {
-//		return currentTime.get();
-//	}
-//
-//	public void setCurrentTime(Double currentTime) {
-//		this.currentTime.set(currentTime);
-//	}
-	
 	public ObjectProperty<SpeedUp> selectedSpeedUpProperty() {
 		return selectedSpeedUp;
 	}

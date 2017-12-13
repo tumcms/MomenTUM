@@ -130,24 +130,23 @@ public class PlaybackController implements Initializable {
 	}
 
 	public void putTrajectoriesIntoPedestrians(HashMap<String, TrajectoryModel> trajectories) {
-		//05.12
-//		coreController.getVisualizationModel().getTrajectoryShapes()
-//		.forEach((id,trajectoryShape) -> trajectoryShape.setModel(coreController.getVisualizationModel()));
-//		
 		
 		for (PedestrianModel pedestrianShapeModel : playbackModel.getPedestrianShapes().values()) {
 			
 			if(trajectories.get(pedestrianShapeModel.getIdentification()) != null) {
 				
-				pedestrianShapeModel.setTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()), playbackModel);
+				pedestrianShapeModel.setTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()));
+			}
+		}
+		for (TrajectoryModel trajectoryShapeModel : playbackModel.getTrajectoryShapes().values()) {
+			
+			if(playbackModel.getPedestrianShapes().get(trajectoryShapeModel.getIdentification()) != null) {
 				
-//				coreController.getVisualizationModel().getTrajectoryShapes()
-//				.forEach((id,trajectoryShape) -> trajectoryShape.setDataProperties(pedestrianShapeModel.getDataProperties()));
-				
+			trajectoryShapeModel.setPedestrianData(playbackModel.getPedestrianShapes()
+					.get(trajectoryShapeModel.getIdentification()).getDataProperties());
 			}
 		}
 	}
-
 
 	public void onMouseClicked(MouseEvent event) {
 
@@ -293,6 +292,7 @@ public class PlaybackController implements Initializable {
 
 		playbackModel.trajectoryShapesProperty().addListener(onTrajectoryShapesListChangedListener);
 		playbackModel.latticeShapesProperty().addListener(onLatticeShapesListChangedListener);
+			
 	}
 
 	public void bindCustomShapes(CsvType type) {
@@ -550,7 +550,7 @@ public class PlaybackController implements Initializable {
 			if (changed.getMap().size() > 0) {
 
 				if (!changed.wasRemoved()) {
-					changed.getValueAdded().registerSelectable(selectionHandler);
+					changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
 					playbackObjectsPane.getChildren().add(changed.getValueAdded().getTrajectory());
 				}
 			} else {

@@ -33,11 +33,10 @@
 package tum.cms.sim.momentum.visualization.model.geometry;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 import org.apache.commons.math3.util.FastMath;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -45,11 +44,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.PathElement;
 import javafx.scene.shape.Shape;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
-import tum.cms.sim.momentum.visualization.model.PlaybackModel;
 
 public class TrajectoryModel extends ShapeModel{
 
@@ -57,9 +54,9 @@ public class TrajectoryModel extends ShapeModel{
 	
 	private Path trajectory = null;
 	
-	PlaybackModel playbackModel = null;
-	
 	LinkedHashMap<String, String> details = new LinkedHashMap<>();
+	
+	CustomizationController customizationController = null;
 	
 	public void setVisibility(boolean visible) {
 
@@ -85,6 +82,8 @@ public class TrajectoryModel extends ShapeModel{
 	}
 
 	public TrajectoryModel(String id, CustomizationController customizationController, double x, double y, int resolution) {
+		
+		this.customizationController = customizationController;
 		
 		this.id = id;
 		trajectory = new Path();
@@ -130,21 +129,19 @@ public class TrajectoryModel extends ShapeModel{
 		switch(selectionState) {
 		
 		case NotSelected:
-			if(this.trajectory != null) {
-				
-				playbackModel.getTrajectoryShapes()
-					.forEach((id,shape)-> shape.setVisibility(true));
-			}
+			
+			this.trajectory.setVisible(false);
+			
+			trajectory.strokeProperty().bind(customizationController.getCustomizationModel().trajectoryColorProperty());
+			
 			break;
 			
 		case Selected:
 			
-			if(this.trajectory != null) {
-				
-				playbackModel.getTrajectoryShapes()
-					.forEach((id,shape)-> shape.setVisibility(false));
-				trajectory.setVisible(true);
-			}
+			this.trajectory.setVisible(true);
+			
+			this.trajectory.strokeProperty().bind(customizationController.getCustomizationModel().selectedTrajectoryPaint());
+			
 			break;
 		}
 	}
@@ -161,21 +158,13 @@ public class TrajectoryModel extends ShapeModel{
 
 	@Override
 	public LinkedHashMap<String, String> getDataProperties() {
-	
-		this.details.put(ShapeModel.nameDetails, id);
 		
 		return this.details;
-		
 	}
-	
-	public void setDataProperties(LinkedHashMap<String, String> details) {
+
+	public void setPedestrianData(LinkedHashMap<String, String> details) {
 		
 		this.details=details;
 	}
-	
-	public void setModel(PlaybackModel playbackModel) {
 		
-		this.playbackModel = playbackModel;
-	}
-	
 }
