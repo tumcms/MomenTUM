@@ -76,7 +76,7 @@
 
 	<generators>
 		<generator id="0" name="generator" type="Csv" scenario="0" seed="0">
-			<property name="startTime" type="Double" value="10.0"/>
+			<property name="startTime" type="Double" value="0.0"/>
 			<property name="endTime" type="Double" value="Infinity"/> 
 			<complexProperty name="csvInput" type="CsvMatrix" valueType="Double">
 				<entry file="C:\Programmierung\MomenTUM\momentum-users\PhDThesis\Kielar\NN_2017\2017_NN_Operational_testing\2017_NN_Playback_ug_100_test_generator.txt" separator=";" comment="#"/>

@@ -160,7 +160,7 @@
 			</writerFormat>
 			<writerSource sourceType="CsvPlayback" additionalId="2"> 
 				<property name="distancesToPercepts" type="Format" value="%.4f"/>
-				<property name="anglesToPercepts" type="Format" value="%.4f"/>
+				<!--<property name="anglesToPercepts" type="Format" value="%.4f"/>-->
 				<property name="velocityMagnitudesOfPercepts" type="Format" value="%.4f"/>
 				<property name="velocityAngleDifferencesToPercepts" type="Format" value="%.4f"/>
 				<!--<property name="typesOfPercepts" type="Format" value="%.4f"/>-->

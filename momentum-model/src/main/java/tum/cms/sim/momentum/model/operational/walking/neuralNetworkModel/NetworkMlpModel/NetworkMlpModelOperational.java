@@ -88,7 +88,7 @@ public class NetworkMlpModelOperational extends WalkingModel {
 	@Override
 	public void callPedestrianBehavior(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 	
-		float scale = 1.0f; // scale 
+		float scale = 10.0f; // scale 
 		
 		NetworkMlpPedestrianExtension extension = (NetworkMlpPedestrianExtension) pedestrian.getExtensionState(this);
 		List<Float> inTensorData = this.assembleInTensor(pedestrian, perception, simulationState, extension, scale);
@@ -123,9 +123,12 @@ public class NetworkMlpModelOperational extends WalkingModel {
 			network.executeNetwork(inTensor, outTensor);
 			outData = outTensor.getFloatData();
 			
-			velocityMagnitude = outData[0] / scale;
+			velocityMagnitude = outData[0] / (10.0);
 			//velocityAngleChange =  (outData[1]/scale) * 2.0*FastMath.PI - FastMath.PI;
-			velocityAngleChange =  FastMath.PI - outData[1] * 2.0 * FastMath.PI;
+			velocityAngleChange =   (FastMath.PI - outData[1]);// * 2.0 * FastMath.PI;
+			velocityAngleChange = velocityAngleChange > FastMath.PI/2.0 || velocityAngleChange < -FastMath.PI/2.0 
+					? 0.0 :
+					velocityAngleChange;
 		} 
 		catch (Exception e) {
 			
@@ -269,7 +272,9 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		inTensorData.add(extension.getAngleToGoal().floatValue() * scale);
 		inTensorData.add(extension.getLastVelocityMagnitude().floatValue() * scale);
 		inTensorData.add(extension.getLastVelocityAngleChange().floatValue() * scale);
-
+		inTensorData.add(extension.getLastLastVelocityMagnitude().floatValue() * scale);
+		inTensorData.add(extension.getLastLastVelocityAngleChange().floatValue() * scale);
+		
 		return inTensorData;
 	}
 }

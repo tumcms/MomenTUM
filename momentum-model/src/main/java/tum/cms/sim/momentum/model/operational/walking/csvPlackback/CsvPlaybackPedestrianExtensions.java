@@ -110,16 +110,28 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		return angleToGoal;
 	}
 	
-	private Double lastVelocityMagnitude = 0.0;
+	private Double lastVelocityMagnitude = -1.0;
 	
 	public Double getLastVelocityMagnitude() {
 		return lastVelocityMagnitude;
 	}
 
-	private Double lastVelocityAngleChange = 0.0;
+	private Double lastVelocityAngleChange = FastMath.PI;
 	
 	public Double getLastVelocityAngleChange() {
 		return lastVelocityAngleChange;
+	}
+
+	private Double lastLastVelocityMagnitude = 0.0;
+	
+	public Double getLastLastVelocityMagnitude() {
+		return lastLastVelocityMagnitude;
+	}
+
+	private Double lastLastVelocityAngleChange = FastMath.PI; 
+	
+	public Double getLastLastVelocityAngleChange() {
+		return lastLastVelocityAngleChange;
 	}
 
 	// Teaching data
@@ -184,6 +196,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 //		return pedestrianVelocityYLastSec;
 //	}
 	
+	private double magScale = 1.0;
 	/**
 	 * Returns heading vector mean over the last numberForMean headings
 	 * @param currentEstimatedHeading
@@ -240,7 +253,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				item.setAngleToPercept(FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(obstaclePosition.subtract(position), zeroVector, heading));
 				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(obstaclePosition.subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
 				item.setVelocityMagnitudeOfPercept(0.0);
-				item.setVelocityAngleDifferenceToPercept(FastMath.PI * 2);
+				item.setVelocityAngleDifferenceToPercept(FastMath.PI * 2.0);
 				//item.setVelocityAngleDifferenceToPercept(1.0);
 				item.setTypeOfPercept(obstacleCode);
 			}
@@ -254,7 +267,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance * scaleDistance);
 				item.setAngleToPercept(FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading));
 				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
-				item.setVelocityMagnitudeOfPercept(other.getVelocity().getMagnitude());
+				item.setVelocityMagnitudeOfPercept(other.getVelocity().getMagnitude() * magScale);
 				item.setVelocityAngleDifferenceToPercept(FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()));
 				//item.setVelocityAngleDifferenceToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()))/(2.0*FastMath.PI));
 				item.setTypeOfPercept(other.getGroupId() == pedestrian.getGroupId() ? groupCode : pedestrianCode);
@@ -290,13 +303,24 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			//angleToGoal = (FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading()))/(2.0*FastMath.PI);
 		}
 		
-		lastVelocityMagnitude = pedestrian.getVelocity().getMagnitude();
+		if(lastVelocityMagnitude == -1) {
+			
+			lastLastVelocityMagnitude = pedestrian.getVelocity().getMagnitude() * magScale;
+		}
+		else {
+			
+			lastLastVelocityMagnitude = lastVelocityMagnitude;
+		}
+		
+		lastLastVelocityAngleChange = lastVelocityAngleChange;
+		
+		lastVelocityMagnitude = pedestrian.getVelocity().getMagnitude() * magScale;
 		lastVelocityAngleChange = velocityAngleChange;
 	}
 	
 	public void updatePedestrianTeach(IOperationalPedestrian pedestrian, WalkingState newWalkingState) {
 
-		velocityMagnitude = newWalkingState.getWalkingVelocity().getMagnitude();
+		velocityMagnitude = newWalkingState.getWalkingVelocity().getMagnitude() * magScale;
 		velocityAngleChange = FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(newWalkingState.getWalkingVelocity(), zeroVector, pedestrian.getVelocity());
 		//velocityAngleChange = (FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(newWalkingState.getWalkingVelocity(), zeroVector, pedestrian.getVelocity()))/(2.0*FastMath.PI);
 	}
