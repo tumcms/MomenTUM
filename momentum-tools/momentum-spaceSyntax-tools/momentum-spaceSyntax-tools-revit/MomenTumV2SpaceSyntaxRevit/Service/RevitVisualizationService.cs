@@ -53,29 +53,35 @@ namespace MomenTumV2SpaceSyntaxRevit.Service
 
         private static AnalysisDisplayStyle CreateDefaultSpaceSyntaxAnalysisDisplayStyle(Document doc)
         {
-            AnalysisDisplayColoredSurfaceSettings coloredSurfaceSettings =
-                new AnalysisDisplayColoredSurfaceSettings();
-            coloredSurfaceSettings.ShowGridLines = false;
-            coloredSurfaceSettings.ShowContourLines = false;
+            using (var transaction = new Transaction(doc, "Creating Default Analysis Display Style for Space Syntax."))
+            {
+                transaction.Start();
+                AnalysisDisplayColoredSurfaceSettings coloredSurfaceSettings =
+                    new AnalysisDisplayColoredSurfaceSettings();
+                coloredSurfaceSettings.ShowGridLines = false;
+                coloredSurfaceSettings.ShowContourLines = false;
 
-            AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
-            colorSettings.ColorSettingsType = AnalysisDisplayStyleColorSettingsType.GradientColor;
-            colorSettings.MaxColor = new Color(255, 0, 255); // Magenta
-            colorSettings.MinColor = new Color(255, 255, 0); // Yellow
+                AnalysisDisplayColorSettings colorSettings = new AnalysisDisplayColorSettings();
+                colorSettings.ColorSettingsType = AnalysisDisplayStyleColorSettingsType.GradientColor;
+                colorSettings.MaxColor = new Color(255, 0, 255); // Magenta
+                colorSettings.MinColor = new Color(255, 255, 0); // Yellow
 
-            AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
-            legendSettings.ShowLegend = true;
-            legendSettings.ShowUnits = true;
-            legendSettings.ShowDataDescription = false;
+                AnalysisDisplayLegendSettings legendSettings = new AnalysisDisplayLegendSettings();
+                legendSettings.ShowLegend = true;
+                legendSettings.ShowUnits = true;
+                legendSettings.ShowDataDescription = false;
 
-            var analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(
-                doc,
-                _defaultSpaceSyntaxDisplayStyleName,
-                coloredSurfaceSettings,
-                colorSettings,
-                legendSettings);
+                var analysisDisplayStyle = AnalysisDisplayStyle.CreateAnalysisDisplayStyle(
+                    doc,
+                    _defaultSpaceSyntaxDisplayStyleName,
+                    coloredSurfaceSettings,
+                    colorSettings,
+                    legendSettings);
 
-            return analysisDisplayStyle;
+                transaction.Commit();
+
+                return analysisDisplayStyle;
+            }
         }
 
         private static void SetAnalysisDisplayStyle(Document doc, AnalysisDisplayStyle analysisDisplayStyle)
