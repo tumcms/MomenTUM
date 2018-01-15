@@ -27,7 +27,7 @@
 	
 	<perceptualModels>
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
-			<property name="perceptionDistance" type="Double" value="5.0"/>
+			<property name="perceptionDistance" type="Double" value="2.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
 			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
 		</perceptual>
@@ -159,16 +159,18 @@
 				<property name="delimiter" type="String" value=";"/>
 			</writerFormat>
 			<writerSource sourceType="CsvPlayback" additionalId="2"> 
-				<property name="distancesToPercepts" type="Format" value="%.4f"/>
-				<!--<property name="anglesToPercepts" type="Format" value="%.4f"/>-->
-				<property name="velocityMagnitudesOfPercepts" type="Format" value="%.4f"/>
-				<property name="velocityAngleDifferencesToPercepts" type="Format" value="%.4f"/>
-				<!--<property name="typesOfPercepts" type="Format" value="%.4f"/>-->
-				<property name="angleToGoal" type="Format" value="%.4f"/>
-				<property name="lastVelocityMagnitude" type="Format" value="%.4f"/>
-				<property name="lastVelocityAngleChange" type="Format" value="%.4f"/>
-				<property name="velocityMagnitude" type="Format" value="%.4f"/>
-				<property name="velocityAngleChange" type="Format" value="%.4f"/>
+				<property name="distancesToPercepts" type="Format" value="%.6f"/>
+				<property name="anglesToPercepts" type="Format" value="%.6f"/>
+				<property name="velocityMagnitudesOfPercepts" type="Format" value="%.6f"/>
+				<property name="velocityAngleDifferencesToPercepts" type="Format" value="%.6f"/>
+				<!--<property name="typesOfPercepts" type="Format" value="%.6f"/>-->
+				<property name="angleToGoal" type="Format" value="%.6f"/>
+				<property name="lastVelocityMagnitude" type="Format" value="%.6f"/>
+				<property name="lastVelocityAngleChange" type="Format" value="%.6f"/>
+				<!--<property name="lastLastVelocityMagnitude" type="Format" value="%.6f"/>-->
+				<!--<property name="lastLastVelocityAngleChange" type="Format" value="%.6f"/>-->
+				<property name="velocityMagnitude" type="Format" value="%.6f"/>
+				<property name="velocityAngleChange" type="Format" value="%.6f"/>
 			</writerSource>
 		</outputWriter>
 	</outputWriters>

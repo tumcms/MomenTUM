@@ -52,20 +52,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		return headingsList;
 	}
 	
-//	private List<Double> perceptionDistanceSpace = new ArrayList<Double>();
-//	private List<Double> perceptionVelocityXSpace = new ArrayList<Double>();
-//	private List<Double> perceptionVelocityYSpace = new ArrayList<Double>();
-//	private List<Double> perceptionTypeSpace = new ArrayList<Double>();
-//
-//	private Double pedestrianWalkingGoalX = 0.0;
-//	private Double pedestrianWalkingGoalY = 0.0;
-//	private Double pedestrianVelocityX = 0.0;
-//	private Double pedestrianVelocityY = 0.0;
-//	private Double pedestrianVelocityXLast = 0.0;
-//	private Double pedestrianVelocityYLast = 0.0;
-//	private Double pedestrianVelocityXLastSec = 0.0;
-//	private Double pedestrianVelocityYLastSec = 0.0;
-	
+	private double magScale = 1.0;
 	
 	// Training data
 	private List<CsvPlaybackPerceptionWriterItem> perceptItems = new ArrayList<>();
@@ -74,129 +61,30 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		return perceptItems;
 	}
 	
-//	private List<Double> distancesToPercepts = new ArrayList<Double>();
-//	
-//	public List<Double> getDistancesToPercepts() {
-//		return distancesToPercepts;
-//	}
-//
-//	private List<Double> anglesToPercepts = new ArrayList<Double>();
-//	
-//	public List<Double> getAnglesToPercepts() {
-//		return anglesToPercepts;
-//	}
-//
-//	private List<Double> typesOfPercepts = new ArrayList<Double>();
-//	
-//	public List<Double> getTypesOfPercepts() {
-//		return typesOfPercepts;
-//	}
-//
-//	private List<Double> velocityAngleDifferencesToPercepts = new ArrayList<Double>();
-//	
-//	public List<Double> getVelocityAngleDifferencesToPercepts() {
-//		return velocityAngleDifferencesToPercepts;
-//	}
-//
-//	private List<Double> velocityMagnitudesOfPercepts = new ArrayList<Double>();
-//	
-//	public List<Double> getVelocityMagnitudesOfPercepts() {
-//		return velocityMagnitudesOfPercepts;
-//	}
-
 	private Double angleToGoal = 0.0;	
 	
 	public Double getAngleToGoal() {
 		return angleToGoal;
 	}
 	
-	private Double lastVelocityMagnitude = -1.0;
-	
-	public Double getLastVelocityMagnitude() {
-		return lastVelocityMagnitude;
-	}
+	private ArrayList<Double> lastVelocityMagnitudeCategories = new ArrayList<Double>();
 
-	private Double lastVelocityAngleChange = FastMath.PI;
+	private ArrayList<Double> lastVelocityAngleCategories = new ArrayList<Double>();
 	
-	public Double getLastVelocityAngleChange() {
-		return lastVelocityAngleChange;
-	}
-
-	private Double lastLastVelocityMagnitude = 0.0;
-	
-	public Double getLastLastVelocityMagnitude() {
-		return lastLastVelocityMagnitude;
-	}
-
-	private Double lastLastVelocityAngleChange = FastMath.PI; 
-	
-	public Double getLastLastVelocityAngleChange() {
-		return lastLastVelocityAngleChange;
-	}
 
 	// Teaching data
-	private Double velocityMagnitude = 0.0;
+	private Double velocityMagnitude = null;
 	
 	public Double getVelocityMagnitude() {
 		return velocityMagnitude;
 	}
 	
-	private Double velocityAngleChange = FastMath.PI;
+	private Double velocityAngleChange = null;
 	
 	public Double getVelocityAngleChange() {
 		return velocityAngleChange;
 	}
 
-
-//	public List<Double> getPerceptionDistanceSpace() {
-//		return perceptionDistanceSpace;
-//	}
-//
-//	public List<Double> getPerceptionVelocityXSpace() {
-//		return perceptionVelocityXSpace;
-//	}
-//
-//	public List<Double> getPerceptionVelocityYSpace() {
-//		return perceptionVelocityYSpace;
-//	}
-//
-//	public List<Double> getPerceptionTypeSpace() {
-//		return perceptionTypeSpace;
-//	}
-//
-//	public Double getPedestrianWalkingGoalX() {
-//		return pedestrianWalkingGoalX;
-//	}
-//
-//	public Double getPedestrianWalkingGoalY() {
-//		return pedestrianWalkingGoalY;
-//	}
-//
-//	public Double getPedestrianVelocityX() {
-//		return pedestrianVelocityX;
-//	}
-//
-//	public Double getPedestrianVelocityY() {
-//		return pedestrianVelocityY;
-//	}
-//
-//	public Double getPedestrianVelocityXLast() {
-//		return pedestrianVelocityXLast;
-//	}
-//
-//	public Double getPedestrianVelocityYLast() {
-//		return pedestrianVelocityYLast;
-//	}
-//	
-//	public Double getPedestrianVelocityXLastSec() {
-//		return pedestrianVelocityXLastSec;
-//	}
-//
-//	public Double getPedestrianVelocityYLastSec() {
-//		return pedestrianVelocityYLastSec;
-//	}
-	
-	private double magScale = 1.0;
 	/**
 	 * Returns heading vector mean over the last numberForMean headings
 	 * @param currentEstimatedHeading
@@ -250,10 +138,10 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				double distance = position.distance(obstaclePosition) - pedestrian.getBodyRadius();
 				
 				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance * scaleDistance);
-				item.setAngleToPercept(FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(obstaclePosition.subtract(position), zeroVector, heading));
+				item.setAngleToPercept(GeometryAdditionals.angleBetweenPlusMinus180(obstaclePosition.subtract(position), zeroVector, heading));
 				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(obstaclePosition.subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
 				item.setVelocityMagnitudeOfPercept(0.0);
-				item.setVelocityAngleDifferenceToPercept(FastMath.PI * 2.0);
+				item.setVelocityAngleDifferenceToPercept(FastMath.PI);
 				//item.setVelocityAngleDifferenceToPercept(1.0);
 				item.setTypeOfPercept(obstacleCode);
 			}
@@ -261,14 +149,13 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				
 				IPedestrian other = pedestrianPositions.get(iter);
 				
-				double distance = position.distance(other.getPosition())
-						- (other.getBodyRadius() + pedestrian.getBodyRadius());
+				double distance = position.distance(other.getPosition()) - (other.getBodyRadius() + pedestrian.getBodyRadius());
 				
 				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance * scaleDistance);
-				item.setAngleToPercept(FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading));
+				item.setAngleToPercept(GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading));
 				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
 				item.setVelocityMagnitudeOfPercept(other.getVelocity().getMagnitude() * magScale);
-				item.setVelocityAngleDifferenceToPercept(FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()));
+				item.setVelocityAngleDifferenceToPercept(GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()));
 				//item.setVelocityAngleDifferenceToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()))/(2.0*FastMath.PI));
 				item.setTypeOfPercept(other.getGroupId() == pedestrian.getGroupId() ? groupCode : pedestrianCode);
 			}
@@ -278,10 +165,10 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				
 				double distance = perception.getPerceptionDistance() - pedestrian.getBodyRadius();
 				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance * scaleDistance);
-				item.setAngleToPercept(FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(freePosition.subtract(position), zeroVector, heading));
+				item.setAngleToPercept(GeometryAdditionals.angleBetweenPlusMinus180(freePosition.subtract(position), zeroVector, heading));
 				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(freePosition.subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
 				item.setVelocityMagnitudeOfPercept(0.0);
-				item.setVelocityAngleDifferenceToPercept(FastMath.PI);
+				item.setVelocityAngleDifferenceToPercept(0.0);
 				//item.setVelocityAngleDifferenceToPercept(0.0)
 				item.setTypeOfPercept(freeCode); 
 			}
@@ -299,30 +186,25 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		if(pedestrian.getNextWalkingTarget() != null) {
 			
 			Vector2D towardsGoal = pedestrian.getNextWalkingTarget().subtract(pedestrian.getPosition());
-			angleToGoal = FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading());
+			angleToGoal = GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading());
 			//angleToGoal = (FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading()))/(2.0*FastMath.PI);
 		}
 		
-		if(lastVelocityMagnitude == -1) {
-			
-			lastLastVelocityMagnitude = pedestrian.getVelocity().getMagnitude() * magScale;
-		}
-		else {
-			
-			lastLastVelocityMagnitude = lastVelocityMagnitude;
-		}
-		
-		lastLastVelocityAngleChange = lastVelocityAngleChange;
-		
-		lastVelocityMagnitude = pedestrian.getVelocity().getMagnitude() * magScale;
-		lastVelocityAngleChange = velocityAngleChange;
+		lastVelocityMagnitudeCategories.add(velocityMagnitude);
+		lastVelocityAngleCategories.add(velocityAngleChange);
 	}
-	
-	public void updatePedestrianTeach(IOperationalPedestrian pedestrian, WalkingState newWalkingState) {
 
-		velocityMagnitude = newWalkingState.getWalkingVelocity().getMagnitude() * magScale;
-		velocityAngleChange = FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(newWalkingState.getWalkingVelocity(), zeroVector, pedestrian.getVelocity());
-		//velocityAngleChange = (FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(newWalkingState.getWalkingVelocity(), zeroVector, pedestrian.getVelocity()))/(2.0*FastMath.PI);
+	public void updatePedestrianTeach(IOperationalPedestrian pedestrian,
+			WalkingState newWalkingState,
+			SimulationState state,
+			int velocityClasses,
+			int angleClasses) {
+
+		double velocityMagnitudeChangeNoCategory = newWalkingState.getWalkingVelocity().getMagnitude() * magScale;
+		double velocityAngleChangeNoCategory = GeometryAdditionals.angleBetweenPlusMinus180(newWalkingState.getWalkingVelocity(), zeroVector, pedestrian.getVelocity());
+		
+		velocityAngleChange = (double)this.getClassForAngle(velocityAngleChangeNoCategory, angleClasses);
+		velocityMagnitude = (double)this.getClassForVelocity(velocityMagnitudeChangeNoCategory, velocityClasses, pedestrian, state);
 	}
 	
 	public class CsvPlaybackPerceptionWriterItem {
@@ -364,7 +246,79 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			this.typeOfPercept = typeOfPercept;
 		}
 	}
+
+	public int getClassForAngle(double angle, int classes) {
+		
+		double min = -FastMath.PI/2.0;
+		double max = FastMath.PI/2.0;
+		
+		double classRange = (max - min) / classes;
+		double current = min + classRange;
+		
+		int classId = 0;
+		
+		while(current <= max) {
+			
+			classId++; // max / classRanges number of class Ids
+			
+			if(angle < current) { // is in current class range
+				
+				 break;
+			}
+			
+			current += classRange;
+		}
+		
+		return classId;
+	}
 	
+	public double getAngleForClassification(int classId, int classes) {
+		
+		double min = -FastMath.PI/2.0;
+		double max = FastMath.PI/2.0;
+		
+		double classRange = (max - min) / classes;
+		double current = min + classId * classRange - 0.5 * classRange;
+		
+		return current;
+	}
+
+	private int getClassForVelocity(double velocity, int classes, IPedestrian pedestrian, SimulationState state) {
+		
+		double min = 0;
+		double max = 2.0 * pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
+		
+		double classRange = (max - min) / classes;
+		double current = min + classRange;
+		
+		int classId = 0;
+		
+		while(current <= max) {
+			
+			classId++; // max / classRanges number of class Ids
+			
+			if(velocity < current) { // is in current class range
+				
+				 break;
+			}
+			
+			current += classRange;
+		}
+		
+		return classId;
+	}
+	
+	public double getVelocityForClassification(int classId, int classes, IPedestrian pedestrian, SimulationState state) {
+		
+		double min = 0;
+		double max = pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
+		
+		double classRange = (max - min) / classes;
+		double current = min + classes * classRange - 0.5 * classRange;
+		
+		return current;
+	}
+
 	private static final Comparator<CsvPlaybackPerceptionWriterItem> Comperator = new Comparator<CsvPlaybackPerceptionWriterItem>() {
 		
 		@Override
@@ -374,3 +328,97 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		}
 	};
 }
+
+
+//private List<Double> perceptionDistanceSpace = new ArrayList<Double>();
+//private List<Double> perceptionVelocityXSpace = new ArrayList<Double>();
+//private List<Double> perceptionVelocityYSpace = new ArrayList<Double>();
+//private List<Double> perceptionTypeSpace = new ArrayList<Double>();
+//
+//private Double pedestrianWalkingGoalX = 0.0;
+//private Double pedestrianWalkingGoalY = 0.0;
+//private Double pedestrianVelocityX = 0.0;
+//private Double pedestrianVelocityY = 0.0;
+//private Double pedestrianVelocityXLast = 0.0;
+//private Double pedestrianVelocityYLast = 0.0;
+//private Double pedestrianVelocityXLastSec = 0.0;
+//private Double pedestrianVelocityYLastSec = 0.0;
+
+
+//private List<Double> distancesToPercepts = new ArrayList<Double>();
+//
+//public List<Double> getDistancesToPercepts() {
+//	return distancesToPercepts;
+//}
+//
+//private List<Double> anglesToPercepts = new ArrayList<Double>();
+//
+//public List<Double> getAnglesToPercepts() {
+//	return anglesToPercepts;
+//}
+//
+//private List<Double> typesOfPercepts = new ArrayList<Double>();
+//
+//public List<Double> getTypesOfPercepts() {
+//	return typesOfPercepts;
+//}
+//
+//private List<Double> velocityAngleDifferencesToPercepts = new ArrayList<Double>();
+//
+//public List<Double> getVelocityAngleDifferencesToPercepts() {
+//	return velocityAngleDifferencesToPercepts;
+//}
+//
+//private List<Double> velocityMagnitudesOfPercepts = new ArrayList<Double>();
+//
+//public List<Double> getVelocityMagnitudesOfPercepts() {
+//	return velocityMagnitudesOfPercepts;
+//}
+
+//public List<Double> getPerceptionDistanceSpace() {
+//	return perceptionDistanceSpace;
+//}
+//
+//public List<Double> getPerceptionVelocityXSpace() {
+//	return perceptionVelocityXSpace;
+//}
+//
+//public List<Double> getPerceptionVelocityYSpace() {
+//	return perceptionVelocityYSpace;
+//}
+//
+//public List<Double> getPerceptionTypeSpace() {
+//	return perceptionTypeSpace;
+//}
+//
+//public Double getPedestrianWalkingGoalX() {
+//	return pedestrianWalkingGoalX;
+//}
+//
+//public Double getPedestrianWalkingGoalY() {
+//	return pedestrianWalkingGoalY;
+//}
+//
+//public Double getPedestrianVelocityX() {
+//	return pedestrianVelocityX;
+//}
+//
+//public Double getPedestrianVelocityY() {
+//	return pedestrianVelocityY;
+//}
+//
+//public Double getPedestrianVelocityXLast() {
+//	return pedestrianVelocityXLast;
+//}
+//
+//public Double getPedestrianVelocityYLast() {
+//	return pedestrianVelocityYLast;
+//}
+//
+//public Double getPedestrianVelocityXLastSec() {
+//	return pedestrianVelocityXLastSec;
+//}
+//
+//public Double getPedestrianVelocityYLastSec() {
+//	return pedestrianVelocityYLastSec;
+//}

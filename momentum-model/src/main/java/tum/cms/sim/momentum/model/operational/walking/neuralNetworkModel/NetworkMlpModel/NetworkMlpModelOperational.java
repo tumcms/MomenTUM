@@ -27,6 +27,18 @@ public class NetworkMlpModelOperational extends WalkingModel {
 	private static String inputTensorName = "inputTensorName";
 	private static String outputTensorName = "outputTensorName";
 	private static String pathToModelName = "pathToModel";
+	private static String velocityClassesName = "velocityClasses";
+	private static String angleClassesName = "angleClasses";
+	
+	/**
+	 * The number of velocity classes for classification
+	 */
+	private int velocityClasses = 1;
+	
+	/**
+	 * The number of angles (rotate body) classes for classification
+	 */
+	private int angleClasses = 1;
 	
 	/**
 	 * For each thread there is a network to enable parallel computations.
@@ -88,7 +100,7 @@ public class NetworkMlpModelOperational extends WalkingModel {
 	@Override
 	public void callPedestrianBehavior(IOperationalPedestrian pedestrian, SimulationState simulationState) {
 	
-		float scale = 10.0f; // scale 
+		float scale = 1.0f; // scale 
 		
 		NetworkMlpPedestrianExtension extension = (NetworkMlpPedestrianExtension) pedestrian.getExtensionState(this);
 		List<Float> inTensorData = this.assembleInTensor(pedestrian, perception, simulationState, extension, scale);
@@ -123,12 +135,12 @@ public class NetworkMlpModelOperational extends WalkingModel {
 			network.executeNetwork(inTensor, outTensor);
 			outData = outTensor.getFloatData();
 			
-			velocityMagnitude = outData[0] / (10.0);
+			velocityMagnitude = outData[0]; // (10.0);
 			//velocityAngleChange =  (outData[1]/scale) * 2.0*FastMath.PI - FastMath.PI;
-			velocityAngleChange =   (FastMath.PI - outData[1]);// * 2.0 * FastMath.PI;
-			velocityAngleChange = velocityAngleChange > FastMath.PI/2.0 || velocityAngleChange < -FastMath.PI/2.0 
-					? 0.0 :
-					velocityAngleChange;
+			velocityAngleChange = outData[1];//  (FastMath.PI - outData[1]);// * 2.0 * FastMath.PI;
+			//velocityAngleChange = velocityAngleChange > FastMath.PI/2.0 || velocityAngleChange < -FastMath.PI/2.0 
+			//		? 0.0 :
+			//		velocityAngleChange;
 		} 
 		catch (Exception e) {
 			
@@ -159,7 +171,7 @@ public class NetworkMlpModelOperational extends WalkingModel {
 				predictVelocity,
 				heading);
 		
-		extension.updatePedestrianTeach(pedestrian, newWalkingState);
+		//extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState);
 		
 		pedestrian.setWalkingState(newWalkingState);
 	}
@@ -272,8 +284,8 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		inTensorData.add(extension.getAngleToGoal().floatValue() * scale);
 		inTensorData.add(extension.getLastVelocityMagnitude().floatValue() * scale);
 		inTensorData.add(extension.getLastVelocityAngleChange().floatValue() * scale);
-		inTensorData.add(extension.getLastLastVelocityMagnitude().floatValue() * scale);
-		inTensorData.add(extension.getLastLastVelocityAngleChange().floatValue() * scale);
+//		inTensorData.add(extension.getLastLastVelocityMagnitude().floatValue() * scale);
+//		inTensorData.add(extension.getLastLastVelocityAngleChange().floatValue() * scale);
 		
 		return inTensorData;
 	}

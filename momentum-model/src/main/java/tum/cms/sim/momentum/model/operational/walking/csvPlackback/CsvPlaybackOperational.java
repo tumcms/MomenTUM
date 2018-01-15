@@ -38,13 +38,19 @@ public class CsvPlaybackOperational extends WalkingModel {
 	private static String containsHeaderName = "containsHeader";
 	private static String numberForMeanName = "numberForMean";
 	
+	private static String velocityClassesName = "velocityClasses";
+	private static String angleClassesName = "angleClasses";
+	
+	private int velocityClasses = 1;
+	private int angleClasses = 1;
+	
 	private double timeStepMapping = 0.0;
 	private int timeStepIndex = -1;
 	private int idIndex = -1;
 	private int xIndex = -1;
 	private int yIndex = -1;
 	private int numberForMean = 5;
-	
+
 	private HashMap<Long, ArrayList<ArrayList<Double>>> movementData = new HashMap<>();
 	private HashMap<Integer, ArrayList<Double>> nextMovementData = new HashMap<>();
 	
@@ -107,7 +113,7 @@ public class CsvPlaybackOperational extends WalkingModel {
 	
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
 		extension.updatePedestrianSpace(pedestrian);
-		extension.updatePedestrianTeach(pedestrian, newWalkingState);
+		extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState, velocityClasses, angleClasses);
 		
 		pedestrian.setWalkingState(newWalkingState);
 	}
@@ -115,6 +121,8 @@ public class CsvPlaybackOperational extends WalkingModel {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
+		this.velocityClasses = this.properties.getIntegerProperty(velocityClassesName);
+		this.angleClasses = this.properties.getIntegerProperty(angleClassesName);
 		this.numberForMean = this.properties.getIntegerProperty(numberForMeanName);
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
 		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);

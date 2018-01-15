@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator version="2.0.0" simulationName="2017_NN_Playkback_ug_100">
 
-	<timeState simulationEndTime="83.0" timeStepDuration="0.05"/>
+	<timeState simulationEndTime="83.0" timeStepDuration="0.04"/>
 	
 	<threadingState threads="3"/>
 	
@@ -28,7 +28,7 @@
 	
 	<perceptualModels>
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
-			<property name="perceptionDistance" type="Double" value="5.0"/>
+			<property name="perceptionDistance" type="Double" value="2.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
 			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
 		</perceptual>
@@ -54,6 +54,8 @@
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
 			<property name="numberForMean" type="Integer" value="20"/>
+			<property name="velocityClasses" type="Integer" value="17"/>
+			<property name="angleClasses" type="Integer" value="17"/>
 		</walking>
 	</walkingModels>
 	
@@ -163,18 +165,18 @@
 				<property name="delimiter" type="String" value=";"/>
 			</writerFormat>
 			<writerSource sourceType="CsvPlayback" additionalId="2"> 
-				<property name="distancesToPercepts" type="Format" value="%.6f"/>
-				<property name="anglesToPercepts" type="Format" value="%.6f"/>
-				<property name="velocityMagnitudesOfPercepts" type="Format" value="%.6f"/>
-				<property name="velocityAngleDifferencesToPercepts" type="Format" value="%.6f"/>
-				<!--<property name="typesOfPercepts" type="Format" value="%.6f"/>-->
-				<property name="angleToGoal" type="Format" value="%.6f"/>
-				<property name="lastVelocityMagnitude" type="Format" value="%.6f"/>
-				<property name="lastVelocityAngleChange" type="Format" value="%.6f"/>
-				<property name="lastLastVelocityMagnitude" type="Format" value="%.6f"/>
-				<property name="lastLastVelocityAngleChange" type="Format" value="%.6f"/>
-				<property name="velocityMagnitude" type="Format" value="%.6f"/>
-				<property name="velocityAngleChange" type="Format" value="%.6f"/>
+				<property name="distancesToPercepts" type="Format" value="%.10f"/>
+				<property name="anglesToPercepts" type="Format" value="%.10f"/>
+				<property name="velocityMagnitudesOfPercepts" type="Format" value="%.10f"/>
+				<property name="velocityAngleDifferencesToPercepts" type="Format" value="%.10f"/>
+				<!--<property name="typesOfPercepts" type="Format" value="%.10f"/>-->
+				<property name="angleToGoal" type="Format" value="%.10f"/>
+				<property name="lastVelocityMagnitude" type="Format" value="%.10f"/>
+				<property name="lastVelocityAngleChange" type="Format" value="%.10f"/>
+				<property name="lastLastVelocityMagnitude" type="Format" value="%.10f"/>
+				<property name="lastLastVelocityAngleChange" type="Format" value="%.10f"/>
+				<property name="velocityMagnitude" type="Format" value="%.10f"/>
+				<property name="velocityAngleChange" type="Format" value="%.10f"/>
 			</writerSource>
 		</outputWriter>
 	</outputWriters>
@@ -258,10 +260,10 @@
           <center x="3" y="0.5" />
         </vertex>
         <vertex name="25" id="25">
-          <center x="0" y="0.5" />
+          <center x="1.5" y="0.5" />
         </vertex>
         <vertex name="26" id="26">
-          <center x="1.5" y="0.5" />
+          <center x="0" y="0.5" />
         </vertex>
         <vertex name="27" id="27">
           <center x="-1.5" y="0.5" />
