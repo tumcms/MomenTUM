@@ -25,7 +25,7 @@ oddsOne <- 5 #Odds that a one3 appears in the matrix
 ```{r}
 r.dim.odm <- numInter+numDest
 c.dim.odm <- numInter+numOrig
-odm.r <- matrix(sample(c(rep(0,oddsZero),rep(1,oddsOne)),r.dim.odm*dim.odm, replace=TRUE),r.dim.odm,c.dim.odm)
+odm.r <- matrix(sample(c(rep(0,oddsZero),rep(1,oddsOne)),r.dim.odm*c.dim.odm, replace=TRUE),r.dim.odm,c.dim.odm)
 rownames(odm.r) <- 0:(r.dim.odm-1)
 colnames(odm.r) <- numOrig:(c.dim.odm+numDest-1)
 
