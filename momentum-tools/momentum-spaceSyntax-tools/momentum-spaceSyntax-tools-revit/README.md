@@ -5,18 +5,18 @@ Space Syntax is a technique to analyse spatial configurations of urban or closed
 There is no pre-compiled Space Syntax Add-Ins for Revit available. If you want to use the Plugin, you have to compile the Add-In yourself. 
 To build the Add-In the following steps need to be taken:
 
-1 Install Autodesk Revit (2015 +), ILMerge and a C# IDE (i.e. Visual Studio 2015 +)
+1. Install Autodesk Revit (2015 +), ILMerge and a C# IDE (i.e. Visual Studio 2015 +)
 
-2 Clone the Momentum repository or the project
+2. Clone the Momentum repository or the project
 
-3 Open the solution in your IDE, go to project references and add 'RevitAPI.dll' and 'RevitAPIUI' from your local Revit installation
+3. Open the solution in your IDE, go to project references and add 'RevitAPI.dll' and 'RevitAPIUI' from your local Revit installation
 (Hint: dlls are usually located in 'Program Files/Autodesk/Revit 20XX/')
 
-4 Open the post-build events in the project and adapt the paths to ILMerge and the Revit dll folders (usually you just need to replace the Revit version)
+4. Open the post-build events in the project and adapt the paths to ILMerge and the Revit dll folders (usually you just need to replace the Revit version)
 
-5 Check for build errors in the post-bulid and fix them according to the message provided by MS Build.
+5. Check for build errors in the post-bulid and fix them according to the message provided by MS Build.
 
-6 Start Revit and confirm that you trust the authors of the plugin and check if the External Command 'MomentumV2SpaceSyntax' under the 'Add-Ins' Tab in Revit shows up.
+6. Start Revit and confirm that you trust the authors of the plugin and check if the External Command 'MomentumV2SpaceSyntax' under the 'Add-Ins' Tab in Revit shows up.
 
 Note: The plugin requires the Revit Visualization Framework, which is available since Revit 2015+.
 
@@ -26,7 +26,7 @@ The workflow assumes that you have successfully built the Revit Layouting Plugin
 1. Use the Layouting Plugin to export geometry data of a level of a Revit project into a xml file. Make sure that you have properly set rooms in your Revit project before exporting (see layouting documentation). 
 
 2. Check if the resulting xml contains at least one area of type 'Origin' per scenario node.
-(If there is none, you have to create a this area by hand yourself.)
+(If there is none, you have to create this area by hand yourself.)
 
 3. Create a xml configuration file and insert a lattice, Space Syntax and a outputwriter configuration.
 (Hint: You can copy the spaceSyntaxExamples.xml and make sure to adapt the file paths and ids accordingly.)
