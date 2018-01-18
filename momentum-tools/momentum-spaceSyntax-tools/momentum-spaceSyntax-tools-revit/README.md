@@ -21,21 +21,21 @@ To build the Add-In the following steps need to be taken:
 Note: The plugin requires the Revit Visualization Framework, which is available since Revit 2015+.
 
 ## Add-In Workflow
-The workflow assumes, that you have successfully build the Revit Layouting Plugin and the Space Syntax Plugin and integrated them into your Revit installation. Furthermore you need to have built Momentum successfully and have a basic understanding of its usage (see momentum-documentation).
+The workflow assumes that you have successfully built the Revit Layouting Plugin and the Space Syntax Plugin and integrated them into your Revit installation. Furthermore, you need to have built Momentum successfully and have a basic understanding of its usage (see momentum-documentation).
 
-1 Use the Layouting Plugin to export geometry data of a level of a Revit project into a xml file. Make sure that you have properly set rooms in your Revit project before exporting (see layouting documentation). 
+1. Use the Layouting Plugin to export geometry data of a level of a Revit project into a xml file. Make sure that you have properly set rooms in your Revit project before exporting (see layouting documentation). 
 
-2 Check if the resulting xml contains at least one area of type 'Origin' per scenario node.
+2. Check if the resulting xml contains at least one area of type 'Origin' per scenario node.
 (If there is none, you have to create a this area by hand yourself.)
 
-3 Create a xml configuration file and insert a lattice, Space Syntax and a outputwriter configuration.
+3. Create a xml configuration file and insert a lattice, Space Syntax and a outputwriter configuration.
 (Hint: You can copy the spaceSyntaxExamples.xml and make sure to adapt the file paths and ids accordingly.)
 
-4 Run your configuration with Momentum (see momentum-documentation) and check if the execution produced the xml output file defined in the Space Syntax output writer tag of the input configuration.
+4. Run your configuration with Momentum (see momentum-documentation) and check if the execution produced the xml output file defined in the Space Syntax output writer tag of the input configuration.
 
-5 In Revit, in the same project as you exported the geometry, go to 'Add-Ins' tab and run the MomentumV2SpaceSyntax external command and select the Space Syntax result xml you just created with Momentum.
+5. In Revit, in the same project as you exported the geometry, go to 'Add-Ins' tab and run the MomentumV2SpaceSyntax external command and select the Space Syntax result xml you just created with Momentum.
 
-6 If you created the xml result using the Revit Layouting plugin, the Space Syntax plugin will automatically select the correct level to visualize the result from metadata in the result xml. Otherwise, a level picker will open.
+6. If you created the xml result using the Revit Layouting plugin, the Space Syntax plugin will automatically select the correct level to visualize the result from metadata in the result xml. Otherwise, a level picker will open.
 
 Note: The plugin will always try to visualize the result in the currently opened view. If the level is not available in the current view, an error is shown.
 
