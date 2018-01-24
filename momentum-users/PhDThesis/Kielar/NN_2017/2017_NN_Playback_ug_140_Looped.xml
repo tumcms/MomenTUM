@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator version="2.0.2" simulationName="2017_NN_Playkback_ug_140">
 
-	<timeState simulationEndTime="83.0" timeStepDuration="0.05"/>
+	<timeState simulationEndTime="83.0" timeStepDuration="0.2"/>
 	<threadingState threads="3"/>
 	
 	<logging>
@@ -52,7 +52,10 @@
 			</complexProperty>
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
-			<property name="numberForMean" type="Integer" value="20"/>
+			<property name="numberForMean" type="Integer" value="5"/>
+			<property name="numberOfLastCategories" type="Integer" value="2"/>
+			<property name="velocityClasses" type="Integer" value="17"/>
+			<property name="angleClasses" type="Integer" value="25"/>
 		</walking>
 	</walkingModels>
 	
@@ -167,8 +170,8 @@
 				<property name="angleToGoal" type="Format" value="%.6f"/>
 				<property name="lastVelocityMagnitude" type="Format" value="%.6f"/>
 				<property name="lastVelocityAngleChange" type="Format" value="%.6f"/>
-				<!--<property name="lastLastVelocityMagnitude" type="Format" value="%.6f"/>-->
-				<!--<property name="lastLastVelocityAngleChange" type="Format" value="%.6f"/>-->
+				<property name="lastLastVelocityMagnitude" type="Format" value="%.6f"/>
+				<property name="lastLastVelocityAngleChange" type="Format" value="%.6f"/>
 				<property name="velocityMagnitude" type="Format" value="%.6f"/>
 				<property name="velocityAngleChange" type="Format" value="%.6f"/>
 			</writerSource>

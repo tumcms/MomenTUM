@@ -49,6 +49,13 @@ import org.tensorflow.Tensor;
 public class NeuralTensor {
 	
 	/**
+	 * Different data buffers
+	 */
+	private FloatBuffer floatData;
+	private DoubleBuffer doubleData;
+	private IntBuffer intData;
+	
+	/**
 	 * @see NeuralTensor#getName
 	 */
 	private String name;
@@ -128,17 +135,21 @@ public class NeuralTensor {
 			size *= dimension[iter];
 		}
 	
-		if(this.tensor != null) {
+		if(intData == null) {
 			
-			this.close();
+			intData = IntBuffer.allocate((int)size);
+		}
+		else {
+			
+			intData.clear();
 		}
 		
-		IntBuffer intData =  IntBuffer.allocate((int)size);
+		intData =  IntBuffer.allocate((int)size);
 		intData.put(intData);
 		intData.rewind();
 		this.tensor = Tensor.create(this.dimension, intData);
 	}
-	
+
 	/**
 	 * Fills double data into the tensor. The data must have the shape
 	 * as defined in the number of elements as dimension defines.
@@ -156,13 +167,16 @@ public class NeuralTensor {
 			
 			size *= dimension[iter];
 		}
-	
-		if(this.tensor != null) {
-			
-			this.close();
-		}
 		
-		DoubleBuffer doubleData = DoubleBuffer.allocate((int)size);
+//		if(doubleData == null) {
+			
+			doubleData = DoubleBuffer.allocate((int)size);
+//		}
+//		else {
+//			
+//			doubleData.clear();
+//		}
+
 		doubleData.put(data);
 		doubleData.rewind();
 		this.tensor = Tensor.create(this.dimension, doubleData);
@@ -186,12 +200,16 @@ public class NeuralTensor {
 			size *= dimension[iter];
 		}
 		
-		if(this.tensor != null) {
+		if(floatData == null) {
 			
-			this.close();
+			floatData = FloatBuffer.allocate((int)size);
+		}
+		else {
+			
+			floatData.clear();
 		}
 		
-		FloatBuffer floatData = FloatBuffer.allocate((int)size);
+		floatData = FloatBuffer.allocate((int)size);
 		floatData.put(data);
 		floatData.rewind();
 		this.tensor = Tensor.create(this.dimension, floatData);
@@ -213,7 +231,7 @@ public class NeuralTensor {
 	 */
 	public int[] getIntegerData() {
 		
-		IntBuffer intData = IntBuffer.allocate((int)this.tensor.numElements());
+		intData = IntBuffer.allocate((int)this.tensor.numElements());
 		this.tensor.writeTo(intData);
 	
 		return (int[]) intData.array();
@@ -226,7 +244,7 @@ public class NeuralTensor {
 	 */
 	public double[] getDoubleData() {
 		
-		DoubleBuffer doubleData = DoubleBuffer.allocate((int)this.tensor.numElements());
+		doubleData = DoubleBuffer.allocate((int)this.tensor.numElements());
 		this.tensor.writeTo(doubleData);
 
 		return (double[]) doubleData.array();
@@ -239,7 +257,7 @@ public class NeuralTensor {
 	 */
 	public float[] getFloatData() {
 		
-		FloatBuffer floatData = FloatBuffer.allocate((int)this.tensor.numElements());
+		floatData = FloatBuffer.allocate((int)this.tensor.numElements());
 		this.tensor.writeTo(floatData);
 
 		return (float[]) floatData.array();

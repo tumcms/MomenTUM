@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator version="2.0.0" simulationName="2017_NN_Playkback_ug_100">
 
-	<timeState simulationEndTime="83.0" timeStepDuration="0.05"/>
+	<timeState simulationEndTime="83.0" timeStepDuration="0.1"/>
 	
 	<threadingState threads="1"/>
 	
@@ -21,6 +21,7 @@
 		<graphModel name="routing" id="0">
 			<graphOperation id="0" name="createGraph" type="FromConfiguration" order="0">
 				<property name="graphId" type="Integer" value="0"/>
+				<property name="precisionSeed" type="Double" value="0.01"/>
 			</graphOperation>
 		</graphModel>
 	</graphs>
@@ -28,7 +29,7 @@
 	
 	<perceptualModels>
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
-			<property name="perceptionDistance" type="Double" value="5.0"/>
+			<property name="perceptionDistance" type="Double" value="2.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
 			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
 		</perceptual>
@@ -42,9 +43,13 @@
 	
 	<walkingModels>
 		<walking id="2" name="NN" type="NeuralNetwork">
-			<property name="pathToModel" type="String" value="C:\\Programmierung\\MomenTUM\\momentum-users\\PhDThesis\\Kielar\\NN_2017\\2017_NN_Operational_testing"/>
+			<property name="pathToClassificationNetwork" type="String" value="C:\\Users\\ga37sib\\Desktop\\Paper_InProgress\\2017_Neural_Approach\\2017_NN_Tensorflow\\both"/>
+			<property name="dropoutTensorName" type="String" value="keep_prob"/>
 			<property name="inputTensorName" type="String" value="Placeholder"/>
-			<property name="outputTensorName" type="String" value="Identity"/>
+			<property name="outputTensorName" type="String" value="SoftmaxOutput"/>
+			<property name="numberOfLastCategories" type="Integer" value="2"/>
+			<property name="velocityClasses" type="Integer" value="17"/>
+			<property name="angleClasses" type="Integer" value="25"/>
 		</walking>
 	</walkingModels>
 	
@@ -205,10 +210,10 @@
           <center x="3" y="0.5" />
         </vertex>
         <vertex name="25" id="25">
-          <center x="0" y="0.5" />
+          <center x="1.5" y="0.5" />
         </vertex>
         <vertex name="26" id="26">
-          <center x="1.5" y="0.5" />
+          <center x="0" y="0.5" />
         </vertex>
         <vertex name="27" id="27">
           <center x="-1.5" y="0.5" />

@@ -86,7 +86,11 @@ public class NeuralNetwork {
 		
 		this.modelBundle = SavedModelBundle.load(pathToSavedNetworkFolder, tagServe);
 		this.session = this.modelBundle.session();
+		this.pathToSavedNetworkFolder = pathToSavedNetworkFolder;
+		
 	}
+	Runner runner;
+	String pathToSavedNetworkFolder = null;
 	
 	/**
 	 * Gives you all names of the operations stored in the graph.
@@ -115,32 +119,40 @@ public class NeuralNetwork {
 	
 	/**
 	 * Run the trained network.
-	 * The inTensor needs to be filled with data and comply to the tensorflow-graph.
+	 * The inTensor list needs to be filled with data and comply to the tensorflow-graph tensor names.
 	 * The outTensor only needs a name and a dimension but should not contain data.
-	 * The outTensor will hold new data after successful execution of this method.
+	 * The outTensor will hold predicted data after successful execution of this method.
 	 * 
 	 * This method will compute a single output tensor only.
-	 * 
-	 * @param inTensor
-	 * @param outTensor
-	 * @throws Exception 
 	 */
-	public void executeNetwork(NeuralTensor inTensor, NeuralTensor outTensor) throws Exception {
+	public void executeNetwork(List<NeuralTensor> inTensors, NeuralTensor outTensor) throws Exception {
 		
-		if(!this.getOperationNames().contains(inTensor.getName())) {
-		
-			throw new Exception(String.format(exceptionTensorRun, inTensor.getName()));
+		for(NeuralTensor inTensor : inTensors) {
+			
+			if(!this.getOperationNames().contains(inTensor.getName())) {
+				
+				throw new Exception(String.format(exceptionTensorRun, inTensor.getName()));
+			}
 		}
-		
+
 		if(!this.getOperationNames().contains(outTensor.getName())) {
 			
 			throw new Exception(String.format(exceptionTensorRun, outTensor.getName()));
 		}
-
-		List<Tensor<?>> output = this.session.runner()
-				.feed(inTensor.getName(), inTensor.getTensor())
-				.fetch(outTensor.getName())
-				.run();	
+		
+		if(runner == null) {
+		
+			runner = this.modelBundle.session().runner();
+			
+			for(NeuralTensor inTensor : inTensors) {
+				
+				runner = runner.feed(inTensor.getName(), inTensor.getTensor());
+			}
+			
+			runner = runner.fetch(outTensor.getName());
+		}
+	
+		List<Tensor<?>> output = runner.run();	
 		
 		if(output.size() != 1) {
 		

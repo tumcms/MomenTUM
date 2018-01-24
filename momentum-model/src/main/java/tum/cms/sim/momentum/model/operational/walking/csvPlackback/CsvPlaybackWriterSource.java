@@ -73,20 +73,20 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 		case "angleToGoal":
 			dataText = String.format(format,currentPedestrianExtension.getAngleToGoal());
 			break;
-//		case "lastLastVelocityMagnitude": 
-//			dataText = String.format(format,currentPedestrianExtension.getLastLastVelocityMagnitude());		
-//			break;
-//			
-//		case "lastLastVelocityAngleChange":
-//			dataText = String.format(format,currentPedestrianExtension.getLastLastVelocityAngleChange());
-//			break;		
+		case "lastLastVelocityMagnitude": 
+			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(0));		
+			break;
+			
+		case "lastLastVelocityAngleChange":
+			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(0));
+			break;		
 			
 		case "lastVelocityMagnitude": 
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitude());		
+			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(1));		
 			break;
 			
 		case "lastVelocityAngleChange":
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleChange());
+			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(1));
 			break;
 			
 		case "velocityMagnitude":

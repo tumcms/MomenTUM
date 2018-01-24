@@ -19,14 +19,13 @@ import tum.cms.sim.momentum.utility.geometry.Vector2D;
  * This operational model will get a csv data set and will steer pedestrians
  * which exists in the simulation (id mapping) regarding the csv data.
  * 
- * Futhermore, the model provides a writer source to extract detailed movement
+ * Furthermore, the model provides a writer source to extract detailed movement
  * and perception data of the agents for later computations (e.g. ML).
  * 
  * The input may have a different time scale (1 time step = x seconds).
  * This is be solved by providing the timeStepMapping property for this class.
  * 
- *
- * Warning: This method works only with ShadowPerceptionModel
+ * Warning: This class works only with ShadowPerceptionModel
  * @author Peter Kielar
  *
  */
@@ -37,6 +36,7 @@ public class CsvPlaybackOperational extends WalkingModel {
 	private static String timeStepMappingName = "timeStepMapping";
 	private static String containsHeaderName = "containsHeader";
 	private static String numberForMeanName = "numberForMean";
+	private static String numberOfLastCategoriesName = "numberOfLastCategories";
 	
 	private static String velocityClassesName = "velocityClasses";
 	private static String angleClassesName = "angleClasses";
@@ -50,6 +50,7 @@ public class CsvPlaybackOperational extends WalkingModel {
 	private int xIndex = -1;
 	private int yIndex = -1;
 	private int numberForMean = 5;
+	private int numberOfLastCategories = 2;
 
 	private HashMap<Long, ArrayList<ArrayList<Double>>> movementData = new HashMap<>();
 	private HashMap<Integer, ArrayList<Double>> nextMovementData = new HashMap<>();
@@ -112,8 +113,8 @@ public class CsvPlaybackOperational extends WalkingModel {
 				heading);
 	
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
-		extension.updatePedestrianSpace(pedestrian);
-		extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState, velocityClasses, angleClasses);
+		extension.updatePedestrianSpace(pedestrian, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories);
+		extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories);
 		
 		pedestrian.setWalkingState(newWalkingState);
 	}
@@ -124,6 +125,7 @@ public class CsvPlaybackOperational extends WalkingModel {
 		this.velocityClasses = this.properties.getIntegerProperty(velocityClassesName);
 		this.angleClasses = this.properties.getIntegerProperty(angleClassesName);
 		this.numberForMean = this.properties.getIntegerProperty(numberForMeanName);
+		this.numberOfLastCategories = this.properties.getIntegerProperty(numberOfLastCategoriesName);
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
 		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
 		
