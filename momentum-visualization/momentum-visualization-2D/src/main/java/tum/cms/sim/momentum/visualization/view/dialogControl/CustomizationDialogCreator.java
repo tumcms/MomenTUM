@@ -87,10 +87,13 @@ public class CustomizationDialogCreator {
 	private static String snapshotDialogName = "Snapshot name:";
 	private static String snapshotDialogScale = "Scaling factor:";
 	private static String trajectoryTimeInterval = "Trajectory Visibility Interval:";
+	private static Double endTimeValue= 1000.0; //Default value
 	
 	public static void createColorDialog(PlaybackController playbackController) {
 		
 		CustomizationModel customizationModel = playbackController.getCustomizationController().getCustomizationModel();
+		endTimeValue = playbackController.getCoreController().getInteractionViewController().getTimeLineModel().getEndTime();
+		
 		
 		Dialog<Void> dialog = new Dialog<Void>();
 		dialog.initModality(Modality.WINDOW_MODAL);
@@ -411,19 +414,19 @@ public class CustomizationDialogCreator {
 
 				if (focusLost) {
 					if(trajectoryTimeIntervalTextField.getText().isEmpty()) {
-						InformationDialogCreator.createErrorDialog("Customization", "The trajectory time interval has to be a valid number between 0.0 and 500.0");
+						InformationDialogCreator.createErrorDialog("Customization", "The trajectory time interval has to be a valid number between 0.0 and "+endTimeValue.toString());
 						trajectoryTimeIntervalTextField.textProperty().set(String.valueOf(customizationModel.getTrajectoryTimeInterval()));
 						return;
 					}
 					try {
-						if(Double.parseDouble(trajectoryTimeIntervalTextField.getText())>500) {
+						if(Double.parseDouble(trajectoryTimeIntervalTextField.getText())>endTimeValue) {
 							throw new Exception();
 						}
 						customizationModel.setTrajectoryTimeInterval(Double.parseDouble(trajectoryTimeIntervalTextField.getText()));
 						playbackController.getCoreController().getLayerConfigurationController().updateTrajectories();
 					}
 					catch (Exception e) {
-						InformationDialogCreator.createErrorDialog("Customization", "The trajectory time interval has to be a valid number between 0.0 and 500.0");
+						InformationDialogCreator.createErrorDialog("Customization", "The trajectory time interval has to be a valid number between 0.0 and "+endTimeValue.toString());
 						trajectoryTimeIntervalTextField.textProperty().set(String.valueOf(customizationModel.getTrajectoryTimeInterval()));
 						
 					}

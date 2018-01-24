@@ -130,7 +130,7 @@ public class TrajectoryModel extends ShapeModel{
 		
 		case NotSelected:
 			
-			this.trajectory.setVisible(false);
+//			this.trajectory.setVisible(false);
 			
 			trajectory.strokeProperty().bind(customizationController.getCustomizationModel().trajectoryColorProperty());
 			
@@ -138,7 +138,7 @@ public class TrajectoryModel extends ShapeModel{
 			
 		case Selected:
 			
-			this.trajectory.setVisible(true);
+//			this.trajectory.setVisible(true);
 			
 			this.trajectory.strokeProperty().bind(customizationController.getCustomizationModel().selectedTrajectoryPaint());
 			

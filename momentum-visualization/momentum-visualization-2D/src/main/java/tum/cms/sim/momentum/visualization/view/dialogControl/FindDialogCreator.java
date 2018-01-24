@@ -32,11 +32,15 @@
 
 package tum.cms.sim.momentum.visualization.view.dialogControl;
 
+
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -116,7 +120,12 @@ public class FindDialogCreator {
 					
 				case Pedestrian:
 					idChooser.getItems().clear();
-					idChooser.getItems().setAll(coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().keySet());
+					List<String> pedestrianDisplayIds = coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes()
+                            .values().stream()
+                            .map(pedestrian -> pedestrian.getDisplayId())
+                            .collect(Collectors.toList());
+	
+					idChooser.getItems().setAll(pedestrianDisplayIds);
 					Collections.sort(idChooser.getItems(), new NumericStringComparator());
 					
 					break;
@@ -144,8 +153,6 @@ public class FindDialogCreator {
 				
 				selectionHandler.clearSelection();
 
-				//selectionHandler.setSelection(selectedShape, false, null);
-
 				switch(entityTypeChooser.getValue()) {
 				case Area:
 					selectedShape = coreController.getPlaybackController().getPlaybackModel().getAreaShapes().get(idChooser.getValue());
@@ -159,9 +166,16 @@ public class FindDialogCreator {
 					selectionHandler.setSelection(selectedShape, true, details);
 					break;
 				case Pedestrian:
-					selectedShape = coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(idChooser.getValue());
-					details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(idChooser.getValue()).getDataProperties());
-					selectionHandler.setSelection(selectedShape, true, details);
+					coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().keySet().stream().sorted().forEach(key -> 
+					{ 	String[] string = new String[2];
+						string=key.split("\\.");
+							if(idChooser.getValue().equalsIgnoreCase(string[0]))
+								{
+									selectedShape = coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(key);
+									details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(key).getDataProperties());
+									selectionHandler.setSelection(selectedShape, true, details);
+								}
+					});
 					break;
 				case Vertex:
 					selectedShape = coreController.getPlaybackController().getPlaybackModel().getVertexShapes().get(Integer.parseInt(idChooser.getValue()));

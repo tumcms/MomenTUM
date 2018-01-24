@@ -199,7 +199,8 @@ public class PlaybackController implements Initializable {
 	public void clearAll() {
 
 		PlaybackController.selectionHandler.clearSelection();
-		
+		PlaybackController.selectionHandler.clearDetailsView();
+
 		playbackModel.areaShapesProperty().clear();
         playbackModel.taggedAreaShapesProperty().clear();
 		playbackModel.obstacleShapesProperty().clear();
@@ -284,7 +285,7 @@ public class PlaybackController implements Initializable {
 
 		playbackModel.areaShapesProperty().addListener(onAreaShapesListChangedListener);
         playbackModel.taggedAreaShapesProperty().addListener(onTaggedAreaShapesListChangedListener);
-        playbackModel.obstacleShapesProperty().addListener(onObstracleShapesListChangedListener);
+        playbackModel.obstacleShapesProperty().addListener(onObstacleShapesListChangedListener);
 		playbackModel.pedestrianShapesProperty().addListener(onPedestrianShapesListChangedListener);
 
 		playbackModel.vertexShapesProperty().addListener(onVertexShapesListChangedListener);
@@ -367,7 +368,7 @@ public class PlaybackController implements Initializable {
 		}
 	};
 
-	private ListChangeListener<ObstacleModel> onObstracleShapesListChangedListener = new ListChangeListener<ObstacleModel>() {
+	private ListChangeListener<ObstacleModel> onObstacleShapesListChangedListener = new ListChangeListener<ObstacleModel>() {
 
 		@Override
 		public void onChanged(ListChangeListener.Change<? extends ObstacleModel> changed) {
