@@ -258,8 +258,8 @@ public class LayerConfigurationController implements Initializable {
 		
 		HashMap<String, TrajectoryModel> trajectories = new HashMap<String, TrajectoryModel>();
 		
-		double starttime = coreController.getInteractionViewController()
-								.roundTimelineValue(coreController.getPlaybackController().getCustomizationController().getCustomizationModel().trajectoryTimeIntervalProperty().getValue()*100);
+		double starttime = coreController.getInteractionViewController().roundTimelineValue(
+				coreController.getPlaybackController().getCustomizationController().getCustomizationModel().trajectoryTimeIntervalProperty().getValue());
 
 
 		double actualtime =  coreController.getInteractionViewController()
