@@ -49,7 +49,7 @@ public class CustomCSVDialogCreator {
 	public static CsvType createCustomCSVDialog(CsvType preferredType) {
 		
 		Dialog<Void> dialog = new Dialog<Void>();
-		dialog.initModality(Modality.WINDOW_MODAL);
+		dialog.initModality(Modality.APPLICATION_MODAL);
     	dialog.setTitle(customCSVTitle);
     	dialog.setHeaderText(customCSVHeader);
     	

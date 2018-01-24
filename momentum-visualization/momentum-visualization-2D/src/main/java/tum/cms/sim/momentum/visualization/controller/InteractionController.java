@@ -42,6 +42,7 @@ import java.util.ResourceBundle;
 
 import javafx.animation.ParallelTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -93,6 +94,8 @@ public class InteractionController implements Initializable {
 	@FXML
 	private ProgressIndicator spinner;
 
+	private DoubleBinding timeLineBinding = null;
+	
 	private ParallelTransition playBackAnimation = null;
 
 	// Controller
@@ -131,7 +134,8 @@ public class InteractionController implements Initializable {
 		this.coreController = coreController;
 
 		box.disableProperty()
-				.bind(coreController.getCoreModel().csvLoadedProperty().not().or(coreController.getCoreModel().layoutLoadedProperty().not()));
+				.bind(coreController.getCoreModel().csvLoadedProperty().not()
+				.or(coreController.getCoreModel().layoutLoadedProperty().not()));
 
 		textFieldZoomFactor.textProperty()
 				.bind(Bindings.format("%.4f", coreController.getPlaybackController().getGestureModel().getScaleProperty()));
@@ -141,13 +145,11 @@ public class InteractionController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle resource) {
 
-		stop.disableProperty()
-				.bind(timeLineModel.playingProperty().not().or(timeLineModel.isAnimatingProperty().not()));
+		stop.disableProperty().bind(timeLineModel.playingProperty().not().or(timeLineModel.isAnimatingProperty().not()));
 
 		reset.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		play.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		leftStep.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
-
 		rightStep.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		slider.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
 		speedBox.disableProperty().bind(timeLineModel.playingProperty().or(timeLineModel.isAnimatingProperty()));
@@ -159,8 +161,8 @@ public class InteractionController implements Initializable {
 				.bind(timeLineModel.timeStepMultiplicatorProperty().multiply(timeLineModel.timeStepDurationProperty()));
 		slider.setMinorTickCount(0);
 		slider.valueProperty().addListener(onSliderValueChangeListener);
-
-		textFieldTimeStepPointer.textProperty().bind(Bindings.format("%.2f", slider.valueProperty()));
+		
+     	textFieldTimeStepPointer.textProperty().bind(Bindings.format("%.2f", slider.valueProperty()));
 		textFieldTimeStepPointer.setOnAction(onTextFieldEnterPressed);
 		textFieldTimeStepPointer.focusedProperty().addListener(onTextFieldTimeStepFocus);
 		textFieldMaxTimeStep.textProperty().bind(Bindings.format("/ %.2f", timeLineModel.endTimeProperty()));
@@ -177,27 +179,42 @@ public class InteractionController implements Initializable {
 
 		playbackHandler = new PlaybackHandler(slider.valueProperty(), slider.blockIncrementProperty(),
 				slider.maxProperty(), timeLineModel.isAnimatingProperty(), timeLineModel.playingProperty());
+		
+        timeLineBinding = new DoubleBinding() {
+                    {
+                           super.bind(slider.valueProperty());
+                    }
+                    
+                    @Override
+                    public void dispose() {
+                    	
+                           super.unbind(slider.valueProperty());
+                 }
+                    @Override
+                    protected double computeValue() {
+                    	
+                           return roundTimelineValue((slider.getValue() / slider.getMajorTickUnit()) * timeLineModel.getTimeStepMultiplicator());
+                    }
+       };
 	}
-
+	
 	private ChangeListener<Number> onSliderValueChangeListener = new ChangeListener<Number>() {
 
 		@Override
 		public void changed(ObservableValue<? extends Number> arg0, Number oldNumber, Number newNumber) {
-
 			if (slider.getValue() < slider.getMax()) {
 
 				double roundedSlider = roundTimelineValue(
 						(slider.getValue() / slider.getMajorTickUnit()) * timeLineModel.getTimeStepMultiplicator());
-
-				int diff = (int) (roundedSlider % timeLineModel.getTimeStepMultiplicator());
-
-				if (diff != 0) {
-
-					roundedSlider = roundedSlider - diff;
-				}
-
-				// TODO make this a correct binding
-				InteractionController.this.timeLineModel.setCurrentTime(roundedSlider);
+				
+					try {
+						
+						coreController.getLayerConfigurationController().updateTrajectories();
+					} 
+					catch (Exception e) {
+						
+						e.printStackTrace();
+					}
 
 				InteractionController.this.startPlaying(roundedSlider);
 			}
@@ -296,7 +313,7 @@ public class InteractionController implements Initializable {
 
 	@FXML
 	public void onPlay(MouseEvent event) {
-
+		 
 		if (slider.getValue() < slider.getMax()) {
 
 			this.timeLineModel.setPlaying(true);
@@ -367,7 +384,15 @@ public class InteractionController implements Initializable {
 
 		int preDigits = Integer.toString((int) continiuousSliderValue).length();
 		BigDecimal sliderValue = new BigDecimal(continiuousSliderValue);
-		return sliderValue.round(new MathContext(preDigits, RoundingMode.HALF_EVEN)).doubleValue();
+		double roundedSlider = sliderValue.round(new MathContext(preDigits, RoundingMode.HALF_EVEN)).doubleValue();
+		
+		int diff = (int) (roundedSlider % timeLineModel.getTimeStepMultiplicator());
+
+		if (diff != 0) {
+
+			roundedSlider = roundedSlider - diff;
+		}
+		return roundedSlider;
 	}
 	
 	public void resetTimeLineModel() throws Exception {
@@ -378,8 +403,15 @@ public class InteractionController implements Initializable {
 		timeLineModel.sliderDraggedProperty().set(false);
 		timeLineModel.endTimeProperty().set(0.0);
 		timeLineModel.timeStepDurationProperty().set(0.1);
-		timeLineModel.currentTimeProperty().set(0.0);
 		timeLineModel.timeStepMultiplicatorProperty().set(1.0);
 		timeLineModel.timeStepDurationProperty().set(0.1);
+	}
+
+	public double getTimeLineBindingValue() {
+		return timeLineBinding.get();
+	}
+
+	public void setTimeLineBindingValue(DoubleBinding timeLineBinding) {
+		this.timeLineBinding = timeLineBinding;
 	}
 }

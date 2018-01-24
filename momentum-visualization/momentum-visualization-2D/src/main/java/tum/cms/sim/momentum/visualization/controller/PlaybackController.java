@@ -88,6 +88,10 @@ public class PlaybackController implements Initializable {
 	}
 	// controller
 	private CoreController coreController;
+	
+	public CoreController getCoreController() {
+		return coreController;
+	}
 	private CustomizationController customizationController = new CustomizationController();
 	private static SelectionHandler selectionHandler = null;
 
@@ -100,7 +104,8 @@ public class PlaybackController implements Initializable {
 	private SnapshotModel snapshotModel = new SnapshotModel();
 	private VisibilitiyModel visibilitiyModel = new VisibilitiyModel();
 	private GestureModel gestureModel = new GestureModel();
-
+	
+	
 	public CustomizationController getCustomizationController() {
 		return customizationController;
 	}
@@ -128,10 +133,20 @@ public class PlaybackController implements Initializable {
 		
 		for (PedestrianModel pedestrianShapeModel : playbackModel.getPedestrianShapes().values()) {
 			
-			pedestrianShapeModel.putTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()));
+			if(trajectories.get(pedestrianShapeModel.getIdentification()) != null) {
+				
+				pedestrianShapeModel.setTrajectory(trajectories.get(pedestrianShapeModel.getIdentification()));
+			}
+		}
+		for (TrajectoryModel trajectoryShapeModel : playbackModel.getTrajectoryShapes().values()) {
+			
+			if(playbackModel.getPedestrianShapes().get(trajectoryShapeModel.getIdentification()) != null) {
+				
+			trajectoryShapeModel.setPedestrianData(playbackModel.getPedestrianShapes()
+					.get(trajectoryShapeModel.getIdentification()).getDataProperties());
+			}
 		}
 	}
-
 
 	public void onMouseClicked(MouseEvent event) {
 
@@ -184,7 +199,8 @@ public class PlaybackController implements Initializable {
 	public void clearAll() {
 
 		PlaybackController.selectionHandler.clearSelection();
-		
+		PlaybackController.selectionHandler.clearDetailsView();
+
 		playbackModel.areaShapesProperty().clear();
         playbackModel.taggedAreaShapesProperty().clear();
 		playbackModel.obstacleShapesProperty().clear();
@@ -269,7 +285,7 @@ public class PlaybackController implements Initializable {
 
 		playbackModel.areaShapesProperty().addListener(onAreaShapesListChangedListener);
         playbackModel.taggedAreaShapesProperty().addListener(onTaggedAreaShapesListChangedListener);
-        playbackModel.obstacleShapesProperty().addListener(onObstracleShapesListChangedListener);
+        playbackModel.obstacleShapesProperty().addListener(onObstacleShapesListChangedListener);
 		playbackModel.pedestrianShapesProperty().addListener(onPedestrianShapesListChangedListener);
 
 		playbackModel.vertexShapesProperty().addListener(onVertexShapesListChangedListener);
@@ -277,6 +293,7 @@ public class PlaybackController implements Initializable {
 
 		playbackModel.trajectoryShapesProperty().addListener(onTrajectoryShapesListChangedListener);
 		playbackModel.latticeShapesProperty().addListener(onLatticeShapesListChangedListener);
+			
 	}
 
 	public void bindCustomShapes(CsvType type) {
@@ -351,7 +368,7 @@ public class PlaybackController implements Initializable {
 		}
 	};
 
-	private ListChangeListener<ObstacleModel> onObstracleShapesListChangedListener = new ListChangeListener<ObstacleModel>() {
+	private ListChangeListener<ObstacleModel> onObstacleShapesListChangedListener = new ListChangeListener<ObstacleModel>() {
 
 		@Override
 		public void onChanged(ListChangeListener.Change<? extends ObstacleModel> changed) {
@@ -464,7 +481,7 @@ public class PlaybackController implements Initializable {
     };
 
 	private MapChangeListener<String, PedestrianModel> onPedestrianShapesListChangedListener = new MapChangeListener<String, PedestrianModel>() {
-
+		
 		@Override
 		public void onChanged(MapChangeListener.Change<? extends String, ? extends PedestrianModel> changed) {
 
@@ -534,15 +551,16 @@ public class PlaybackController implements Initializable {
 			if (changed.getMap().size() > 0) {
 
 				if (!changed.wasRemoved()) {
-
+					changed.getValueAdded().registerSelectable(PlaybackController.selectionHandler);
 					playbackObjectsPane.getChildren().add(changed.getValueAdded().getTrajectory());
 				}
 			} else {
 
-				playbackObjectsPane.getChildren().removeIf(node -> !(node instanceof AnchorPane));
+				playbackObjectsPane.getChildren().remove(changed.getValueRemoved().getTrajectory());
 			}
 
 			playBackPane.toBack();
 		}
 	};
+
 }

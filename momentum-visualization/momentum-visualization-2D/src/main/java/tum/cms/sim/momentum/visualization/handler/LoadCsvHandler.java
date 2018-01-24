@@ -126,7 +126,7 @@ public class LoadCsvHandler extends LoadHandler {
 				coreController.getPlaybackController().getPlaybackModel().clearPedestrians();
 				coreController.getPlaybackController().getPlaybackModel().clearCustom();
 				InformationDialogCreator.createErrorDialog(null, "Error loading csv data", e);
-				throw e;
+				//throw e;
 			}
 		}
 	}

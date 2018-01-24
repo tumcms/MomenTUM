@@ -110,6 +110,7 @@ public class CustomizationController implements Initializable {
 	
 	public CustomizationModel getCustomizationModel() {
 		if(customizationModel == null) {
+			
 			customizationModel = new CustomizationModel();
 		}
 		return customizationModel;

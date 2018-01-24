@@ -34,6 +34,7 @@ package tum.cms.sim.momentum.visualization.handler;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
@@ -48,7 +49,7 @@ public class SelectionHandler {
 		NotSelected
 	}
 	
-	private HashSet<ShapeModel> selectedShapes = new HashSet<ShapeModel>();;
+	private HashSet<ShapeModel> selectedShapes = new HashSet<ShapeModel>();
 	private TableView<DetailsModelEntry> detailsView = null;
 	private HashMap<String, ShapeModel> clickableObjects = new HashMap<String, ShapeModel>();
 	
@@ -93,19 +94,33 @@ public class SelectionHandler {
 		else {
 			
 			if(shapeModel != null) {
-				
-				if(selectedShapes.contains(shapeModel)) { 
+					
+				if(selectedShapes.contains(shapeModel)) { //delete selected
 					
 					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					selectedShapes.clear();
+					//clickableObjects.forEach((id,shape) -> shape.setVisibility(true));
+				}
+				else if(!selectedShapes.isEmpty()) { //select another
+					
+					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
+					selectedShapes.clear();
+					clickableObjects.forEach((id,shape) -> shape.setVisibility(true));
+					
+					
+					clickableObjects.forEach((id,shape) -> shape.changeSelectionMode(SelectionStates.NotSelected));
+					shapeModel.changeSelectionMode(SelectionStates.Selected);
+					selectedShapes.add(shapeModel);
+					
 				}
 				else { // newly selected 
 					
-					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
+					clickableObjects.forEach((id,shape) -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					selectedShapes.clear();
 					
 					shapeModel.changeSelectionMode(SelectionStates.Selected);
 					selectedShapes.add(shapeModel);
+
 				}
 			}
 		}
@@ -122,13 +137,23 @@ public class SelectionHandler {
 		}
 	}
 	
+	public Set<ShapeModel> getSelected() {
+		
+		return selectedShapes;
+	}
+	
 	public void clearSelection() {
 		
 		if (!selectedShapes.isEmpty()) {
 			selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
 			this.selectedShapes.clear();
 		}
+	}
+ 
+	public void clearDetailsView() {
 		
-		
+		selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
+		selectedShapes.clear();
+		this.detailsView.setItems(FXCollections.observableArrayList());
 	}
 }

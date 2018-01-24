@@ -11,7 +11,8 @@
 <VBox xmlns:fx="http://javafx.com/fxml" fx:id="layerConfigurationBox" fx:controller="tum.cms.sim.momentum.visualization.controller.LayerConfigurationController" style="-fx-background-color: Grey">
 
 	<children>
-		<CheckBox fx:id="showAllTrajetoriesCheckBox" text="%layerConfiguration.checkbox.showAllTrajectories" selected="false" onAction="#onCheckAllTrajectories"/> 
+		<CheckBox fx:id="showTrajectoriesCheckBox" text="%layerConfiguration.checkbox.showTrajectories" selected="false" onAction="#onCheckTrajectories"/> 
+		<CheckBox fx:id="showSelectedTrajectoriesCheckBox" text="%layerConfiguration.checkbox.showSelectedTrajectories" selected="false" onAction="#onCheckSelectedTrajectories"/> 
 		<CheckBox fx:id="showGraphCheckBox" text="%layerConfiguration.checkbox.showGraph" selected="true"/> 
 		<CheckBox fx:id="showPedestrianCheckBox" text="%layerConfiguration.checkbox.showPedestrian" selected="true" onAction="#onCheckShowPedestrian"/> 
 		<CheckBox fx:id="showObstaclesCheckBox" text="%layerConfiguration.checkbox.showObstacle" selected="true" onAction="#onCheckShowObstacle"/> 

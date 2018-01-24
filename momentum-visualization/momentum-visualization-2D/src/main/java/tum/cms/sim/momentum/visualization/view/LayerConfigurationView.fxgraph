@@ -49,10 +49,15 @@ resourcefile "resources.properties" {
 //				text : rstring "layerConfiguration.checkbox.showGrid",
 //				selected : true
 //			},
-			CheckBox id showAllTrajetoriesCheckBox {
-				text : rstring "layerConfiguration.checkbox.showAllTrajectories",
+			CheckBox id showTrajectoriesCheckBox {
+				text : rstring "layerConfiguration.checkbox.showTrajectories",
 				selected : false,
-				onAction : "#onCheckAllTrajectories"
+				onAction : "#onCheckTrajectories"
+			},
+			CheckBox id showSelectedTrajectoriesCheckBox {
+				text : rstring "layerConfiguration.checkbox.showSelectedTrajectories",
+				selected : false,
+				onAction : "#onCheckSelectedTrajectories"
 			},
 			CheckBox id showGraphCheckBox {
 				text : rstring "layerConfiguration.checkbox.showGraph",

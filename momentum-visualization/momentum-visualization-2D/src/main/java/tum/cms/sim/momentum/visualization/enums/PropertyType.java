@@ -46,9 +46,12 @@ public enum PropertyType {
 	snapshotPath,
 	snapshotPixelScale,
 	snapShotName,
-	gridVisibility,
 	latticeVisibility,
 	graphVisibility,
+	obstacleVisibility,
+	originVisibility,
+	intermediateVisibility,
+	destinationVisibility,
 	selectedColor,
 	axisColor,
 	latticeColor,
@@ -65,6 +68,7 @@ public enum PropertyType {
 	trajectoryColor,
 	trajectoryIsRandomColor,
 	trajectoryThickness,
+	trajectoryTimeInterval,
 	edgeThickness,
 	vertexSize,
 	quickloadCsvPaths,
@@ -96,7 +100,13 @@ public enum PropertyType {
 			return Color.ORANGE.toString();
 		case graphVisibility:
 			return Boolean.toString(true);
-		case gridVisibility:
+		case obstacleVisibility:
+			return Boolean.toString(true);
+		case originVisibility:
+			return Boolean.toString(true);
+		case intermediateVisibility:
+			return Boolean.toString(true);
+		case destinationVisibility:
 			return Boolean.toString(true);
 		case informationColor:
 			return Color.BLACK.toString();
@@ -134,6 +144,8 @@ public enum PropertyType {
 			return Boolean.toString(false);
 		case trajectoryThickness:
 			return Double.toString(0.5);
+		case trajectoryTimeInterval:
+			return Double.toString(0.0);
 		case vertexSize:
 			return Double.toString(3.);
 		case quickloadCsvPaths:

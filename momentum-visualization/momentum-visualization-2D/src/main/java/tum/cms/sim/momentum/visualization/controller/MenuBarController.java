@@ -133,7 +133,7 @@ public class MenuBarController implements Initializable {
 				
 				new LoadCsvHandler().load(coreController,
 						menuBar.getScene().getWindow(),
-						coreController.getInteractionViewController().getTimeLineModel().getCurrentTime());
+						coreController.getInteractionViewController().getTimeLineBindingValue());
 			}
 			catch (Exception e) {
 				

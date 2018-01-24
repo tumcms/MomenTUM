@@ -62,11 +62,12 @@ public class CustomizationModel {
 	private final ObjectProperty<Color> taggedAreaGradientStartColor = new SimpleObjectProperty<Color>(this, "taggedAreaGradientStartColor", Color.LIGHTSKYBLUE);
 	private final ObjectProperty<Color> taggedAreaGradientEndColor = new SimpleObjectProperty<Color>(this, "taggedAreaGradientEndColor", Color.DEEPSKYBLUE);
 	private final ObjectProperty<Color> obstacleColor = new SimpleObjectProperty<Color>(this, "obstacleColor", Color.DARKGRAY);
-	private final ObjectProperty<Color> virutalObstacleColor = new SimpleObjectProperty<Color>(this, "virutalObstacleColor", Color.BLUEVIOLET);
+	private final ObjectProperty<Color> virtualObstacleColor = new SimpleObjectProperty<Color>(this, "virtualObstacleColor", Color.BLUEVIOLET);
 	private final ObjectProperty<Paint> trajectoryPaint = new SimpleObjectProperty<Paint>(this, "trajectoryColor", Color.GRAY);
 	private final ObjectProperty<Boolean> trajectoryIsRandomColor = new SimpleObjectProperty<Boolean>(this, "trajectoryIsRandomColor", false);
-
+	private final ObjectProperty<Paint> selectedTrajectoryPaint = new SimpleObjectProperty<Paint>(this, "selectedTrajectoryPaint", Color.RED);
 	private final ObjectProperty<Double> trajectoryThickness = new SimpleObjectProperty<Double>(this, "trajectoryThickness", 0.5);
+	private final ObjectProperty<Double> trajectoryTimeInterval = new SimpleObjectProperty<Double>(this, "trajectoryTimeInterval", 10.0);
 	private final ObjectProperty<Double> edgeThickness = new SimpleObjectProperty<Double>(this, "edgeThickness", 1.);
 	private final ObjectProperty<Double> vertexSize = new SimpleObjectProperty<Double>(this, "vertexSize", 3.);
 
@@ -317,16 +318,16 @@ public class CustomizationModel {
 		UserPreferenceHandler.putProperty(PropertyType.obstacleColor, color.toString());
 	}
 	
-	public ObjectProperty<Color> virutalObstacleColorProperty() {
-		return virutalObstacleColor;
+	public ObjectProperty<Color> virtualObstacleColorProperty() {
+		return virtualObstacleColor;
 	}
 
-	public Color getVirutalObstacleColor() {
-		return virutalObstacleColor.get();
+	public Color getVirtualObstacleColor() {
+		return virtualObstacleColor.get();
 	}
 	
-	public void setVirutalObstacleColor(Color color) {
-		virutalObstacleColor.set(color);
+	public void setVirtualObstacleColor(Color color) {
+		virtualObstacleColor.set(color);
 		UserPreferenceHandler.putProperty(PropertyType.virtualObstacleColor, color.toString());
 	}
 	
@@ -354,5 +355,30 @@ public class CustomizationModel {
 	public void setVertexSize(Double size) {
 		vertexSize.set(size);
 		UserPreferenceHandler.putProperty(PropertyType.vertexSize, String.valueOf(size));
+	}
+	
+	public ObjectProperty<Double> trajectoryTimeIntervalProperty() {
+		return trajectoryTimeInterval;
+	}
+	
+	public double getTrajectoryTimeInterval() {
+		return trajectoryTimeInterval.get();
+	}
+	
+	public void setTrajectoryTimeInterval(Double size) {
+		trajectoryTimeInterval.set(size);
+		UserPreferenceHandler.putProperty(PropertyType.trajectoryTimeInterval, String.valueOf(size));
+	}
+
+	public ObjectProperty<Paint> selectedTrajectoryPaint() {
+		return selectedTrajectoryPaint;
+	}
+	
+	public Paint getSelectedTrajectoryPaint() {
+		return selectedTrajectoryPaint.get();
+	}
+	
+	public void setSelectedTrajectoryPaint(Paint paint) {
+		selectedTrajectoryPaint.set(paint);
 	}
 }

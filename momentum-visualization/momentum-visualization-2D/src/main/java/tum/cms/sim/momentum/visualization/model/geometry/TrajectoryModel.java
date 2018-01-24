@@ -32,8 +32,13 @@
 
 package tum.cms.sim.momentum.visualization.model.geometry;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+
 import org.apache.commons.math3.util.FastMath;
+
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.LineTo;
@@ -41,12 +46,17 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Shape;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
+import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 
-public class TrajectoryModel {
+public class TrajectoryModel extends ShapeModel{
 
 	private String id;
 	
 	private Path trajectory = null;
+	
+	LinkedHashMap<String, String> details = new LinkedHashMap<>();
+	
+	CustomizationController customizationController = null;
 	
 	public void setVisibility(boolean visible) {
 
@@ -72,6 +82,8 @@ public class TrajectoryModel {
 	}
 
 	public TrajectoryModel(String id, CustomizationController customizationController, double x, double y, int resolution) {
+		
+		this.customizationController = customizationController;
 		
 		this.id = id;
 		trajectory = new Path();
@@ -104,9 +116,55 @@ public class TrajectoryModel {
 					y * resolution);
 	
 			trajectory.getElements().add(element);
-			
 		//}
 	}
 
+	public void clear() {
+		trajectory.getElements().clear();
+	}
 
+	@Override
+	public void changeSelectionMode(SelectionStates selectionState) {
+		 
+		switch(selectionState) {
+		
+		case NotSelected:
+			
+//			this.trajectory.setVisible(false);
+			
+			trajectory.strokeProperty().bind(customizationController.getCustomizationModel().trajectoryColorProperty());
+			
+			break;
+			
+		case Selected:
+			
+//			this.trajectory.setVisible(true);
+			
+			this.trajectory.strokeProperty().bind(customizationController.getCustomizationModel().selectedTrajectoryPaint());
+			
+			break;
+		}
+	}
+
+	@Override
+	public ArrayList<Node> getClickableShapes() {
+		
+		ArrayList<Node> clickableShapes = new ArrayList<Node>();
+		
+		clickableShapes.add(this.trajectory);
+
+		return clickableShapes;
+	}
+
+	@Override
+	public LinkedHashMap<String, String> getDataProperties() {
+		
+		return this.details;
+	}
+
+	public void setPedestrianData(LinkedHashMap<String, String> details) {
+		
+		this.details=details;
+	}
+		
 }

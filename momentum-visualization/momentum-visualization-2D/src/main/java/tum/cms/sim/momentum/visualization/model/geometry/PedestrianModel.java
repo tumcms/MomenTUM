@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import org.apache.commons.math3.util.FastMath;
-
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.visualization.controller.CustomizationController;
@@ -227,7 +226,7 @@ public class PedestrianModel extends ShapeModel {
 		this.displayId = displayId;
 		this.identificationId = hashId;
 	}
-
+	
 	@Override
 	/**
 	 * returns the global unique id of this PedestrianModel
@@ -242,8 +241,7 @@ public class PedestrianModel extends ShapeModel {
 	public String getClusterIdentification() {
 		return this.displayId.split("\\.")[0];
 	}
-	
-	
+		
 	@Override
 	public void changeSelectionMode(SelectionStates selectionState) {
 		
@@ -254,7 +252,13 @@ public class PedestrianModel extends ShapeModel {
 			
 			this.pedestrianBody.materialProperty().bind(customizationModel.pedestrianBodyMaterialProperty());
 			
-			if(this.trajectory != null) {
+			if(isSeedColored)
+				swapSeedColorBinding();
+			
+			if(isGroupColored)
+				swapGroupColorBinding();
+
+			if(this.trajectory!=null) {
 				
 				this.trajectory.setVisible(false);
 			}
@@ -263,7 +267,7 @@ public class PedestrianModel extends ShapeModel {
 			
 			this.pedestrianBody.materialProperty().bind(customizationModel.selectedPedestrianBodyMaterial());
 			
-			if(this.trajectory != null) {
+			if(this.trajectory!=null) {
 				
 				this.trajectory.setVisible(true);
 			}
@@ -387,7 +391,8 @@ public class PedestrianModel extends ShapeModel {
 		this.pedestrianShape.setRotate(this.angle);
 	}
 
-	public void putTrajectory(TrajectoryModel trajectoryModel) {
+	public void setTrajectory(TrajectoryModel trajectoryModel) {
+		
 		this.trajectory = trajectoryModel.getTrajectory();	
 	}
 	

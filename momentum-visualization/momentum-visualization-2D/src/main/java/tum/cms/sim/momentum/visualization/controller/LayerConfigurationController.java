@@ -35,6 +35,7 @@ package tum.cms.sim.momentum.visualization.controller;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -47,24 +48,41 @@ import tum.cms.sim.momentum.configuration.scenario.AreaConfiguration.AreaType;
 import tum.cms.sim.momentum.utility.csvData.CsvType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
+import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
 import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
 import tum.cms.sim.momentum.visualization.utility.ColorGenerator;
 import tum.cms.sim.momentum.visualization.utility.IdExtension;
+import tum.cms.sim.momentum.visualization.view.dialogControl.InformationDialogCreator;
 
 public class LayerConfigurationController implements Initializable {
 	
 	private CoreController coreController;
-	private HashMap<String, TrajectoryModel> trajectories = new HashMap<String, TrajectoryModel>();
-
 
 	public void bindCoreModel(CoreController coreController) {
 		
 		this.coreController = coreController;
+	
 		this.layerConfigurationBox.disableProperty().bind(coreController.getCoreModel().layoutLoadedProperty().not());
+		showTrajectoriesCheckBox.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
+		
+		showSelectedTrajectoriesCheckBox.disableProperty().bind(showTrajectoriesCheckBox.selectedProperty().not());
+		
+		showGroupColoring.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
+		showSeedColoring.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
 		
 		Bindings.bindBidirectional(showLatticesCheckBox.selectedProperty(),
 				coreController.getPlaybackController().getVisibilitiyModel().latticeVisibilityProperty());
-		
+		Bindings.bindBidirectional(showGraphCheckBox.selectedProperty(),
+				coreController.getPlaybackController().getVisibilitiyModel().graphVisibilityProperty());
+		Bindings.bindBidirectional(showObstaclesCheckBox.selectedProperty(),
+				coreController.getPlaybackController().getVisibilitiyModel().obstacleVisibilityProperty());
+		Bindings.bindBidirectional(showOriginsCheckBox.selectedProperty(),
+				coreController.getPlaybackController().getVisibilitiyModel().originVisibilityProperty());
+		Bindings.bindBidirectional(showIntermediatesCheckBox.selectedProperty(),
+				coreController.getPlaybackController().getVisibilitiyModel().intermediateVisibilityProperty());
+		Bindings.bindBidirectional(showDestinationsCheckBox.selectedProperty(),
+				coreController.getPlaybackController().getVisibilitiyModel().destinationVisibilityProperty());
+
 		Bindings.bindBidirectional(showGraphCheckBox.selectedProperty(),
 				coreController.getPlaybackController().getVisibilitiyModel().graphVisibilityProperty());
 		
@@ -72,7 +90,8 @@ public class LayerConfigurationController implements Initializable {
 	}
 	
 	@FXML VBox layerConfigurationBox;
-	@FXML CheckBox showAllTrajetoriesCheckBox;
+	@FXML CheckBox showTrajectoriesCheckBox;
+	@FXML CheckBox showSelectedTrajectoriesCheckBox;
 	@FXML CheckBox showGraphCheckBox;
 	@FXML CheckBox showPedestrianCheckBox;
 	@FXML CheckBox showObstaclesCheckBox;
@@ -88,21 +107,65 @@ public class LayerConfigurationController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		
 	}
 	
-	@FXML void onCheckAllTrajectories(ActionEvent actionEvent) throws Exception {
-		
-		if(coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().size() == 0) {
+	@FXML void onCheckSelectedTrajectories(ActionEvent actionEvent) throws Exception {
+	
+		if(showSelectedTrajectoriesCheckBox.isSelected()) {
 			
-			HashMap<String, TrajectoryModel> trajectories = loadTrajectories();
-			coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);
-			coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
+			Set<ShapeModel> selectedShapes = PlaybackController.getSelectionHandler().getSelected();
+			
+			coreController.getPlaybackController().getPlaybackModel()
+				.getTrajectoryShapes()
+				.forEach((id,trajectoryShape) -> {
+					
+					boolean isPartOfSelected = false;
+					for(ShapeModel selected : selectedShapes) {
+						
+						if(trajectoryShape.getIdentification().equals(selected.getIdentification())) {
+							isPartOfSelected = true;
+							break;
+						}
+					}
+					
+					if(!isPartOfSelected) {
+						
+						trajectoryShape.setVisibility(false);
+					}
+				});
 		}
+		else {
+			
+			coreController.getPlaybackController().getPlaybackModel()
+				.getTrajectoryShapes()
+				.forEach((id,trajectoryShape) -> trajectoryShape.setVisibility(showTrajectoriesCheckBox.isSelected()));
+		}
+	}
+	
+	@FXML void onCheckTrajectories(ActionEvent actionEvent) throws Exception {
 		
-		coreController.getPlaybackController().getPlaybackModel()
-			.getTrajectoryShapes()
-			.forEach((id,trajectoryShape) -> trajectoryShape.setVisibility(showAllTrajetoriesCheckBox.isSelected()));
+		if(showTrajectoriesCheckBox.isSelected()) {
+			
+			HashMap<String, TrajectoryModel> trajectories = generateTrajectories();
+			
+			coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
+			coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);
+			
+			coreController.getPlaybackController().getPlaybackModel()
+				.getTrajectoryShapes()
+				.forEach((id,trajectoryShape) -> trajectoryShape.setVisibility(showTrajectoriesCheckBox.isSelected()));
+		}
+		else {
+			
+			coreController.getPlaybackController().getPlaybackModel()
+				.getTrajectoryShapes()
+				.forEach((id,trajectoryShape) -> trajectoryShape.clear());
+			
+			coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().clear();
+			
+			showSelectedTrajectoriesCheckBox.setSelected(false);
+		}
 	}
 	
 	@FXML void onCheckShowPedestrian(ActionEvent actionEvent) {
@@ -144,47 +207,126 @@ public class LayerConfigurationController implements Initializable {
 	@FXML void onCheckShowTaggedArea(ActionEvent actionEvent) {
 
 		coreController.getPlaybackController().getPlaybackModel()
-				.getTaggedAreaShapes().values()
-				.forEach(taggedAreaShape -> taggedAreaShape.setVisibility(showTaggedAreasCheckBox.isSelected()));
+			.getTaggedAreaShapes().values()
+			.forEach(taggedAreaShape -> taggedAreaShape.setVisibility(showTaggedAreasCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowDensityEdge(ActionEvent actionEvent) {
 		
 		coreController.getPlaybackController().getPlaybackModel()
-		.getEdgeShapes().values()
-		.forEach(edgeShape -> edgeShape.setVisibility(showPedestrianCheckBox.isSelected()));
+			.getEdgeShapes().values()
+			.forEach(edgeShape -> edgeShape.setVisibility(showPedestrianCheckBox.isSelected()));
 	}
 	
 	@FXML void onCheckShowGroups(ActionEvent actionEvent) {
 		
-		ColorGenerator.generateGroupColors(coreController.getPlaybackController().getPlaybackModel());
-		coreController.getPlaybackController().getPlaybackModel()
-			.getPedestrianShapes().forEach((id, shape) -> shape.setIsGroupColored(!shape.getIsGroupColored()));
+		if(showSeedColoring.isSelected()) {
+			
+			showGroupColoring.selectedProperty().set(false);
+			showSeedColoring.fire();
+			showGroupColoring.selectedProperty().set(true);
+		}
+		
+		try{
+			ColorGenerator.generateGroupColors(coreController.getPlaybackController().getPlaybackModel());
+			
+			coreController.getPlaybackController().getPlaybackModel()
+				.getPedestrianShapes()
+				.forEach((id, shape) -> shape.setIsGroupColored(showGroupColoring.isSelected()));
+		}
+		catch(Exception e){
+			if(ColorGenerator.generateGroupColors(coreController.getPlaybackController().getPlaybackModel())){
+
+				showGroupColoring.selectedProperty().set(false);
+				InformationDialogCreator.createErrorDialog(null, "No Group Data", e);
+				
+			}
+			else{
+				
+				InformationDialogCreator.createErrorDialog(null, "Unknown Error", e);
+				showGroupColoring.selectedProperty().set(false);
+			}
+		}
 	}
 	
 	@FXML void onCheckShowSeedColoring(ActionEvent actionEvent) {
 		
-		ColorGenerator.generateSeedColors(coreController.getPlaybackController().getPlaybackModel());
-		coreController.getPlaybackController()
-			.getPlaybackModel()
-			.getPedestrianShapes().forEach((id, shape) -> shape.setIsSeedColored(!shape.getIsSeedColored()));
+		if(showGroupColoring.isSelected()) {
+			
+			showSeedColoring.selectedProperty().set(false);
+			showGroupColoring.fire();
+			showSeedColoring.selectedProperty().set(true);
+		}
+		try {
+			ColorGenerator.generateSeedColors(coreController.getPlaybackController().getPlaybackModel());
+		
+			coreController.getPlaybackController().getPlaybackModel()
+				.getPedestrianShapes()
+				.forEach((id, shape) -> shape.setIsSeedColored(showSeedColoring.isSelected()));
+		}
+		catch(Exception e) {
+			if(ColorGenerator.generateSeedColors(coreController.getPlaybackController().getPlaybackModel())){
+
+				showGroupColoring.selectedProperty().set(false);
+				InformationDialogCreator.createErrorDialog(null, "No Seed Group Data", e);
+			}
+			else{
+				
+				InformationDialogCreator.createErrorDialog(null, "Unknown Error", e);
+				showGroupColoring.selectedProperty().set(false);
+			}
+		}
 	}
 	
-	public HashMap<String, TrajectoryModel> loadTrajectories() throws Exception {
+	public void updateTrajectories() throws Exception{
+		
+		if(coreController.getLayerConfigurationController().showTrajectoriesCheckBox.isSelected()) {
+			
+		coreController.getPlaybackController().getPlaybackModel()
+			.getTrajectoryShapes()
+			.forEach((id,trajectoryShape) -> trajectoryShape.clear());	
+		coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().clear();
+		
+		HashMap<String, TrajectoryModel> trajectories = generateTrajectories();
+		
+		coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
+		coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);
+		
+		}
+	}
+	
+	public HashMap<String, TrajectoryModel> generateTrajectories() throws Exception{
+		
+		HashMap<String, TrajectoryModel> trajectories = new HashMap<String, TrajectoryModel>();
+		
+		double starttime = coreController.getInteractionViewController().roundTimelineValue(
+				coreController.getPlaybackController().getCustomizationController().getCustomizationModel().trajectoryTimeIntervalProperty().getValue());
 
-		double timeStep = 0.0;
+
+		double actualtime =  coreController.getInteractionViewController()
+								.roundTimelineValue(coreController.getInteractionViewController().getTimeLineBindingValue());
+	
+		double interval = 0.0;
+		
 		IdExtension createID = new IdExtension();
 		
 		for(SimulationOutputReader simReader : coreController.getSimulationOutputReaderListOfType(CsvType.Pedestrian)) {
 			
-			while (timeStep < simReader.getEndCluster() * simReader.getTimeStepDifference()) {
+			while(actualtime-starttime<0) {
+				
+				starttime -= simReader.getTimeStepDifference();
+			}
 	
-				SimulationOutputCluster dataStepCurrent = simReader.readDataSet(timeStep);
-	
+			interval = actualtime - starttime;			
+
+			while(interval<=actualtime) {
+				
+				SimulationOutputCluster dataStepCurrent = simReader.readDataSet(interval);
+				
 				if (dataStepCurrent != null && !dataStepCurrent.isEmpty()) {
-	
+					
 					for (String identification : dataStepCurrent.getIdentifications()) {
-	
+						
 						String hashId = createID.createUniqueId(identification, simReader.getFilePathHash());
 						if (!trajectories.containsKey(hashId)) {
 	
@@ -203,18 +345,27 @@ public class LayerConfigurationController implements Initializable {
 									coreController.getCoreModel().getResolution());
 						}
 					}
-	
-					simReader.clearBuffer();
 				}
-	
-				timeStep += simReader.getTimeStepDifference();
+				interval += simReader.getTimeStepDifference();
 			}
 		}
-		
 		return trajectories;
 	}
-	
-	public void resetTrajectories() {
-		trajectories.clear();
+		
+	public void resetCheckBox() {
+		showTrajectoriesCheckBox.selectedProperty().set(false);
+		showGroupColoring.selectedProperty().set(false);
+		showSeedColoring.selectedProperty().set(false);
 	}
-}
+	
+	public boolean getCheckSeedColoured() {
+		return showSeedColoring.isSelected();
+	}
+	
+	public boolean getCheckGroupColoured() {
+		return showGroupColoring.isSelected();
+	}
+	
+	}
+
+

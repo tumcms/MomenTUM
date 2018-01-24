@@ -40,12 +40,17 @@ import tum.cms.sim.momentum.visualization.model.geometry.PedestrianModel;
 
 public abstract class ColorGenerator {
 
-	public static void generateGroupColors(PlaybackModel visualizationModel) {
+	public static boolean generateGroupColors(PlaybackModel playbackModel) {
 
 		Random random = new Random();
-
-		for (PedestrianModel pedestrianShapeModel : visualizationModel.getPedestrianShapes().values()) {
-
+		boolean noGroupData = false;
+		
+		for (PedestrianModel pedestrianShapeModel : playbackModel.getPedestrianShapes().values()) {
+			
+			if(pedestrianShapeModel.getGroupId()==null) {
+				
+				noGroupData = true;
+			}
 			if (!PedestrianModel.getGroupColorMap().containsKey(pedestrianShapeModel.getGroupId())) {
 
 //				int gamble = 10;
@@ -55,11 +60,11 @@ public abstract class ColorGenerator {
 					double redRandom = random.nextInt(600) / 1000.0 + 0.25;
 					double blueRandom = random.nextInt(600) / 1000.0 + 0.25;
 
-//					if (!visualizationModel.getRedPedestrianGroupColor().contains(redRandom)
-//							&& !visualizationModel.getBluePedestrianGroupColor().contains(blueRandom)) {
+//					if (!playbackModel.getRedPedestrianGroupColor().contains(redRandom)
+//							&& !playbackModel.getBluePedestrianGroupColor().contains(blueRandom)) {
 
-						visualizationModel.getRedPedestrianGroupColor().add(redRandom);
-						visualizationModel.getBluePedestrianGroupColor().add(blueRandom);
+						playbackModel.getRedPedestrianGroupColor().add(redRandom);
+						playbackModel.getBluePedestrianGroupColor().add(blueRandom);
 
 						Color groupColor = new Color(redRandom, blueRandom, 0.25, 1.0);
 
@@ -69,16 +74,22 @@ public abstract class ColorGenerator {
 //				}
 			}
 		}
+		return noGroupData;
 	}
 	
-	public static void generateSeedColors(PlaybackModel visualizationModel) {
+
+	public static boolean generateSeedColors(PlaybackModel playbackModel) {
 
 		int colorSpace = 0;
-
-		for (PedestrianModel pedestrianShapeModel : visualizationModel.getPedestrianShapes().values()) {
+		boolean noSeedData = false;
+		
+		for (PedestrianModel pedestrianShapeModel : playbackModel.getPedestrianShapes().values()) {
 
 			colorSpace += 200;
-
+			if(pedestrianShapeModel.getSeedId()==null) {
+				
+				noSeedData = true;
+			}
 			if (!PedestrianModel.getSeedColorMap().containsKey(pedestrianShapeModel.getSeedId())) {
 
 				if (colorSpace > 250) {
@@ -91,6 +102,7 @@ public abstract class ColorGenerator {
 				PedestrianModel.getSeedColorMap().put(pedestrianShapeModel.getSeedId(), seedColor);
 			}
 		}
+		return noSeedData;
 	}
 	
 }

@@ -20,7 +20,7 @@ The some steps have to be taken:
 
 
 ## Add-In Workflow
-Executing the plugin promts the user to select one level or all levels of a project. The selected level(s) will be exported as xml. 
+Executing the plugin prompts the user to select one level or all levels of a project. The selected level(s) will be exported as xml. 
 
 Note: Walls and doors are exported as obstacles as type 'Wall'. Stairs can will either be shown as areas of either type 'Origin' or 'Destination'. 
 

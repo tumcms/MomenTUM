@@ -40,7 +40,9 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -48,6 +50,7 @@ import javafx.scene.layout.VBox;
 import tum.cms.sim.momentum.utility.csvData.CsvType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
+import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
 import tum.cms.sim.momentum.visualization.model.PlaybackModel;
 
 public class CoreController implements Initializable {
@@ -80,6 +83,8 @@ public class CoreController implements Initializable {
 	@FXML
 	private LoadedFilesController loadedFilesViewController;
 	@FXML
+	private LoadedFilesController loadedFilesController;
+	@FXML
 	private DetailController detailViewController;
 
 	// models
@@ -104,6 +109,10 @@ public class CoreController implements Initializable {
 
 	public DetailController getDetailController() {
 		return detailViewController;
+	}
+	
+	public LayerConfigurationController getLayerConfigurationController() {
+		return layerConfigurationViewController;
 	}
 
 	public CoreModel getCoreModel() {
@@ -133,9 +142,9 @@ public class CoreController implements Initializable {
 		coreModel.setResolution(1);
 		coreModel.setLayoutLoaded(false);
 		coreModel.setCsvLoaded(false);
-
 		interactionViewController.resetTimeLineModel();
 		playbackViewController.clearAll();
+		layerConfigurationViewController.resetCheckBox();
 	}
 
 	public Collection<SimulationOutputReader> getOutputReaders() {

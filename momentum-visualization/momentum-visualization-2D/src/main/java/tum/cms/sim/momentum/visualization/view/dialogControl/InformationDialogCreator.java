@@ -78,8 +78,7 @@ public class InformationDialogCreator {
 	public static void createOnLoadCsvErrorDialog() {
 		
 		Alert dialog = new Alert(AlertType.ERROR);
-		
-		dialog.initModality(Modality.WINDOW_MODAL);
+		dialog.initModality(Modality.APPLICATION_MODAL);
     	dialog.setTitle(infoboxTitle);
     	dialog.setHeaderText(onLoadCsvErrorHeader);
     	dialog.setContentText(onLoadCsvErrorContent);
@@ -91,7 +90,7 @@ public class InformationDialogCreator {
 		
 		Alert dialog = new Alert(AlertType.ERROR);
 		
-		dialog.initModality(Modality.WINDOW_MODAL);
+		dialog.initModality(Modality.APPLICATION_MODAL);
     	dialog.setTitle(infoboxTitle);
     	dialog.setHeaderText(header);
     	dialog.setContentText(content);
@@ -108,7 +107,7 @@ public class InformationDialogCreator {
 		
 		Alert dialog = new Alert(AlertType.ERROR);
 		
-		dialog.initModality(Modality.WINDOW_MODAL);
+		dialog.initModality(Modality.APPLICATION_MODAL);
 		dialog.setTitle(infoboxTitle);
 		dialog.setHeaderText(header);
 		dialog.setContentText(content);
