@@ -251,11 +251,17 @@ public class PedestrianModel extends ShapeModel {
 		case NotSelected:
 			
 			this.pedestrianBody.materialProperty().bind(customizationModel.pedestrianBodyMaterialProperty());
+			
 			if(isSeedColored)
 				swapSeedColorBinding();
+			
 			if(isGroupColored)
 				swapGroupColorBinding();
-			
+
+			if(this.trajectory!=null) {
+				
+				this.trajectory.setVisible(false);
+			}
 			break;
 		case Selected:
 			

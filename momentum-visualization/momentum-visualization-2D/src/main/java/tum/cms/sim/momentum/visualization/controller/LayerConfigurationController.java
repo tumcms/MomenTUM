@@ -35,6 +35,7 @@ package tum.cms.sim.momentum.visualization.controller;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -47,6 +48,7 @@ import tum.cms.sim.momentum.configuration.scenario.AreaConfiguration.AreaType;
 import tum.cms.sim.momentum.utility.csvData.CsvType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
+import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
 import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
 import tum.cms.sim.momentum.visualization.utility.ColorGenerator;
 import tum.cms.sim.momentum.visualization.utility.IdExtension;
@@ -61,7 +63,10 @@ public class LayerConfigurationController implements Initializable {
 		this.coreController = coreController;
 	
 		this.layerConfigurationBox.disableProperty().bind(coreController.getCoreModel().layoutLoadedProperty().not());
-		showAllTrajetoriesCheckBox.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
+		showTrajectoriesCheckBox.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
+		
+		showSelectedTrajectoriesCheckBox.disableProperty().bind(showTrajectoriesCheckBox.selectedProperty().not());
+		
 		showGroupColoring.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
 		showSeedColoring.disableProperty().bind(coreController.getCoreModel().csvLoadedProperty().not());
 		
@@ -85,7 +90,8 @@ public class LayerConfigurationController implements Initializable {
 	}
 	
 	@FXML VBox layerConfigurationBox;
-	@FXML CheckBox showAllTrajetoriesCheckBox;
+	@FXML CheckBox showTrajectoriesCheckBox;
+	@FXML CheckBox showSelectedTrajectoriesCheckBox;
 	@FXML CheckBox showGraphCheckBox;
 	@FXML CheckBox showPedestrianCheckBox;
 	@FXML CheckBox showObstaclesCheckBox;
@@ -104,9 +110,42 @@ public class LayerConfigurationController implements Initializable {
 		
 	}
 	
-	@FXML void onCheckAllTrajectories(ActionEvent actionEvent) throws Exception {
+	@FXML void onCheckSelectedTrajectories(ActionEvent actionEvent) throws Exception {
+	
+		if(showSelectedTrajectoriesCheckBox.isSelected()) {
+			
+			Set<ShapeModel> selectedShapes = PlaybackController.getSelectionHandler().getSelected();
+			
+			coreController.getPlaybackController().getPlaybackModel()
+				.getTrajectoryShapes()
+				.forEach((id,trajectoryShape) -> {
+					
+					boolean isPartOfSelected = false;
+					for(ShapeModel selected : selectedShapes) {
+						
+						if(trajectoryShape.getIdentification().equals(selected.getIdentification())) {
+							isPartOfSelected = true;
+							break;
+						}
+					}
+					
+					if(!isPartOfSelected) {
+						
+						trajectoryShape.setVisibility(false);
+					}
+				});
+		}
+		else {
+			
+			coreController.getPlaybackController().getPlaybackModel()
+				.getTrajectoryShapes()
+				.forEach((id,trajectoryShape) -> trajectoryShape.setVisibility(showTrajectoriesCheckBox.isSelected()));
+		}
+	}
+	
+	@FXML void onCheckTrajectories(ActionEvent actionEvent) throws Exception {
 		
-		if(showAllTrajetoriesCheckBox.isSelected()) {
+		if(showTrajectoriesCheckBox.isSelected()) {
 			
 			HashMap<String, TrajectoryModel> trajectories = generateTrajectories();
 			
@@ -115,7 +154,7 @@ public class LayerConfigurationController implements Initializable {
 			
 			coreController.getPlaybackController().getPlaybackModel()
 				.getTrajectoryShapes()
-				.forEach((id,trajectoryShape) -> trajectoryShape.setVisibility(showAllTrajetoriesCheckBox.isSelected()));
+				.forEach((id,trajectoryShape) -> trajectoryShape.setVisibility(showTrajectoriesCheckBox.isSelected()));
 		}
 		else {
 			
@@ -124,6 +163,8 @@ public class LayerConfigurationController implements Initializable {
 				.forEach((id,trajectoryShape) -> trajectoryShape.clear());
 			
 			coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().clear();
+			
+			showSelectedTrajectoriesCheckBox.setSelected(false);
 		}
 	}
 	
@@ -239,7 +280,7 @@ public class LayerConfigurationController implements Initializable {
 	
 	public void updateTrajectories() throws Exception{
 		
-		if(coreController.getLayerConfigurationController().showAllTrajetoriesCheckBox.isSelected()) {
+		if(coreController.getLayerConfigurationController().showTrajectoriesCheckBox.isSelected()) {
 			
 		coreController.getPlaybackController().getPlaybackModel()
 			.getTrajectoryShapes()
@@ -312,7 +353,7 @@ public class LayerConfigurationController implements Initializable {
 	}
 		
 	public void resetCheckBox() {
-		showAllTrajetoriesCheckBox.selectedProperty().set(false);
+		showTrajectoriesCheckBox.selectedProperty().set(false);
 		showGroupColoring.selectedProperty().set(false);
 		showSeedColoring.selectedProperty().set(false);
 	}

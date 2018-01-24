@@ -34,6 +34,7 @@ package tum.cms.sim.momentum.visualization.handler;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
@@ -98,7 +99,7 @@ public class SelectionHandler {
 					
 					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					selectedShapes.clear();
-					clickableObjects.forEach((id,shape) -> shape.setVisibility(true));
+					//clickableObjects.forEach((id,shape) -> shape.setVisibility(true));
 				}
 				else if(!selectedShapes.isEmpty()) { //select another
 					
@@ -134,6 +135,11 @@ public class SelectionHandler {
 				this.detailsView.setItems(shapesDetailsModel.createViewContent());
 			}
 		}
+	}
+	
+	public Set<ShapeModel> getSelected() {
+		
+		return selectedShapes;
 	}
 	
 	public void clearSelection() {
