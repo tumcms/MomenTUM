@@ -67,7 +67,7 @@ public class CustomizationModel {
 	private final ObjectProperty<Boolean> trajectoryIsRandomColor = new SimpleObjectProperty<Boolean>(this, "trajectoryIsRandomColor", false);
 	private final ObjectProperty<Paint> selectedTrajectoryPaint = new SimpleObjectProperty<Paint>(this, "selectedTrajectoryPaint", Color.RED);
 	private final ObjectProperty<Double> trajectoryThickness = new SimpleObjectProperty<Double>(this, "trajectoryThickness", 0.5);
-	private final ObjectProperty<Double> trajectoryTimeInterval = new SimpleObjectProperty<Double>(this, "trajectoryTimeInterval", 10.0);
+	private final ObjectProperty<Double> trajectoryTimeInterval = new SimpleObjectProperty<Double>(this, "trajectoryTimeInterval", 50.0);
 	private final ObjectProperty<Double> edgeThickness = new SimpleObjectProperty<Double>(this, "edgeThickness", 1.);
 	private final ObjectProperty<Double> vertexSize = new SimpleObjectProperty<Double>(this, "vertexSize", 3.);
 

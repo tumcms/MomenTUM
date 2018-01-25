@@ -278,24 +278,24 @@ public class LayerConfigurationController implements Initializable {
 		}
 	}
 	
-	public void updateTrajectories() throws Exception{
+	public void updateTrajectories() throws Exception {
 		
 		if(coreController.getLayerConfigurationController().showTrajectoriesCheckBox.isSelected()) {
 			
-		coreController.getPlaybackController().getPlaybackModel()
-			.getTrajectoryShapes()
-			.forEach((id,trajectoryShape) -> trajectoryShape.clear());	
-		coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().clear();
-		
-		HashMap<String, TrajectoryModel> trajectories = generateTrajectories();
-		
-		coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
-		coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);
-		
+			coreController.getPlaybackController().getPlaybackModel()
+				.getTrajectoryShapes()
+				.forEach((id,trajectoryShape) -> trajectoryShape.clear());	
+			
+			coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().clear();
+			
+			HashMap<String, TrajectoryModel> trajectories = generateTrajectories();
+			
+			coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
+			coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);
 		}
 	}
 	
-	public HashMap<String, TrajectoryModel> generateTrajectories() throws Exception{
+	public HashMap<String, TrajectoryModel> generateTrajectories() throws Exception {
 		
 		HashMap<String, TrajectoryModel> trajectories = new HashMap<String, TrajectoryModel>();
 		
