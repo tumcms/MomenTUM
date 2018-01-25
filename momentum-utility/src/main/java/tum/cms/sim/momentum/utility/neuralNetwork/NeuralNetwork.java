@@ -32,6 +32,8 @@
 
 package tum.cms.sim.momentum.utility.neuralNetwork;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -140,18 +142,15 @@ public class NeuralNetwork {
 			throw new Exception(String.format(exceptionTensorRun, outTensor.getName()));
 		}
 		
-		if(runner == null) {
+		runner = this.modelBundle.session().runner();
 		
-			runner = this.modelBundle.session().runner();
+		for(NeuralTensor inTensor : inTensors) {
 			
-			for(NeuralTensor inTensor : inTensors) {
-				
-				runner = runner.feed(inTensor.getName(), inTensor.getTensor());
-			}
-			
-			runner = runner.fetch(outTensor.getName());
+			runner = runner.feed(inTensor.getName(), inTensor.getTensor());
 		}
-	
+		
+		runner = runner.fetch(outTensor.getName());
+
 		List<Tensor<?>> output = runner.run();	
 		
 		if(output.size() != 1) {

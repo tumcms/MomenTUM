@@ -29,7 +29,9 @@ public class NetworkMlpModelOperational extends WalkingModel {
 	private static String velocityClassesName = "velocityClasses";
 	private static String angleClassesName = "angleClasses";
 	private static String numberOfLastCategoriesName = "numberOfLastCategories";
+	private static String numberForMeanName = "numberForMean";
 	
+	private int numberForMean = 5;
 	private int numberOfLastCategories = 2;
 	
 	/**
@@ -115,7 +117,7 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		
 		double[] predictedClasses = this.estimate(inTensorData, simulationState);
 		
-		int predictedClass = extension.findClassId(predictedClasses);
+		int predictedClass = extension.findClassIdByMaxValue(predictedClasses);
 
 		// In Tensorflow we use this to compute the class:
 		// categorieBoth = (catVelo - 1) * veloCategory + (angleCategory - 1)
@@ -128,18 +130,22 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		// E.g.a) 12 * floor(3.75) = 36 and 12 * ceil(3.75) = 48 
 		// E.g.b) 12 * floor(0.42) = 0 and 12 * ceil(1.0) = 12 
 		// This means that the range for the angle class is
-		// a) 36 - 48, that gives (4 velocity class + 1) * 12 velocity classes - 36 joint class = 9 angle class
-		// b) 0 - 12, that gives angle class (1 velocity class + 1) * 12 velocity classes - 5 joint class = 5 angle class
-		int predictedAngleClass = (predictedVelocityClass + 1) * velocityClasses - (int)predictedClass;
+		// a) 36 - 48, that gives (4 velocity class) * 12 velocity classes - 36 joint class = 9 angle class
+		// b) 0 - 12, that gives angle class (1 velocity class ) * 12 velocity classes - 5 joint class = 5 angle class
+		int predictedAngleClass = (predictedVelocityClass) * velocityClasses - (int)predictedClass;
 				
 		double predictedVelocity = extension.getVelocityForClassification(predictedVelocityClass,
 				this.velocityClasses,
 				pedestrian,
 				simulationState);
 		
+		//predictedVelocity *= 0.25;
+		
 		double  predictedAngle = extension.getAngleForClassification(predictedAngleClass,
 				this.angleClasses);		
-				
+		
+		//predictedAngle *= 0.25;
+		
 		Vector2D predictVelocity = pedestrian.getVelocity()
 				.setMagnitude(predictedVelocity)
 				.rotate(predictedAngle);
@@ -168,15 +174,15 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		NeuralNetwork network = this.getNetworkForThread(simulationState.getCalledOnThread());
 		NeuralTensor inTensor = this.getInTensorForThread(simulationState.getCalledOnThread(), inTensorData.size());
 		NeuralTensor dropoutTensor = this.getDropoutTensorForThread(simulationState.getCalledOnThread());
-		
+
 		double[] data = new double[inTensorData.size()];
 		
 		for(int iter = 0; iter < inTensorData.size(); iter++) {
 			
-			data[iter] = 20.0;//inTensorData.get(iter)/10.0;
+			data[iter] = inTensorData.get(iter);
 		}
 		
- 		inTensor.fill(data);
+  		inTensor.fill(data);
 
  		List<NeuralTensor> inTensors = new ArrayList<NeuralTensor>();
  		// {1, size} tensor
@@ -185,7 +191,8 @@ public class NetworkMlpModelOperational extends WalkingModel {
  		inTensors.add(dropoutTensor);
  		
 		// {1,class} is prediction
-		NeuralTensor outTensor = this.getOutTensorForThread(simulationState.getCalledOnThread());
+		NeuralTensor outTensor = //NeuralNetworkFactory.createNeuralTensor(this.outputTensor, new long[] {1, angleClasses * velocityClasses});
+			this.getOutTensorForThread(simulationState.getCalledOnThread());
 		
 		double[] predictedClasses = null;
 
@@ -199,9 +206,81 @@ public class NetworkMlpModelOperational extends WalkingModel {
 			e.printStackTrace();
 		}
 		
+		//inTensor.close();
+		//dropoutTensor.close();
+		//outTensor.close();
+		
 		return predictedClasses;
 	}
 
+	private void plotForMatlab(double[] predictedClasses) {
+		
+		int iter = 0;
+		
+		System.out.print("z = [");
+		for(int veloClass = 0; veloClass < velocityClasses; veloClass++) {
+			
+			for(int angleClass = 0; angleClass < angleClasses; angleClass++) {
+				
+				System.out.print(predictedClasses[iter]);
+				iter++;
+				
+				if(angleClass + 1 < angleClasses) {
+					
+					System.out.print(",");
+				}
+			}
+			
+			if(veloClass + 1 < velocityClasses) {
+			
+				System.out.print(";");
+			}
+		}
+		System.out.print("];");
+		
+		System.out.println();
+		System.out.print("y = [");
+		for(int veloClass = 0; veloClass < velocityClasses; veloClass++) {
+			
+			for(int angleClass = 0; angleClass < angleClasses; angleClass++) {
+				
+				System.out.print(1 + veloClass);
+				iter++;
+				
+				if(angleClass + 1 < angleClasses) {
+					
+					System.out.print(",");
+				}
+			}
+			
+			if(veloClass + 1 < velocityClasses) {
+			
+				System.out.print(";");
+			}
+		}
+		System.out.print("];");
+		System.out.println();
+		System.out.print("x = [");
+		for(int veloClass = 0; veloClass < velocityClasses; veloClass++) {
+			
+			for(int angleClass = 0; angleClass < angleClasses; angleClass++) {
+				
+				System.out.print(1 + angleClass);
+				iter++;
+				
+				if(angleClass + 1 < angleClasses) {
+					
+					System.out.print(",");
+				}
+			}
+			
+			if(veloClass + 1 < velocityClasses) {
+			
+				System.out.print(";");
+			}
+		}
+		System.out.print("];");
+	}
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 	
@@ -212,6 +291,7 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		this.velocityClasses = this.properties.getIntegerProperty(velocityClassesName);
 		this.angleClasses = this.properties.getIntegerProperty(angleClassesName);
 		this.numberOfLastCategories = this.properties.getIntegerProperty(numberOfLastCategoriesName);
+		this.numberForMean = this.properties.getIntegerProperty(numberForMeanName);
 	}
 
 	@Override

@@ -51,9 +51,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	public ArrayList<Vector2D> getHeadingsList() {
 		return headingsList;
 	}
-	
-	private double magScale = 1.0;
-	
+
 	// Training data
 	private List<CsvPlaybackPerceptionWriterItem> perceptItems = new ArrayList<>();
 
@@ -166,7 +164,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance * scaleDistance);
 				item.setAngleToPercept(GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading));
 				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
-				item.setVelocityMagnitudeOfPercept(other.getVelocity().getMagnitude() * magScale);
+				item.setVelocityMagnitudeOfPercept(other.getVelocity().getMagnitude());
 				item.setVelocityAngleDifferenceToPercept(GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()));
 				//item.setVelocityAngleDifferenceToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()))/(2.0*FastMath.PI));
 				item.setTypeOfPercept(other.getGroupId() == pedestrian.getGroupId() ? groupCode : pedestrianCode);
@@ -246,9 +244,9 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			int angleClasses,
 			int numberOfLastCategories) {
 
-		double velocityMagnitudeChangeNoCategory = newWalkingState.getWalkingVelocity().getMagnitude() * magScale;
+		double velocityMagnitudeChangeNoCategory = newWalkingState.getWalkingVelocity().getMagnitude();
 		double velocityAngleChangeNoCategory = GeometryAdditionals.angleBetweenPlusMinus180(newWalkingState.getWalkingVelocity(), zeroVector, pedestrian.getVelocity());
-		
+
 		velocityAngleChange = (double)this.getClassForAngle(velocityAngleChangeNoCategory, angleClasses);
 		velocityMagnitude = (double)this.getClassForVelocity(velocityMagnitudeChangeNoCategory, velocityClasses, pedestrian, state);
 		
@@ -380,6 +378,24 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		}
 		
 		return classId;
+	}
+	
+	
+	public int findClassIdByMaxValue(double[] classifications) {
+		
+		int classIdMax = 0;
+		double maxValue = 0;
+		
+		for(int iter = 0; iter < classifications.length; iter++) {
+			
+			if(maxValue < classifications[iter]) {
+				
+				maxValue = classifications[iter];
+				classIdMax = iter;
+			}
+		}
+		
+		return classIdMax;
 	}
 	
 	public double getVelocityForClassification(int classId, int classes, IPedestrian pedestrian, SimulationState state) {

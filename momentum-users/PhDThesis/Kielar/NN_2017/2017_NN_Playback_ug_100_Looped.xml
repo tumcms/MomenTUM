@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator version="2.0.0" simulationName="2017_NN_Playkback_ug_100">
 
-	<timeState simulationEndTime="83.0" timeStepDuration="0.1"/>
-	
+	<timeState simulationEndTime="83.0" timeStepDuration="0.04"/>
+
 	<threadingState threads="3"/>
 	
 	<logging>
@@ -14,7 +14,7 @@
 	</loop>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.1"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2"/>
 	</lattices>
 	
 	<graphs>
@@ -53,9 +53,9 @@
 			</complexProperty>
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
-			<property name="numberForMean" type="Integer" value="10"/>
+			<property name="numberForMean" type="Integer" value="25"/>
 			<property name="numberOfLastCategories" type="Integer" value="2"/>
-			<property name="velocityClasses" type="Integer" value="17"/>
+			<property name="velocityClasses" type="Integer" value="25"/>
 			<property name="angleClasses" type="Integer" value="25"/>
 		</walking>
 	</walkingModels>

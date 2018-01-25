@@ -179,6 +179,7 @@ public class NeuralTensor {
 
 		doubleData.put(data);
 		doubleData.rewind();
+
 		this.tensor = Tensor.create(this.dimension, doubleData);
 	}
 	
