@@ -32,7 +32,6 @@
 
 package tum.cms.sim.momentum.visualization.view.dialogControl;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -158,34 +156,35 @@ public class FindDialogCreator {
 					selectedShape = coreController.getPlaybackController().getPlaybackModel().getAreaShapes().get(idChooser.getValue());
 					details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getAreaShapes().get(idChooser.getValue()).getDataProperties());
 					selectionHandler.setSelection(selectedShape, true, details);
-					
 					break;
+					
 				case Edge:
 					selectedShape = coreController.getPlaybackController().getPlaybackModel().getEdgeShapes().get(idChooser.getValue());
 					details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getEdgeShapes().get(idChooser.getValue()).getDataProperties());
 					selectionHandler.setSelection(selectedShape, true, details);
 					break;
+					
 				case Pedestrian:
-					coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().keySet().stream().sorted().forEach(key -> 
-					{ 	String[] string = new String[2];
+					
+					coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().keySet().stream().sorted().forEach(key -> { 
+						String[] string = new String[2];
 						string=key.split("\\.");
-							if(idChooser.getValue().equalsIgnoreCase(string[0]))
-								{
-									selectedShape = coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(key);
-									details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(key).getDataProperties());
-									selectionHandler.setSelection(selectedShape, true, details);
-								}
+						
+						if(idChooser.getValue().equalsIgnoreCase(string[0])) {
+							
+							selectedShape = coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(key);
+							details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getPedestrianShapes().get(key).getDataProperties());
+							selectionHandler.setSelection(selectedShape, true, details);
+						}
 					});
 					break;
+					
 				case Vertex:
 					selectedShape = coreController.getPlaybackController().getPlaybackModel().getVertexShapes().get(Integer.parseInt(idChooser.getValue()));
 					details = new DetailsModel(coreController.getPlaybackController().getPlaybackModel().getVertexShapes().get(Integer.parseInt(idChooser.getValue())).getDataProperties());
 					selectionHandler.setSelection(selectedShape, true, details);
 					break;
 				}
-
-				
-
 			}
 		});
     	

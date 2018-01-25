@@ -145,7 +145,7 @@ public enum PropertyType {
 		case trajectoryThickness:
 			return Double.toString(0.5);
 		case trajectoryTimeInterval:
-			return Double.toString(0.0);
+			return Double.toString(50.0);
 		case vertexSize:
 			return Double.toString(3.);
 		case quickloadCsvPaths:

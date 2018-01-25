@@ -73,6 +73,7 @@ public class CustomizationController implements Initializable {
 		UserPreferenceHandler.putProperty(PropertyType.trajectoryColor, PropertyType.getDefaultValue(PropertyType.trajectoryColor));
 		UserPreferenceHandler.putProperty(PropertyType.trajectoryIsRandomColor, PropertyType.getDefaultValue(PropertyType.trajectoryIsRandomColor));
 		UserPreferenceHandler.putProperty(PropertyType.trajectoryThickness, PropertyType.getDefaultValue(PropertyType.trajectoryThickness));
+		UserPreferenceHandler.putProperty(PropertyType.trajectoryTimeInterval, PropertyType.getDefaultValue(PropertyType.trajectoryTimeInterval));
 		UserPreferenceHandler.putProperty(PropertyType.edgeThickness, PropertyType.getDefaultValue(PropertyType.edgeThickness));
 		UserPreferenceHandler.putProperty(PropertyType.vertexSize, PropertyType.getDefaultValue(PropertyType.vertexSize));
 		
@@ -103,6 +104,7 @@ public class CustomizationController implements Initializable {
 		getCustomizationModel().setTrajectoryColor(Color.web(UserPreferenceHandler.loadProperty(PropertyType.trajectoryColor)));
 		getCustomizationModel().setTrajectoryIsRandomColor(Boolean.valueOf(UserPreferenceHandler.loadProperty(PropertyType.trajectoryIsRandomColor)));
 		getCustomizationModel().setTrajectoryThickness(Double.valueOf(UserPreferenceHandler.loadProperty(PropertyType.trajectoryThickness)));
+		getCustomizationModel().setTrajectoryTimeInterval(Double.valueOf(UserPreferenceHandler.loadProperty(PropertyType.trajectoryTimeInterval)));
 		getCustomizationModel().setEdgeThickness(Double.valueOf(UserPreferenceHandler.loadProperty(PropertyType.edgeThickness)));
 		getCustomizationModel().setVertexSize(Double.valueOf(UserPreferenceHandler.loadProperty(PropertyType.vertexSize)));
 		getCustomizationModel().setInformationColor(Color.web(UserPreferenceHandler.loadProperty(PropertyType.informationColor)));
