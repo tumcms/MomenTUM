@@ -342,7 +342,7 @@ public class SimulationOutputReader {
 		// no data exists because of time step missmatches, we say data is ready
 		if(index % getTimeStepDifference() == 0) { 
 			
-			if (index < this.endTime && index > 0 && (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady())) {
+			if (index <= this.endTime && index > 0 && (dataSetBuffer.get(index) == null || !dataSetBuffer.get(index).isReady())) {
 			
 				return false;
 			}
