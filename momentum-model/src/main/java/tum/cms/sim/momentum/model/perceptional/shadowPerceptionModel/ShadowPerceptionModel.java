@@ -167,7 +167,8 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		Occupation result = Occupation.convertDoubleToOccupation(
 				this.pedestrianMap.breshamLineCast(from,
 						towards,
-						(int)(perceptionDistance / this.pedestrianMap.getCellEdgeSize())));
+						2500)); // it can see 250 cells 0.05 * 250 = 10 meter
+						// TODO WARNING (int)(perceptionDistance / this.pedestrianMap.getCellEdgeSize())));
 		
 		return Occupation.Empty.equals(result);
 	}

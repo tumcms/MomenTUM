@@ -27,7 +27,54 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	
 	private static Vector2D zeroVector = GeometryFactory.createVector(0.0, 0.0);
 	private boolean firstDataSet = true;
+	private double maximalVelocityInfluence = 2.0; 
+	private static Double xMinCut = null;
+	private static Double xMaxCut = null;
+	private static Double yMinCut = null;
+	private static Double yMaxCut = null;
 	
+	public static double getxMinCut() {
+		return xMinCut == null ? Double.MIN_VALUE : xMinCut;
+	}
+
+	public static void setxMinCut(Double xMinCut) {
+		CsvPlaybackPedestrianExtensions.xMinCut = xMinCut;
+	}
+
+	public static double getxMaxCut() {
+		return xMaxCut == null ? Double.MAX_VALUE : xMaxCut;
+	}
+
+	public static void setxMaxCut(Double xMaxCut) {
+		CsvPlaybackPedestrianExtensions.xMaxCut = xMaxCut;
+	}
+
+	public static double getyMinCut() {
+		return yMinCut == null ? Double.MIN_VALUE : yMinCut;
+	}
+
+	public static void setyMinCut(Double yMinCut) {
+		CsvPlaybackPedestrianExtensions.yMinCut = yMinCut;
+	}
+
+	public static double getyMaxCut() {
+		return yMaxCut == null ? Double.MAX_VALUE : yMaxCut;
+	}
+
+	public static void setyMaxCut(Double yMaxCut) {
+		CsvPlaybackPedestrianExtensions.yMaxCut = yMaxCut;
+	}
+
+	private Vector2D currentPosition = null;
+	
+	public Vector2D getCurrentPosition() {
+		return currentPosition;
+	}
+
+	public void setCurrentPosition(Vector2D currentPosition) {
+		this.currentPosition = currentPosition;
+	}
+
 	public boolean isFirstDataSet() {
 		return firstDataSet;
 	}
@@ -134,7 +181,6 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	
 		List<Vector2D> freePositions = perception.getPerceptedFreePositions(pedestrian, simulationState);
 
-		double scaleDistance = 1.0/perception.getPerceptionDistance();
 		perceptItems.clear();
 		
 		for(int iter = 0; iter < obstaclePositions.size(); iter++) {
@@ -147,12 +193,10 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				
 				double distance = position.distance(obstaclePosition) - pedestrian.getBodyRadius();
 				
-				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance * scaleDistance);
+				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance);
 				item.setAngleToPercept(GeometryAdditionals.angleBetweenPlusMinus180(obstaclePosition.subtract(position), zeroVector, heading));
-				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(obstaclePosition.subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
 				item.setVelocityMagnitudeOfPercept(0.0);
-				item.setVelocityAngleDifferenceToPercept(FastMath.PI);
-				//item.setVelocityAngleDifferenceToPercept(1.0);
+				item.setVelocityAngleDifferenceToPercept(0.0);
 				item.setTypeOfPercept(obstacleCode);
 			}
 			else if(pedestrianPositions.get(iter) != null) {
@@ -161,12 +205,10 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				
 				double distance = position.distance(other.getPosition()) - (other.getBodyRadius() + pedestrian.getBodyRadius());
 				
-				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance * scaleDistance);
+				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance);
 				item.setAngleToPercept(GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading));
-				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getPosition().subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
 				item.setVelocityMagnitudeOfPercept(other.getVelocity().getMagnitude());
 				item.setVelocityAngleDifferenceToPercept(GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()));
-				//item.setVelocityAngleDifferenceToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(other.getVelocity(), zeroVector, pedestrian.getVelocity()))/(2.0*FastMath.PI));
 				item.setTypeOfPercept(other.getGroupId() == pedestrian.getGroupId() ? groupCode : pedestrianCode);
 			}
 			else {
@@ -174,12 +216,10 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 				Vector2D freePosition = freePositions.get(iter);
 				
 				double distance = perception.getPerceptionDistance() - pedestrian.getBodyRadius();
-				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance * scaleDistance);
+				item.setDistanceToPercept(distance < 0.0 ? 0.0 : distance);
 				item.setAngleToPercept(GeometryAdditionals.angleBetweenPlusMinus180(freePosition.subtract(position), zeroVector, heading));
-				//item.setAngleToPercept((FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(freePosition.subtract(position), zeroVector, heading))/(2.0*FastMath.PI));
 				item.setVelocityMagnitudeOfPercept(0.0);
 				item.setVelocityAngleDifferenceToPercept(0.0);
-				//item.setVelocityAngleDifferenceToPercept(0.0)
 				item.setTypeOfPercept(freeCode); 
 			}
 			
@@ -325,8 +365,8 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	
 	public double getAngleForClassification(int classId, int classes) {
 		
-		double min = -FastMath.PI/2.0;
-		double max = FastMath.PI/2.0;
+		double min = -FastMath.PI/4.0;
+		double max = FastMath.PI/4.0;
 		
 		double classRange = (max - min) / classes;
 		double current = min + classId * classRange - 0.5 * classRange;
@@ -337,7 +377,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	private int getClassForVelocity(double velocity, int classes, IPedestrian pedestrian, SimulationState state) {
 		
 		double min = 0;
-		double max = 2.0 * pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
+		double max = this.maximalVelocityInfluence * pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
 		
 		double classRange = (max - min) / classes;
 		double current = min + classRange;
@@ -401,10 +441,10 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	public double getVelocityForClassification(int classId, int classes, IPedestrian pedestrian, SimulationState state) {
 		
 		double min = 0;
-		double max = pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
+		double max = this.maximalVelocityInfluence * pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
 		
 		double classRange = (max - min) / classes;
-		double current = min + classes * classRange - 0.5 * classRange;
+		double current = min + classId * classRange - 0.5 * classRange;
 		
 		return current;
 	}

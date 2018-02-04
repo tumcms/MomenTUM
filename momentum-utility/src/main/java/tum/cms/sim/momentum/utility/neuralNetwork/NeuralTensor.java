@@ -168,18 +168,31 @@ public class NeuralTensor {
 			size *= dimension[iter];
 		}
 		
-//		if(doubleData == null) {
+////		if(doubleData == null) {
+//			
+//			doubleData = DoubleBuffer.allocate((int)size);
+////		}
+////		else {
+////			
+////			doubleData.clear();
+////		}
+//
+//		doubleData.put(data);
+//		//%doubleData.rewind();
+
+		if(doubleData == null) {
 			
 			doubleData = DoubleBuffer.allocate((int)size);
-//		}
-//		else {
-//			
-//			doubleData.clear();
-//		}
-
+		}
+		else {
+			
+			doubleData.clear();
+		}
+		
+		doubleData = DoubleBuffer.allocate((int)size);
 		doubleData.put(data);
 		doubleData.rewind();
-
+		
 		this.tensor = Tensor.create(this.dimension, doubleData);
 	}
 	

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator version="2.0.2" simulationName="2017_NN_Playkback_ug_100">
+
+	<timeState simulationEndTime="100.0" timeStepDuration="0.12"/>
+	<threadingState threads="1"/>
+	
+	<logging>
+		<loggingState type="Console" level="Debug"/>
+	</logging>
+	
+	<lattices>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.05"/>
+	</lattices>
+	
+	<graphs>
+		<graphModel name="routing" id="0">
+			<graphOperation id="0" name="createGraph" type="FromConfiguration" order="0">
+				<property name="graphId" type="Integer" value="0"/>
+				<property name="precisionSeed" type="Double" value="0.01"/>
+			</graphOperation>
+		</graphModel>
+	</graphs>
+	
+	<perceptualModels>
+		<perceptual id="0" name="ShadowPerception" type="Shadow">
+			<property name="perceptionDistance" type="Double" value="2.0"/>
+			<property name="latticeId" type="Integer" value="0"/>
+			<property name="perceptionAngleDegree" type="Double" value="180.0"/>
+		</perceptual>
+	</perceptualModels>
+	
+	<operationalModels>
+		<operational id="1" name="operational" perceptualModel="0">
+			<walkingReference modelId="2"/>
+		</operational>
+	</operationalModels>
+	
+	<walkingModels>
+		<walking id="2" name="NN" type="NeuralNetwork">
+			<property name="pathToClassificationNetwork" type="String" value="C:\\Users\\ga37sib\\Desktop\\Paper_InProgress\\2018_PED\\both"/>
+			<property name="dropoutTensorName" type="String" value="keep_prob"/>
+			<property name="inputTensorName" type="String" value="input_layer"/>
+			<property name="outputTensorName" type="String" value="output_layer"/>
+			<property name="numberForMean" type="Integer" value="10"/>
+			<property name="numberOfLastCategories" type="Integer" value="3"/>
+			<property name="velocityClasses" type="Integer" value="9"/>
+			<property name="angleClasses" type="Integer" value="9"/>
+		</walking>
+	</walkingModels>
+	
+	<tacticalModels>
+		<tactical id="3" name="tactical"  perceptualModel="0">
+			<routingReference modelId="4"/>
+			<property name="goalDistanceRadius" type="Double" value="0.23" />
+			<property name="routeMemory" type="Boolean" value="True" />
+			<property name="tacticalControl" type="Boolean" value="True" />
+			<property name="strategicCommand" type="String" value="Routing"/>
+			<property name="deepNodeSelection" type="Integer" value="0"/>
+		</tactical>
+	</tacticalModels>
+	
+	<routingModels>
+		<!-- The model does not have any parameter. -->
+		<routing id="4" name="linearGraphPursue" type="LinearGraphPursue"/>
+	</routingModels>
+	
+	<pedestrianSeeds>
+		<!-- The seed is used in the generator=0 -->
+		<pedestrianSeed id="0" name="basic" type="NoDistribution">
+			<property name="desiredVelocity" type="Double" value="1.34"/>
+			<property name="maximalVelocity" type="Double" value="2.7"/>
+			<property name="radiusMeter" type="Double" value="0.23"/>
+			<property name="groupSize" type="Integer" value="1"/>
+		</pedestrianSeed>
+	</pedestrianSeeds>
+
+	<generators>
+		<generator id="0" name="generator" type="Csv" scenario="0" seed="0">
+			<property name="startTime" type="Double" value="0.0"/>
+			<property name="endTime" type="Double" value="Infinity"/> 
+			<complexProperty name="csvInput" type="CsvMatrix" valueType="Double">
+				<entry file="C:\Programmierung\MomenTUM\momentum-users\PhDThesis\Kielar\NN_2017\2017_NN_Operational_testing\2017_NN_Playback_co_bi_b_7_test_generator.txt" separator=";" comment="#"/>
+			</complexProperty>
+			<complexProperty name="csvMapping" type="List" valueType="String"> 
+				<entry index="0" value="id"/> 
+				<entry index="1" value="timeStep"/> 
+				<entry index="2" value="x"/>
+				<entry index="3" value="y"/>
+			</complexProperty>
+			<property name="containsHeader" type="Boolean" value="False"/>
+			<property name="timeStepMapping" type="Double" value="0.065"/>
+		</generator>
+	</generators>
+	
+	<outputWriters>
+		<outputWriter id="0" name="pedestrianOutputToFile"> 
+			<property name="call" type="Integer" value="1"/> <!-- Print 10 * 0.05 = 0.5 seconds -->
+			<property name="buffer" type="Integer" value="50"/>
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="2017_NN_Playback_co_bi_b_7_pedestrian_test.csv"/>
+				<property name="index" type="Boolean" value="True"/> 
+			</writerTarget>
+			<writerFormat formatType="Csv">
+				<property name="index" type="Boolean" value="True"/> 
+				<property name="delimiter" type="String" value=";"/>
+			</writerFormat>
+			<writerSource sourceType="Pedestrian">
+				<property name="timeStep" type="Format" value="%d"/>
+				<property name="id" type="Format" value="%d"/>
+				<property name="x" type="Format" value="%.2f"/>
+				<property name="y" type="Format" value="%.2f"/>
+				<property name="xHeading" type="Format" value="%.2f"/>
+				<property name="yHeading" type="Format" value="%.2f"/>
+			</writerSource>
+		</outputWriter>
+		
+		<outputWriter id="1" name="layoutWriter">
+			<property name="call" type="Integer" value="0"/> <!-- In pre-processing -->
+			<writerTarget targetType="File">
+				<property name="file" type="File" value="2017_NN_Playback_co_bi_b_7_layout_test.xml"/>
+			</writerTarget>
+			<writerFormat formatType="Single"/>
+			<writerSource sourceType="Configuration">
+				<property name="dataElement" type="String" value="layouts"/>
+			</writerSource>
+		</outputWriter>
+	</outputWriters>
+	
+	<layouts>
+		<scenario id="0" name="pedSim" maxX="14" maxY="22" minX="-16.0" minY="-22.5">
+      <graph id="0" name="1" type="Raw">
+        <vertex name="0" id="0">
+          <center x="-3.4989" y="9.5" />
+        </vertex>
+        <vertex name="1" id="1">
+          <center x="-3.4989" y="-10.5" />
+        </vertex>
+        <vertex name="2" id="2">
+          <center x="-0.4989" y="-10.5" />
+        </vertex>
+        <vertex name="3" id="3">
+          <center x="-0.4989" y="9.5" />
+        </vertex>
+        <edge idLeft="0" idRight="1" />
+        <edge idLeft="1" idRight="2" />
+        <edge idLeft="2" idRight="3" />
+        <edge idLeft="3" idRight="0" />
+      </graph>
+      <obstacle id="0" name="Wall0" type="Wall">
+        <point x="-4.9989" y="-10.5" />
+        <point x="-4.9989" y="-5.5" />
+      </obstacle>
+      <obstacle id="1" name="Wall1" type="Wall">
+        <point x="-4.9989" y="-11.5" />
+        <point x="-4.9989" y="-10.5" />
+      </obstacle>
+      <obstacle id="2" name="Wall2" type="Wall">
+        <point x="-4.9989" y="-10.5" />
+        <point x="-3.9989" y="-10.5" />
+      </obstacle>
+      <obstacle id="3" name="Wall3" type="Wall">
+        <point x="-3.9989" y="-10.5" />
+        <point x="-3.9989" y="-11.5" />
+      </obstacle>
+      <obstacle id="4" name="Wall4" type="Wall">
+        <point x="1.0011" y="4.5" />
+        <point x="1.0011" y="9.5" />
+      </obstacle>
+      <obstacle id="5" name="Wall5" type="Wall">
+        <point x="-4.9989" y="4.5" />
+        <point x="-3.9989" y="4.5" />
+      </obstacle>
+      <obstacle id="6" name="Wall6" type="Wall">
+        <point x="-3.9989" y="4.5" />
+        <point x="-3.9989" y="-5.5" />
+      </obstacle>
+      <obstacle id="7" name="Wall7" type="Wall">
+        <point x="-3.9989" y="-5.5" />
+        <point x="-4.9989" y="-5.5" />
+      </obstacle>
+      <obstacle id="8" name="Wall8" type="Wall">
+        <point x="-4.9989" y="-5.5" />
+        <point x="-4.9989" y="4.5" />
+      </obstacle>
+      <obstacle id="9" name="Wall9" type="Wall">
+        <point x="-4.9989" y="9.5" />
+        <point x="-4.9989" y="4.5" />
+      </obstacle>
+      <obstacle id="10" name="Wall10" type="Wall">
+        <point x="-3.9989" y="10.5" />
+        <point x="-4.9989" y="10.5" />
+      </obstacle>
+      <obstacle id="11" name="Wall11" type="Wall">
+        <point x="-4.9989" y="10.5" />
+        <point x="-4.9989" y="9.5" />
+      </obstacle>
+      <obstacle id="12" name="Wall12" type="Wall">
+        <point x="-4.9989" y="9.5" />
+        <point x="-3.9989" y="9.5" />
+      </obstacle>
+      <obstacle id="13" name="Wall13" type="Wall">
+        <point x="-3.9989" y="9.5" />
+        <point x="-3.9989" y="10.5" />
+      </obstacle>
+      <obstacle id="14" name="Wall14" type="Wall">
+        <point x="0.0011" y="10.5" />
+        <point x="-3.9989" y="10.5" />
+      </obstacle>
+      <obstacle id="15" name="Wall15" type="Wall">
+        <point x="-3.9989" y="-11.5" />
+        <point x="-4.9989" y="-11.5" />
+      </obstacle>
+      <obstacle id="16" name="Wall16" type="Wall">
+        <point x="0.0011" y="-11.5" />
+        <point x="-3.9989" y="-11.5" />
+      </obstacle>
+      <obstacle id="17" name="Wall17" type="Wall">
+        <point x="1.0011" y="9.5" />
+        <point x="1.0011" y="10.5" />
+      </obstacle>
+      <obstacle id="18" name="Wall18" type="Wall">
+        <point x="1.0011" y="10.5" />
+        <point x="0.0011" y="10.5" />
+      </obstacle>
+      <obstacle id="19" name="Wall19" type="Wall">
+        <point x="0.0011" y="10.5" />
+        <point x="0.0011" y="9.5" />
+      </obstacle>
+      <obstacle id="20" name="Wall20" type="Wall">
+        <point x="0.0011" y="9.5" />
+        <point x="1.0011" y="9.5" />
+      </obstacle>
+      <obstacle id="21" name="Wall21" type="Wall">
+        <point x="1.0011" y="-5.5" />
+        <point x="1.0011" y="4.5" />
+      </obstacle>
+      <obstacle id="22" name="Wall22" type="Wall">
+        <point x="1.0011" y="4.5" />
+        <point x="0.0011" y="4.5" />
+      </obstacle>
+      <obstacle id="23" name="Wall23" type="Wall">
+        <point x="0.0011" y="4.5" />
+        <point x="0.0011" y="-5.5" />
+      </obstacle>
+      <obstacle id="24" name="Wall24" type="Wall">
+        <point x="0.0011" y="-5.5" />
+        <point x="1.0011" y="-5.5" />
+      </obstacle>
+      <obstacle id="25" name="Wall24" type="Wall">
+        <point x="1.0011" y="-10.5" />
+        <point x="1.0011" y="-5.5" />
+      </obstacle>
+      <obstacle id="26" name="Wall25" type="Wall">
+        <point x="1.0011" y="-11.5" />
+        <point x="1.0011" y="-10.5" />
+      </obstacle>
+      <obstacle id="27" name="Wall26" type="Wall">
+        <point x="1.0011" y="-10.5" />
+        <point x="0.0011" y="-10.5" />
+      </obstacle>
+      <obstacle id="28" name="Wall27" type="Wall">
+        <point x="0.0011" y="-10.5" />
+        <point x="0.0011" y="-11.5" />
+      </obstacle>
+      <obstacle id="29" name="Wall28" type="Wall">
+        <point x="0.0011" y="-11.5" />
+        <point x="1.0011" y="-11.5" />
+      </obstacle>
+    </scenario>
+	</layouts>
+</simulator>

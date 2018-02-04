@@ -464,9 +464,13 @@ public class TacticalModel extends PedestrianBehaviorModel {
 					
 					while(currentDepth > 0) {
 						
-						this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
-					
 						RoutingState newRoutingState = pedestrian.getRoutingState();
+						
+						newRoutingState.getVisited().add(next);
+						
+						this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+						
+						newRoutingState = pedestrian.getRoutingState();
 						
 						// TODO check if circles are solved next / last
 						if(!perception.isVisible(pedestrian, newRoutingState.getNextVisit()) ||
@@ -482,6 +486,9 @@ public class TacticalModel extends PedestrianBehaviorModel {
 						if(currentDepth == 0) { 
 							
 							nextToNext = newRoutingState.getNextVisit();
+							next = newRoutingState.getLastVisit();
+							
+							visited.remove(nextToNext);
 							break;
 						}
 						else {
@@ -489,12 +496,15 @@ public class TacticalModel extends PedestrianBehaviorModel {
 							nextTolast = last;
 						}
 						
+						
 						visited.add(next);
 						
-						last = newRoutingState.getLastVisit();
+						//last = newRoutingState.getLastVisit();
 						next = newRoutingState.getNextVisit();
 					}
 					
+					visited.remove(next);
+					visited.remove(nextToNext);
 					RoutingState finalRoutingState = new RoutingState(visited, nextTolast, last, next);
 					finalRoutingState.setNextToCurrentVisit(nextToNext);
 					pedestrian.setRoutingState(finalRoutingState);

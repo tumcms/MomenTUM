@@ -14,6 +14,17 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 			return false;
 		}
 		
+		double currentX = currentPedestrianExtension.getCurrentPosition().getXComponent();
+		double currentY = currentPedestrianExtension.getCurrentPosition().getYComponent();
+		
+		if(currentX < CsvPlaybackPedestrianExtensions.getxMinCut() ||
+		   currentX > CsvPlaybackPedestrianExtensions.getxMaxCut() ||
+		   currentY < CsvPlaybackPedestrianExtensions.getyMinCut() ||
+		   currentY > CsvPlaybackPedestrianExtensions.getyMaxCut()) {
+			
+			return false;
+		}
+		
 		return true;
 	}
 
@@ -73,20 +84,27 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 		case "angleToGoal":
 			dataText = String.format(format,currentPedestrianExtension.getAngleToGoal());
 			break;
-		case "lastLastVelocityMagnitude": 
+		case "lllVelocityMagnitude": 
 			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(0));		
 			break;
 			
-		case "lastLastVelocityAngleChange":
+		case "lllVelocityAngleChange":
 			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(0));
-			break;		
-			
-		case "lastVelocityMagnitude": 
+			break;	
+		case "lastLastVelocityMagnitude": 
 			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(1));		
 			break;
 			
-		case "lastVelocityAngleChange":
+		case "lastLastVelocityAngleChange":
 			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(1));
+			break;		
+			
+		case "lastVelocityMagnitude": 
+			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(2));		
+			break;
+			
+		case "lastVelocityAngleChange":
+			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(2));
 			break;
 			
 		case "velocityMagnitude":

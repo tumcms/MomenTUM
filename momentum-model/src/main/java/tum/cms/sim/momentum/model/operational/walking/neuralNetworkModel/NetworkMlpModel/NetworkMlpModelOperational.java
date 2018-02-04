@@ -121,30 +121,20 @@ public class NetworkMlpModelOperational extends WalkingModel {
 
 		// In Tensorflow we use this to compute the class:
 		// categorieBoth = (catVelo - 1) * veloCategory + (angleCategory - 1)
-		
-		// Thus, the first dimension is velocity and can be computed via / and ceil
-		// E.g.a) joint class is 45, velocity classes are 12 -> 3.75 -> 4.0 velocity class
-		// E.g.b) joint class is 5, velocity classes are 12 -> 0.42 -> 1.0 velocity class
 		int predictedVelocityClass = (int) Math.ceil((double)predictedClass / (double)velocityClasses);
-		
-		// E.g.a) 12 * floor(3.75) = 36 and 12 * ceil(3.75) = 48 
-		// E.g.b) 12 * floor(0.42) = 0 and 12 * ceil(1.0) = 12 
-		// This means that the range for the angle class is
-		// a) 36 - 48, that gives (4 velocity class) * 12 velocity classes - 36 joint class = 9 angle class
-		// b) 0 - 12, that gives angle class (1 velocity class ) * 12 velocity classes - 5 joint class = 5 angle class
-		int predictedAngleClass = (predictedVelocityClass) * velocityClasses - (int)predictedClass;
+		int predictedAngleClass = (int)predictedClass - (predictedVelocityClass - 1) * velocityClasses;
 				
 		double predictedVelocity = extension.getVelocityForClassification(predictedVelocityClass,
 				this.velocityClasses,
 				pedestrian,
 				simulationState);
 		
-		//predictedVelocity *= 0.25;
+		//predictedVelocity *= 0.5;
 		
-		double  predictedAngle = extension.getAngleForClassification(predictedAngleClass,
+		double predictedAngle = extension.getAngleForClassification(predictedAngleClass,
 				this.angleClasses);		
 		
-		//predictedAngle *= 0.25;
+		//predictedAngle *= 0.5;
 		
 		Vector2D predictVelocity = pedestrian.getVelocity()
 				.setMagnitude(predictedVelocity)
@@ -157,7 +147,7 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		double headingYNext = (yNext - pedestrian.getPosition().getYComponent());
 		
 		Vector2D heading = extension.updateHeadings(GeometryFactory.createVector(headingXNext, headingYNext).getNormalized(),
-				numberOfLastCategories);
+				numberForMean);
 		
 		WalkingState newWalkingState = new WalkingState(
 				GeometryFactory.createVector(xNext, yNext),
@@ -367,9 +357,8 @@ public class NetworkMlpModelOperational extends WalkingModel {
 
 		if(!this.dropoutTensorsForThread.containsKey(threadId)) {
 			
-			this.dropoutTensorsForThread.put(threadId,
-					NeuralNetworkFactory.createNeuralTensor(this.dropoutTensor, new long[] {1, 1}));
-			
+			this.dropoutTensorsForThread.put(threadId, NeuralNetworkFactory.createNeuralTensor(this.dropoutTensor, new long[] {1}));
+
 			this.dropoutTensorsForThread.get(threadId).fill(new double[] { 1.0 });
 		}
 		
@@ -414,17 +403,17 @@ public class NetworkMlpModelOperational extends WalkingModel {
 			inTensorData.add(item.getVelocityAngleDifferenceToPercept());
 		}
 		
-//		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
-//			
-//			inTensorData.add((float) item.getTypeOfPercept() * scale);
-//		}
+		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
+			
+			inTensorData.add(item.getTypeOfPercept());
+		}
 		
 		inTensorData.add(extension.getAngleToGoal());
 		
-		for(int last = 1; last >= 0; last--) {
+		for(int last = 2; last >= 0; last--) {
 			
-			inTensorData.add(extension.getLastVelocityMagnitudeCategories().get(last) - 1.0);
-			inTensorData.add(extension.getLastVelocityAngleCategories().get(last) - 1.0);
+			inTensorData.add(extension.getLastVelocityMagnitudeCategories().get(last));
+			inTensorData.add(extension.getLastVelocityAngleCategories().get(last));
 		}
 
 		return inTensorData;

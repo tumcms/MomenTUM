@@ -74,7 +74,7 @@ public class LinearGraphPursueTactical extends RoutingModel {
 		
 		ArrayList<Pair<Vertex,Double>> toCheckVertices = new ArrayList<>();
 		
-		for(Vertex vertex : potentialNextGoals) {
+ 		for(Vertex vertex : potentialNextGoals) {
 			
 			if(this.perception.isVisible(pedestrian, vertex)) {
 			
@@ -92,14 +92,15 @@ public class LinearGraphPursueTactical extends RoutingModel {
 			Vertex nextVisit = pedestrian.getRoutingState().getNextVisit();
 			
 			try {
-			for(Vertex neighbor : scenarioManager.getGraph().getSuccessorVertices(nextVisit)) {
-				
-				toCheckVertices.add(Pair.of(neighbor, neighbor.getGeometry().getCenter().distance(position)));
-			}
+				for(Vertex neighbor : scenarioManager.getGraph().getSuccessorVertices(nextVisit)) {
+					
+					toCheckVertices.add(Pair.of(neighbor, neighbor.getGeometry().getCenter().distance(position)));
+				}
 			}
 			catch(Exception ex) {
 				ex = null;
 			}
+			
 			if(toCheckVertices.size() > 0 && pedestrian.getRoutingState() != null){ 
 				
 				List<Pair<Vertex, Double>> nextSorted = toCheckVertices.stream()
@@ -108,7 +109,7 @@ public class LinearGraphPursueTactical extends RoutingModel {
 				
 				Collections.reverse(nextSorted);
 				Vertex next = nextSorted.get(0).getLeft();
-				newRoutingState = new RoutingState(new HashSet<Vertex>(), nextToLastVertex , lastVertex, next);
+				newRoutingState = new RoutingState(visited, nextToLastVertex , lastVertex, next);
 			}
 		}
 		else {
@@ -121,13 +122,13 @@ public class LinearGraphPursueTactical extends RoutingModel {
 				}
 			}
 			
-			Vertex next = toCheckVertices.stream()
+			List<Pair<Vertex, Double>> nextSorted = toCheckVertices.stream()
 					.sorted(Comparator.comparing(Pair::getRight))
-					.findFirst()
-					.get()
-					.getLeft();
+					.collect(Collectors.toList());
+
+			Vertex next = nextSorted.get(0).getLeft();
 		
-			newRoutingState = new RoutingState(new HashSet<Vertex>(), nextToLastVertex , lastVertex, next);
+			newRoutingState = new RoutingState(visited, nextToLastVertex , lastVertex, next);
 		}
 
 		pedestrian.setRoutingState(newRoutingState);

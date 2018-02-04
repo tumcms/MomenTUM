@@ -115,6 +115,7 @@ public class CsvPlaybackOperational extends WalkingModel {
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
 		extension.updatePedestrianSpace(pedestrian, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories);
 		extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories);
+		extension.setCurrentPosition(newWalkingState.getWalkingPosition());
 		
 		pedestrian.setWalkingState(newWalkingState);
 	}
@@ -128,6 +129,11 @@ public class CsvPlaybackOperational extends WalkingModel {
 		this.numberOfLastCategories = this.properties.getIntegerProperty(numberOfLastCategoriesName);
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
 		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
+		
+		CsvPlaybackPedestrianExtensions.setxMaxCut(this.properties.getDoubleProperty("xMaxCut"));
+		CsvPlaybackPedestrianExtensions.setxMinCut(this.properties.getDoubleProperty("xMinCut"));
+		CsvPlaybackPedestrianExtensions.setyMaxCut(this.properties.getDoubleProperty("yMaxCut"));
+		CsvPlaybackPedestrianExtensions.setyMinCut(this.properties.getDoubleProperty("yMinCut"));
 		
 		for(int iter = 0; iter < csvInput.size(); iter++) {
 			
@@ -164,7 +170,11 @@ public class CsvPlaybackOperational extends WalkingModel {
 			long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
 			
 			// add time step			
-			this.movementData.putIfAbsent(simulationTimeStep, new ArrayList<>());
+			if(!this.movementData.containsKey(simulationTimeStep)) {
+				
+				this.movementData.put(simulationTimeStep, new ArrayList<>());
+			}
+			
 			// add pedestrian movement data
 			this.movementData.get(simulationTimeStep).add(data);
 		}

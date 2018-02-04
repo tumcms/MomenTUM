@@ -122,14 +122,12 @@ public class SimulationState {
 	 * E.g. 
 	 * timeStepMapping is 0.04 -> means 1 dataTimeStep is 0.04 seconds
 	 * getTimeStepDuration is 0.1 ->  means 1 simulationTimeStep is 0.1 seconds
-	 * Caluclation with 132 dataTime Step 
+	 * Calculation with 132 dataTimeStep each with 0.04 length
 	 * (int)(131 * 0.04 seconds / 0.1 seconds) + 0.5 = (int)(5.24 seconds / 0.1 seconds) + 0.5 
 	 * = (int)(52.4 + 0.5) = (int)(52.9) = 52 simulation time step
 	 */
 	public long getScaledTimeStep(long timeStepToScale, double timeStepToScaleDuration) {
 		
-		// 
-		// that is 52 * 0.1 = 5.2 seconds in simulation time
 		return (long)(((timeStepToScaleDuration * timeStepToScale) / this.getTimeStepDuration()) + 0.5);
 	}
 }

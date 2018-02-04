@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<simulator version="2.0.0" simulationName="2017_NN_Playkback_ug_100">
+<simulator version="2.0.2" simulationName="2017_NN_Playkback_ug_100">
 
-	<timeState simulationEndTime="83.0" timeStepDuration="0.04"/>
-
+	<timeState simulationEndTime="180.0" timeStepDuration="0.12"/>
 	<threadingState threads="3"/>
 	
 	<logging>
@@ -14,7 +13,7 @@
 	</loop>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.05"/>
 	</lattices>
 	
 	<graphs>
@@ -30,7 +29,7 @@
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
 			<property name="perceptionDistance" type="Double" value="2.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
-			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
+			<property name="perceptionAngleDegree" type="Double" value="180.0"/>
 		</perceptual>
 	</perceptualModels>
 	
@@ -53,10 +52,11 @@
 			</complexProperty>
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
-			<property name="numberForMean" type="Integer" value="25"/>
-			<property name="numberOfLastCategories" type="Integer" value="2"/>
-			<property name="velocityClasses" type="Integer" value="25"/>
-			<property name="angleClasses" type="Integer" value="25"/>
+			<property name="numberForMean" type="Integer" value="10"/>
+			<property name="numberOfLastCategories" type="Integer" value="3"/>
+			<property name="velocityClasses" type="Integer" value="9"/>
+			<property name="angleClasses" type="Integer" value="9"/>
+			<property name="xMaxCut" type="Double" value="3.0"/>
 		</walking>
 	</walkingModels>
 	
@@ -67,7 +67,7 @@
 			<property name="routeMemory" type="Boolean" value="True" />
 			<property name="tacticalControl" type="Boolean" value="True" />
 			<property name="strategicCommand" type="String" value="Routing"/>
-			<property name="deepNodeSelection" type="Integer" value="3"/>
+			<property name="deepNodeSelection" type="Integer" value="0"/>
 		</tactical>
 	</tacticalModels>
 	
@@ -88,7 +88,7 @@
 	
 	<generators>
 		<generator id="0" name="generator" type="Csv" scenario="0" seed="0">
-			<property name="startTime" type="Double" value="10.0"/>
+			<property name="startTime" type="Double" value="0.0"/>
 			<property name="endTime" type="Double" value="Infinity"/> 
 			<complexProperty name="csvInput" type="CsvMatrix" valueType="Double">
 				<entry file="C:\Programmierung\MomenTUM\momentum-users\PhDThesis\Kielar\NN_2017\ug-100-$LOOP$.txt" separator=";" comment="#"/>
@@ -167,15 +167,17 @@
 			</writerFormat>
 			<writerSource sourceType="CsvPlayback" additionalId="2"> 
 				<property name="distancesToPercepts" type="Format" value="%.10f"/>
-				<property name="anglesToPercepts" type="Format" value="%.10f"/>
+				<property name="anglesToPercepts" type="Format" value="%.10f"/>-->
 				<property name="velocityMagnitudesOfPercepts" type="Format" value="%.10f"/>
 				<property name="velocityAngleDifferencesToPercepts" type="Format" value="%.10f"/>
-				<!--<property name="typesOfPercepts" type="Format" value="%.10f"/>-->
+				<property name="typesOfPercepts" type="Format" value="%.10f"/>
 				<property name="angleToGoal" type="Format" value="%.10f"/>
 				<property name="lastVelocityMagnitude" type="Format" value="%.10f"/>
 				<property name="lastVelocityAngleChange" type="Format" value="%.10f"/>
 				<property name="lastLastVelocityMagnitude" type="Format" value="%.10f"/>
 				<property name="lastLastVelocityAngleChange" type="Format" value="%.10f"/>
+				<property name="lllVelocityMagnitude" type="Format" value="%.10f"/>
+				<property name="lllVelocityAngleChange" type="Format" value="%.10f"/>
 				<property name="velocityMagnitude" type="Format" value="%.10f"/>
 				<property name="velocityAngleChange" type="Format" value="%.10f"/>
 			</writerSource>

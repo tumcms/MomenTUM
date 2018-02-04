@@ -59,7 +59,7 @@ public class CsvAbsorber extends Absorber {
 		// ignore the first time step because it is never used
 		// the absorber looks ahead a single time step and checks
 		// if pedestrian data is given.
-		long sciptTimeStep = csvMapping.values().stream().findFirst().get().get(timeStepIndex).longValue();
+		long scipTimeStep = csvMapping.values().stream().findFirst().get().get(timeStepIndex).longValue();
 
 		// compute generation map
 		for(ArrayList<Double> data : csvMapping.values()) {
@@ -67,7 +67,7 @@ public class CsvAbsorber extends Absorber {
 			long dataTimeStep = data.get(timeStepIndex).longValue();
 			long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
 			
-			if(sciptTimeStep != simulationTimeStep) {
+			if(scipTimeStep != simulationTimeStep) {
 				
 				int id = data.get(idIndex).intValue();
 				this.absorberSet.putIfAbsent(simulationTimeStep, new HashSet<>());

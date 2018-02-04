@@ -87,6 +87,7 @@ public class CsvGenerator extends Generator {
 		
 		// compute generation map
 		HashSet<Integer> knownIds = new HashSet<>();
+		HashSet<Integer> knownNextIds = new HashSet<>();
 		
 		for(ArrayList<Double> data : csvMapping.values()) {
 			
@@ -100,13 +101,19 @@ public class CsvGenerator extends Generator {
 			// add pedestrian to be generated in the generation set
 			if(!knownIds.contains(id)) {
 				
+				data.set(timeStepIndex, (double) simulationTimeStep);
 				this.generationSet.get(simulationTimeStep).put(id, new CsvGeneratorDataObject(data));
+				this.generationNextSet.put(id, new CsvGeneratorDataObject(data));
 				knownIds.add(id);
 			} 
-			else if(!this.generationNextSet.containsKey(id)) {
+			else if(!knownNextIds.contains(id)) {
 				
-				// if the pedestrian is part of the generation set but not of the next generation set add the next data 
-				this.generationNextSet.put(id, new CsvGeneratorDataObject(data));
+				if(simulationTimeStep > (long)this.generationNextSet.get(id).getValue(timeStepIndex)) {
+					
+					data.set(timeStepIndex, (double) simulationTimeStep);
+					this.generationNextSet.put(id, new CsvGeneratorDataObject(data));
+					knownNextIds.add(id);
+				}
 			}
 		}
 	}
