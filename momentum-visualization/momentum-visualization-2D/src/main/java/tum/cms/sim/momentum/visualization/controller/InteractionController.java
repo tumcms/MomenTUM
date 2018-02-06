@@ -181,20 +181,19 @@ public class InteractionController implements Initializable {
 				slider.maxProperty(), timeLineModel.isAnimatingProperty(), timeLineModel.playingProperty());
 		
         timeLineBinding = new DoubleBinding() {
-                    {
-                           super.bind(slider.valueProperty());
-                    }
-                    
-                    @Override
-                    public void dispose() {
-                    	
-                           super.unbind(slider.valueProperty());
-                 }
-                    @Override
-                    protected double computeValue() {
-                    	
-                           return roundTimelineValue((slider.getValue() / slider.getMajorTickUnit()) * timeLineModel.getTimeStepMultiplicator());
-                    }
+            {
+                   super.bind(slider.valueProperty());
+            }
+            
+            @Override
+            public void dispose() {
+                   super.unbind(slider.valueProperty());
+            }
+            
+            @Override
+            protected double computeValue() {
+                   return roundTimelineValue((slider.getValue() / slider.getMajorTickUnit()) * timeLineModel.getTimeStepMultiplicator());
+            }
        };
 	}
 	
