@@ -99,25 +99,18 @@ public class SelectionHandler {
 					
 					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					selectedShapes.clear();
-					//clickableObjects.forEach((id,shape) -> shape.setVisibility(true));
 				}
 				else if(!selectedShapes.isEmpty()) { //select another
 					
 					selectedShapes.forEach(shape -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					selectedShapes.clear();
-					clickableObjects.forEach((id,shape) -> shape.setVisibility(true));
-					
-					
-					clickableObjects.forEach((id,shape) -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					shapeModel.changeSelectionMode(SelectionStates.Selected);
 					selectedShapes.add(shapeModel);
 					
 				}
 				else { // newly selected 
 					
-					clickableObjects.forEach((id,shape) -> shape.changeSelectionMode(SelectionStates.NotSelected));
 					selectedShapes.clear();
-					
 					shapeModel.changeSelectionMode(SelectionStates.Selected);
 					selectedShapes.add(shapeModel);
 
