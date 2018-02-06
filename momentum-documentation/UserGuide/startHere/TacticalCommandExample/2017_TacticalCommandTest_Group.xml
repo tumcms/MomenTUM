@@ -9,7 +9,7 @@
 	<threadingState threads="4"/>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.23"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Edge" cellEdgeSize="0.23"/>
 		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="1.0"/>
 	</lattices>
 	<graphs>
@@ -42,8 +42,8 @@
 		</graphModel>
 	</graphs>
 	<perceptualModels>
-		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
-			<property name="accuracy" type="Double" value="0.23"/>
+		<perceptual id="0" name="Bresenham" type="Bresenham">
+			<property namue="latticeIdName" type="Integer" value="0"/>
 		</perceptual>
 	</perceptualModels>
 	<operationalModels>
@@ -71,6 +71,9 @@
 			<queuingReference modelId="6"/>
 			<routingReference modelId="7"/>
 			<searchingReference modelId="8"/>
+			<property name="tacticalControl" type="Boolean" value="True"/>
+			<property name="navigationDistanceRadius" type="Double" value="0.66"/>
+			<property name="deepNodeSelection" type="Integer" value="0"/>
 			<property name="goalDistanceRadius" type="Double" value="0.23" />
 			<property name="routeMemory" type="Boolean" value="False" />
 		</tactical>
