@@ -119,10 +119,15 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		
 		int predictedClass = extension.findClassIdByMaxValue(predictedClasses);
 
-		// In Tensorflow we use this to compute the class:
-		// categorieBoth = (catVelo - 1) * veloCategory + (angleCategory - 1)
-		int predictedVelocityClass = (int) Math.ceil((double)predictedClass / (double)velocityClasses);
-		int predictedAngleClass = (int)predictedClass - (predictedVelocityClass - 1) * velocityClasses;
+		// In cantor pair: y = angleCategory, x = veloCategory
+		// categorieBoth = angleCategory + round(0.5 * ((veloCategory + angleCategory) * (veloCategory + angleCategory + 1)));
+		int predictedVelocityClass  = (int) Math.floor(Math.sqrt(0.25 + 2*predictedClass) - 0.5);
+		predictedVelocityClass = predictedVelocityClass - (predictedClass - predictedVelocityClass * (predictedVelocityClass + 1)/2);
+		int predictedAngleClass = (int) Math.floor(Math.sqrt(0.25 + 2*predictedClass) - 0.5);
+		predictedAngleClass = predictedClass - predictedAngleClass*(predictedAngleClass+1)/2;
+
+//		int predictedVelocityClass = (int) Math.ceil((double)predictedClass / (double)velocityClasses);
+//		int predictedAngleClass = (int)predictedClass - (predictedVelocityClass - 1) * velocityClasses;
 				
 		double predictedVelocity = extension.getVelocityForClassification(predictedVelocityClass,
 				this.velocityClasses,
@@ -134,10 +139,14 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		double predictedAngle = extension.getAngleForClassification(predictedAngleClass,
 				this.angleClasses);		
 		
+		System.out.println(String.valueOf(predictedVelocity) + "_" String.valueOf(predictedAngle));
 		//predictedAngle *= 0.5;
 		
-		Vector2D predictVelocity = pedestrian.getVelocity()
-				.setMagnitude(predictedVelocity)
+		// origincal calculation, negative if accelarte, possitve if break
+		// predictedVelocity negativ faster, predictedVelocity possitive slower
+		double changedVelocity = predictedVelocity;//pedestrian.getVelocity().getMagnitude() + predictedVelocity;
+		
+		Vector2D predictVelocity = pedestrian.getVelocity().scale(changedVelocity)
 				.rotate(predictedAngle);
 		
 		double xNext = pedestrian.getPosition().getXComponent() + predictVelocity.getXComponent();
@@ -409,6 +418,7 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		}
 		
 		inTensorData.add(extension.getAngleToGoal());
+		inTensorData.add(extension.getDistanceToGoal());
 		
 		for(int last = 2; last >= 0; last--) {
 			

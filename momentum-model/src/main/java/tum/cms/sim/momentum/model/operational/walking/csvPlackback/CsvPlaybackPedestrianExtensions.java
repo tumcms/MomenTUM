@@ -112,6 +112,12 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		return angleToGoal;
 	}
 	
+	private Double distanceToGoal = 0.0;
+	
+	public Double getDistanceToGoal() {
+		return distanceToGoal;
+	}
+
 	private ArrayList<Double> lastVelocityMagnitudeCategories = new ArrayList<Double>();
 
 	public ArrayList<Double> getLastVelocityMagnitudeCategories() {
@@ -225,10 +231,30 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			
 			this.perceptItems.add(item);
 		}
-		 
+	
+//		this.perceptItems = this.perceptItems.stream()
+//				.sorted(CsvPlaybackPedestrianExtensions.ComperatorAngle)
+//				.collect(Collectors.toList());
+//		
+//		int indexDirect = 0;
+//		for(int iter = 0; iter < this.perceptItems.size(); iter++) {
+//			
+//			if(FastMath.abs(this.perceptItems.get(indexDirect).getAngleToPercept()) > FastMath.abs(this.perceptItems.get(iter).getAngleToPercept())) {
+//				indexDirect = iter;
+//			}
+//		}
+		
+		
+		//CsvPlaybackPerceptionWriterItem frontViewItem = this.perceptItems.get(indexDirect);
+		
 		this.perceptItems = this.perceptItems.stream()
-				.sorted(CsvPlaybackPedestrianExtensions.Comperator)
+				.sorted(CsvPlaybackPedestrianExtensions.ComperatorDistance)
 				.collect(Collectors.toList());
+		
+		List<CsvPlaybackPedestrianExtensions.CsvPlaybackPerceptionWriterItem> closeItems = this.perceptItems.subList(0, 100);
+		this.perceptItems = new ArrayList<CsvPlaybackPedestrianExtensions.CsvPlaybackPerceptionWriterItem>();
+		//this.perceptItems.add(frontViewItem);
+		this.perceptItems.addAll(closeItems);
 	}
 
 	public void updatePedestrianSpace(IOperationalPedestrian pedestrian,
@@ -236,13 +262,25 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			int velocityClasses,
 			int angleClasses,
 			int numberOfLastCategories) {
+
+// F
+		Vector2D goal = GeometryFactory.createVector(3.0, 0.5);
 		
-		if(pedestrian.getNextWalkingTarget() != null) {
-			
-			Vector2D towardsGoal = pedestrian.getNextWalkingTarget().subtract(pedestrian.getPosition());
-			angleToGoal = GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading());
-			//angleToGoal = (FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading()))/(2.0*FastMath.PI);
-		}
+		Vector2D towardsGoal = goal.subtract(pedestrian.getPosition());
+		angleToGoal = GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading());
+		distanceToGoal = goal.distance(pedestrian.getPosition());
+//		if(distanceToGoal > 1.0) {
+//			distanceToGoal = 1.0;
+//		}
+		
+// L
+//		if(pedestrian.getNextWalkingTarget() != null) {
+//			
+//			Vector2D towardsGoal = pedestrian.getNextWalkingTarget().subtract(pedestrian.getPosition());
+//			angleToGoal = GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading());
+//			distanceToGoal = pedestrian.getNextWalkingTarget().distance(pedestrian.getPosition());
+//			//angleToGoal = (FastMath.PI + GeometryAdditionals.angleBetweenPlusMinus180(towardsGoal.subtract(pedestrian.getPosition()), zeroVector,pedestrian.getHeading()))/(2.0*FastMath.PI);
+//		}
 		
 		if(velocityMagnitude != null) {
 			
@@ -266,14 +304,14 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			int angleClasses,
 			int numberOfLastCategories) {
 
-		Double velocityAngleChange = (double)this.getClassForAngle(velocityAngleChangeNoCategory, angleClasses);
-		Double velocityMagnitude = (double)this.getClassForVelocity(velocityMagnitudeChangeNoCategory, velocityClasses, pedestrian, state);
+		int velocityAngleChange = this.getClassForAngle(velocityAngleChangeNoCategory, angleClasses);
+		int velocityMagnitude = this.getClassForVelocity(velocityMagnitudeChangeNoCategory, velocityClasses, pedestrian, state);
 		
 		// in case we do not have previous data we just fill the list with the data
 		while(lastVelocityMagnitudeCategories.size() < numberOfLastCategories) {
 			
-			lastVelocityMagnitudeCategories.add(this.getVelocityForClassification(velocityMagnitude.intValue(), velocityClasses, pedestrian, state));
-			lastVelocityAngleCategories.add(this.getAngleForClassification(velocityAngleChange.intValue(), angleClasses));
+			lastVelocityMagnitudeCategories.add(this.getVelocityForClassification(velocityMagnitude, velocityClasses, pedestrian, state));
+			lastVelocityAngleCategories.add(this.getAngleForClassification(velocityAngleChange, angleClasses));
 		}
 	}
 	
@@ -284,7 +322,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			int angleClasses,
 			int numberOfLastCategories) {
 
-		double velocityMagnitudeChangeNoCategory = newWalkingState.getWalkingVelocity().getMagnitude();
+		double velocityMagnitudeChangeNoCategory = pedestrian.getVelocity().getMagnitude() - newWalkingState.getWalkingVelocity().getMagnitude();
 		double velocityAngleChangeNoCategory = GeometryAdditionals.angleBetweenPlusMinus180(newWalkingState.getWalkingVelocity(), zeroVector, pedestrian.getVelocity());
 
 		velocityAngleChange = (double)this.getClassForAngle(velocityAngleChangeNoCategory, angleClasses);
@@ -340,8 +378,8 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 
 	public int getClassForAngle(double angle, int classes) {
 		
-		double min = -FastMath.PI/2.0;
-		double max = FastMath.PI/2.0;
+		double min = -FastMath.PI * 0.95;
+		double max = FastMath.PI * 0.95;
 		
 		double classRange = (max - min) / classes;
 		double current = min + classRange;
@@ -365,8 +403,8 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	
 	public double getAngleForClassification(int classId, int classes) {
 		
-		double min = -FastMath.PI/4.0;
-		double max = FastMath.PI/4.0;
+		double min = -FastMath.PI* 0.95;
+		double max = FastMath.PI* 0.95;
 		
 		double classRange = (max - min) / classes;
 		double current = min + classId * classRange - 0.5 * classRange;
@@ -376,7 +414,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 
 	private int getClassForVelocity(double velocity, int classes, IPedestrian pedestrian, SimulationState state) {
 		
-		double min = 0;
+		double min = -this.maximalVelocityInfluence * pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
 		double max = this.maximalVelocityInfluence * pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
 		
 		double classRange = (max - min) / classes;
@@ -440,7 +478,7 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 	
 	public double getVelocityForClassification(int classId, int classes, IPedestrian pedestrian, SimulationState state) {
 		
-		double min = 0;
+		double min = -this.maximalVelocityInfluence * pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
 		double max = this.maximalVelocityInfluence * pedestrian.getMaximalVelocity() * state.getTimeStepDuration();
 		
 		double classRange = (max - min) / classes;
@@ -449,12 +487,21 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 		return current;
 	}
 
-	private static final Comparator<CsvPlaybackPerceptionWriterItem> Comperator = new Comparator<CsvPlaybackPerceptionWriterItem>() {
+	private static final Comparator<CsvPlaybackPerceptionWriterItem> ComperatorAngle = new Comparator<CsvPlaybackPerceptionWriterItem>() {
 		
 		@Override
 		public int compare(CsvPlaybackPerceptionWriterItem left, CsvPlaybackPerceptionWriterItem right) {
 		
 			return Double.compare(left.getAngleToPercept(), right.getAngleToPercept());
+		}
+	};
+	
+	private static final Comparator<CsvPlaybackPerceptionWriterItem> ComperatorDistance = new Comparator<CsvPlaybackPerceptionWriterItem>() {
+		
+		@Override
+		public int compare(CsvPlaybackPerceptionWriterItem left, CsvPlaybackPerceptionWriterItem right) {
+		
+			return Double.compare(left.getDistanceToPercept(), right.getDistanceToPercept());
 		}
 	};
 }

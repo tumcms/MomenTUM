@@ -104,8 +104,8 @@ public class CsvPlaybackOperational extends WalkingModel {
 		double headingXNext = (xNext - x);
 		double headingYNext = (yNext - y);
 		
-		Vector2D heading = extension.updateHeadings(GeometryFactory.createVector(headingXNext, headingYNext).getNormalized(),
-				this.numberForMean);
+		Vector2D heading = GeometryFactory.createVector(headingXNext, headingYNext);//extension.updateHeadings(GeometryFactory.createVector(headingXNext, headingYNext).getNormalized(),
+				//this.numberForMean);
 		
 		WalkingState newWalkingState = new WalkingState(
 				GeometryFactory.createVector(xNext, yNext),
