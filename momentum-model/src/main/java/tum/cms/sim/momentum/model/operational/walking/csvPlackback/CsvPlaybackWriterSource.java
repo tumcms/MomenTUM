@@ -88,26 +88,118 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 			dataText = String.format(format,currentPedestrianExtension.getDistanceToGoal());
 			break;
 		case "lllVelocityMagnitude": 
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(0));		
+			
+			if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() == 25) {
+				
+				dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(24));	
+			}
+			else {
+				
+				if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 14) {
+					
+					dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(14));	
+				}
+				else {
+					
+					if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 4) {
+						
+						dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(4));	
+					}
+					else {
+						
+						dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(0));	
+					}
+				}		
+			}
+				
 			break;
 			
 		case "lllVelocityAngleChange":
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(0));
+	
+			if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() == 25) {
+				
+				dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(24));	
+			}
+			else {
+				
+				if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 14) {
+					
+					dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(14));	
+				}
+				else {
+					
+					if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 4) {
+						
+						dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(4));	
+					}
+					else {
+						
+						dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(0));	
+					}
+				}			
+			}
+	
 			break;	
 		case "lastLastVelocityMagnitude": 
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(1));		
+	
+			if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 14) {
+				
+				dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(14));	
+			}
+			else {
+				
+				if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 4) {
+					
+					dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(4));	
+				}
+				else {
+					
+					dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(0));	
+				}
+			}			
 			break;
 			
 		case "lastLastVelocityAngleChange":
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(1));
+	
+			if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 14) {
+				
+				dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(14));	
+			}
+			else {
+				
+				if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 4) {
+					
+					dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(4));	
+				}
+				else {
+					
+					dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(0));	
+				}
+			}		
 			break;		
 			
 		case "lastVelocityMagnitude": 
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(2));		
+
+			if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 4) {
+				
+				dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(4));	
+			}
+			else {
+				
+				dataText = String.format(format,currentPedestrianExtension.getLastVelocityMagnitudeCategories().get(0));	
+			}	
 			break;
 			
 		case "lastVelocityAngleChange":
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(2));
+
+			if(currentPedestrianExtension.getLastVelocityMagnitudeCategories().size() > 4) {
+				
+				dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(14));	
+			}
+			else {
+				
+				dataText = String.format(format,currentPedestrianExtension.getLastVelocityAngleCategories().get(0));	
+			}	
 			break;
 			
 		case "velocityMagnitude":

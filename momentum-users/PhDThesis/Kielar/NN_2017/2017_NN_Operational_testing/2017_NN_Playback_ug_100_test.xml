@@ -41,7 +41,7 @@
 	
 	<walkingModels>
 		<walking id="2" name="NN" type="NeuralNetwork">
-			<property name="pathToClassificationNetwork" type="String" value="C:\\Users\\ga37sib\\Desktop\\Paper_InProgress\\2018_PED\\both"/>
+			<property name="pathToClassificationNetwork" type="String" value="C:\\Users\\ga37sib.TUBVCMS-PKI-2-W\\Desktop\\Paper_InProgress\\2018_PED\\both"/>
 			<property name="dropoutTensorName" type="String" value="keep_prob"/>
 			<property name="inputTensorName" type="String" value="input_layer"/>
 			<property name="outputTensorName" type="String" value="output_layer"/>

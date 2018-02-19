@@ -53,7 +53,7 @@
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
 			<property name="numberForMean" type="Integer" value="25"/>
-			<property name="numberOfLastCategories" type="Integer" value="3"/>
+			<property name="numberOfLastCategories" type="Integer" value="25"/>
 			<property name="velocityClasses" type="Integer" value="17"/>
 			<property name="angleClasses" type="Integer" value="21"/>
 			<property name="xMinCut" type="Double" value="-3.0"/>
@@ -124,7 +124,7 @@
 			<property name="call" type="Integer" value="1"/> <!-- Print 10 * 0.05 = 0.5 seconds -->
 			<property name="buffer" type="Integer" value="50"/>
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="C:\Users\ga37sib\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playkback_ug_140_$LOOP$_pedestrian.csv"/>
+				<property name="file" type="File" value="C:\Users\ga37sib.TUBVCMS-PKI-2-W\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playkback_ug_140_$LOOP$_pedestrian.csv"/>
 				<property name="index" type="Boolean" value="True"/> 
 			</writerTarget>
 			<writerFormat formatType="Csv">
@@ -144,7 +144,7 @@
 		<outputWriter id="1" name="layoutWriter">
 			<property name="call" type="Integer" value="0"/> <!-- In pre-processing -->
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="C:\Users\ga37sib\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playback_ug_140_layout.xml"/>
+				<property name="file" type="File" value="C:\Users\ga37sib.TUBVCMS-PKI-2-W\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playback_ug_140_layout.xml"/>
 			</writerTarget>
 			<writerFormat formatType="Single"/>
 			<writerSource sourceType="Configuration">
@@ -156,7 +156,7 @@
 			<property name="call" type="Integer" value="1"/> 
 			<property name="buffer" type="Integer" value="1"/>
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="C:\Users\ga37sib\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playback_ug_140_$LOOP$_Plackback.csv"/>
+				<property name="file" type="File" value="C:\Users\ga37sib.TUBVCMS-PKI-2-W\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playback_ug_140_$LOOP$_Plackback.csv"/>
 				<property name="index" type="Boolean" value="False"/> 
 			</writerTarget>
 			<writerFormat formatType="Csv">

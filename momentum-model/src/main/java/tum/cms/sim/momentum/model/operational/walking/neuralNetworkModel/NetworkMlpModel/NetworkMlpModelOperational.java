@@ -139,12 +139,12 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		double predictedAngle = extension.getAngleForClassification(predictedAngleClass,
 				this.angleClasses);		
 		
-		System.out.println(String.valueOf(predictedVelocity) + "_" String.valueOf(predictedAngle));
+		System.out.println("velo: " +String.valueOf(-1.0 *predictedVelocity) + ", angle:" + String.valueOf(predictedAngle));
 		//predictedAngle *= 0.5;
 		
 		// origincal calculation, negative if accelarte, possitve if break
 		// predictedVelocity negativ faster, predictedVelocity possitive slower
-		double changedVelocity = predictedVelocity;//pedestrian.getVelocity().getMagnitude() + predictedVelocity;
+		double changedVelocity = -1.0 * predictedVelocity;//pedestrian.getVelocity().getMagnitude() + (-1.0 * predictedVelocity);
 		
 		Vector2D predictVelocity = pedestrian.getVelocity().scale(changedVelocity)
 				.rotate(predictedAngle);

@@ -322,7 +322,9 @@ public class CsvPlaybackPedestrianExtensions implements IPedestrianExtension {
 			int angleClasses,
 			int numberOfLastCategories) {
 
-		double velocityMagnitudeChangeNoCategory = pedestrian.getVelocity().getMagnitude() - newWalkingState.getWalkingVelocity().getMagnitude();
+		// new - old > 0 faster
+		// new - old < 0 slower
+		double velocityMagnitudeChangeNoCategory =  newWalkingState.getWalkingVelocity().getMagnitude() -pedestrian.getVelocity().getMagnitude();
 		double velocityAngleChangeNoCategory = GeometryAdditionals.angleBetweenPlusMinus180(newWalkingState.getWalkingVelocity(), zeroVector, pedestrian.getVelocity());
 
 		velocityAngleChange = (double)this.getClassForAngle(velocityAngleChangeNoCategory, angleClasses);
