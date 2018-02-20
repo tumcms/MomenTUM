@@ -1,4 +1,4 @@
-package tum.cms.sim.momentum.model.perceptional.shadowPerceptionModel;
+	package tum.cms.sim.momentum.model.perceptional.shadowPerceptionModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -178,8 +178,6 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	public boolean isVisible(IPedestrian pedestrian, Edge edge) {
 		
 		return this.isVisible(pedestrian, edge.getEnd()) || this.isVisible(pedestrian, edge.getStart());
-		//pedestrainToVertex.get(pedestrian.getId()).contains(edge.getStart().getId()) ||
-			   //pedestrainToVertex.get(pedestrian.getId()).contains(edge.getEnd().getId());
 	}
 
 	@Override
@@ -283,6 +281,8 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 				
 				// 2.1 pedestrian perception
 				this.perceivePedestriansAndObstacles(pedestrian.getId(), pedestriansViewPort, perceptionBorder);
+				
+				// Not in use because of "to slow"
 				// 2.2 vertex perception
 				//this.perceiveVertices(pedestrian.getId(), pedestriansViewPort, perceptionBorder);
 				// 2.3 area perception
@@ -309,7 +309,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			
 			double angleInRadiant = GeometryAdditionals.angleBetween0And180(viewPort.sum(heading), viewPort, otherObject);
 			
-			if(this.perceptionRadiant < angleInRadiant) {
+			if(this.perceptionRadiant / 2.0 < angleInRadiant) {
 				
 				return false; // out of sight
 			}

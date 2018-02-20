@@ -35,7 +35,7 @@ package tum.cms.sim.momentum.simulator.factory.behaviorModelFactory;
 import tum.cms.sim.momentum.configuration.model.tactical.RoutingModelConfiguration;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
 import tum.cms.sim.momentum.model.tactical.routing.dijkstraModel.DijkstraTactical;
-import tum.cms.sim.momentum.model.tactical.routing.dijkstraModel.DijkstraPerceivedCostTactical;
+import tum.cms.sim.momentum.model.tactical.routing.dijkstraPerceivedCostModel.DijkstraPerceivedCostTactical;
 import tum.cms.sim.momentum.model.tactical.routing.kneidlModel.KneidTacticalModel;
 import tum.cms.sim.momentum.model.tactical.routing.linearGraphPursue.LinearGraphPursueTactical;
 import tum.cms.sim.momentum.model.tactical.routing.noRoutingModel.NoRoutingTacticalModel;

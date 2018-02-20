@@ -30,14 +30,13 @@
  * SOFTWARE.
  ******************************************************************************/
 
-package tum.cms.sim.momentum.model.tactical.routing.dijkstraModel;
+package tum.cms.sim.momentum.model.tactical.routing.dijkstraPerceivedCostModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
@@ -75,7 +74,6 @@ public class DijkstraPerceivedCostTactical extends RoutingModel {
 
 		this.perceivedCostMean = this.properties.getDoubleProperty("perceivedCostMean");
 		this.perceivedCostDeviation = this.properties.getDoubleProperty("perceivedCostDeviation");
-
 	}
 
 	@Override
@@ -90,12 +88,12 @@ public class DijkstraPerceivedCostTactical extends RoutingModel {
 
 	@Override
 	public void onPedestrianRemoval(IRichPedestrian pedestrian) {
-
+		// nothing to do
 	}
 
 	@Override
 	public void callBeforeBehavior(SimulationState simulationState, Collection<IRichPedestrian> pedestrians) {
-
+		// nothing to do
 	}
 
 	@Override
@@ -114,8 +112,7 @@ public class DijkstraPerceivedCostTactical extends RoutingModel {
 		ShortestPathAlgorithm router = getRoutingAlgorithm(simulationState);
 		Path route = router.calculateShortestPath(this.visibilityGraph, start, end);
 
-		RoutingState routingState = this.updateRouteState(this.perception, pedestrian, route);
-		pedestrian.setRoutingState(routingState);
+		pedestrian.setRoutingState(this.updateRouteState(pedestrian, route));
 	}
 
 	@Override
@@ -155,7 +152,7 @@ public class DijkstraPerceivedCostTactical extends RoutingModel {
 
 	private void initializeEdgeWeights(Graph graph) {
 
-		Edge edge = null;
+		//Edge edge = null;
 		Vector2D currentPosition = null;
 		Vector2D successorPosition = null;
 		Segment2D currentLineSegment = null;
@@ -165,15 +162,15 @@ public class DijkstraPerceivedCostTactical extends RoutingModel {
 
 		for(Edge current : graph.getAllEdges()) {
 
-				currentPosition = current.getStart().getGeometry().getCenter();
-				successorPosition = current.getEnd().getGeometry().getCenter();
-				currentLineSegment = GeometryFactory.createSegment(currentPosition, successorPosition);
+			currentPosition = current.getStart().getGeometry().getCenter();
+			successorPosition = current.getEnd().getGeometry().getCenter();
+			currentLineSegment = GeometryFactory.createSegment(currentPosition, successorPosition);
 
-				euclideanDistance = current.euklideanLenght();
-				percentageForPedestrian = calculatePercentageForPedestrian(currentLineSegment);
+			euclideanDistance = current.euklideanLenght();
+			percentageForPedestrian = calculatePercentageForPedestrian(currentLineSegment);
 
-				current.setWeight(shareForPedestrian, percentageForPedestrian);
-				current.setWeight(DijkstraPerceivedCostTactical.euclideanDistance, euclideanDistance);
+			current.setWeight(shareForPedestrian, percentageForPedestrian);
+			current.setWeight(DijkstraPerceivedCostTactical.euclideanDistance, euclideanDistance);
 		}
 	}
 
@@ -188,8 +185,11 @@ public class DijkstraPerceivedCostTactical extends RoutingModel {
 		for(Segment2D curSegment : lineSegmentsSplit) {
 
 			if(this.pointContainedByAreaForPedestrians(curSegment.getCenter())) {
+				
 				distanceForPedestrian += curSegment.getLenghtDistance();
-			} else {
+			} 
+			else {
+				
 				distanceNotForPedestrian += curSegment.getLenghtDistance();
 			}
 		}
@@ -200,8 +200,11 @@ public class DijkstraPerceivedCostTactical extends RoutingModel {
 	private boolean pointContainedByAreaForPedestrians(Vector2D point) {
 
 		for(TaggedArea curArea : this.scenarioManager.getTaggedAreas()) {
-			if(curArea.getGeometry().contains(point))
-				return true;
+			
+			if(curArea.getGeometry().contains(point)) {
+				
+				return true;		
+			}
 		}
 
 		return false;
@@ -218,6 +221,7 @@ public class DijkstraPerceivedCostTactical extends RoutingModel {
 			splitSegmentsTemp.clear();
 
 			for(Segment2D curSegment : splitSegments) {
+				
 				splitSegmentsTemp.addAll(curSegment.getSegmentSplitByPolygon(curArea.getGeometry()));
 			}
 

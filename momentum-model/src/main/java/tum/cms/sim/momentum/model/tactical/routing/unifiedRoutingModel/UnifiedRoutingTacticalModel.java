@@ -40,7 +40,6 @@ import java.util.Set;
 
 import org.apache.commons.math3.util.FastMath;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
@@ -194,8 +193,6 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
  		Vertex end = this.scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());	
 		
 		Path route = null;
-		//Path lastRoute = null;
-		
 		Vertex lastNode = null;
 		Set<Vertex> visited = null;
 		
@@ -204,13 +201,9 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 			lastNode = pedestrian.getRoutingState().getLastVisit();
 			visited = pedestrian.getRoutingState().getVisited();
 		}
-		
-		//Vertex firstNode = null;
-		//Vertex nextToCurrentVisit = null;
-		
+
 		if(!routingAlgorithm.isInDecisionWaiting(simulationState, this.scenarioManager.getGraph(), start)) {
-			
-			
+
 			route = this.navigate(this.perception,
 					this.scenarioManager.getGraph(),
 					start, 
@@ -219,66 +212,8 @@ public class UnifiedRoutingTacticalModel extends RoutingModel {
 					visited,
 					routingAlgorithm);	
 			
-			
-			RoutingState routingState = this.updateRouteState(this.perception, pedestrian, route);
-			//routingState.setNextToCurrentVisit(nextToCurrentVisit);
-			
-			pedestrian.setRoutingState(routingState);	
+			pedestrian.setRoutingState(this.updateRouteState(pedestrian, route));	
 		}
-		
-//		while(true) {
-//			
-//			if(!routingAlgorithm.isInDecisionWaiting(simulationState, this.scenarioManager.getGraph(), start)) {
-//				
-//				
-//				route = this.navigate(this.perception,
-//						this.scenarioManager.getGraph(),
-//						start, 
-//						end,
-//						lastNode,
-//						visited,
-//						routingAlgorithm);	
-//				
-//				if(firstNode == null) {
-//					
-//					firstNode = route.getFirstVertex();
-//				}
-//			}
-//			else {
-//			
-//				route = new Path(start, start);
-//				break;
-//			}
-//
-//			if(route == null || depth == 0 ||
-//			   !perception.isVisible(pedestrian, route.getCurrentVertex()) ||
-//			   route.getCurrentVertex().getId().equals(end.getId())) {
-//				
-//				nextToCurrentVisit = route.getCurrentVertex();
-//				
-//				if(lastRoute != null) {
-//					
-//					route = lastRoute;
-//				}
-//			
-//				break;
-//			}
-//			
-//			lastRoute = route;
-//			start = route.getCurrentVertex();
-//			lastNode = route.getPreviousVertex();
-//			
-//			if(start.getId().intValue() == end.getId().intValue()) {
-//				
-//				route = lastRoute;
-//				break;
-//			}
-//			
-//			depth--;
-//		}
-		
-//		route.setFirstVertex(firstNode);
-//		route.getVertexPath().set(0, firstNode);
 	}
 	
 	@Override

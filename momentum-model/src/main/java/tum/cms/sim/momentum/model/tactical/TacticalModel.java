@@ -33,7 +33,6 @@
 package tum.cms.sim.momentum.model.tactical;
 
 import java.util.Collection;
-import java.util.Set;
 
 import tum.cms.sim.momentum.configuration.ModelTypConstants.ModelType;
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
@@ -51,7 +50,6 @@ import tum.cms.sim.momentum.model.tactical.queuing.QueuingModel;
 import tum.cms.sim.momentum.model.tactical.routing.RoutingModel;
 import tum.cms.sim.momentum.model.tactical.searching.SearchingModel;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
-import tum.cms.sim.momentum.utility.graph.Vertex;
 
 public class TacticalModel extends PedestrianBehaviorModel {
 	
@@ -230,7 +228,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			}
 			
 			if(!tacticalControlRouting && !this.getBehavior(pedestrian).equals(Behavior.Routing)) {
-						
+
 				pedestrian.setRoutingState(null);
 			}
 		});
@@ -371,9 +369,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			
 			this.searchingModel.callAfterBehavior(simulationState, pedestrians);
 		}
-		
-		//this.pedestrianNearNavigationNode = new HashMap<>();
-		
+
 		pedestrians.parallelStream().forEach(pedestrian -> {			
 	
 			boolean isSmallScaleBehavior = false;
@@ -396,8 +392,10 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			
 			Motoric motoricTask = null;
 
-			if(isSmallScaleBehavior && (pedestrian.getStandingState() != null
-					|| this.isGoalPositionReached(nextWalkingTarget, pedestrian.getPosition()))) {
+			boolean isReadyToStand = isSmallScaleBehavior && 
+					(pedestrian.getStandingState() != null || this.isGoalPositionReached(nextWalkingTarget, pedestrian.getPosition()));
+			
+			if(isReadyToStand) {
 
 				motoricTask = Motoric.Standing;		
 			}
@@ -431,81 +429,19 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	}
 	
 	private void callTacticRouteBehavior(IRichPedestrian pedestrian, SimulationState simulationState) {
-			
-		if(tacticalControl) {
-			
-			// correct goal / point of interest is visible, just go there!
-			boolean normalRouting  = !this.routingModel.shortCutRoute(this.perception, pedestrian);
+				
+		// identify if the agent is close to its next navigation vertex
+		boolean isCloseToVertex = pedestrian.getRoutingState() == null || 
+			pedestrian.getRoutingState().getNextVisit() == null ||
+			pedestrian.getPosition().distance(pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter()) < navigationDistanceRadius;
 		
-			// re-routing is a process that only needs to be activated if
-			// the next navigation is visible 
-			// the current navigation node is not visible!
-			if(normalRouting && this.routingModel.reRoutingNecessary(pedestrian, this.tacticalControl, this.deepNodeSelection > 0)) {
-				
-				this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
-				
-				// TODO create an abstract method in RoutingModel put this into
-				if(this.deepNodeSelection > 0) {
-					
-					int currentDepth = this.deepNodeSelection;
-					
-					Vertex nextTolast = pedestrian.getRoutingState().getLastVisit();
-					Vertex last = pedestrian.getRoutingState().getLastVisit();
-					Vertex start = last;
-					Vertex next = pedestrian.getRoutingState().getNextVisit();
-					Vertex nextToNext = pedestrian.getRoutingState().getNextToCurrentVisit();
-					
-					Set<Vertex> visited = pedestrian.getRoutingState().getVisited();
-					Vertex end = null;
-					
-					if(pedestrian.getNextNavigationTarget() != null) {
-						end = scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
-					}
-					
-					while(currentDepth > 0) {
-						
-						this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
-					
-						RoutingState newRoutingState = pedestrian.getRoutingState();
-						
-						// TODO check if circles are solved next / last
-						if(!perception.isVisible(pedestrian, newRoutingState.getNextVisit()) ||
-						   (end != null && newRoutingState.getNextVisit().equals(end)) ||
-						   (start != null && end != null && start.equals(end))) {
-							
-							nextToNext = newRoutingState.getNextVisit();
-							break;
-						}
-
-						currentDepth--;
-						
-						if(currentDepth == 0) { 
-							
-							nextToNext = newRoutingState.getNextVisit();
-							break;
-						}
-						else {
-							
-							nextTolast = last;
-						}
-						
-						visited.add(next);
-						
-						last = newRoutingState.getLastVisit();
-						next = newRoutingState.getNextVisit();
-					}
-					
-					RoutingState finalRoutingState = new RoutingState(visited, nextTolast, last, next);
-					finalRoutingState.setNextToCurrentVisit(nextToNext);
-					pedestrian.setRoutingState(finalRoutingState);
-				}
-			}			
-		}
-		else if(pedestrian.getRoutingState() == null || 
-			   pedestrian.getRoutingState().getNextVisit() == null ||
-			   pedestrian.getPosition().distance(pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter()) < navigationDistanceRadius) {
+		if(isCloseToVertex && !tacticalControl) {
 			
-			this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+			this.routingModel.callPedestrianBehavior(pedestrian, simulationState);	
+		}
+		else if(tacticalControl) {
+			
+			this.callTacticalControlRouting(pedestrian, simulationState, isCloseToVertex);
 		}
 		
 		// Is the route memory activated, if not delete it
@@ -513,6 +449,38 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			
 			pedestrian.getRoutingState().getVisited().clear();
 		}
+	}
+	
+	private void callTacticalControlRouting(IRichPedestrian pedestrian, SimulationState simulationState, boolean isCloseToVertex) {
+		
+		// correct goal / point of interest is visible, just go there!
+		boolean normalRouting  = !this.routingModel.shortCutRoute(this.perception, pedestrian);
+	
+		boolean routingStateIsEmpty = this.routingModel.isRouteStateEmpty(pedestrian);
+		boolean notVisible = false;
+		boolean nextNextVisible = false;
+		
+		if(!routingStateIsEmpty) {
+			
+			notVisible = this.routingModel.isNextRouteNotVisible(pedestrian);
+			nextNextVisible = this.routingModel.isNextNextRouteVisible(pedestrian, this.deepNodeSelection > 0);
+		}
+				
+		if(normalRouting && (isCloseToVertex || routingStateIsEmpty || notVisible || nextNextVisible)) {
+			
+			if(notVisible && !routingStateIsEmpty) {
+			
+				pedestrian.getRoutingState().setNextVisit(null);
+			}
+			
+			this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
+
+			if(this.deepNodeSelection > 0 && (nextNextVisible || isCloseToVertex)) {
+			
+				RoutingState deepRoutingResult = this.routingModel.deepRouting(pedestrian, simulationState, this.deepNodeSelection);
+				pedestrian.setRoutingState(deepRoutingResult);
+			}
+		}			
 	}
 
 	private void callTacticSearchBehavior(IRichPedestrian pedestrian, SimulationState simulationState) {
@@ -528,164 +496,5 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	private void callTactiQueuingBehavior(IRichPedestrian pedestrian, SimulationState simulationState) {
 		
 		this.queuingModel.callPedestrianBehavior(pedestrian, simulationState);
-	}
-	
-
-//	pedestrians.stream().forEach(pedestrian -> {	
-//
-//		// If the navigation node reached calculation is dynamic
-//		// count the number of pedestrian for each vertex here
-//		if(dynamicNodeReached) {
-//			
-//			if(pedestrian.getRoutingState() != null &&
-//			   pedestrian.getRoutingState().getNextVisit() != null &&
-//			   pedestrian.getPosition().distance(pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter()) < dynamicNodeDistance) {
-//				
-//				if(!this.pedestrianNearNavigationNode.containsKey(pedestrian.getRoutingState().getNextVisit())) {
-//				
-//					this.pedestrianNearNavigationNode.put(pedestrian.getRoutingState().getNextVisit(), 1);
-//				}
-//				else {
-//					
-//					int currentNumber = this.pedestrianNearNavigationNode.get(pedestrian.getRoutingState().getNextVisit());
-//					this.pedestrianNearNavigationNode.put(pedestrian.getRoutingState().getNextVisit(), currentNumber + 1);
-//				}
-//			}
-//		}
-//	});
-//	this.getRoutingModel().set
-//	if(dynamicNodeReached) { // Update Walking position based on the crowdness at the Vertex
-//		
-//		if(pedestrian.getRoutingState() != null &&
-//		   pedestrian.getRoutingState().getNextVisit() != null &&
-//		   pedestrian.getRoutingState().getLastVisit() != null) {
-//		   //pedestrian.getPosition().distance(pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter()) < dynamicNodeDistance) {
-//
-//			// compute next vertex geometric structure
-//			pedestrian.getRoutingState().setNextVertexGeoemetry(
-//				this.createVisitingTriangle(
-//					pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter(),
-//					pedestrian.getPosition(),
-//					pedestrian.getRoutingState().getLastVisit().getGeometry().getCenter(),
-//					this.computeVertexExpansion(pedestrian)));
-//		}
-//	}
-	
-//	if(this.isNavigationPointReached(pedestrian)) {
-//	
-//	// Is the next walking target after the current walking target visible?
-//	if(pedestrian.getRoutingState().getNextToNextVisit() == null ||
-//	   perception.isVisible(pedestrian.getPosition(), pedestrian.getRoutingState().getNextToNextVisit())) {
-//		
-//		// If the next walking target (after the current) is visible after point reached, reroute
-//		return true; 
-//	}
-//	else {
-//		
-//		// the next walking target is not visible after point reached? wait with reroute.
-//		// move closer
-//		return false;
-//	}
-//}
-//}
-//else if(this.isNavigationPointReached(pedestrian)) {
-//
-//return true;
-//}
-
-//	private double computeVertexExpansion(IRichPedestrian pedestrian) {
-//		
-//		Integer numberOfVisitorsToNode = this.pedestrianNearNavigationNode.get(pedestrian.getRoutingState().getNextVisit());
-//		
-//			if(numberOfVisitorsToNode != null && numberOfVisitorsToNode > 1) {
-//			
-//			double navigationSizePolygon = numberOfVisitorsToNode.intValue() * navigationDistanceRadius;
-//			 
-//			Polygon2D visitTriangle = this.createVisitingTriangle(
-//					 pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter(),
-//					 pedestrian.getPosition(),
-//					 pedestrian.getRoutingState().getLastVisit().getGeometry().getCenter(),
-//					 navigationSizePolygon);
-//			
-//			nextWalkingTarget = visitTriangle.getPointClosestToVector(pedestrian.getPosition());
-//		}
-//	}
-	
-//	private Polygon2D createVisitingTriangle(Vector2D nextVisitPosition,
-//			Vector2D pedestrianPosition,
-//			Vector2D lastVisitPosition,
-//			Double navigationSizePolygon) {
-//		
-//		double rotation = 90.0;
-//
-//		Vector2D fromPreviousToCurrent = nextVisitPosition.subtract(lastVisitPosition); 
-//
-//		ArrayList<Vector2D> triangleCorners = new ArrayList<Vector2D>();
-//	
-//		triangleCorners.add(nextVisitPosition.sum(
-//				fromPreviousToCurrent.scale(navigationSizePolygon)
-//				.rotate(GeometryAdditionals.translateToRadiant(-1.0 * rotation))));
-//		
-//		triangleCorners.add(nextVisitPosition.sum(fromPreviousToCurrent.scale(navigationSizePolygon)));
-//	
-//		triangleCorners.add(nextVisitPosition.sum(
-//				fromPreviousToCurrent.scale(navigationSizePolygon)
-//					.rotate(GeometryAdditionals.translateToRadiant(rotation))));
-//		
-//		return GeometryFactory.createPolygon(triangleCorners);
-//	}
-	
-//	/**
-//	 * Calculates if a pedestrian did reached the navigation point for routing.
-//	 * If the pedestrian is at the navigation point, the vertex will be set as
-//	 * visited.
-//	 * If the tactical parameter dynamicNodeReached true, the computation will
-//	 * change and increase the visited area with the number of pedestrians approaching
-//	 * the node.
-//	 */
-//	private boolean isNavigationPointReached(ITacticalPedestrian pedestrian) {
-//		
-//		boolean hasReached = false;
-//
-//		double distance = pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter().distance(
-//				pedestrian.getPosition());
-//		boolean inside = pedestrian.getRoutingState().getNextVisit().getGeometry().contains(pedestrian.getPosition());
-//		
-//		double navigationSizePolygon = 3 * navigationDistanceRadius;
-//		
-////		if(dynamicNodeReached && pedestrian.getRoutingState().getNextVisit() != null) {
-////			
-////			Integer numberOfVisitorsToNode = this.pedestrianNearNavigationNode.get(pedestrian.getRoutingState().getNextVisit());
-////			
-////			if(numberOfVisitorsToNode != null) {
-////				
-////				 navigationSizePolygon = numberOfVisitorsToNode.intValue() * navigationDistanceRadius;
-////			}
-////		}
-//		
-//		if(inside || distance < pedestrian.getBodyRadius() || (tacticalControl && distance < navigationSizePolygon)) {
-//					
-//			hasReached = true;	
-//		}
-//		else if(tacticalControl && pedestrian.getRoutingState().getLastVisit() != null) {
-//
-//			Polygon2D visitTriangle = this.createVisitingTriangle(
-//					 pedestrian.getRoutingState().getNextVisit().getGeometry().getCenter(),
-//					 pedestrian.getPosition(),
-//					 pedestrian.getRoutingState().getLastVisit().getGeometry().getCenter(),
-//					 navigationSizePolygon);
-//			
-//			if(visitTriangle.contains(pedestrian.getPosition())) {
-//
-//				hasReached = true;
-//			}
-//		}
-//		else if(distance < navigationDistanceRadius) {
-//				
-//			hasReached = true;
-//		}
-//
-//		return hasReached;
-//	}
-	
+	}	
 }

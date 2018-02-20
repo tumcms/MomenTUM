@@ -55,7 +55,7 @@ public class PerceptualModelConfiguration extends PropertyContainerNode {
 		
 		HashMap<String, PerceptualModelType> map = new HashMap<>();
 		map.put(PerceptualModelType.Shadow.toString(), PerceptualModelType.Shadow);
-		map.put("BlockingGeometries", PerceptualModelType.Bresenham); // backwards compatibility
+		map.put("BlockingGeometries", PerceptualModelType.Bresenham); // backwards compatibility, is Bresenham
 		map.put(PerceptualModelType.Bresenham.toString(), PerceptualModelType.Bresenham);
 		map.put(PerceptualModelType.SightCone.toString(), PerceptualModelType.SightCone);
 

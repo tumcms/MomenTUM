@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration;
+import tum.cms.sim.momentum.configuration.model.lattice.LatticeModelConfiguration.NeighborhoodType;
 import tum.cms.sim.momentum.configuration.scenario.ScenarioConfiguration;
 import tum.cms.sim.momentum.data.layout.Scenario;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
@@ -88,11 +89,18 @@ public class LatticeModel extends Callable implements IHasProperties {
 	@Override
 	public void callPreProcessing(SimulationState simulationState) {
 		
+		NeighborhoodType neighborhoodType = NeighborhoodType.Touching;
+		
+		if(latticeConfiguration.getNeigborhoodType() != null) {
+		
+			neighborhoodType = latticeConfiguration.getNeigborhoodType();
+		}
+		
 		this.lattice = LatticeTheoryFactory.createLattice(				
 				latticeConfiguration.getName(), 
 				latticeConfiguration.getBehaviorType(),
 				latticeConfiguration.getLatticeType(), 
-				latticeConfiguration.getNeigborhoodType(), 
+				neighborhoodType, 
 				latticeConfiguration.getCellEdgeSize(),
 				scenarioManager.getScenarios().getMaxX(), 
 				scenarioManager.getScenarios().getMinX(), 

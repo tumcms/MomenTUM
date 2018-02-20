@@ -32,7 +32,7 @@
 
 package tum.cms.sim.momentum.data.agent.pedestrian.state.tactical;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import tum.cms.sim.momentum.utility.graph.Vertex;
@@ -62,13 +62,18 @@ public class RoutingState {
 		this.nextToCurrentVisit = nextToCurrent;
 	}
 
+	public void setNextVisit(Vertex nextVisit) {
+		
+		this.nextVisit = nextVisit;
+	}
+	
 	private Vertex nextToLastVisit = null;
 	
 	public Vertex getNextToLastVisit() {
 		return nextToLastVisit;
 	}
 
-	private Set<Vertex> visited = new HashSet<Vertex>();
+	private Set<Vertex> visited = new LinkedHashSet<Vertex>();
 
 	public Set<Vertex> getVisited() {
 		return visited;

@@ -48,7 +48,6 @@ import tum.cms.sim.momentum.data.layout.obstacle.Obstacle;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForce;
-import tum.cms.sim.momentum.model.operational.walking.socialForceModel.SocialForcePedestrianExtension;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Rectangle2D;
 import tum.cms.sim.momentum.utility.geometry.Segment2D;
@@ -67,7 +66,7 @@ public class ZengOperational extends WalkingModel {
 		this.carManager = carManager;
 	}
 
-	private boolean verboseMode = true;
+	//private boolean verboseMode = true;
 
 
 	private boolean fallbackPedestrianInteractionHelbingKoester = false;
