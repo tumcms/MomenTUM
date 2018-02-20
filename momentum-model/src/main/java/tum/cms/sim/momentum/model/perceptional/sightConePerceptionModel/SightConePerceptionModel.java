@@ -43,7 +43,11 @@ import tum.cms.sim.momentum.utility.graph.Vertex;
 import java.util.List;
 import java.util.stream.Collectors;
 
+<<<<<<< HEAD
 import org.apache.commons.lang.NotImplementedException;
+=======
+// TODO: Implement this model! This should be a simple (fixed angle step) line sweep in a cone.
+>>>>>>> master
 
 public class SightConePerceptionModel extends PerceptionalModel {
 
@@ -57,11 +61,11 @@ public class SightConePerceptionModel extends PerceptionalModel {
         this.angle = angle;
     }
 
-    public double getAngleInRadians() {
+    private double getAngleInRadians() {
         return Math.toRadians(angle);
     }
 
-    private double angle;   // angular aperture, [deg]
+    private double angle;  // angular aperture, [deg]
 
 
 	@Override

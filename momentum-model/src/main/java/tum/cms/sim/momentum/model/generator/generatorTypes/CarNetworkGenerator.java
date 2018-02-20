@@ -42,8 +42,6 @@ import tum.cms.sim.momentum.data.agent.car.CarManager;
 import tum.cms.sim.momentum.data.agent.car.state.other.StaticState;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.infrastructure.network.ChannelManager;
-import tum.cms.sim.momentum.infrastructure.network.NetworkStrings;
-import tum.cms.sim.momentum.infrastructure.network.Parser;
 import tum.cms.sim.momentum.model.generator.Generator;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;

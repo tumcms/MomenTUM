@@ -27,19 +27,20 @@
 	<!-- The tacticalControl is mostly set to True and activates "smart" behavior. -->
 	<!-- This smart behavior includes to start routing if walking goals of e.g. queuing models are not visible. -->
 	<!-- Hence, the tacticalControl helps to reduce nonsense behavior like being "stuck". -->
-	<!-- However, do set this to false in case pedestrian should strictly follow a routing path, -->
-	<!-- smart behavior leads to taking short-cuts and perception based re-routing. -->
+	<!-- However, do set this to false in case pedestrian should strictly follow a routing path. -->
+	<!-- Smart behavior leads to taking short-cuts and perception based re-routing. -->
 	<!-- Having the tactical control set to true is mandatory for using deep node selection. -->
 	<property name="tacticalControl" type="Boolean" value="True"/>
 	
 	<!-- The deep node selection property helps to realize predictive routing behavior. -->
 	<!-- It is used in case that tactical control is set to true. -->
-	<!-- The concept here is that the routing model will be called X times (depth value). -->
-	<!-- The next navigation node is therefoe selected based on the current X routing result. -->
-	<!-- Finaly, the system creates a new routing command based on all routing computations. -->
+	<!-- The concept here is that the routing model will be called X times. -->
+	<!-- The next navigation node is therefore selected based on the current X routing result. -->
+	<!-- Thus, the deep navigation depth X will stop if the next node would not be visible. -->
+	<!-- Finally, the system creates a new routing command based on all routing computations. -->
 	<!-- This helps agents to find a next navigation need far away "deep" and the routing is more smooth. -->
 	<!-- The behavior may not be desired in any situations, e.g. street crossings. -->
-	<property name="deepNodeSelection" type="Integer" value="3"/>
+	<property name="deepNodeSelection" type="Boolean" value="True"/>
 	
 	<!-- In some simulations one does not like to include a strategical model. -->
 	<!-- For those simulations the agent will get a Do Nothing Command from the non strategical model. -->
@@ -56,6 +57,7 @@
 	<!-- The routeMemory indicates if a pedestrian should remember and avoid already visited route nodes. -->
 	<!-- Typically, in linear scenarios that address wayfinding, this is true. -->
 	<!-- In system in which the pedestrians visit some location more than once, this is mostly false. -->
+	<!-- However, if the agent executes a staying or queuing tactical command, the memory will be cleared. -->
 	<property name="routeMemory" type="Boolean" value="false"/>
 	
 

@@ -34,13 +34,9 @@ package tum.cms.sim.momentum.model.generator.generatorTypes;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
 import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration;
 import tum.cms.sim.momentum.data.agent.car.CarManager;
 import tum.cms.sim.momentum.data.agent.car.state.other.StaticState;
-import tum.cms.sim.momentum.data.agent.car.types.IRichCar;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.infrastructure.logging.LoggingManager;
 import tum.cms.sim.momentum.model.generator.Generator;
@@ -50,8 +46,6 @@ import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
-
-import static org.apache.camel.component.xslt.XsltOutput.file;
 
 public class CarCsvGenerator extends Generator {
 		
@@ -116,7 +110,7 @@ public class CarCsvGenerator extends Generator {
 		int timeStepFloor = (int) Math.floor(targetReaderTimeStep);
 		double timeFloor = timeStepFloor * this.timeStepDuration;
 		int timeStepCeil = (int) Math.ceil(targetReaderTimeStep);
-		double timeCeil = timeStepCeil * this.timeStepDuration;
+		// double timeCeil = timeStepCeil * this.timeStepDuration;
 
 		double weightCeil = (currentSimulationTime - timeFloor) / this.timeStepDuration;
 		double weightFloor = 1 - weightCeil;

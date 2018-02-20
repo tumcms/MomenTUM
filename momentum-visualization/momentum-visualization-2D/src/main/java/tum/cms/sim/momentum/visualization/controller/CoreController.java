@@ -40,9 +40,7 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -50,7 +48,6 @@ import javafx.scene.layout.VBox;
 import tum.cms.sim.momentum.utility.csvData.CsvType;
 import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputReader;
 import tum.cms.sim.momentum.visualization.model.CoreModel;
-import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
 import tum.cms.sim.momentum.visualization.model.PlaybackModel;
 
 public class CoreController implements Initializable {

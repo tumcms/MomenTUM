@@ -35,7 +35,6 @@ package tum.cms.sim.momentum.simulator.factory.behaviorModelFactory;
 import tum.cms.sim.momentum.configuration.model.tactical.SearchingModelConfiguration;
 import tum.cms.sim.momentum.model.tactical.searching.SearchingModel;
 import tum.cms.sim.momentum.model.tactical.searching.noSearchingModel.NoSearchingModel;
-import tum.cms.sim.momentum.model.tactical.searching.rotatedSeachingModel.RotatedSearching;
 import tum.cms.sim.momentum.simulator.component.ComponentManager;
 import tum.cms.sim.momentum.simulator.factory.ModelFactory;
 import tum.cms.sim.momentum.utility.generic.PropertyBackPackFactory;
@@ -49,12 +48,7 @@ public class SearchingModelFactory extends ModelFactory<SearchingModelConfigurat
 		SearchingModel searchingModel = null;
 		
 		switch(configuration.getType()) {
-		
-		case RotatedSearch:
-			
-			searchingModel = new RotatedSearching();
-			break;
-			
+
 		case NoSearching:
 			
 			searchingModel = new NoSearchingModel();

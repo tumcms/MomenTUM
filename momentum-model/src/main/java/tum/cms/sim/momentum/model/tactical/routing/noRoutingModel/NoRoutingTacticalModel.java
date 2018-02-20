@@ -33,6 +33,7 @@
 package tum.cms.sim.momentum.model.tactical.routing.noRoutingModel;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
@@ -80,7 +81,7 @@ public class NoRoutingTacticalModel extends RoutingModel {
 			Vertex originVertex = GraphTheoryFactory.createVertex(originArea.getGeometry());
 			Vertex targetVertex = GraphTheoryFactory.createVertex(pedestrian.getNextNavigationTarget().getGeometry());
 
-			RoutingState routingState = new RoutingState(null, null, originVertex, targetVertex);	
+			RoutingState routingState = new RoutingState(new LinkedHashSet<Vertex>(), null, originVertex, targetVertex);	
 			pedestrian.setRoutingState(routingState);
 		}
 	}

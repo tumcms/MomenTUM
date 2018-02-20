@@ -1,4 +1,4 @@
-package tum.cms.sim.momentum.model.tactical.routing.dijkstraModel;
+package tum.cms.sim.momentum.model.tactical.routing.dijkstraPerceivedCostModel;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 

@@ -47,7 +47,7 @@ public class TimeManager {
 	private double meanTimeStepComputationDuration = -1.0; 
 	protected TimeState timeState = null;
 	
-	private HashMap<IUnique, Long> timeMeasurments = new HashMap<>();
+	private HashMap<String, Long> timeMeasurments = new HashMap<>();
 	
 	private double timeSimulationMeasurmentStart = 0.0;
 	private double timeMeasurmentStart = 0.0;
@@ -155,9 +155,9 @@ public class TimeManager {
 	
 	public void startExecutionTimeModel(IUnique unique) {
 		
-		if(!timeMeasurments.containsKey(unique)) {
+		if(!timeMeasurments.containsKey(unique.getName())) {
 			
-			timeMeasurments.put(unique, System.currentTimeMillis());
+			timeMeasurments.put(unique.getName(), System.currentTimeMillis());
 		}
 	}
 	
@@ -200,12 +200,12 @@ public class TimeManager {
 	
 	public void updateExecutionTimeModel(IUnique unique) {
 		
-		if(!timeMeasurments.containsKey(unique)) {
+		if(!timeMeasurments.containsKey(unique.getName())) {
 			
-			timeMeasurments.put(unique, 0l);
+			timeMeasurments.put(unique.getName(), 0l);
 		}
 		
-		timeMeasurments.put(unique, System.currentTimeMillis() - timeMeasurments.get(unique));
+		timeMeasurments.put(unique.getName(), System.currentTimeMillis() - timeMeasurments.get(unique.getName()));
 	}
 	
 	public void updatePostProcessingTimeMeasurment(double postProcessingStopTimeMeasurment) {

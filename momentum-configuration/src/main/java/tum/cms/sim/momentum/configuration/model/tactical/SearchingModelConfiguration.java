@@ -45,7 +45,6 @@ public class SearchingModelConfiguration extends PropertyContainerNode {
 
 	public enum SearchingModelType {
 		
-		RotatedSearch,
 		NoSearching
 	}
 	
@@ -53,7 +52,6 @@ public class SearchingModelConfiguration extends PropertyContainerNode {
 	public static EnumToStringConverter getTypeConverter() {
 		
 		HashMap<String, SearchingModelType> map = new HashMap<>();
-		map.put(SearchingModelType.RotatedSearch.toString(), SearchingModelType.RotatedSearch);
 		map.put(SearchingModelType.NoSearching.toString(), SearchingModelType.NoSearching);
 		
 		return new EnumToStringConverter<>(SearchingModelType.class, map);

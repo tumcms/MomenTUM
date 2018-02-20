@@ -46,8 +46,6 @@ import com.thoughtworks.xstream.converters.enums.EnumToStringConverter;
 import tum.cms.sim.momentum.configuration.generic.NameIdNodeConfiguration;
 import tum.cms.sim.momentum.configuration.generic.NameNodeConfiguration;
 
-import javax.swing.text.html.HTML;
-
 @XStreamAlias("taggedArea")
 public class TaggedAreaConfiguration extends NameIdNodeConfiguration {
 

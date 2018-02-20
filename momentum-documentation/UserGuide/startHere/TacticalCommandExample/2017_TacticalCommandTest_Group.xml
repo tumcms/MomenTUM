@@ -9,7 +9,7 @@
 	<threadingState threads="4"/>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.23"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" neighborhoodType="Edge" cellEdgeSize="0.23"/>
 		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="1.0"/>
 	</lattices>
 	<graphs>
@@ -42,8 +42,9 @@
 		</graphModel>
 	</graphs>
 	<perceptualModels>
-		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
-			<property name="accuracy" type="Double" value="0.23"/>
+		<perceptual id="0" name="Bresenham" type="Bresenham">
+			<property name="latticeId" type="Integer" value="0"/>
+			<property name="perceptionDistance" type="Double" value="400.0"/>
 		</perceptual>
 	</perceptualModels>
 	<operationalModels>
@@ -61,8 +62,6 @@
 			<property name="mass_behaviour_B" type="Double" value="0.07"/> <!--0.05 -->
 			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
 			<property name="koester_Epsilon" type="Double" value="10e-6"/>
-			<property name="threads" type="Integer" value="4" />
-			<property name="mac_threshold" type="Double" value="0.9" />
 		</walking>
 	</walkingModels>
 	<tacticalModels>
@@ -72,7 +71,10 @@
 			<routingReference modelId="7"/>
 			<searchingReference modelId="8"/>
 			<property name="goalDistanceRadius" type="Double" value="0.23" />
+			<property name="navigationDistanceRadius" type="Double" value="0.66" />
 			<property name="routeMemory" type="Boolean" value="False" />
+			<property name="tacticalControl" type="Boolean" value="True" />
+			<property name="deepNodeSelection" type="Boolean" value="True"/> <!-- only if tacticalControl "True" -->
 		</tactical>
 	</tacticalModels>
 	<stayingModels>
@@ -225,7 +227,7 @@
 			<property name="call" type="Integer" value="30"/>
 			<property name="buffer" type="Integer" value="100"/>
 			<writerTarget targetType="File">
-				<property name="file" type="File" value="2017_TacticalCommandTest_Pedestrian_slow.csv"/>
+				<property name="file" type="File" value="2017_TacticalCommandTest_Pedestrian_group.csv"/>
 				<property name="index" type="Boolean" value="True"/> 
 			</writerTarget>
 			<writerFormat formatType="Csv">

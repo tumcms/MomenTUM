@@ -69,7 +69,7 @@ import tum.cms.sim.momentum.utility.lattice.Lattice.Occupation;
  */
 public class BresenhamPerceptionModel extends PerceptionalModel {
 
-	private static String latticeIdName = "latticeIdName";
+	private static String latticeIdName = "latticeId";
 	private static String perceptionDistanceName = "perceptionDistance";
 	
 	private int perceptionCells = 250;

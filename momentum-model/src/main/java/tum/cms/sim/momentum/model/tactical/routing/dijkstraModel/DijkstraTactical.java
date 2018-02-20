@@ -34,7 +34,6 @@ package tum.cms.sim.momentum.model.tactical.routing.dijkstraModel;
 
 import java.util.Collection;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
@@ -86,8 +85,7 @@ public class DijkstraTactical extends RoutingModel {
 		DijkstraExtension router = (DijkstraExtension)pedestrian.getExtensionState(this);		
 		Path route = router.route(this.visibilityGraph, start, end);
 		
-		RoutingState routingState = this.updateRouteState(this.perception, pedestrian, route);
-		pedestrian.setRoutingState(routingState);
+		pedestrian.setRoutingState(this.updateRouteState(pedestrian, route));
 	}
 
 

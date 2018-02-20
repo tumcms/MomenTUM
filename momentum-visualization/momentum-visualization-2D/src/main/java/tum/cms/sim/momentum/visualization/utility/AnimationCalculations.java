@@ -61,7 +61,6 @@ import tum.cms.sim.momentum.visualization.model.custom.TransitAreaModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ObstacleModel;
 import tum.cms.sim.momentum.visualization.model.geometry.PedestrianModel;
 import tum.cms.sim.momentum.visualization.model.geometry.ShapeModel;
-import tum.cms.sim.momentum.visualization.model.geometry.TrajectoryModel;
 
 /**
  * This class contains the essentials for animations. It is the interface between

@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
@@ -100,8 +99,7 @@ public class KneidTacticalModel extends RoutingModel {
 		
 		Path route = this.navigate(simulationState, graph, pedestrian, start, end, extension);
 		
-		RoutingState routingState = this.updateRouteState(this.perception, pedestrian, route);
-		pedestrian.setRoutingState(routingState);
+		pedestrian.setRoutingState(this.updateRouteState(pedestrian, route));
 	}
 
 	private Path navigate(SimulationState simulationState, 

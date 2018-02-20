@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <simulator version="MomenTumV2.0.0" simulationName="2017_TacticalCommandTest">
 
-	<timeState simulationEndTime="1000.0" timeStepDuration="0.01"/>
+	<timeState simulationEndTime="400.0" timeStepDuration="0.01"/>
 	
 	<logging>
 		<loggingState type="Console" level="Debug"/>
@@ -9,7 +9,7 @@
 	<threadingState threads="4"/>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.23"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2"/>
 		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="1.0"/>
 	</lattices>
 	<graphs>
@@ -19,7 +19,7 @@
 			</graphOperation>
 			<graphOperation id="1" name="seeds" type="VertexCreateSeedBased" />
 			<graphOperation id="2" name="corners" type="VertexCreateAtCorners"> 
-				<property name="cornerDistance" type="Double" value="0.96"/> 
+				<property name="cornerDistance" type="Double" value="1.26"/> 
 			</graphOperation>
 			<graphOperation id="3" name="portal" type="VertexCreatePortal"> 
 				<property name="cellSize" type="Double" value="0.23"/>
@@ -31,7 +31,7 @@
 				<property name="mergeDistance" type="Double" value="0.23"/>
 			</graphOperation> 
 			<graphOperation id="6" name="visibility" type="EdgeCreateVisibilityAngleBased">
-				<property name="alpha" type="Double" value="12"/>
+				<property name="alpha" type="Double" value="8"/>
 				<property name="visibilityTolerance" type="Double" value="0.23"/>
 			</graphOperation>
 			<graphOperation id="7" name="removeDispensible" type="EdgeRemoveUnreachable"/>
@@ -42,8 +42,9 @@
 		</graphModel>
 	</graphs>
 	<perceptualModels>
-		<perceptual id="0" name="BlockingGeometries" type="BlockingGeometries">
-			<property name="accuracy" type="Double" value="0.23"/>
+		<perceptual id="0" name="Bresenham" type="Bresenham">
+			<property name="latticeId" type="Integer" value="0"/>
+			<property name="perceptionDistance" type="Double" value="400.0"/>
 		</perceptual>
 	</perceptualModels>
 	<operationalModels>
@@ -61,8 +62,6 @@
 			<property name="mass_behaviour_B" type="Double" value="0.07"/> <!--0.05 -->
 			<property name="helbing_Epsilon" type="Double" value="10e-6"/>
 			<property name="koester_Epsilon" type="Double" value="10e-6"/>
-			<property name="threads" type="Integer" value="4" />
-			<property name="mac_threshold" type="Double" value="0.9" />
 		</walking>
 	</walkingModels>
 	<tacticalModels>
@@ -72,7 +71,10 @@
 			<routingReference modelId="7"/>
 			<searchingReference modelId="8"/>
 			<property name="goalDistanceRadius" type="Double" value="0.23" />
+			<property name="navigationDistanceRadius" type="Double" value="0.66" />
 			<property name="routeMemory" type="Boolean" value="False" />
+			<property name="tacticalControl" type="Boolean" value="True" />
+			<property name="deepNodeSelection" type="Boolean" value="True"/> <!-- only if tacticalControl "True" -->
 		</tactical>
 	</tacticalModels>
 	<stayingModels>
@@ -87,12 +89,7 @@
 		<queuing id="6" name="noQueuing" type="NoQueuing"/>
 	</queuingModels>
 	<routingModels>
-		<routing id="7" name="unifiedRouting" type="UPRM">
-			<property name="randomMode" type="Boolean" value="True"/>
-			<complexProperty name="resultMode" type="CsvMatrix" valueType="Double">
-				<entry file="C:\Programmierung\MomenTUM\momentum-documentation\UserGuide\startHere\TacticalCommandExample\2017_TacticalCommandTest_UPRM.csv" separator=";"/>
-			</complexProperty>
-		</routing>
+		<routing id="7" name="Dijkstra" type="Dijkstra"/>
 	</routingModels>
 	<searchingModels>
 		<searching id="8" name="noSearching" type="NoSearching"/>
@@ -110,7 +107,7 @@
 		
 		<analysis id="1" name="xtDensityAnalysis">
 	
-			<property name="call" type="Integer" value="200"/> <!-- Every 1 seconds -->
+			<property name="call" type="Integer" value="200"/> <!-- For each 1 second -->
 			<property name="analysisStartStep" type="Integer" value="0"/>
 			<property name="analysisEndStep" type="Integer" value="Integer.MAX_VALUE"/>
 			
@@ -149,25 +146,6 @@
 				<entry index="0" value="1.0"/> 
 			</complexProperty>
 		</pedestrianSeed>
-		<pedestrianSeed id="1" name="Weidmann" type="HistogramDistribution">
-			<property name="radiusMeter" type="Double" value="0.23"/>
-			<property name="minimalVelocity" type="Double" value="0.56"/>
-			<property name="velocityBinWidth" type="Double" value="0.26"/>
-			<complexProperty name="velocityBins" type="List" valueType="Double"> 
-				<entry index="0" value="0.0114"/> 
-				<entry index="1" value="0.0787"/>
-				<entry index="2" value="0.2386"/>
-				<entry index="3" value="0.3413"/>
-				<entry index="4" value="0.2386"/>
-				<entry index="5" value="0.0787"/>
-				<entry index="6" value="0.0114"/>
-			</complexProperty>	
-			<property name="minimalGroupSize" type="Double" value="1"/>
-			<property name="groupSizeBinWidth" type="Double" value="1"/>
-			<complexProperty name="groupSizeBins" type="List" valueType="Double">
-				<entry index="0" value="1.0"/> 
-			</complexProperty>
-		</pedestrianSeed>
 	</pedestrianSeeds>
 	
 	<generators>
@@ -175,7 +153,7 @@
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
 			<property name="basicHeading" type="Double" value="0"/>
-			<property name="maximalPedestrians" type="Integer" value="20"/>
+			<property name="maximalPedestrians" type="Integer" value="200"/>
 			<property name="safetyDistance" type="Double" value="1.9"/>
 			<geometry geometryType="Lattice" fillingType="Random" />
 			<property name="scenarioLatticeId" type="Integer" value="0"/> 
@@ -188,11 +166,11 @@
 				<entry index="1" value="0.0"/> <!-- percentage of maximal pedestrians to generate in the index 0 - 1 time-slot -->
 			</complexProperty>
 		</generator>
-			<generator id="1" name="generator" scenario="0" origin="1" seed="1" type="Plan">
+			<generator id="1" name="generator" scenario="0" origin="1" seed="0" type="Plan">
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
 			<property name="basicHeading" type="Double" value="90"/>
-			<property name="maximalPedestrians" type="Integer" value="5"/>
+			<property name="maximalPedestrians" type="Integer" value="50"/>
 			<property name="safetyDistance" type="Double" value="1.3"/>
 			<geometry geometryType="Lattice" fillingType="Random" />
 			<property name="scenarioLatticeId" type="Integer" value="0"/> 
@@ -274,16 +252,16 @@
 	<layouts>
 		<scenario id="0" name="2017_TacticalCommandTest" maxX="50" maxY="20" minX="0" minY="0">
 			<area id="0" name="originLeft" type="Origin">
-				<point x="0" y="0"/>
-				<point x="4" y="0"/>
-				<point x="4" y="20"/>
-				<point x="0" y="20"/>
+				<point x="0.25" y="0.25"/>
+				<point x="4" y="0.25"/>
+				<point x="4" y="19.75"/>
+				<point x="0.25" y="19.75"/>
 			</area>
 			<area id="1" name="originRight" type="Origin">
-				<point x="35" y="5"/>
-				<point x="39" y="5"/>
-				<point x="39" y="10"/>
-				<point x="35" y="10"/>
+				<point x="35.25" y="5.25"/>
+				<point x="39" y="5.25"/>
+				<point x="39" y="9.75"/>
+				<point x="35.25" y="9.75"/>
 			</area>
 			<area id="2" name="destinationLeft" type="Destination">
 				<point x="0" y="0"/>

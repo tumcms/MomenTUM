@@ -24,10 +24,10 @@
 		<category name="NaturalQueue"/>
       </area>
       <area id="2" name="Intermediate1" type="Intermediate">
-        <point x="20.868" y="9.748" />
-        <point x="20.868" y="21" />
-        <point x="13.7074" y="21" />
-        <point x="13.7074" y="9.748" />
+        <point x="20.8" y="12" />
+        <point x="20.8" y="21" />
+        <point x="15" y="21" />
+        <point x="15" y="12" />
       </area>
       <area id="3" name="DestinationX" type="Destination">
         <point x="0.5" y="15" />

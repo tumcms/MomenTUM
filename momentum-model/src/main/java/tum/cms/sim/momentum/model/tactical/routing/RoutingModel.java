@@ -33,12 +33,16 @@
 package tum.cms.sim.momentum.model.tactical.routing;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import tum.cms.sim.momentum.data.agent.pedestrian.state.tactical.RoutingState;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.ITacticalPedestrian;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
+import tum.cms.sim.momentum.infrastructure.exception.NoRouteFoundException;
+import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.infrastructure.logging.LoggingManager;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.model.tactical.SubTacticalModel;
 import tum.cms.sim.momentum.utility.graph.GraphTheoryFactory;
@@ -51,68 +55,145 @@ public abstract class RoutingModel extends SubTacticalModel {
 	 * Override this method in a routing model in order to 
 	 * provide specific decision support regarding:
 	 * Is the current vertex visited?
-	 * The default implementation uses an  on sight approach.
-	 * 
-	 * @return true if the current vertex is reached.
+	 * This is additional to the is visible approach.
+	 * And the navigation distance check will still be active.
 	 */
 	public boolean checkIsVertexVisited() {
 	
-		return true; // default check in rerouting Necessary
+		return true; // default check 
 	}
 	
-	public RoutingState updateRouteState(PerceptionalModel peception,
-			ITacticalPedestrian pedestrian,
-			Path newRoute) {
+	public RoutingState deepRouting(IRichPedestrian pedestrian, SimulationState simulationState) {
+	
+		Vertex nextToLast = pedestrian.getRoutingState().getNextToLastVisit();
+		Vertex last = pedestrian.getRoutingState().getLastVisit();
+		Vertex start = last;
+		Vertex next = pedestrian.getRoutingState().getNextVisit();
+		Vertex nextToNext = pedestrian.getRoutingState().getNextToCurrentVisit();
+		
+		Set<Vertex> visited = pedestrian.getRoutingState().getVisited();
+		Vertex end = null;
+		
+		if(pedestrian.getNextNavigationTarget() != null) {
+			end = scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
+		}
+		int maxDeep = 10;
+		
+		if(end == null || next == null || !end.equals(next)) {
+			
+			while(maxDeep > 0) {
+				
+				maxDeep--;
+				
+				this.callPedestrianBehavior(pedestrian, simulationState);
+			
+				RoutingState newRoutingState = pedestrian.getRoutingState();
+
+				boolean isLoopedPath = (end != null && newRoutingState.getNextVisit().equals(end)) ||
+						   (start != null && end != null && start.equals(end));
+				boolean isNotVisible = !perception.isVisible(pedestrian, newRoutingState.getNextVisit());;
+				
+				if(isLoopedPath || isNotVisible || maxDeep == 0) {
+					
+					nextToNext = newRoutingState.getNextVisit();
+					visited.remove(next);
+					break;
+				}
+
+				nextToLast = last;
+				visited.add(next);
+				
+				last = newRoutingState.getLastVisit();
+				next = newRoutingState.getNextVisit();
+			}
+		}
+				
+		RoutingState finalRoutingState = new RoutingState(visited, nextToLast, last, next);
+		finalRoutingState.setNextToCurrentVisit(nextToNext);
+
+		return finalRoutingState;
+	}
+	
+	/**
+	 * Updates the routing state by using the correct next, last nextToNext etc.
+	 * vertices for the routing state. This is used to define a standard interface
+	 * to fill the routing state. This will avoid errors due to implementations in routing models
+	 * that do not know how to fill the routing state correctly.
+	 * The nextToNextVertex is set only in case deep routing is used. This is done elsewhere.
+	 * @throws NoRouteFoundException 
+	 */
+	public RoutingState updateRouteState(ITacticalPedestrian pedestrian, Path newRoute) {
+		
+		if(newRoute == null) {
+			
+			LoggingManager.logUser(new NoRouteFoundException());
+		}
 		
 		Vertex nextToLastVertex = null;
 		Vertex lastVertex = null;
 		Set<Vertex> visited = null;
+		Vertex nextVertex = newRoute.getCurrentVertex();
 		
 		if(pedestrian.getRoutingState() != null) {
 			
-			nextToLastVertex = pedestrian.getRoutingState().getLastVisit();
-			lastVertex = pedestrian.getRoutingState().getNextVisit();
 			visited = pedestrian.getRoutingState().getVisited();
-			visited.add(lastVertex);
-		}
-		else {
 			
-			lastVertex = newRoute.getFirstVertex();
-
-			if(visited == null) {
-				
-				visited = new HashSet<Vertex>();
+			// if nextVertex is null it cannot be found (not Visible etc.)
+			// and we have to reset the behavior.
+			// Thus, the agent was not able to visit the target next vertex
+			if(pedestrian.getRoutingState().getNextVisit() == null) {
+			
+				nextToLastVertex = pedestrian.getRoutingState().getNextToLastVisit();
+				lastVertex = pedestrian.getRoutingState().getLastVisit();
 			}
+			else { // the next visit was successful, shift the visit order
+				
+				if(pedestrian.getRoutingState().getLastVisit() != null) {
+					
+					nextToLastVertex = pedestrian.getRoutingState().getLastVisit();
+				}
 			
-			visited.add(lastVertex);
+				if(pedestrian.getRoutingState().getNextVisit() != null) {
+					
+					lastVertex = pedestrian.getRoutingState().getNextVisit();
+				}
+				
+				if(lastVertex != null) {
+					
+					visited.add(lastVertex);	
+				}
+			}
+		}
+		else { // first routing
+				
+			nextToLastVertex = newRoute.getPreviousVertex();
+			lastVertex = newRoute.getFirstVertex();
+			visited = new LinkedHashSet<Vertex>();
 		}
 		
-		if(newRoute != null) {
-
-			return new RoutingState(visited,
-					nextToLastVertex,
-					lastVertex,
-					newRoute.getCurrentVertex());
-		}
-		
-		return null;
+		return new RoutingState(visited,
+				nextToLastVertex,
+				lastVertex,
+				nextVertex);
 	}
 
-	/**
-	 * Check if a pedestrian needs to reroute.
-	 * Only if current vertex is not visible
-	 * or if the next vertex is visible
-	 * @param pedestrian
-	 * @param tacticalControlActive, activates next vertex visible check
-	 * @return if true, reroute
-	 */
-	public boolean reRoutingNecessary(IRichPedestrian pedestrian, boolean tacticalControlActive, boolean isDeepSelect) {
+	public boolean isRouteStateEmpty(IRichPedestrian pedestrian) {
 		
 		if(pedestrian.getRoutingState() == null) {
 			
 			return true;
-		}	
+		}
+		
+		return false;
+	}
+	
+	public boolean isNextRouteNotVisible(IRichPedestrian pedestrian) {
 
+		if(pedestrian.getRoutingState().getNextVisit() == null) {
+			
+			return false;
+		}
+		
 		double distanceToNextVisit = pedestrian.getRoutingState().getNextVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
 		
 		// is the current walking target not visible?! reroute
@@ -120,24 +201,22 @@ public abstract class RoutingModel extends SubTacticalModel {
 		if(distanceToNextVisit < perception.getPerceptionDistance() &&
 		   !perception.isVisible(pedestrian, pedestrian.getRoutingState().getNextVisit())) {
 			
-			// however, in case the agent cannot see its own position,
-			// the layout is not good and we have to ignore this.
-			if(perception.isVisible(pedestrian, pedestrian.getPosition())) {
-				
-				pedestrian.setRoutingState(new RoutingState(pedestrian.getRoutingState().getVisited(),
-							pedestrian.getRoutingState().getNextToLastVisit(),
-							pedestrian.getRoutingState().getLastVisit(),
-							null));
-				return true;
-			}
+			return true;
 		}
 		
-		// The tactical control enables a more smooth routing because it addresses the vertex following the current one
-		if(tacticalControlActive && isDeepSelect && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
+		return false;
+	}
+
+	public boolean isNextNextRouteVisible(IRichPedestrian pedestrian, boolean isDeepSelect) {
+		
+		
+		// Enables a more smooth routing because it addresses the vertex following the current one
+		// is only done in case deep note selection is at least 1
+		if(isDeepSelect && pedestrian.getRoutingState().getNextToCurrentVisit() != null) {
 			
 			double distanceToNextToCurrentVisit = pedestrian.getRoutingState().getNextToCurrentVisit().euklidDistanceBetweenVertex(pedestrian.getPosition());
 			
-			// Is the next walking target visible?
+			// Is the next next walking target visible?
 			// If yes reroute to have a continuously not visible next to current vertex
 			// Thus, the agent will have a more steady navigation flow.
 			// However, if it is not in perception range, keep routing.
@@ -148,7 +227,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 				return true;
 			}
 		}
-	
+
 		return false;
 	}
 	

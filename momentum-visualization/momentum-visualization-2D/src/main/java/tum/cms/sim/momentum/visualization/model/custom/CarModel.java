@@ -42,8 +42,6 @@ import javafx.scene.Node;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
-import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration;
-import tum.cms.sim.momentum.utility.csvData.reader.SimulationOutputCluster;
 import tum.cms.sim.momentum.visualization.enums.Smoothness;
 import tum.cms.sim.momentum.visualization.handler.SelectionHandler.SelectionStates;
 import tum.cms.sim.momentum.visualization.model.CoreModel;

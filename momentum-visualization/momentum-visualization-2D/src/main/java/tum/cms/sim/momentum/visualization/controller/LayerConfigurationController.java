@@ -282,13 +282,23 @@ public class LayerConfigurationController implements Initializable {
 		
 		if(coreController.getLayerConfigurationController().showTrajectoriesCheckBox.isSelected()) {
 			
+			HashMap<String, Boolean> trajectoryVisibility = new HashMap<String, Boolean>();
+			
 			coreController.getPlaybackController().getPlaybackModel()
 				.getTrajectoryShapes()
-				.forEach((id,trajectoryShape) -> trajectoryShape.clear());	
+				.forEach((id,trajectoryShape) -> {
+					trajectoryVisibility.put(trajectoryShape.getIdentification(), trajectoryShape.getTrajectory().isVisible());
+					trajectoryShape.clear();
+				});	
 			
 			coreController.getPlaybackController().getPlaybackModel().getTrajectoryShapes().clear();
 			
 			HashMap<String, TrajectoryModel> trajectories = generateTrajectories();
+			trajectoryVisibility.forEach((id,visible) -> {
+				if(trajectories.containsKey(id)) {
+					trajectories.get(id).setVisibility(visible);
+				}
+			});
 			
 			coreController.getPlaybackController().getPlaybackModel().putTrajectoryShapes(trajectories);
 			coreController.getPlaybackController().putTrajectoriesIntoPedestrians(trajectories);

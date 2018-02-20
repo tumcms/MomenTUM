@@ -45,7 +45,6 @@ import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.layout.graph.GraphOperation;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
-import tum.cms.sim.momentum.utility.graph.Edge;
 import tum.cms.sim.momentum.utility.graph.Graph;
 import tum.cms.sim.momentum.utility.graph.GraphTheoryFactory;
 import tum.cms.sim.momentum.utility.graph.Vertex;

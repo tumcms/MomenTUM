@@ -67,11 +67,6 @@ public class SelectionHandler {
 		
 		this.clickableObjects.remove(shapeModelIdentification);
 	}
-	
-	public void clearClickableObjects() {
-		
-		this.clickableObjects.clear();
-	}
 
 	public void setSelection(ShapeModel shapeModel, Boolean isControlDown, DetailsModel shapesDetailsModel) {
 		

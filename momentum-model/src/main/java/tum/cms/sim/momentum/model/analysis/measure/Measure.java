@@ -35,7 +35,6 @@ package tum.cms.sim.momentum.model.analysis.measure;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import tum.cms.sim.momentum.configuration.model.output.WriterSourceConfiguration.OutputType;
 import tum.cms.sim.momentum.data.analysis.AnalysisElementSet;
 import tum.cms.sim.momentum.data.layout.ScenarioManager;
 import tum.cms.sim.momentum.utility.generic.IHasProperties;

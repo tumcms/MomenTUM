@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -109,7 +110,11 @@ public class LinearGraphPursueTactical extends RoutingModel {
 				
 				Collections.reverse(nextSorted);
 				Vertex next = nextSorted.get(0).getLeft();
+<<<<<<< HEAD
 				newRoutingState = new RoutingState(visited, nextToLastVertex , lastVertex, next);
+=======
+				newRoutingState = new RoutingState(new LinkedHashSet<Vertex>(), nextToLastVertex , lastVertex, next);
+>>>>>>> master
 			}
 		}
 		else {
