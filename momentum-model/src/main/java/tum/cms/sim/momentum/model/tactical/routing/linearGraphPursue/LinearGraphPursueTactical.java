@@ -110,11 +110,8 @@ public class LinearGraphPursueTactical extends RoutingModel {
 				
 				Collections.reverse(nextSorted);
 				Vertex next = nextSorted.get(0).getLeft();
-<<<<<<< HEAD
+
 				newRoutingState = new RoutingState(visited, nextToLastVertex , lastVertex, next);
-=======
-				newRoutingState = new RoutingState(new LinkedHashSet<Vertex>(), nextToLastVertex , lastVertex, next);
->>>>>>> master
 			}
 		}
 		else {

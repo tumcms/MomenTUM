@@ -430,76 +430,6 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	
 	private void callTacticRouteBehavior(IRichPedestrian pedestrian, SimulationState simulationState) {
 				
-<<<<<<< HEAD
-				this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
-				
-				// TODO create an abstract method in RoutingModel put this into
-				if(this.deepNodeSelection > 0) {
-					
-					int currentDepth = this.deepNodeSelection;
-					
-					Vertex nextTolast = pedestrian.getRoutingState().getLastVisit();
-					Vertex last = pedestrian.getRoutingState().getLastVisit();
-					Vertex start = last;
-					Vertex next = pedestrian.getRoutingState().getNextVisit();
-					Vertex nextToNext = pedestrian.getRoutingState().getNextToCurrentVisit();
-					
-					Set<Vertex> visited = pedestrian.getRoutingState().getVisited();
-					Vertex end = null;
-					
-					if(pedestrian.getNextNavigationTarget() != null) {
-						end = scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
-					}
-					
-					while(currentDepth > 0) {
-						
-						RoutingState newRoutingState = pedestrian.getRoutingState();
-						
-						newRoutingState.getVisited().add(next);
-						
-						this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
-						
-						newRoutingState = pedestrian.getRoutingState();
-						
-						// TODO check if circles are solved next / last
-						if(!perception.isVisible(pedestrian, newRoutingState.getNextVisit()) ||
-						   (end != null && newRoutingState.getNextVisit().equals(end)) ||
-						   (start != null && end != null && start.equals(end))) {
-							
-							nextToNext = newRoutingState.getNextVisit();
-							break;
-						}
-
-						currentDepth--;
-						
-						if(currentDepth == 0) { 
-							
-							nextToNext = newRoutingState.getNextVisit();
-							next = newRoutingState.getLastVisit();
-							
-							visited.remove(nextToNext);
-							break;
-						}
-						else {
-							
-							nextTolast = last;
-						}
-						
-						
-						visited.add(next);
-						
-						//last = newRoutingState.getLastVisit();
-						next = newRoutingState.getNextVisit();
-					}
-					
-					visited.remove(next);
-					visited.remove(nextToNext);
-					RoutingState finalRoutingState = new RoutingState(visited, nextTolast, last, next);
-					finalRoutingState.setNextToCurrentVisit(nextToNext);
-					pedestrian.setRoutingState(finalRoutingState);
-				}
-			}			
-=======
 		// identify if the agent is close to its next navigation vertex
 		boolean isCloseToVertex = pedestrian.getRoutingState() == null || 
 			pedestrian.getRoutingState().getNextVisit() == null ||
@@ -508,7 +438,6 @@ public class TacticalModel extends PedestrianBehaviorModel {
 		if(isCloseToVertex && !tacticalControl) {
 			
 			this.routingModel.callPedestrianBehavior(pedestrian, simulationState);	
->>>>>>> master
 		}
 		else if(tacticalControl) {
 			
