@@ -65,7 +65,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 	protected double navigationDistanceRadius = 0.15;
 	protected boolean tacticalControl = true;
 	protected boolean routeMemory = true;
-	protected int deepNodeSelection = 0;
+	protected boolean deepNodeSelection = false;
 
 	private RoutingModel routingModel = null;
 	
@@ -148,9 +148,9 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			tacticalControl = this.properties.getBooleanProperty(tacticalControlName);
 		}
 		
-		if(this.properties.getIntegerProperty(deepNodeSelectionName) != null) {
+		if(this.properties.getBooleanProperty(deepNodeSelectionName) != null) {
 			
-			deepNodeSelection = this.properties.getIntegerProperty(deepNodeSelectionName);
+			deepNodeSelection = this.properties.getBooleanProperty(deepNodeSelectionName);
 		}
 		
 		if(this.properties.getBooleanProperty(routeMemoryName) != null) {
@@ -463,7 +463,7 @@ public class TacticalModel extends PedestrianBehaviorModel {
 		if(!routingStateIsEmpty) {
 			
 			notVisible = this.routingModel.isNextRouteNotVisible(pedestrian);
-			nextNextVisible = this.routingModel.isNextNextRouteVisible(pedestrian, this.deepNodeSelection > 0);
+			nextNextVisible = this.routingModel.isNextNextRouteVisible(pedestrian, this.deepNodeSelection);
 		}
 				
 		if(normalRouting && (isCloseToVertex || routingStateIsEmpty || notVisible || nextNextVisible)) {
@@ -475,9 +475,9 @@ public class TacticalModel extends PedestrianBehaviorModel {
 			
 			this.routingModel.callPedestrianBehavior(pedestrian, simulationState);
 
-			if(this.deepNodeSelection > 0 && (nextNextVisible || isCloseToVertex)) {
+			if(this.deepNodeSelection) {
 			
-				RoutingState deepRoutingResult = this.routingModel.deepRouting(pedestrian, simulationState, this.deepNodeSelection);
+				RoutingState deepRoutingResult = this.routingModel.deepRouting(pedestrian, simulationState);
 				pedestrian.setRoutingState(deepRoutingResult);
 			}
 		}			

@@ -63,7 +63,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 		return true; // default check 
 	}
 	
-	public RoutingState deepRouting(IRichPedestrian pedestrian, SimulationState simulationState, int deepNodeSelection) {
+	public RoutingState deepRouting(IRichPedestrian pedestrian, SimulationState simulationState) {
 	
 		Vertex nextToLast = pedestrian.getRoutingState().getNextToLastVisit();
 		Vertex last = pedestrian.getRoutingState().getLastVisit();
@@ -77,22 +77,23 @@ public abstract class RoutingModel extends SubTacticalModel {
 		if(pedestrian.getNextNavigationTarget() != null) {
 			end = scenarioManager.getGraph().getGeometryVertex(pedestrian.getNextNavigationTarget().getGeometry());
 		}
+		int maxDeep = 10;
 		
 		if(end == null || next == null || !end.equals(next)) {
 			
-			while(deepNodeSelection > 0) {
+			while(maxDeep > 0) {
+				
+				maxDeep--;
 				
 				this.callPedestrianBehavior(pedestrian, simulationState);
 			
 				RoutingState newRoutingState = pedestrian.getRoutingState();
-				deepNodeSelection--;
-				
+
 				boolean isLoopedPath = (end != null && newRoutingState.getNextVisit().equals(end)) ||
 						   (start != null && end != null && start.equals(end));
-				boolean isNotVisible = !perception.isVisible(pedestrian, newRoutingState.getNextVisit());
-				boolean isDepthStop = deepNodeSelection == 0;
+				boolean isNotVisible = !perception.isVisible(pedestrian, newRoutingState.getNextVisit());;
 				
-				if(isLoopedPath || isNotVisible || isDepthStop) {
+				if(isLoopedPath || isNotVisible || maxDeep == 0) {
 					
 					nextToNext = newRoutingState.getNextVisit();
 					visited.remove(next);
