@@ -220,8 +220,7 @@
 		<lattice id="1" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2" neighborhoodType="Touching"/>
 		
 		<!-- Multiple more lattices can be added. -->
-		<!-- For each scenario (floor) a lattice is used. -->
-		
+
 	</lattices>
 	
 	<!-- A graph is a data structure used by many models of the simulator. --> 
@@ -256,7 +255,7 @@
 		</graphModel> 
 		
 		<!-- Multiple more graphs can be added. -->
-		<!-- For each scenario (floor) a graph is used. -->
+
 	</graphs>
 
 	<!-- Space Syntax is a technique to analyse spatial configurations which is usually applied
@@ -272,7 +271,7 @@
 				<!-- It is essential, that the lattice which is associated with a Space Syntax operation
 				defines at least one area of type 'Origin'. The origin is used to flood the area on which 
 				the operation is applied. If multiple Origins are defined and are not reachable from 
-				eachother (e.g. by means of a walking pedestrian) the area for which the operation is applied
+				each other (e.g. by means of a walking pedestrian) the area for which the operation is applied
 				is non-deterministic. -->
 				<property name="scenarioLatticeId" type="Integer" value="1"/> 
 			</spaceSyntaxOperation>
@@ -325,7 +324,10 @@
 	<!-- Thus, most of the time this block is identical. Also, the id attribute must be unique! -->
 	<perceptualModels>
 		<perceptual id="0" name="Bresenham" type="Bresenham">
-			<property name="accuracy" type="Double" value="0.23"/>
+		 <!-- Points to a lattice, the cellEdgeSize is the accuracy of the perception. -->
+			<property name="latticeId" type="Integer" value="2"/>
+			<!-- perceptionDistance  * cellEdgeSize in meter the maximal perception distance. -->
+			<property name="perceptionDistance" type="Double" value="50.0"/> 
 		</perceptual>
 	</perceptualModels>
 	
@@ -340,6 +342,7 @@
 		<operational id="1" name="operational" perceptualModel="0">
 		
 			<!-- A reference to a standing model by id. -->
+			<!-- This reference is optimal, in case none is given the walking model is used in standing cases. -->
 			<standingReference modelId="2"/>
 			
 			<!-- A reference to a walking model by id. -->
@@ -417,26 +420,25 @@
 			
 			<!-- The navigationDistanceRadius models the distance and the parameter for reaching navigations nodes. -->
 			<!-- The nodes are typically graph nodes of a routing graph. If there is no previous node the distance is the radius for the reaching the node. -->
-			<!-- This method is ignored in case tactical control is set to true. -->
 			<property name="navigationDistanceRadius" type="Double" value="0.66"/>
 			
 			<!-- The tacticalControl is mostly set to True and activates "smart" behavior. -->
 			<!-- This smart behavior includes to start routing if walking goals of e.g. queuing models are not visible. -->
 			<!-- Hence, the tacticalControl helps to reduce nonsense behavior like being "stuck". -->
-			<!-- However, do set this to false in case pedestrian should strictly follow a routing path, -->
-			<!-- smart behavior leads to taking short-cuts and perception based re-routing. -->
+			<!-- However, do set this to false in case pedestrian should strictly follow a routing path. -->
+			<!-- Smart behavior leads to taking short-cuts and perception based re-routing. -->
 			<!-- Having the tactical control set to true is mandatory for using deep node selection. -->
 			<property name="tacticalControl" type="Boolean" value="True"/>
 			
-			<!-- The deep node selection property helps realice predictive routing behavior. -->
+			<!-- The deep node selection property helps to realize predictive routing behavior. -->
 			<!-- It is used in case that tactical control is set to true. -->
-			<!-- The concept here is that the routing model will be called X times (depth value). -->
-			<!-- The next navigation node is therefoe selected based on the current X routing result. -->
-			<!-- Finaly, the system creates a new routing command based on all routing computations. -->
+			<!-- The concept here is that the routing model will be called X times. -->
+			<!-- The next navigation node is therefore selected based on the current X routing result. -->
+			<!-- Thus, the deep navigation depth X will stop if the next node would not be visible. -->
+			<!-- Finally, the system creates a new routing command based on all routing computations. -->
 			<!-- This helps agents to find a next navigation need far away "deep" and the routing is more smooth. -->
 			<!-- The behavior may not be desired in any situations, e.g. street crossings. -->
-			<!-- This method will fail if you do not have a good perceptual model. -->
-			<property name="deepNodeSelection" type="Integer" value="3"/>
+			<property name="deepNodeSelection" type="Boolean" value="True"/>
 			
 			<!-- In some simulations one does not like to include a strategical model. -->
 			<!-- For those simulations the agent will get a Do Nothing Command from the non strategical model. -->
@@ -453,8 +455,8 @@
 			<!-- The routeMemory indicates if a pedestrian should remember and avoid already visited route nodes. -->
 			<!-- Typically, in linear scenarios that address wayfinding, this is true. -->
 			<!-- In system in which the pedestrians visit some location more than once, this is mostly false. -->
+			<!-- However, if the agent executes a staying or queuing tactical command, the memory will be cleared. -->
 			<property name="routeMemory" type="Boolean" value="false"/>
-			
 		
 		</tactical>
 		
@@ -521,7 +523,7 @@
 		
 	</searchingModels>
 	
-	<!-- Stratgic models are concepts for destination choice decision making, e.g. where to buy ice cream. -->
+	<!-- Strategic models are concepts for destination choice decision making, e.g. where to buy ice cream. -->
 	<!-- A simulation typical has a single strategic model, but can have multiple if used in the executionOrder tag. -->
 	<strategicalModels>
 	
@@ -552,7 +554,6 @@
 	<!-- There is always a dummy model, e.g. noSearching or noRouting. -->
 	<!-- Such dummy models provide most basic and unrealistic behavior for a model type. -->
 	<!-- This exists for all models (standing, walking, routing, staying, queuing and searching. -->
-	<!-- Dummy models are of type "no'Behavior'". -->
 	<!-- These models are helpful to test specific models only, e.g. routing model without proper walking. -->
 	
 	<!-- *********************************************** -->
@@ -697,7 +698,6 @@
 	<!-- The outputWriters are important interfaces to generate data that can be visualized and analyzed. -->
 	<!-- Each Output writer comprises a target, a format and a writer source. -->
 	<!-- Multiple models provide output sources and therefore a method to write model specific data. -->
-	
 	<outputWriters>
 	
 		<!-- Each outputWriter has a unique writer id, a user-friendly name, and a type.-->

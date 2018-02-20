@@ -6,12 +6,15 @@
 <perceptualModels>
 
 	<!-- A perceptual model has a unique id for all perception models, a name and a type. -->
-	<!-- At the moment here only type is:
-		 Bresenham (formerly BlockGemetries)
+	<!-- At the moment here two types:
+		 Bresenham (formerly BlockGoemetries)
 		 Shadow -->
-	<!-- The BlockingGeometries model uses shadow mapping and bresenham-lines to check if an objects is visible. -->
+	
+	<!-- Warning: make sure that the lattice cellEdgeSize is rather small (0.1m) to avoid artificial "not visible" situations -->
+	
+	<!-- The Bresenham perception model uses  bresenham-lines to check if an objects is visible. -->
 	<!-- If something is not visible it is visually blocked by obstacles. -->
-	<perceptual id="0" name="ShadowPerception" type="Shadow">
+	<perceptual id="0" name="Bresenham" type="Bresenham">
 		<!-- The perception distance is an optional parameter. -->
 		<!-- It defines the maximal distance an agent can perceive something. -->
 		<!-- In case the perception distance is missing, it model will use "longest graph edge * 2" as distance. -->
@@ -19,15 +22,19 @@
 		<!-- The latticeId property stores the id of a lattice in the lattice models and defines the accuracy of the model -->
 		<!-- If the lattivceId is missing, the model will create its own lattice with an edge size of 0.1. -->
 		<property name="latticeId" type="Integer" value="0"/>
-
 	</perceptual>
 	
-	<perceptual id="0" name="BresenhamPerception" type="Bresenham">
+	<!-- The Shadow perception model applies an angular perception field in which bresenham lines -->
+	<!-- evaluate the space in front of the pedestrian agent. Here, the concepts is rather slow -->
+	<!-- but computes a complete shadow of the environment with optimal accuracy regarding the used lattice size. -->
+	<!-- However, single perception checks e.g. for pedestrian is still based on the simple bresenham but it ensures -->
+	<!-- to be in the perception angle. -->
+	<perceptual id="0" name="Shadow" type="Shadow">
 		<!-- The perception distance defines the maximal distance an agent can perceive something. -->
 		<property name="perceptionDistance" type="Double" value="20.0"/>
-		<!-- The latticeId property stores the id of a lattice in the lattice models and defines the accuracy of the model -->
-		<property name="latticeId" type="Integer" value="1"/>
-		<!-- The perception angle in degree (in range 1 to 179) defines the arc a pedestrian cen perceive something-->
+		<!-- The latticeId property stores the id of a lattice in the lattice models and defines the accuracy of the model. -->
+		<property name="latticeId" type="Integer" value="0"/>
+		<!-- The perception angle in degree (in range 1 to 359) defines the arc a pedestrian can perceive something. -->
 		<property name="perceptionAngleDegree" type="Double" value="80.0"/>
 	</perceptual>
 </perceptualModels>
