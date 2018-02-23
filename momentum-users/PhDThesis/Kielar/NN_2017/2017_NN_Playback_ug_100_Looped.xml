@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator version="2.0.2" simulationName="2017_NN_Playkback_ug_100">
 
-	<timeState simulationEndTime="180.0" timeStepDuration="0.04"/>
-	<threadingState threads="3"/>
+	<timeState simulationEndTime="180.0" timeStepDuration="0.2"/>
+	<threadingState threads="1"/>
 	
 	<logging>
 		<loggingState type="Console" level="User"/>
@@ -13,7 +13,7 @@
 	</loop>
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.05"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2"/>
 	</lattices>
 	
 	<graphs>
@@ -27,9 +27,9 @@
 	
 	<perceptualModels>
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
-			<property name="perceptionDistance" type="Double" value="2.0"/>
+			<property name="perceptionDistance" type="Double" value="3.2"/>
 			<property name="latticeId" type="Integer" value="0"/>
-			<property name="perceptionAngleDegree" type="Double" value="180.0"/>
+			<property name="perceptionAngleDegree" type="Double" value="150.0"/>
 		</perceptual>
 	</perceptualModels>
 	
@@ -52,23 +52,24 @@
 			</complexProperty>
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
-			<property name="numberForMean" type="Integer" value="25"/>
-			<property name="numberOfLastCategories" type="Integer" value="25"/>
-			<property name="velocityClasses" type="Integer" value="7"/>
+			<property name="numberForMean" type="Integer" value="5"/>
+			<property name="numberOfLastCategories" type="Integer" value="2"/>
+			<property name="velocityClasses" type="Integer" value="21"/>
 			<property name="angleClasses" type="Integer" value="21"/>
-			<property name="xMinCut" type="Double" value="-3.0"/>
-			<property name="xMaxCut" type="Double" value="3.0"/>
+			<property name="xMinCut" type="Double" value="-4.0"/>
+			<property name="xMaxCut" type="Double" value="4.5"/>
 		</walking>
 	</walkingModels>
 	
 	<tacticalModels>
 		<tactical id="3" name="tactical"  perceptualModel="0">
 			<routingReference modelId="4"/>
+			<property name="strategicCommand" type="String" value="Routing" />
 			<property name="goalDistanceRadius" type="Double" value="0.23" />
+			<property name="navigationDistanceRadius" type="Double" value="0.66" />
 			<property name="routeMemory" type="Boolean" value="True" />
 			<property name="tacticalControl" type="Boolean" value="True" />
-			<property name="strategicCommand" type="String" value="Routing"/>
-			<property name="deepNodeSelection" type="Integer" value="0"/>
+			<property name="deepNodeSelection" type="Boolean" value="True"/> <!-- only if tacticalControl "True" -->
 		</tactical>
 	</tacticalModels>
 	
@@ -81,8 +82,8 @@
 		<!-- The seed is used in the generator=0 -->
 		<pedestrianSeed id="0" name="basic" type="NoDistribution">
 			<property name="desiredVelocity" type="Double" value="1.34"/>
-			<property name="maximalVelocity" type="Double" value="2.7"/>
-			<property name="radiusMeter" type="Double" value="0.23"/>
+			<property name="maximalVelocity" type="Double" value="3.3"/>
+			<property name="radiusMeter" type="Double" value="0.2"/>
 			<property name="groupSize" type="Integer" value="1"/>
 		</pedestrianSeed>
 	</pedestrianSeeds>
@@ -116,7 +117,6 @@
 			</complexProperty>
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
-			<property name="numberForMean" type="Integer" value="20"/>
 		</absorber>
 	</absorbers>
 	
@@ -176,10 +176,10 @@
 				<property name="distanceToGoal" type="Format" value="%.10f"/>
 				<property name="lastVelocityMagnitude" type="Format" value="%.10f"/>
 				<property name="lastVelocityAngleChange" type="Format" value="%.10f"/>
-				<property name="lastLastVelocityMagnitude" type="Format" value="%.10f"/>
+				<!--<property name="lastLastVelocityMagnitude" type="Format" value="%.10f"/>
 				<property name="lastLastVelocityAngleChange" type="Format" value="%.10f"/>
 				<property name="lllVelocityMagnitude" type="Format" value="%.10f"/>
-				<property name="lllVelocityAngleChange" type="Format" value="%.10f"/>
+				<property name="lllVelocityAngleChange" type="Format" value="%.10f"/> -->
 				<property name="velocityMagnitude" type="Format" value="%.10f"/>
 				<property name="velocityAngleChange" type="Format" value="%.10f"/>
 			</writerSource>
@@ -207,39 +207,7 @@
         <vertex name="5" id="5">
           <center x="-5.5" y="-2" />
         </vertex>
-        <vertex name="6" id="6">
-          <center x="-5.3776" y="-2.7725" />
-        </vertex>
-        <vertex name="7" id="7">
-          <center x="-4.9971" y="-3.4993" />
-        </vertex>
-        <vertex name="8" id="8">
-          <center x="-4.4695" y="-4.0225" />
-        </vertex>
-        <vertex name="9" id="9">
-          <center x="-3.7725" y="-4.3776" />
-        </vertex>
-        <vertex name="10" id="10">
-          <center x="-3" y="-4.5" />
-        </vertex>
-        <vertex name="11" id="11">
-          <center x="-1.5" y="-4.5" />
-        </vertex>
-        <vertex name="12" id="12">
-          <center x="0" y="-4.5" />
-        </vertex>
-        <vertex name="13" id="13">
-          <center x="1.5" y="-4.5" />
-        </vertex>
-        <vertex name="14" id="14">
-          <center x="3" y="-4.5" />
-        </vertex>
-        <vertex name="15" id="15">
-          <center x="3.7725" y="-4.3776" />
-        </vertex>
-        <vertex name="16" id="16">
-          <center x="4.4695" y="-4.0225" />
-        </vertex>
+        
         <vertex name="17" id="17">
           <center x="4.9971" y="-3.4993" />
         </vertex>
@@ -278,18 +246,6 @@
         <edge idLeft="2" idRight="3" />
         <edge idLeft="3" idRight="4" />
         <edge idLeft="4" idRight="5" />
-        <edge idLeft="5" idRight="6" />
-        <edge idLeft="6" idRight="7" />
-        <edge idLeft="7" idRight="8" />
-        <edge idLeft="8" idRight="9" />
-        <edge idLeft="9" idRight="10" />
-        <edge idLeft="10" idRight="11" />
-        <edge idLeft="11" idRight="12" />
-        <edge idLeft="12" idRight="13" />
-        <edge idLeft="13" idRight="14" />
-        <edge idLeft="14" idRight="15" />
-        <edge idLeft="15" idRight="16" />
-        <edge idLeft="16" idRight="17" />
         <edge idLeft="17" idRight="18" />
         <edge idLeft="18" idRight="19" />
         <edge idLeft="19" idRight="20" />

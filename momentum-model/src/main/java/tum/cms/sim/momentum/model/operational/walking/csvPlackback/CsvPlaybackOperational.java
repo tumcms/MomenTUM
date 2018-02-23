@@ -113,7 +113,7 @@ public class CsvPlaybackOperational extends WalkingModel {
 				heading);
 	
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
-		extension.updatePedestrianSpace(pedestrian, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories);
+		extension.updatePedestrianSpace(pedestrian, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories, this.perception);
 		extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories);
 		extension.setCurrentPosition(newWalkingState.getWalkingPosition());
 		

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator version="2.0.0" simulationName="2017_NN_Playkback_ug_100">
 
-	<timeState simulationEndTime="35.8" timeStepDuration="0.1"/>
+	<timeState simulationEndTime="35.8" timeStepDuration="0.2"/>
 	<threadingState threads="1"/>
 	
 	<logging>

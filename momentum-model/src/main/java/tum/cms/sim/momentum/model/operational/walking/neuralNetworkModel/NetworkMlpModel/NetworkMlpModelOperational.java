@@ -119,35 +119,22 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		
 		int predictedClass = extension.findClassIdByMaxValue(predictedClasses);
 
-		// In cantor pair: y = angleCategory, x = veloCategory
-		// categorieBoth = angleCategory + round(0.5 * ((veloCategory + angleCategory) * (veloCategory + angleCategory + 1)));
-		int predictedVelocityClass  = (int) Math.floor(Math.sqrt(0.25 + 2*predictedClass) - 0.5);
-		predictedVelocityClass = predictedVelocityClass - (predictedClass - predictedVelocityClass * (predictedVelocityClass + 1)/2);
-		int predictedAngleClass = (int) Math.floor(Math.sqrt(0.25 + 2*predictedClass) - 0.5);
-		predictedAngleClass = predictedClass - predictedAngleClass*(predictedAngleClass+1)/2;
+		// categorieBoth = veloCategory * catAngle - (catAngle - angleCategory)
+        // classAngle = ((categorieBoth - 1) % catAngle) + 1
+        // classVelo = int((categorieBoth - 1) / catAngle) + 1
+		
+		int predictedVelocityClass  = ((predictedClass - 1) % this.angleClasses) + 1;
+		int predictedAngleClass = (int)((predictedClass - 1) / this.angleClasses) + 1;
 
-//		int predictedVelocityClass = (int) Math.ceil((double)predictedClass / (double)velocityClasses);
-//		int predictedAngleClass = (int)predictedClass - (predictedVelocityClass - 1) * velocityClasses;
-				
-		double predictedVelocity = extension.getVelocityForClassification(predictedVelocityClass,
-				this.velocityClasses,
-				pedestrian,
-				simulationState);
+		double predictedVelocityNorm = extension.getNormForValue(predictedVelocityClass, this.velocityClasses);
+		double predictedVelocity = extension.denormVelo(predictedVelocityNorm, pedestrian, 0.2) * 0.1;
 		
-		//predictedVelocity *= 0.5;
+		double predictedAngleNorm = extension.getNormForValue(predictedAngleClass, this.angleClasses);		
+		double predictedAngle = extension.denormAngle(predictedAngleNorm) * 0.1;
 		
-		double predictedAngle = extension.getAngleForClassification(predictedAngleClass,
-				this.angleClasses);		
-		
-		System.out.println("velo: " +String.valueOf(-1.0 *predictedVelocity) + ", angle:" + String.valueOf(predictedAngle));
-		//predictedAngle *= 0.5;
-		
-		// origincal calculation, negative if accelarte, possitve if break
-		// predictedVelocity negativ faster, predictedVelocity possitive slower
-		double changedVelocity = -1.0 * predictedVelocity;//pedestrian.getVelocity().getMagnitude() + (-1.0 * predictedVelocity);
-		
-		Vector2D predictVelocity = pedestrian.getVelocity().scale(changedVelocity)
-				.rotate(predictedAngle);
+		//System.out.println("velo: " +String.valueOf(-1.0 *predictedVelocity) + ", angle:" + String.valueOf(predictedAngle));
+
+		Vector2D predictVelocity = pedestrian.getVelocity().scale(predictedVelocity).rotate(predictedAngle);
 		
 		double xNext = pedestrian.getPosition().getXComponent() + predictVelocity.getXComponent();
 		double yNext = pedestrian.getPosition().getYComponent() + predictVelocity.getYComponent();
@@ -387,7 +374,13 @@ public class NetworkMlpModelOperational extends WalkingModel {
 				angleClasses,
 				numberOfLastCategories);
 		
-		extension.updatePedestrianSpace(pedestrian,simulationState, velocityClasses, angleClasses, numberOfLastCategories);
+		extension.updatePedestrianSpace(pedestrian,
+				simulationState,
+				velocityClasses,
+				angleClasses,
+				numberOfLastCategories,
+				perception);
+		
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
 		
 		List<Double> inTensorData = new ArrayList<Double>();
@@ -420,11 +413,11 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		inTensorData.add(extension.getAngleToGoal());
 		inTensorData.add(extension.getDistanceToGoal());
 		
-		for(int last = 2; last >= 0; last--) {
+		//for(int last = 2; last >= 0; last--) {
 			
-			inTensorData.add(extension.getLastVelocityMagnitudeCategories().get(last));
-			inTensorData.add(extension.getLastVelocityAngleCategories().get(last));
-		}
+			inTensorData.add(extension.getLastVelocityMagnitudeCategories().get(0));
+			inTensorData.add(extension.getLastVelocityAngleCategories().get(0));
+		//}
 
 		return inTensorData;
 	}

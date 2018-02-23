@@ -91,7 +91,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 
 				boolean isLoopedPath = (end != null && newRoutingState.getNextVisit().equals(end)) ||
 						   (start != null && end != null && start.equals(end));
-				boolean isNotVisible = !perception.isVisible(pedestrian, newRoutingState.getNextVisit());;
+				boolean isNotVisible = !perception.isVisible(pedestrian, newRoutingState.getNextVisit());
 				
 				if(isLoopedPath || isNotVisible || maxDeep == 0) {
 					
@@ -102,7 +102,7 @@ public abstract class RoutingModel extends SubTacticalModel {
 
 				nextToLast = last;
 				visited.add(next);
-				
+				newRoutingState.getVisited().add(next);
 				last = newRoutingState.getLastVisit();
 				next = newRoutingState.getNextVisit();
 			}
