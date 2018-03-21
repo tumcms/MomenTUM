@@ -127,10 +127,10 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		int predictedAngleClass = (int)((predictedClass - 1) / this.angleClasses) + 1;
 
 		double predictedVelocityNorm = extension.getNormForValue(predictedVelocityClass, this.velocityClasses);
-		double predictedVelocity = extension.denormVelo(predictedVelocityNorm, pedestrian, 0.2) * 0.1;
+		double predictedVelocity = extension.denormVelo(predictedVelocityNorm, pedestrian, 0.2) * 0.25;
 		
 		double predictedAngleNorm = extension.getNormForValue(predictedAngleClass, this.angleClasses);		
-		double predictedAngle = extension.denormAngle(predictedAngleNorm) * 0.1;
+		double predictedAngle = extension.denormAngle(predictedAngleNorm) * 0.2;
 		
 		//System.out.println("velo: " +String.valueOf(-1.0 *predictedVelocity) + ", angle:" + String.valueOf(predictedAngle));
 
