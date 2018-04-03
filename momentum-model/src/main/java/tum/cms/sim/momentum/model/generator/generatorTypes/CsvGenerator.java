@@ -26,12 +26,14 @@ public class CsvGenerator extends Generator {
 
 	private static String startTimeName = "startTime";
 	private static String endTimeName = "endTime";
+	private static String shiftTimeLineName = "shiftTimeLine";
 	
 	private static String csvInputName = "csvInput";
 	private static String csvMappingName = "csvMapping";
 	private static String timeStepMappingName = "timeStepMapping";
 	private static String containsHeaderName = "containsHeader";
 	
+	private double shiftTimeLine = 0.0;
 	private double timeStepMapping = 0.0;
 	private int timeStepIndex = -1;
 	private int idIndex = -1;
@@ -52,6 +54,11 @@ public class CsvGenerator extends Generator {
 		
 		generatorStartTime = this.properties.getDoubleProperty(startTimeName);
 		generatorEndTime = this.properties.getDoubleProperty(endTimeName);
+		
+		if(this.properties.getDoubleProperty(shiftTimeLineName) != null) {
+			
+			shiftTimeLine = this.properties.getDoubleProperty(shiftTimeLineName);
+		}
 		
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
 		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
@@ -92,7 +99,7 @@ public class CsvGenerator extends Generator {
 		for(ArrayList<Double> data : csvMapping.values()) {
 			
 			int id = data.get(idIndex).intValue();
-			long dataTimeStep = data.get(timeStepIndex).longValue();
+			long dataTimeStep = data.get(timeStepIndex).longValue() + (long)shiftTimeLine;
 			
 			long simulationTimeStep = simulationState.getScaledTimeStep(dataTimeStep, this.timeStepMapping);
 			

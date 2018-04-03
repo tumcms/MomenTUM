@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator version="2.0.2" simulationName="2017_NN_Playkback_ug_140">
 
-	<timeState simulationEndTime="30.0" timeStepDuration="0.2"/>
+	<timeState simulationEndTime="30.0" timeStepDuration="0.5"/>
 	<threadingState threads="1"/>
 	
 	<logging>
@@ -41,7 +41,8 @@
 	
 	<walkingModels>
 		<walking id="2" name="NN" type="NeuralNetwork">
-			<property name="pathToClassificationNetwork" type="String" value="C:\\Users\\ga37sib.TUBVCMS-PKI-2-W\\Desktop\\Paper_InProgress\\2018_PED\\Training\\both"/>
+			<property name="pathToClassificationNetwork" type="String" value=
+			"C:\Users\ga37sib.TUBVCMS-PKI-2-W\Desktop\Paper_InProgress\2018_PED\Training\final_0.4\"/>
 			<property name="dropoutTensorName" type="String" value="keep_prob"/>
 			<property name="inputTensorName" type="String" value="input_layer"/>
 			<property name="outputTensorName" type="String" value="output_layer"/>
