@@ -318,6 +318,11 @@ public class LoggingManager {
 					caller.getName() + " " +
 					caller.getId() + " "));		
 				
+			if(throwable.getLocalizedMessage() != null && !throwable.getLocalizedMessage().isEmpty()) {
+			
+				LoggingManager.loggers.forEach(logger -> logger.info(throwable.getLocalizedMessage()));
+			}
+			
 			LoggingManager.loggers.forEach(logger -> {
 				for(int iter = 0; iter < throwable.getStackTrace().length; iter++) {
 					logger.info(throwable.getStackTrace()[iter]);
@@ -335,8 +340,15 @@ public class LoggingManager {
 		
 		if(message != null && throwable.getStackTrace() != null && throwable.getStackTrace().length > 0) {
 			
-			LoggingManager.loggers.forEach(logger -> logger.info(message));		
+			LoggingManager.loggers.forEach(logger -> logger.info(message));	
+			
+			if(throwable.getLocalizedMessage() != null && !throwable.getLocalizedMessage().isEmpty()) {
+			
+				LoggingManager.loggers.forEach(logger -> logger.info(throwable.getLocalizedMessage()));
+			}
+			
 			LoggingManager.loggers.forEach(logger -> {
+				
 				for(int iter = 0; iter < throwable.getStackTrace().length; iter++) {
 					logger.info(throwable.getStackTrace()[iter]);
 				}
@@ -349,6 +361,13 @@ public class LoggingManager {
 		if(throwable.getStackTrace() != null && throwable.getStackTrace().length > 0) {
 					
 			LoggingManager.loggers.forEach(logger -> logger.info(throwable.getMessage()));
+			
+			
+			if(throwable.getLocalizedMessage() != null && !throwable.getLocalizedMessage().isEmpty()) {
+			
+				LoggingManager.loggers.forEach(logger -> logger.info(throwable.getLocalizedMessage()));
+			}
+			
 			LoggingManager.loggers.forEach(logger -> {
 				for(int iter = 0; iter < throwable.getStackTrace().length; iter++) {
 					logger.info(throwable.getStackTrace()[iter]);
