@@ -2,6 +2,7 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +33,7 @@ import tum.cms.sim.momentum.utility.lattice.LatticeTheoryFactory;
  * The shadow geometry perception model finds visible objects via shadow mapping.
  * It computes an arc (part of a circle) in the direction of view +- radiant and
  * computes bresenham lines to the border (of the arc) beginning at the agents position.
- * Each object on the line will be captured.
+ *
  * Each object can occupy multiple cells (based on the lattice cell size).
  * 
  * For a faster computation the types of the elements (objects, people..) are
@@ -280,6 +281,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			
 			List<CellIndex> cellsToOccupy = this.pedestrianMap.getAllCircleCells(pedestrian.getBodyRadius(), pedestrian.getPosition());
 			ArrayList<CellIndex> pedestrianForCurrentCell = new ArrayList<CellIndex>();
+			
 			for(CellIndex cellToOccupy : cellsToOccupy) {
 				
 				if(this.pedestrianMap.isInLatticeBounds(cellToOccupy) && this.pedestrianMap.isCellFree(cellToOccupy)) {
@@ -289,7 +291,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 				}
 			}
 			
-			synchronized(pedestrianCells) {
+			synchronized(this.pedestrianMap) {
 				pedestrianCells.addAll(pedestrianForCurrentCell);
 			}
 		});
@@ -491,6 +493,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		double distanceViewCenterCell = Double.MAX_VALUE;
 		int indexViewCenterCell = -1;
 		
+		// find cell closest to the view center
 		for(int iter = 0; iter < this.perceptionHorizon.size(); iter++) {
 			
 			CellIndex horizon = this.perceptionHorizon.get(iter);
@@ -510,8 +513,9 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 		int currentShift = 1;
 		
 		List<CellIndex> perceptionBorder = new ArrayList<>();
-		perceptionBorder.add(this.perceptionHorizon.get(cellsForViewAngle));
-		
+		//perceptionBorder.add(this.perceptionHorizon.get(cellsForViewAngle));
+		ArrayList<CellIndex> leftTemp = new ArrayList<CellIndex>();
+		ArrayList<CellIndex> rightTemp = new ArrayList<CellIndex>();
 		while(cellsForViewAngle > 0) {
 			
 			int horizonLeftCell = indexViewCenterCell - currentShift;
@@ -521,7 +525,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 				horizonLeftCell = this.perceptionHorizon.size() + horizonLeftCell;
 			}
 			
-			perceptionBorder.add(this.perceptionHorizon.get(horizonLeftCell));
+			leftTemp.add(this.perceptionHorizon.get(horizonLeftCell));
 			
 			int horizonRightCell = indexViewCenterCell + currentShift;
 			
@@ -530,11 +534,16 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 				horizonRightCell = horizonRightCell - this.perceptionHorizon.size();
 			}
 			
-			perceptionBorder.add(this.perceptionHorizon.get(horizonRightCell));
+			rightTemp.add(this.perceptionHorizon.get(horizonRightCell));
 			
-			cellsForViewAngle--;
+			cellsForViewAngle = cellsForViewAngle - 2;
 			currentShift++;
 		}
+		
+		
+		Collections.reverse(leftTemp);
+		perceptionBorder.addAll(leftTemp);
+		perceptionBorder.addAll(rightTemp);
 		
 		// transpose all border cells by the agent's cell
 		perceptionBorder.forEach(cell ->
