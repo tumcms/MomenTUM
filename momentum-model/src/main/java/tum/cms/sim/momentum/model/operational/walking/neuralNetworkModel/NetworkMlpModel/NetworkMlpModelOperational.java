@@ -238,7 +238,7 @@ public class NetworkMlpModelOperational extends WalkingModel {
 				simulationState,
 				velocityClasses,
 				angleClasses,
-				1.0,
+				0.5,
 				1.0/angleScaling);
 		
 		pedestrian.setWalkingState(newWalkingState);
