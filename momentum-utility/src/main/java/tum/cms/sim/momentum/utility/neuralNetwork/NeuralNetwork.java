@@ -32,8 +32,6 @@
 
 package tum.cms.sim.momentum.utility.neuralNetwork;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -75,11 +73,6 @@ public class NeuralNetwork {
 	ArrayList<String> operationNames;
 	
 	/**
-	 * The current session that will give a runner that executes a network and will receive a input and output tensor
-	 */
-	private Session session = null;
-	
-	/**
 	 * This method restores a saved Tensorflow model.
 	 *  
 	 * @param pathToSavedNetworkFolder, a path that points to a folder where the model is.
@@ -87,12 +80,7 @@ public class NeuralNetwork {
 	protected NeuralNetwork(String pathToSavedNetworkFolder) {
 		
 		this.modelBundle = SavedModelBundle.load(pathToSavedNetworkFolder, tagServe);
-		this.session = this.modelBundle.session();
-		this.pathToSavedNetworkFolder = pathToSavedNetworkFolder;
-		
 	}
-	Runner runner;
-	String pathToSavedNetworkFolder = null;
 	
 	/**
 	 * Gives you all names of the operations stored in the graph.
@@ -142,7 +130,7 @@ public class NeuralNetwork {
 			throw new Exception(String.format(exceptionTensorRun, outTensor.getName()));
 		}
 		
-		runner = this.modelBundle.session().runner();
+		Runner runner = this.modelBundle.session().runner();
 		
 		for(NeuralTensor inTensor : inTensors) {
 			

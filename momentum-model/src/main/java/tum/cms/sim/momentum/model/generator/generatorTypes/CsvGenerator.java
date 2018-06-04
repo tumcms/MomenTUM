@@ -18,6 +18,8 @@ import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
  * which exists in the csv data set for a given point in time.
  * The input may have a different time scale (1 time step = x seconds).
  * This is be solved by providing the timeStepMapping property for this class.
+ * This approach will create a pedestrian only once at its first appearance 
+ * in the data; thus, the data must provide an unique Id for each pedestrian.
  * 
  * @author Peter Kielar
  *

@@ -144,7 +144,7 @@ public class NeuralTensor {
 			intData.clear();
 		}
 		
-		intData =  IntBuffer.allocate((int)size);
+		intData = IntBuffer.allocate((int)size);
 		intData.put(intData);
 		intData.rewind();
 		this.tensor = Tensor.create(this.dimension, intData);
@@ -167,18 +167,6 @@ public class NeuralTensor {
 			
 			size *= dimension[iter];
 		}
-		
-////		if(doubleData == null) {
-//			
-//			doubleData = DoubleBuffer.allocate((int)size);
-////		}
-////		else {
-////			
-////			doubleData.clear();
-////		}
-//
-//		doubleData.put(data);
-//		//%doubleData.rewind();
 
 		if(doubleData == null) {
 			

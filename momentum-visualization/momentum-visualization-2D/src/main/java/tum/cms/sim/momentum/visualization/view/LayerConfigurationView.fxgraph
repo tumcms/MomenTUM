@@ -75,7 +75,7 @@ resourcefile "resources.properties" {
 			},
 			CheckBox id showLatticesCheckBox { 
 				text : rstring "layerConfiguration.checkbox.showLattice",
-				selected : true
+				selected : false
 			},
 			CheckBox id showOriginsCheckBox { 
 				text : rstring "layerConfiguration.checkbox.showOrigin",

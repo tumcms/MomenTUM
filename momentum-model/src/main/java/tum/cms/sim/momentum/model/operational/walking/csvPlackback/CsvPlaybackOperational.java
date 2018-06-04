@@ -35,8 +35,6 @@ public class CsvPlaybackOperational extends WalkingModel {
 	private static String csvMappingName = "csvMapping";
 	private static String timeStepMappingName = "timeStepMapping";
 	private static String containsHeaderName = "containsHeader";
-	private static String numberForMeanName = "numberForMean";
-	private static String numberOfLastCategoriesName = "numberOfLastCategories";
 	
 	private static String velocityClassesName = "velocityClasses";
 	private static String angleClassesName = "angleClasses";
@@ -49,8 +47,6 @@ public class CsvPlaybackOperational extends WalkingModel {
 	private int idIndex = -1;
 	private int xIndex = -1;
 	private int yIndex = -1;
-	private int numberForMean = 5;
-	private int numberOfLastCategories = 2;
 
 	private HashMap<Long, ArrayList<ArrayList<Double>>> movementData = new HashMap<>();
 	private HashMap<Integer, ArrayList<Double>> nextMovementData = new HashMap<>();
@@ -101,11 +97,11 @@ public class CsvPlaybackOperational extends WalkingModel {
 
 		double velocityXNext = (xNext - x); // distance m in timeStepDuration seconds
 		double velocityYNext = (yNext - y); // distance m in timeStepDuration seconds
+		
 		double headingXNext = (xNext - x);
 		double headingYNext = (yNext - y);
 		
-		Vector2D heading = GeometryFactory.createVector(headingXNext, headingYNext);//extension.updateHeadings(GeometryFactory.createVector(headingXNext, headingYNext).getNormalized(),
-				//this.numberForMean);
+		Vector2D heading = GeometryFactory.createVector(headingXNext, headingYNext);
 		
 		WalkingState newWalkingState = new WalkingState(
 				GeometryFactory.createVector(xNext, yNext),
@@ -113,8 +109,8 @@ public class CsvPlaybackOperational extends WalkingModel {
 				heading);
 	
 		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
-		extension.updatePedestrianSpace(pedestrian, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories, this.perception);
-		extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState, velocityClasses, angleClasses, this.numberOfLastCategories);
+		extension.updatePedestrianSpace(pedestrian, simulationState, velocityClasses, angleClasses, this.perception);
+		extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState, velocityClasses, angleClasses, 1.0, 1.0);
 		extension.setCurrentPosition(newWalkingState.getWalkingPosition());
 		
 		pedestrian.setWalkingState(newWalkingState);
@@ -125,16 +121,13 @@ public class CsvPlaybackOperational extends WalkingModel {
 		
 		this.velocityClasses = this.properties.getIntegerProperty(velocityClassesName);
 		this.angleClasses = this.properties.getIntegerProperty(angleClassesName);
-		this.numberForMean = this.properties.getIntegerProperty(numberForMeanName);
-		this.numberOfLastCategories = this.properties.getIntegerProperty(numberOfLastCategoriesName);
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
 		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
-		
 		CsvPlaybackPedestrianExtensions.setxMaxCut(this.properties.getDoubleProperty("xMaxCut"));
 		CsvPlaybackPedestrianExtensions.setxMinCut(this.properties.getDoubleProperty("xMinCut"));
 		CsvPlaybackPedestrianExtensions.setyMaxCut(this.properties.getDoubleProperty("yMaxCut"));
 		CsvPlaybackPedestrianExtensions.setyMinCut(this.properties.getDoubleProperty("yMinCut"));
-		
+		CsvPlaybackPedestrianExtensions.setCountItems(this.properties.getIntegerProperty("perceptionCount"));
 		for(int iter = 0; iter < csvInput.size(); iter++) {
 			
 			if(OutputType.valueOf(csvInput.get(iter)) == OutputType.timeStep) {

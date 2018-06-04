@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator version="2.0.2" simulationName="2017_NN_Playkback_ug_140">
 
-	<timeState simulationEndTime="30.0" timeStepDuration="0.5"/>
+	<timeState simulationEndTime="40.0" timeStepDuration="0.04"/>
 	<threadingState threads="1"/>
 	
 	<logging>
@@ -13,7 +13,7 @@
 	
 	
 	<lattices>
-		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.2"/>
+		<lattice id="0" scenarioId="0" latticeType="Quadratic" cellEdgeSize="0.1"/>
 	</lattices>
 	
 	<graphs>
@@ -27,9 +27,9 @@
 	
 	<perceptualModels>
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
-			<property name="perceptionDistance" type="Double" value="3.2"/>
+			<property name="perceptionDistance" type="Double" value="5.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
-			<property name="perceptionAngleDegree" type="Double" value="150.0"/>
+			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
 		</perceptual>
 	</perceptualModels>
 	
@@ -42,14 +42,32 @@
 	<walkingModels>
 		<walking id="2" name="NN" type="NeuralNetwork">
 			<property name="pathToClassificationNetwork" type="String" value=
-			"C:\Users\ga37sib.TUBVCMS-PKI-2-W\Desktop\Paper_InProgress\2018_PED\Training\final_0.4\"/>
+			"C:\Users\ga37sib.TUBVCMS-PKI-2-W\Desktop\Paper_InProgress\2018_PED\Training\ag3_leaky.04tsUg14010r1close5m120d0.1qvc2ac41dp0.95ts0.9hl2hn60mbz1000\model\"/>
 			<property name="dropoutTensorName" type="String" value="keep_prob"/>
+			<property name="keepProbability" type="Double" value="0.7"/>
 			<property name="inputTensorName" type="String" value="input_layer"/>
 			<property name="outputTensorName" type="String" value="output_layer"/>
-			<property name="numberForMean" type="Integer" value="5"/>
-			<property name="numberOfLastCategories" type="Integer" value="2"/>
-			<property name="velocityClasses" type="Integer" value="21"/>
-			<property name="angleClasses" type="Integer" value="21"/>
+			<property name="velocityClasses" type="Integer" value="2"/>
+			<property name="angleClasses" type="Integer" value="41"/>
+			<property name="trainedTimeStep" type="Double" value="0.04"/>
+			<property name="perceptionCount" type="Integer" value="1"/>
+			<property name="distancePerceiveScaling" type="Double" value="0.24"/>
+			<property name="anglePerceiveScaling" type="Double" value="0.89"/>
+			<property name="angleGoalScaling" type="Double" value="1.0"/>
+			<property name="distanceGoalScaling" type="Double" value="1.8"/>			
+			<property name="lastVelocityScaling" type="Double" value="0.75"/>
+			<property name="lastAngleScaling" type="Double" value="0.99"/>
+			<property name="angleScaling" type="Double" value="0.1"/>
+			<!-- each intex and index +1 define a range of classes within the joint classification
+			range of velocityClasses * angleClasses that are not used in the out tensor. -->
+			<complexProperty name="ignoreClassesPairs" type="List" valueType="Integer"> 
+				<entry index="0" value="0"/> 
+				<entry index="1" value="18"/> 
+				<entry index="2" value="22"/>
+				<entry index="3" value="59"/>
+				<entry index="4" value="63"/>
+				<entry index="5" value="81"/>
+			</complexProperty>
 		</walking>
 	</walkingModels>
 	
@@ -76,7 +94,7 @@
 			<property name="desiredVelocity" type="Double" value="1.34"/>
 			<property name="maximalVelocity" type="Double" value="3.3"/>
 			<property name="radiusMeter" type="Double" value="0.2"/>
-			<property name="groupSize" type="Integer" value="1"/>
+			<property name="groupSize" type="Integer" value="3"/>
 		</pedestrianSeed>
 	</pedestrianSeeds>
 
@@ -85,7 +103,7 @@
 			<property name="startTime" type="Double" value="0.0"/>
 			<property name="endTime" type="Double" value="Infinity"/> 
 			<complexProperty name="csvInput" type="CsvMatrix" valueType="Double">
-				<entry file="C:\Programmierung\MomenTUM\momentum-users\PhDThesis\Kielar\NN_2017\2017_NN_Operational_testing\2017_NN_Playback_ug_140_test_generator.txt" separator=";" comment="#"/>
+				<entry file="C:\Programmierung\MomenTUM\momentum-users\PhDThesis\Kielar\NN_2017\2017_NN_Operational_testing\2017_NN_Playback_ug_140_test_generator.csv" separator=";" comment="#"/>
 			</complexProperty>
 			<complexProperty name="csvMapping" type="List" valueType="String"> 
 				<entry index="0" value="timeStep"/> 
@@ -120,6 +138,7 @@
 				<property name="xHeading" type="Format" value="%.2f"/>
 				<property name="yHeading" type="Format" value="%.2f"/>
 				<property name="currentVertexID" type="Format" value="%d"/>
+				<property name="bodyRadius" type="Format" value="%2f"/>
 			</writerSource>
 		</outputWriter>
 		
@@ -375,6 +394,7 @@
         <point x="-3" y="1.4" />
         <point x="3" y="1.4" />
       </obstacle>
+	  
 	  <area id="0" name="Destination" type="Destination">
 		<point x="3.8266056497773744" y="1.2861779719611073" />
         <point x="2.983232155801472" y="1.389448195713259" />

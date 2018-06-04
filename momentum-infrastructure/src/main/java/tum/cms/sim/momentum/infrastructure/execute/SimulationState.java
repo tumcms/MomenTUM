@@ -116,18 +116,18 @@ public class SimulationState {
 
 	/**
 	 * Translates a data time step to simulation time step.
-	 * Bascially you ask here: I have a time stemp X (int) and I known
+	 * Basically you ask here: I have a time step X (int) and I known
 	 * the duration (seconds) for X. What is this in simulation time?
 	 * 
 	 * E.g. 
 	 * timeStepMapping is 0.04 -> means 1 dataTimeStep is 0.04 seconds
 	 * getTimeStepDuration is 0.1 ->  means 1 simulationTimeStep is 0.1 seconds
 	 * Calculation with 132 dataTimeStep each with 0.04 length
-	 * (int)(131 * 0.04 seconds / 0.1 seconds) + 0.5 = (int)(5.24 seconds / 0.1 seconds) + 0.5 
-	 * = (int)(52.4 + 0.5) = (int)(52.9) = 52 simulation time step
+	 * (int)(131 * 0.04 seconds / 0.1 seconds) + 0.5 = (int)(5.24 seconds / 0.1 seconds) 
+	 * = (int)(52.4) = 52 simulation time step
 	 */
 	public long getScaledTimeStep(long timeStepToScale, double timeStepToScaleDuration) {
 		
-		return (long)(((timeStepToScaleDuration * timeStepToScale) / this.getTimeStepDuration()) + 0.5);
+		return (long)(((timeStepToScaleDuration * timeStepToScale) / this.getTimeStepDuration().doubleValue()) + 0.000001);
 	}
 }

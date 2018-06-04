@@ -256,20 +256,20 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 	protected void supportModelUpdate(SimulationState simulationState) {
 		
 		// 0. cleanup visibility maps
-		pedestrainToPedestrian.clear();
+		//pedestrainToPedestrian.clear();
 		pedestrainToPedestrianPositions.clear();
 		pedestrainToVertex.clear();
-		pedestrainToObstacle.clear();
+		//pedestrainToObstacle.clear();
 		pedestrainToObstaclePositions.clear();
 		pedestrianToFreeSpacePositions.clear();
 		pedestrainToArea.clear();
 		
 		this.pedestrianManager.getAllPedestrians().stream().forEach(pedestrian -> {
 			
-			pedestrainToPedestrian.put(pedestrian.getId(), new HashSet<>());
+			//pedestrainToPedestrian.put(pedestrian.getId(), new HashSet<>());
 			pedestrainToPedestrianPositions.put(pedestrian.getId(), new ArrayList<>());
 			pedestrainToVertex.put(pedestrian.getId(), new HashSet<>());
-			pedestrainToObstacle.put(pedestrian.getId(), new HashSet<>());
+			//pedestrainToObstacle.put(pedestrian.getId(), new HashSet<>());
 			pedestrainToObstaclePositions.put(pedestrian.getId(), new ArrayList<>());
 			pedestrianToFreeSpacePositions.put(pedestrian.getId(), new ArrayList<>());
 			pedestrainToArea.put(pedestrian.getId(), new HashMap<>());
@@ -374,7 +374,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			// if a obstacle was hit store the cell information
 			if(Occupation.convertOccupationToDouble(Occupation.Fixed).equals(hitValue)) {
 				
-				this.pedestrainToObstacle.get(pedestrianId).add(cellValue);
+				//this.pedestrainToObstacle.get(pedestrianId).add(cellValue);
 				this.pedestrainToObstaclePositions.get(pedestrianId).add(cellValue);
 				this.pedestrainToPedestrianPositions.get(pedestrianId).add(null);
 				this.pedestrianToFreeSpacePositions.get(pedestrianId).add(null);
@@ -382,7 +382,7 @@ public class ShadowPerceptionModel extends PerceptionalModel {
 			else if(hitValue > 0.0) { // else if a pedestrian (id > 0) was hit, also store this
 				
 				// store the pedestrian id
-				this.pedestrainToPedestrian.get(pedestrianId).add(hitValue.intValue() - encodeShift);
+				//this.pedestrainToPedestrian.get(pedestrianId).add(hitValue.intValue() - encodeShift);
 				this.pedestrainToPedestrianPositions.get(pedestrianId).add(hitValue.intValue() - encodeShift);
 				this.pedestrainToObstaclePositions.get(pedestrianId).add(null);
 				this.pedestrianToFreeSpacePositions.get(pedestrianId).add(null);

@@ -119,7 +119,7 @@
 			<measure type="XtDensity">		
 				<property name="latticeId" type="Integer" value="1"/>
 				<property name="timeRange" type="Integer" value="3"/>
-				<property name="maximalDensity" type="Double" value="5.0"/>
+				<property name="maximalDensity" type="Double" value="4.0"/>
 			</measure>
 			
 			<writerSource sourceType="Pedestrian"> 
@@ -183,7 +183,7 @@
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
 			<property name="basicHeading" type="Double" value="0"/>
-			<property name="maximalPedestrians" type="Integer" value="40"/>
+			<property name="maximalPedestrians" type="Integer" value="100"/>
 			<property name="safetyDistance" type="Double" value="1.9"/>
 			<geometry geometryType="Lattice" fillingType="Random" />
 			<property name="scenarioLatticeId" type="Integer" value="0"/> 
@@ -200,7 +200,7 @@
 			<property name="startTime" type="Double" value="0"/>
 			<property name="endTime" type="Double" value="Infinity"/>
 			<property name="basicHeading" type="Double" value="90"/>
-			<property name="maximalPedestrians" type="Integer" value="10"/>
+			<property name="maximalPedestrians" type="Integer" value="30"/>
 			<property name="safetyDistance" type="Double" value="1.3"/>
 			<geometry geometryType="Lattice" fillingType="Random" />
 			<property name="scenarioLatticeId" type="Integer" value="0"/> 

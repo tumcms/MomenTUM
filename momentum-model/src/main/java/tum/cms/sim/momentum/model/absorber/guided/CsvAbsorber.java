@@ -25,8 +25,6 @@ public class CsvAbsorber extends Absorber {
 	private static String containsHeaderName = "containsHeader";
 	
 	private double timeStepMapping = 0.0;
-
- 
 	private HashMap<Integer, ArrayList<Double>> csvMapping;
 	private HashMap<Long, HashSet<Integer>> absorberSet = new HashMap<>();
 
@@ -91,7 +89,7 @@ public class CsvAbsorber extends Absorber {
 				
 				for(Integer pedestrianID : this.absorberSet.get(simulationState.getCurrentTimeStep() + 1)) {
 					
-					if(pedestrianID.equals(existingPedestrian.getId())) {
+					if(pedestrianID.intValue() == existingPedestrian.getId().intValue()) {
 						
 						exists = true;
 						break;
