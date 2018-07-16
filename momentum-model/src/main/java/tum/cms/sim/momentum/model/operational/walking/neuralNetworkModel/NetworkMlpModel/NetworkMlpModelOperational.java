@@ -18,7 +18,8 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackPedestrianExtensions;
-import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackPedestrianExtensions.CsvPlaybackPerceptionWriterItem;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackPedestrianExtensions.CsvPlaybackDataItem;
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackPedestrianExtensions.CsvPlaybackPerceptionItem;
 import tum.cms.sim.momentum.model.perceptional.PerceptionalModel;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
@@ -177,13 +178,8 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		
 		List<Double> inTensorData = this.assembleInTensor(pedestrian, perception, simulationState, extension);
 		
-		// Agent is out of the simulation area, thus fails horrible, ignore it.
-		if(extension.getPerceptItems().size() < CsvPlaybackPedestrianExtensions.getCountItems()) {
-			return;
-		}
-		
 		int outClasses = velocityClasses * angleClasses - this.ignoreClasses.length;
-		
+	
 		double[] predictedClasses = this.estimate(inTensorData, simulationState, outClasses);
 		
 		int predictedClass = extension.findClassIdByMaxValue(predictedClasses);
@@ -207,12 +203,14 @@ public class NetworkMlpModelOperational extends WalkingModel {
 		int predictedAngleClass = (predictedClass % this.angleClasses) + 1;
 		int predictedVelocityClass = (int)(predictedClass / this.angleClasses) + 1;
 		
-		double predictedVelocityNorm = extension.getNormForValue(predictedVelocityClass, this.velocityClasses);
+		double predictedVelocityNorm = extension.getNormForClassId(predictedVelocityClass, this.velocityClasses);
 		predictedVelocityNorm = new BigDecimal(predictedVelocityNorm).round(new MathContext(2)).doubleValue();
-		double predictedVelocity = extension.denormVelo(predictedVelocityNorm, pedestrian, this.trainedTimeStep) 
+		double predictedVelocity = extension.denormVelo(predictedVelocityNorm,
+				pedestrian.getMaximalVelocity(),
+				this.trainedTimeStep) 
 				* 1/multiplicator;
 		
-		double predictedAngleNorm = extension.getNormForValue(predictedAngleClass, this.angleClasses);	
+		double predictedAngleNorm = extension.getNormForClassId(predictedAngleClass, this.angleClasses);	
 		predictedAngleNorm = new BigDecimal(predictedAngleNorm).round(new MathContext(2)).doubleValue();
 		double predictedAngle = extension.denormAngle(predictedAngleNorm) * 1/multiplicator * angleScaling;
 	
@@ -233,13 +231,12 @@ public class NetworkMlpModelOperational extends WalkingModel {
 				newVelocity,
 				newVelocity.copy().getNormalized());
 		
-		extension.updatePedestrianTeach(pedestrian,
+		extension.computeMovementTeaching(pedestrian,
 				newWalkingState,
 				simulationState,
-				velocityClasses,
-				angleClasses,
-				0.5,
-				1.0/angleScaling);
+				predictedVelocityClass,
+				predictedAngleClass,
+				1.0, 1.0);
 		
 		pedestrian.setWalkingState(newWalkingState);
 	}
@@ -396,52 +393,44 @@ public class NetworkMlpModelOperational extends WalkingModel {
 			SimulationState simulationState,
 			NetworkMlpPedestrianExtension extension) {
 
-		extension.initializeLastTeach(pedestrian,
-				simulationState,
-				pedestrian.getVelocity().getMagnitude() * multiplicator,
-				0.0,
-				velocityClasses,
-				angleClasses);
-		
-		extension.updatePedestrianSpace(pedestrian,
-				simulationState,
-				velocityClasses,
-				angleClasses,
-				perception);
-		
-		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
+		if(!extension.isMemoryReady()) {
+			
+			for(int iter = 0; iter < CsvPlaybackPedestrianExtensions.getMemorySize(); iter++) {
+				extension.addDefaultMemoryItem(pedestrian, perception, simulationState, velocityClasses, angleClasses);
+			}
+		}
+		else {
+			
+			extension.updateTrainingData(pedestrian, perception, simulationState);
+		}
 		
 		List<Double> inTensorData = new ArrayList<Double>();
 
-		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
+		CsvPlaybackDataItem currentItem = null;
+		for(int iter = 0; iter < 2; iter++) {
 			
-			inTensorData.add(item.getDistanceToPercept() / this.distancePerceiveScaling);
-		}
-			
-		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
+			if(currentItem == null) {
+				currentItem = extension.getCurrent();
+			}
+			else {
+				currentItem = extension.getLast();
+			}
 				
-			inTensorData.add(item.getAngleToPercept() / this.anglePerceiveScaling);
+			for(CsvPlaybackPerceptionItem perceptionItem : currentItem.getPerceptionItems()) {
+				
+				inTensorData.add(perceptionItem.getDistanceToPercept() / this.distancePerceiveScaling);
+				inTensorData.add(perceptionItem.getAngleToPercept() / this.anglePerceiveScaling);
+			}
+		
+//				inTensorData.add(item.getVelocityMagnitudeOfPercept());
+//				inTensorData.add(item.getVelocityAngleDifferenceToPercept());
+//				inTensorData.add(item.getTypeOfPercept());
+			inTensorData.add(currentItem.getGoalItem().getAngleToGoal() / this.angleGoalScaling);		
+			inTensorData.add(currentItem.getGoalItem().getDistanceToGoal() / this.distanceGoalScaling);
+			inTensorData.add(currentItem.getMovementItem().getVelocityNormValue() / this.lastVelocityScaling);
+			inTensorData.add(currentItem.getMovementItem().getAngleNormValue() / this.lastAngleScaling);
 		}
-		
-//		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
-//			
-//			inTensorData.add(item.getVelocityMagnitudeOfPercept());
-//		}
 	
-//		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
-//			
-//			inTensorData.add(item.getVelocityAngleDifferenceToPercept());
-//		}
-		
-//		for(CsvPlaybackPerceptionWriterItem item : extension.getPerceptItems()) {
-//			
-//			inTensorData.add(item.getTypeOfPercept());
-//		}
-		
-		inTensorData.add(extension.getAngleToGoal() / this.angleGoalScaling);		
-		inTensorData.add(extension.getDistanceToGoal() / this.distanceGoalScaling);
-		inTensorData.add(extension.getLastVelocityNormValue() / this.lastVelocityScaling);
-		inTensorData.add(extension.getLastAngleNormValue() / this.lastAngleScaling);
 		return inTensorData;
 	}
 }

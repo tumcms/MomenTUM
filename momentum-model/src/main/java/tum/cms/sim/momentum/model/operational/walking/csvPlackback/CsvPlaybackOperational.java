@@ -11,6 +11,7 @@ import tum.cms.sim.momentum.data.agent.pedestrian.types.IOperationalPedestrian;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IPedestrianExtension;
 import tum.cms.sim.momentum.data.agent.pedestrian.types.IRichPedestrian;
 import tum.cms.sim.momentum.infrastructure.execute.SimulationState;
+import tum.cms.sim.momentum.model.PedestrianBehaviorModel;
 import tum.cms.sim.momentum.model.operational.walking.WalkingModel;
 import tum.cms.sim.momentum.utility.geometry.GeometryFactory;
 import tum.cms.sim.momentum.utility.geometry.Vector2D;
@@ -35,13 +36,15 @@ public class CsvPlaybackOperational extends WalkingModel {
 	private static String csvMappingName = "csvMapping";
 	private static String timeStepMappingName = "timeStepMapping";
 	private static String containsHeaderName = "containsHeader";
-	
+	private static String noicePercentageName = "noisePercentage";
 	private static String velocityClassesName = "velocityClasses";
 	private static String angleClassesName = "angleClasses";
 	
 	private int velocityClasses = 1;
 	private int angleClasses = 1;
+	private boolean singlePercept = false;
 	
+	private double noicePercentage = 0.0;
 	private double timeStepMapping = 0.0;
 	private int timeStepIndex = -1;
 	private int idIndex = -1;
@@ -98,6 +101,16 @@ public class CsvPlaybackOperational extends WalkingModel {
 		double velocityXNext = (xNext - x); // distance m in timeStepDuration seconds
 		double velocityYNext = (yNext - y); // distance m in timeStepDuration seconds
 		
+		double noiseX = this.noicePercentage *
+				velocityXNext *
+				(PedestrianBehaviorModel.getRandom().nextGaussian());
+		double noiseY = this.noicePercentage *
+				velocityYNext * 
+				(PedestrianBehaviorModel.getRandom().nextDouble());
+		
+		velocityXNext += noiseX;
+		velocityYNext += noiseY;
+		
 		double headingXNext = (xNext - x);
 		double headingYNext = (yNext - y);
 		
@@ -108,9 +121,15 @@ public class CsvPlaybackOperational extends WalkingModel {
 				GeometryFactory.createVector(velocityXNext, velocityYNext),
 				heading);
 	
-		extension.updatePerceptionSpace(pedestrian, this.perception, simulationState);
-		extension.updatePedestrianSpace(pedestrian, simulationState, velocityClasses, angleClasses, this.perception);
-		extension.updatePedestrianTeach(pedestrian, newWalkingState, simulationState, velocityClasses, angleClasses, 1.0, 1.0);
+		extension.updateTrainingData(pedestrian, perception, simulationState);
+		extension.computeMovementTeaching(pedestrian,
+				newWalkingState,
+				simulationState,
+				velocityClasses,
+				angleClasses,
+				1.0,
+				1.0);
+		
 		extension.setCurrentPosition(newWalkingState.getWalkingPosition());
 		
 		pedestrian.setWalkingState(newWalkingState);
@@ -122,12 +141,17 @@ public class CsvPlaybackOperational extends WalkingModel {
 		this.velocityClasses = this.properties.getIntegerProperty(velocityClassesName);
 		this.angleClasses = this.properties.getIntegerProperty(angleClassesName);
 		this.timeStepMapping = this.properties.getDoubleProperty(timeStepMappingName);
+		if(this.properties.getDoubleProperty(noicePercentageName) != null) {
+			this.noicePercentage = this.properties.getDoubleProperty(noicePercentageName);
+		}
+		
 		List<String> csvInput = this.properties.<String>getListProperty(csvMappingName);
 		CsvPlaybackPedestrianExtensions.setxMaxCut(this.properties.getDoubleProperty("xMaxCut"));
 		CsvPlaybackPedestrianExtensions.setxMinCut(this.properties.getDoubleProperty("xMinCut"));
 		CsvPlaybackPedestrianExtensions.setyMaxCut(this.properties.getDoubleProperty("yMaxCut"));
 		CsvPlaybackPedestrianExtensions.setyMinCut(this.properties.getDoubleProperty("yMinCut"));
-		CsvPlaybackPedestrianExtensions.setCountItems(this.properties.getIntegerProperty("perceptionCount"));
+		CsvPlaybackPedestrianExtensions.setMemorySize(this.properties.getIntegerProperty("memorySize"));
+		CsvPlaybackPedestrianExtensions.setSinglePercept(this.properties.getBooleanProperty("singlePercept"));
 		for(int iter = 0; iter < csvInput.size(); iter++) {
 			
 			if(OutputType.valueOf(csvInput.get(iter)) == OutputType.timeStep) {

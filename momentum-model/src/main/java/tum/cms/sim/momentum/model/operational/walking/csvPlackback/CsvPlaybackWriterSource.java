@@ -1,5 +1,6 @@
 package tum.cms.sim.momentum.model.operational.walking.csvPlackback;
 
+import tum.cms.sim.momentum.model.operational.walking.csvPlackback.CsvPlaybackPedestrianExtensions.CsvPlaybackDataItem;
 import tum.cms.sim.momentum.model.output.writerSources.genericWriterSources.ModelPedestrianWriterSource;
 
 public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlaybackOperational, CsvPlaybackPedestrianExtensions> {
@@ -7,10 +8,7 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 	@Override
 	protected boolean canWrite(CsvPlaybackPedestrianExtensions currentPedestrianExtension) {
 
-		if(currentPedestrianExtension.isFirstDataSet()) {
-			
-			currentPedestrianExtension.setFirstDataSet(false);
-			
+		if(!currentPedestrianExtension.isMemoryReady()) {
 			return false;
 		}
 		
@@ -28,25 +26,42 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 		return true;
 	}
 
+//	currentPedestrianExtension.getPerceptItems().forEach(item -> {
+//		builder.append(String.format(format, item.getAngleToPercept()));
+//		builder.append("|");
+//	});
+//	builder.deleteCharAt(builder.length() - 1);
+//	dataText = builder.toString();
+//	break;
 	@Override
 	protected String getPedestrianData(CsvPlaybackPedestrianExtensions currentPedestrianExtension, String format, String dataElement) {
 	
 		String dataText = null;
+		CsvPlaybackDataItem currentDataItem = null;
+		String variant = "last_";
+		if(dataElement.startsWith(variant)) {
+			currentDataItem = currentPedestrianExtension.getLast();
+			dataElement = dataElement.substring(dataElement.indexOf(variant) + variant.length());
+		}
+		else {
+			currentDataItem = currentPedestrianExtension.getCurrent();
+		}
+		
 		StringBuilder builder = new StringBuilder();
-				
 		switch(dataElement) {
 		
-		case "distancesToPercepts":
-			currentPedestrianExtension.getPerceptItems().forEach(item -> {
-				builder.append(String.format(format, item.getDistanceToPercept()));
-				builder.append("|");
-			});
+		case "distanceToPercept":
+			
+			currentDataItem.getPerceptionItems().forEach(item -> {
+					builder.append(String.format(format, item.getDistanceToPercept()));
+					builder.append("|");
+				});
 			builder.deleteCharAt(builder.length() - 1);
 			dataText = builder.toString();
 			break;
 			
-		case "anglesToPercepts":
-			currentPedestrianExtension.getPerceptItems().forEach(item -> {
+		case "angleToPercept":
+			currentDataItem.getPerceptionItems().forEach(item -> {
 				builder.append(String.format(format, item.getAngleToPercept()));
 				builder.append("|");
 			});
@@ -54,8 +69,8 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 			dataText = builder.toString();
 			break;
 			
-		case "velocityMagnitudesOfPercepts":
-			currentPedestrianExtension.getPerceptItems().forEach(item -> {
+		case "velocityNormOfPercepts":
+			currentDataItem.getPerceptionItems().forEach(item -> {
 				builder.append(String.format(format, item.getVelocityMagnitudeOfPercept()));
 				builder.append("|");
 			});
@@ -63,119 +78,56 @@ public class CsvPlaybackWriterSource extends ModelPedestrianWriterSource<CsvPlay
 			dataText = builder.toString();
 			break;
 			
-		case "velocityAngleDifferencesToPercepts":
-			currentPedestrianExtension.getPerceptItems().forEach(item -> {
+		case "angleNormDifferencesToPercepts":
+			currentDataItem.getPerceptionItems().forEach(item -> {
 				builder.append(String.format(format, item.getVelocityAngleDifferenceToPercept()));
 				builder.append("|");
 			});
 			builder.deleteCharAt(builder.length() - 1);
 			dataText = builder.toString();
 			break;
-			
-		case "typesOfPercepts":
-			currentPedestrianExtension.getPerceptItems().forEach(item -> {
+
+		case "typeOfPercept":
+			currentDataItem.getPerceptionItems().forEach(item -> {
 				builder.append(String.format(format, item.getTypeOfPercept()));
 				builder.append("|");
 			});
 			builder.deleteCharAt(builder.length() - 1);
 			dataText = builder.toString();
 			break;
-			
+
 		case "angleToGoal":
-			dataText = String.format(format,currentPedestrianExtension.getAngleToGoal());
+			dataText =  String.format(format,
+					currentDataItem.getGoalItem().getAngleToGoal());
 			break;
+			
 		case "distanceToGoal":
-			dataText = String.format(format,currentPedestrianExtension.getDistanceToGoal());
-			break;
-		case "lastDistanceToGoal":
-			dataText = String.format(format,currentPedestrianExtension.getLastDistanceToGoal());
-			break;		
-		case "lastVelocityMagnitude": 
-
-			dataText = String.format(format,currentPedestrianExtension.getLastVelocityNormValue());	
+			dataText =  String.format(format,
+					currentDataItem.getGoalItem().getDistanceToGoal());
 			break;
 			
-		case "lastVelocityAngleChange":
-
-			dataText = String.format(format,currentPedestrianExtension.getLastAngleNormValue());	
+		case "velocityMagnitudeNorm": 
+			dataText =  String.format(format,
+					currentDataItem.getMovementItem().getVelocityNormValue());
 			break;
 			
-		case "velocityMagnitude":
-			dataText = String.format(format,currentPedestrianExtension.getCurrentVelocityCategorie());
+		case "velocityAngleChangeNorm":
+			dataText =  String.format(format,
+					currentDataItem.getMovementItem().getAngleNormValue());
 			break;
 			
-		case "velocityAngleChange":
-			dataText = String.format(format,currentPedestrianExtension.getCurrentAngleCategorie());
+		case "teachingVelocityMagnitudeClass":
+			dataText =  String.format(format,
+					currentDataItem.getMovementTeachingItem().getVelocityClassValue());
 			break;
 			
-//		case "perceptionDistance":
-//			
-//			currentPedestrianExtension.getPerceptionDistanceSpace().forEach(distance -> {
-//				builder.append(String.format(format,distance));
-//				builder.append("|");
-//			});
-//			
-//			dataText = builder.toString().substring(0, builder.length() - 1);
-//			break;
-//			
-//		case "perceptionVelocityX":
-//			currentPedestrianExtension.getPerceptionVelocityXSpace().forEach(velocityX -> {
-//				builder.append(String.format(format,velocityX));
-//				builder.append("|");
-//			});
-//		
-//		dataText = builder.toString().substring(0, builder.length() - 1);
-//			break;
-//
-//		case "perceptionVelocityY":
-//			currentPedestrianExtension.getPerceptionVelocityYSpace().forEach(velocityY -> {
-//				builder.append(String.format(format,velocityY));
-//				builder.append("|");
-//			});
-//	
-//			dataText = builder.toString().substring(0, builder.length() - 1);
-//			break;
-//
-//		case "perceptionType":
-//			currentPedestrianExtension.getPerceptionTypeSpace().forEach(type -> {
-//				builder.append(String.format(format,type));
-//				builder.append("|");
-//			});
-//	
-//			dataText = builder.toString().substring(0, builder.length() - 1);
-//			break;
-//
-//		case "pedestrianVelocityX":
-//			dataText = String.format(format,currentPedestrianExtension.getPedestrianVelocityX());
-//			break;
-//			
-//		case "pedestrianVelocityY":
-//			dataText = String.format(format,currentPedestrianExtension.getPedestrianVelocityY());
-//			break;
-//			
-//		case "pedestrianVelocityXLast":
-//			dataText = String.format(format,currentPedestrianExtension.getPedestrianVelocityXLast());
-//			break;
-//			
-//		case "pedestrianVelocityYLast":
-//			dataText = String.format(format,currentPedestrianExtension.getPedestrianVelocityYLast());
-//			break;
-//			
-//		case "pedestrianVelocityXLastSec":
-//			dataText = String.format(format,currentPedestrianExtension.getPedestrianVelocityXLastSec());
-//			break;
-//			
-//		case "pedestrianVelocityYLastSec":
-//			dataText = String.format(format,currentPedestrianExtension.getPedestrianVelocityYLastSec());
-//			break;
-//			
-//		case "pedestrianWalkingGoalX":
-//			dataText = String.format(format,currentPedestrianExtension.getPedestrianWalkingGoalX());
-//			break;
-//			
-//		case "pedestrianWalkingGoalY":
-//			dataText = String.format(format,currentPedestrianExtension.getPedestrianWalkingGoalY());
-//			break;
+		case "teachingVelocityAngleChangeClass":
+			dataText =  String.format(format,
+					currentDataItem.getMovementTeachingItem().getAngleClassValue());
+			break;
+		default:
+			int i = 0;
+			break;
 		}
 		
 		return dataText;

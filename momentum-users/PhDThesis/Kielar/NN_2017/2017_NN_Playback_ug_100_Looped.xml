@@ -13,7 +13,7 @@
 		<!-- 25 frames per second, 1 timestep = 0.04 seconds, timeStepDuration = 0.3
 			thus: 0 0.0, 1 0.04, 2 0.08, 3 0.12, 4 0.16, 5 0.20, 6 0.24, 7 0.28, 8  0.32, 9 0.36, 10 0.4, 11 0.44, 12 0.48 -->
 		<loopVariable name="TIMESTEPSHIFT" start="0.0" change="1.0" steps="0"/>
-		<loopVariable name="NOISE" start="0.0" change="1.0" steps="0"/>
+		<loopVariable name="NOISE" start="1.0" change="1.0" steps="0"/>
 	</loop>
 	
 	<lattices>
@@ -31,9 +31,9 @@
 	
 	<perceptualModels>
 		<perceptual id="0" name="ShadowPerception" type="Shadow">
-			<property name="perceptionDistance" type="Double" value="1.0"/>
+			<property name="perceptionDistance" type="Double" value="15.0"/>
 			<property name="latticeId" type="Integer" value="0"/>
-			<property name="perceptionAngleDegree" type="Double" value="120.0"/>
+			<property name="perceptionAngleDegree" type="Double" value="160.0"/>
 		</perceptual>
 	</perceptualModels>
 	
@@ -56,11 +56,12 @@
 			</complexProperty>
 			<property name="containsHeader" type="Boolean" value="False"/>
 			<property name="timeStepMapping" type="Double" value="0.04"/>
-			<property name="velocityClasses" type="Integer" value="3"/>
-			<property name="angleClasses" type="Integer" value="11"/>
-			<property name="xMinCut" type="Double" value="-4.0"/>
-			<property name="xMaxCut" type="Double" value="4.5"/>
-			<property name="perceptionCount" type="Integer" value="1"/>
+			<property name="velocityClasses" type="Integer" value="1"/>
+			<property name="angleClasses" type="Integer" value="41"/>
+			<property name="xMinCut" type="Double" value="-4.5"/>
+			<property name="xMaxCut" type="Double" value="5.0"/>
+			<property name="memorySize" type="Integer" value="5"/>
+			<property name="singlePercept" type="Boolean" value="False"/>
 		</walking>
 	</walkingModels>
 	
@@ -85,8 +86,8 @@
 		<!-- The seed is used in the generator=0 -->
 		<pedestrianSeed id="0" name="basic" type="NoDistribution">
 			<property name="desiredVelocity" type="Double" value="1.34"/>
-			<property name="maximalVelocity" type="Double" value="3.3"/>
-			<property name="radiusMeter" type="Double" value="0.05"/>
+			<property name="maximalVelocity" type="Double" value="2.0"/>
+			<property name="radiusMeter" type="Double" value="0.2"/>
 			<property name="groupSize" type="Integer" value="1"/>
 		</pedestrianSeed>
 	</pedestrianSeeds>
@@ -161,7 +162,7 @@
 		
 		<outputWriter id="2" name="CsvPlaybackEnrichment">
 			<property name="call" type="Integer" value="1"/> 
-			<property name="buffer" type="Integer" value="1"/>
+			<property name="buffer" type="Integer" value="100"/>
 			<writerTarget targetType="File">
 				<property name="file" type="File" value="C:\Users\ga37sib.TUBVCMS-PKI-2-W\Desktop\Paper_InProgress\2017_Neural_Approach\2017_NN_MomenTUM_UG\2017_NN_Playback_ug_100_$LOOP$_$TIMESTEPSHIFT$_$NOISE$_Playback.csv"/>
 				<property name="index" type="Boolean" value="False"/> 
@@ -171,22 +172,26 @@
 				<property name="delimiter" type="String" value=";"/>
 			</writerFormat>
 			<writerSource sourceType="CsvPlayback" additionalId="2"> 
-				<property name="distancesToPercepts" type="Format" value="%.2f"/>
-				<property name="anglesToPercepts" type="Format" value="%.2f"/>
-				<!--<property name="velocityMagnitudesOfPercepts" type="Format" value="%.2f"/>
-				<property name="velocityAngleDifferencesToPercepts" type="Format" value="%.2f"/>
-				<property name="typesOfPercepts" type="Format" value="%.2f"/>-->
-				<property name="angleToGoal" type="Format" value="%.2f"/>
-				<property name="distanceToGoal" type="Format" value="%.2f"/> 
-				<!--<property name="lastDistanceToGoal" type="Format" value="%.2f"/>-->
-				<property name="lastVelocityMagnitude" type="Format" value="%.2f"/>
-				<property name="lastVelocityAngleChange" type="Format" value="%.2f"/>
-				<!--<property name="lastLastVelocityMagnitude" type="Format" value="%.2f"/>
-				<property name="lastLastVelocityAngleChange" type="Format" value="%.2f"/>
-				<property name="lllVelocityMagnitude" type="Format" value="%.2f"/>
-				<property name="lllVelocityAngleChange" type="Format" value="%.2f"/> -->
-				<property name="velocityMagnitude" type="Format" value="%.2f"/>
-				<property name="velocityAngleChange" type="Format" value="%.2f"/>
+				<property name="distanceToPercept" type="Format" value="%.3f"/>
+				<property name="angleToPercept" type="Format" value="%.3f"/>
+				<property name="typeOfPercept" type="Format" value="%.3f"/>
+				<property name="velocityNormOfPercepts" type="Format" value="%.3f"/>
+				<property name="angleNormDifferencesToPercepts" type="Format" value="%.3f"/>
+				<property name="distanceToGoal" type="Format" value="%.3f"/> 
+				<property name="angleToGoal" type="Format" value="%.3f"/>
+				<property name="velocityMagnitudeNorm" type="Format" value="%.3f"/>
+				<property name="velocityAngleChangeNorm" type="Format" value="%.3f"/>
+				<property name="last_distanceToPercept" type="Format" value="%.3f"/>
+				<property name="last_angleToPercept" type="Format" value="%.3f"/>
+				<property name="last_typeOfPercept" type="Format" value="%.3f"/>
+				<property name="last_velocityNormOfPercepts" type="Format" value="%.3f"/>
+				<property name="last_angleNormDifferencesToPercepts" type="Format" value="%.3f"/>
+				<property name="last_distanceToGoal" type="Format" value="%.3f"/> 
+				<property name="last_angleToGoal" type="Format" value="%.3f"/>
+				<property name="last_velocityMagnitudeNorm" type="Format" value="%.3f"/>
+				<property name="last_velocityAngleChangeNorm" type="Format" value="%.3f"/>
+				<property name="teachingVelocityMagnitudeClass" type="Format" value="%.3f"/>
+				<property name="teachingVelocityAngleChangeClass" type="Format" value="%.3f"/>
 			</writerSource>
 		</outputWriter>
 	</outputWriters>

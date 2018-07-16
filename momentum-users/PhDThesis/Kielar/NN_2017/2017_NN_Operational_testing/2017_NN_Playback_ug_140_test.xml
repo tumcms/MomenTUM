@@ -54,10 +54,10 @@
 			<property name="distancePerceiveScaling" type="Double" value="0.24"/>
 			<property name="anglePerceiveScaling" type="Double" value="0.89"/>
 			<property name="angleGoalScaling" type="Double" value="1.0"/>
-			<property name="distanceGoalScaling" type="Double" value="1.8"/>			
+			<property name="distanceGoalScaling" type="Double" value="10.88"/>			
 			<property name="lastVelocityScaling" type="Double" value="0.75"/>
 			<property name="lastAngleScaling" type="Double" value="0.99"/>
-			<property name="angleScaling" type="Double" value="0.1"/>
+			<property name="angleScaling" type="Double" value="0.5"/>
 			<!-- each intex and index +1 define a range of classes within the joint classification
 			range of velocityClasses * angleClasses that are not used in the out tensor. -->
 			<complexProperty name="ignoreClassesPairs" type="List" valueType="Integer"> 
