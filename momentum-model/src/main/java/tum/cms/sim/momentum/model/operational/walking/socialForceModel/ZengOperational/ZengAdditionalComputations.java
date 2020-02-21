@@ -154,7 +154,7 @@ public class ZengAdditionalComputations {
 		return closestCrosswalk;
 	}
 
-	public static Vector2D findNearestCorsswalkBoundaryPoint(IOperationalPedestrian pedestrian, TaggedArea nextCrosswalk, double epsilon) {
+	public static Vector2D findNearestCrosswalkBoundaryPoint(IOperationalPedestrian pedestrian, TaggedArea nextCrosswalk, double epsilon) {
 
 		List<Segment2D> segments = nextCrosswalk.getGeometry().getSegments();
 		List<Segment2D> longestSegments = segments.stream()

@@ -245,9 +245,12 @@ public class ZengOperational extends WalkingModel {
 	{
 		// repulsive force or attractive force from the crosswalk boundary
         List<TaggedArea> crosswalkAreas = this.scenarioManager.getTaggedAreas(TaggedArea.Type.Crosswalk);
+		if(crosswalkAreas.isEmpty()) {
+			return GeometryFactory.createVector(0.0, 0.0);
+		}
 
         TaggedArea nextCrosswalk = ZengAdditionalComputations.findCorrespondingCrosswalk(pedestrian, crosswalkAreas);
-		Vector2D nearestCrosswalkBoundaryPoint = ZengAdditionalComputations.findNearestCorsswalkBoundaryPoint(pedestrian, nextCrosswalk, zengModelParameters.getComputationalPrecision());
+		Vector2D nearestCrosswalkBoundaryPoint = ZengAdditionalComputations.findNearestCrosswalkBoundaryPoint(pedestrian, nextCrosswalk, zengModelParameters.getComputationalPrecision());
 
 		if(nearestCrosswalkBoundaryPoint == null) {
 			return GeometryFactory.createVector(0.0, 0.0);
