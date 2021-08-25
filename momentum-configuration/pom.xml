@@ -25,7 +25,7 @@
     <dependency>
     	<groupId>com.thoughtworks.xstream</groupId>
     	<artifactId>xstream</artifactId>
-    	<version>1.4.9</version>
+    	<version>1.4.18</version>
     </dependency>
   </dependencies>
   <description>This project comprises classes that translate a MomenTUM XML simulation configuration to configuration objects. The objects are used to bootstrap the simulation and its services and model objects. Furthermore, this project holds multiple enum definitions that are used in the framework.</description>
